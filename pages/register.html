@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Create your CWS Academy student account."
+    >
+
+    <title>Create Account | CWS Academy</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/auth.css"
+    >
+
+</head>
+
+
+<body>
+
+    <main class="auth-page">
+
+        <div class="auth-container">
+
+
+            <!-- BRAND -->
+
+            <div class="auth-brand">
+
+                <a
+                    href="../index.html"
+                    class="academy-logo"
+                >
+
+                    <span class="logo-cws">
+                        CWS
+                    </span>
+
+                    <span class="logo-text">
+                        Academy
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- REGISTER CARD -->
+
+            <section class="auth-card register-card">
+
+                <div class="auth-header">
+
+                    <span class="auth-label">
+                        CWS ACADEMY
+                    </span>
+
+                    <h1>
+                        Create Your Account
+                    </h1>
+
+                    <p>
+                        Join CWS Academy and start building
+                        your cybersecurity skills.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="authMessage"
+                    class="auth-message"
+                    role="alert"
+                    aria-live="polite"
+                ></div>
+
+
+                <form
+                    id="registerForm"
+                    class="auth-form"
+                >
+
+
+                    <!-- NAME -->
+
+                    <div class="form-group">
+
+                        <label for="registerName">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="registerName"
+                            name="name"
+                            placeholder="Your full name"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <label for="registerEmail">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="registerEmail"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="form-group">
+
+                        <label for="registerPassword">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            name="password"
+                            placeholder="Create a password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required
+                        >
+
+                        <small>
+                            Password must contain at least
+                            8 characters.
+                        </small>
+
+                    </div>
+
+
+                    <!-- CONFIRM PASSWORD -->
+
+                    <div class="form-group">
+
+                        <label for="confirmPassword">
+                            Confirm Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirm your password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- TERMS -->
+
+                    <label class="terms-check">
+
+                        <input
+                            type="checkbox"
+                            id="termsCheckbox"
+                            required
+                        >
+
+                        <span>
+                            I agree to the CWS Academy
+                            <a href="#">
+                                Terms of Use
+                            </a>
+                            and
+                            <a href="#">
+                                Privacy Policy
+                            </a>.
+                        </span>
+
+                    </label>
+
+
+                    <!-- SUBMIT -->
+
+                    <button
+                        type="submit"
+                        id="registerBtn"
+                        class="auth-submit"
+                    >
+                        Create Account
+                    </button>
+
+                </form>
+
+
+                <!-- LOGIN -->
+
+                <div class="auth-switch">
+
+                    <p>
+                        Already have an account?
+                        <a href="login.html">
+                            Sign in
+                        </a>
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <a
+                href="../index.html"
+                class="back-home"
+            >
+                ← Back to CWS Academy
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <script
+        type="module"
+        src="../js/auth.js"
+    ></script>
+
+</body>
+
+</html>
