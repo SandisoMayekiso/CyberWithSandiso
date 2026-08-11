@@ -17,16 +17,25 @@
 
     <title>Login | CWS Academy</title>
 
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
     <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
-    
+
+
+    <!-- =====================================================
+         SITE STYLES
+    ====================================================== -->
+
     <link
         rel="stylesheet"
         href="../css/style.css"
     >
-
 
     <link
         rel="stylesheet"
@@ -43,7 +52,9 @@
         <div class="auth-container">
 
 
-            <!-- BRAND -->
+            <!-- =================================================
+                 BRAND
+            ================================================== -->
 
             <div class="auth-brand">
 
@@ -65,7 +76,9 @@
             </div>
 
 
-            <!-- LOGIN CARD -->
+            <!-- =================================================
+                 LOGIN CARD
+            ================================================== -->
 
             <section class="auth-card">
 
@@ -87,22 +100,31 @@
                 </div>
 
 
-                <!-- AUTH MESSAGE -->
+                <!-- =================================================
+                     LOGIN MESSAGE
+
+                     login.js expects #loginMessage
+                ================================================== -->
 
                 <div
-                    id="authMessage"
+                    id="loginMessage"
                     class="auth-message"
                     role="alert"
                     aria-live="polite"
+                    hidden
                 ></div>
 
 
-                <!-- LOGIN FORM -->
+                <!-- =================================================
+                     LOGIN FORM
+                ================================================== -->
 
                 <form
                     id="loginForm"
                     class="auth-form"
                 >
+
+                    <!-- EMAIL -->
 
                     <div class="form-group">
 
@@ -120,7 +142,9 @@
                         >
 
                     </div>
-                    
+
+
+                    <!-- PASSWORD -->
 
                     <div class="form-group">
 
@@ -140,6 +164,8 @@
                     </div>
 
 
+                    <!-- OPTIONS -->
+
                     <div class="form-options">
 
                         <label class="remember-me">
@@ -147,6 +173,7 @@
                             <input
                                 type="checkbox"
                                 id="rememberMe"
+                                name="rememberMe"
                             >
 
                             <span>
@@ -166,6 +193,8 @@
                     </div>
 
 
+                    <!-- SUBMIT -->
+
                     <button
                         type="submit"
                         id="loginBtn"
@@ -177,76 +206,88 @@
                 </form>
 
 
-                <!-- REGISTER -->
+                <!-- =================================================
+                     REGISTER
+                ================================================== -->
 
                 <div class="auth-switch">
 
                     <p>
                         Don't have an account?
+
                         <a href="register.html">
                             Create one
                         </a>
                     </p>
 
                 </div>
-                <!-- ==================================================
-                            SOCIAL LOGIN
-                    ================================================== -->
-
-                    <div class="social-login">
-
-                        <div class="auth-divider">
-                            <span>OR CONTINUE WITH</span>
-                        </div>
 
 
-                        <div class="social-login-buttons">
+                <!-- =================================================
+                     SOCIAL LOGIN
+                ================================================== -->
 
-                            <!-- GOOGLE -->
+                <div class="social-login">
 
-                            <button
-                                type="button"
-                                id="googleLoginBtn"
-                                class="social-login-btn google-btn"
-                            >
-
-                                <span class="social-icon">
-                                    G
-                                </span>
-
-                                <span>
-                                    Continue with Google
-                                </span>
-
-                            </button>
+                    <div class="auth-divider">
+                        <span>
+                            OR CONTINUE WITH
+                        </span>
+                    </div>
 
 
-                            <!-- GITHUB -->
+                    <div class="social-login-buttons">
 
-                            <button
-                                type="button"
-                                id="githubLoginBtn"
-                                class="social-login-btn github-btn"
-                            >
 
-                                <span class="social-icon">
-                                    <i class="fab fa-github"></i>
-                                </span>
+                        <!-- GOOGLE -->
 
-                                <span>
-                                    Continue with GitHub
-                                </span>
+                        <button
+                            type="button"
+                            id="googleLoginBtn"
+                            class="social-login-btn google-btn"
+                        >
 
-                            </button>
+                            <span class="social-icon">
+                                G
+                            </span>
 
-                        </div>
+                            <span>
+                                Continue with Google
+                            </span>
+
+                        </button>
+
+
+                        <!-- GITHUB -->
+
+                        <button
+                            type="button"
+                            id="githubLoginBtn"
+                            class="social-login-btn github-btn"
+                        >
+
+                            <span class="social-icon">
+                                <i class="fab fa-github"></i>
+                            </span>
+
+                            <span>
+                                Continue with GitHub
+                            </span>
+
+                        </button>
+
 
                     </div>
+
+                </div>
+
 
             </section>
 
 
-            <!-- RETURN -->
+            <!-- =================================================
+                 RETURN HOME
+            ================================================== -->
 
             <a
                 href="../index.html"
@@ -261,10 +302,23 @@
     </main>
 
 
-    
+    <!-- =====================================================
+         FIREBASE EMAIL/PASSWORD LOGIN
+    ====================================================== -->
+
     <script
-    type="module"
-    src="../js/login.js"
+        type="module"
+        src="../js/login.js"
+    ></script>
+
+
+    <!-- =====================================================
+         GOOGLE + GITHUB LOGIN
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="../js/social-auth.js"
     ></script>
 
 </body>
