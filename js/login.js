@@ -26,11 +26,25 @@ console.log("CWS Academy login.js loaded");
    ELEMENTS
 ========================================================= */
 
-const loginForm = document.getElementById("loginForm");
-const emailInput = document.getElementById("loginEmail");
-const passwordInput = document.getElementById("loginPassword");
-const loginButton = document.getElementById("loginBtn");
-const loginMessage = document.getElementById("loginMessage");
+const loginForm =
+    document.getElementById("loginForm");
+
+const emailInput =
+    document.getElementById("loginEmail");
+
+const passwordInput =
+    document.getElementById("loginPassword");
+
+const loginButton =
+    document.getElementById("loginBtn");
+
+const loginMessage =
+    document.getElementById("loginMessage");
+
+const resendVerificationBtn =
+    document.getElementById(
+        "resendVerificationBtn"
+    );
 
 
 console.log(
@@ -59,25 +73,51 @@ console.log(
 );
 
 console.log(
+    "Resend verification button:",
+    resendVerificationBtn ? "FOUND" : "NOT FOUND"
+);
+
+console.log(
     "Firebase auth:",
     auth ? "FOUND" : "NOT FOUND"
 );
 
 
 /* =========================================================
+   CURRENT USER
+========================================================= */
+
+let unverifiedUser = null;
+
+
+/* =========================================================
    SHOW MESSAGE
 ========================================================= */
 
-function showMessage(message, type = "error") {
+function showMessage(
+    message,
+    type = "error"
+) {
 
     if (!loginMessage) {
-        console.warn("CWS Academy:", message);
+
+        console.warn(
+            "CWS Academy:",
+            message
+        );
+
         return;
     }
 
-    loginMessage.textContent = message;
-    loginMessage.className = `auth-message ${type}`;
-    loginMessage.hidden = false;
+
+    loginMessage.textContent =
+        message;
+
+    loginMessage.className =
+        `auth-message ${type}`;
+
+    loginMessage.hidden =
+        false;
 }
 
 
@@ -91,8 +131,56 @@ function hideMessage() {
         return;
     }
 
-    loginMessage.textContent = "";
-    loginMessage.hidden = true;
+
+    loginMessage.textContent =
+        "";
+
+    loginMessage.hidden =
+        true;
+}
+
+
+/* =========================================================
+   SHOW RESEND BUTTON
+========================================================= */
+
+function showResendVerificationButton() {
+
+    if (!resendVerificationBtn) {
+        return;
+    }
+
+
+    resendVerificationBtn.hidden =
+        false;
+
+    resendVerificationBtn.disabled =
+        false;
+
+    resendVerificationBtn.textContent =
+        "Resend Verification Email";
+}
+
+
+/* =========================================================
+   HIDE RESEND BUTTON
+========================================================= */
+
+function hideResendVerificationButton() {
+
+    if (!resendVerificationBtn) {
+        return;
+    }
+
+
+    resendVerificationBtn.hidden =
+        true;
+
+    resendVerificationBtn.disabled =
+        false;
+
+    resendVerificationBtn.textContent =
+        "Resend Verification Email";
 }
 
 
@@ -106,8 +194,12 @@ function setLoginLoading() {
         return;
     }
 
-    loginButton.disabled = true;
-    loginButton.textContent = "Signing In...";
+
+    loginButton.disabled =
+        true;
+
+    loginButton.textContent =
+        "Signing In...";
 }
 
 
@@ -117,8 +209,12 @@ function resetLoginButton() {
         return;
     }
 
-    loginButton.disabled = false;
-    loginButton.textContent = "Sign In";
+
+    loginButton.disabled =
+        false;
+
+    loginButton.textContent =
+        "Sign In";
 }
 
 
@@ -128,11 +224,15 @@ function resetLoginButton() {
 
 function redirectAfterLogin() {
 
-    const params = new URLSearchParams(
-        window.location.search
-    );
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
 
-    const redirect = params.get("redirect");
+
+    const redirect =
+        params.get("redirect");
+
 
     console.log(
         "Requested redirect:",
@@ -210,7 +310,9 @@ function getFirebaseErrorMessage(error) {
     switch (error?.code) {
 
         case "auth/invalid-credential":
+
         case "auth/wrong-password":
+
         case "auth/user-not-found":
 
             return (
@@ -235,7 +337,7 @@ function getFirebaseErrorMessage(error) {
         case "auth/too-many-requests":
 
             return (
-                "Too many unsuccessful login attempts. Please try again later."
+                "Too many unsuccessful attempts. Please wait a while before trying again."
             );
 
 
@@ -263,6 +365,50 @@ function getFirebaseErrorMessage(error) {
 
 
 /* =========================================================
+   VERIFICATION EMAIL ERROR MESSAGE
+========================================================= */
+
+function getVerificationErrorMessage(error) {
+
+    console.error(
+        "CWS Academy verification email error:",
+        error
+    );
+
+
+    switch (error?.code) {
+
+        case "auth/too-many-requests":
+
+            return (
+                "Firebase has temporarily limited verification emails because too many were requested. Please wait before trying again."
+            );
+
+
+        case "auth/network-request-failed":
+
+            return (
+                "A network error occurred. Please check your internet connection."
+            );
+
+
+        case "auth/user-token-expired":
+
+            return (
+                "Your session has expired. Please sign in again."
+            );
+
+
+        default:
+
+            return (
+                "We could not send the verification email. Please try again later."
+            );
+    }
+}
+
+
+/* =========================================================
    LOGIN FORM
 ========================================================= */
 
@@ -280,12 +426,15 @@ if (!loginForm) {
 
             event.preventDefault();
 
+
             console.log(
                 "CWS Academy: Login form submitted."
             );
 
 
             hideMessage();
+
+            hideResendVerificationButton();
 
 
             /* =================================================
@@ -296,6 +445,7 @@ if (!loginForm) {
                 emailInput?.value
                     ?.trim()
                     ?.toLowerCase() || "";
+
 
             const password =
                 passwordInput?.value || "";
@@ -330,7 +480,7 @@ if (!loginForm) {
 
 
             /* =================================================
-               BUTTON
+               LOGIN BUTTON
             ================================================= */
 
             setLoginLoading();
@@ -378,7 +528,7 @@ if (!loginForm) {
 
 
                 /* =================================================
-                   EMAIL VERIFICATION
+                   EMAIL NOT VERIFIED
                 ================================================= */
 
                 if (!user.emailVerified) {
@@ -389,52 +539,44 @@ if (!loginForm) {
 
 
                     /*
-                       Automatically send another
-                       verification email.
+                       Store the authenticated user so the
+                       resend button can use the current session.
                     */
 
-                    try {
-
-                        await sendEmailVerification(user);
-
-                        console.log(
-                            "CWS Academy: Verification email sent."
-                        );
+                    unverifiedUser =
+                        user;
 
 
-                        showMessage(
-                            "Your email address has not been verified. A new verification email has been sent. Please check your inbox and verify your email before signing in again.",
-                            "error"
-                        );
-
-                    } catch (verificationError) {
-
-                        console.error(
-                            "CWS Academy: Could not send verification email:",
-                            verificationError
-                        );
+                    showMessage(
+                        "Your email address has not been verified. Please check your inbox and click the verification link.",
+                        "error"
+                    );
 
 
-                        showMessage(
-                            "Your email address has not been verified. Please check your inbox for the verification email.",
-                            "error"
-                        );
-                    }
+                    showResendVerificationButton();
 
 
                     resetLoginButton();
+
 
                     return;
                 }
 
 
                 /* =================================================
-                   SUCCESS
+                   EMAIL VERIFIED
                 ================================================= */
 
                 console.log(
                     "CWS Academy: Email verified successfully."
                 );
+
+
+                unverifiedUser =
+                    null;
+
+
+                hideResendVerificationButton();
 
 
                 showMessage(
@@ -443,11 +585,9 @@ if (!loginForm) {
                 );
 
 
-                /*
-                   Small delay allows the success
-                   message to be displayed before
-                   redirecting.
-                */
+                /* =================================================
+                   REDIRECT
+                ================================================= */
 
                 setTimeout(() => {
 
@@ -472,7 +612,163 @@ if (!loginForm) {
 
                 resetLoginButton();
             }
+        }
+    );
+}
 
+
+/* =========================================================
+   RESEND VERIFICATION EMAIL
+========================================================= */
+
+if (resendVerificationBtn) {
+
+    resendVerificationBtn.addEventListener(
+        "click",
+        async () => {
+
+            console.log(
+                "CWS Academy: Resend verification clicked."
+            );
+
+
+            /* =================================================
+               CHECK USER
+            ================================================= */
+
+            if (!unverifiedUser) {
+
+                showMessage(
+                    "Please sign in first before requesting a verification email.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               DISABLE BUTTON
+            ================================================= */
+
+            resendVerificationBtn.disabled =
+                true;
+
+            resendVerificationBtn.textContent =
+                "Sending...";
+
+
+            try {
+
+                console.log(
+                    "CWS Academy: Sending verification email..."
+                );
+
+
+                await sendEmailVerification(
+                    unverifiedUser
+                );
+
+
+                console.log(
+                    "CWS Academy: Verification email sent successfully."
+                );
+
+
+                showMessage(
+                    "Verification email sent successfully. Please check your inbox, including your spam or junk folder.",
+                    "success"
+                );
+
+
+                /*
+                   Prevent accidental repeated requests.
+                */
+
+                let countdown =
+                    60;
+
+
+                const originalText =
+                    "Resend Verification Email";
+
+
+                const countdownTimer =
+                    setInterval(() => {
+
+                        countdown--;
+
+                        resendVerificationBtn.textContent =
+                            `Resend in ${countdown}s`;
+
+
+                        if (countdown <= 0) {
+
+                            clearInterval(
+                                countdownTimer
+                            );
+
+
+                            resendVerificationBtn.disabled =
+                                false;
+
+                            resendVerificationBtn.textContent =
+                                originalText;
+                        }
+
+                    }, 1000);
+
+
+            } catch (error) {
+
+                console.error(
+                    "CWS Academy: Could not send verification email:",
+                    error
+                );
+
+
+                showMessage(
+                    getVerificationErrorMessage(error),
+                    "error"
+                );
+
+
+                /*
+                   Firebase may temporarily rate-limit
+                   verification requests.
+                */
+
+                if (
+                    error?.code ===
+                    "auth/too-many-requests"
+                ) {
+
+                    resendVerificationBtn.disabled =
+                        true;
+
+                    resendVerificationBtn.textContent =
+                        "Please wait before retrying";
+
+
+                    setTimeout(() => {
+
+                        resendVerificationBtn.disabled =
+                            false;
+
+                        resendVerificationBtn.textContent =
+                            "Resend Verification Email";
+
+                    }, 60000);
+
+                } else {
+
+                    resendVerificationBtn.disabled =
+                        false;
+
+                    resendVerificationBtn.textContent =
+                        "Resend Verification Email";
+                }
+            }
         }
     );
 }
