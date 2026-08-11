@@ -1,271 +1,280 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
+```
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <meta
-        name="description"
-        content="Sign in to your CWS Academy student account."
-    >
+<meta
+    name="description"
+    content="Sign in to your CWS Academy student account."
+>
 
-    <title>Login | CWS Academy</title>
+<title>Login | CWS Academy</title>
 
-    <link
+<link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    >
-    
-    <link
-        rel="stylesheet"
-        href="../css/style.css"
-    >
+>
 
+<link
+    rel="stylesheet"
+    href="../css/style.css"
+>
 
-    <link
-        rel="stylesheet"
-        href="../css/auth.css"
-    >
+<link
+    rel="stylesheet"
+    href="../css/auth.css"
+>
+```
 
 </head>
 
-
 <body>
 
-    <main class="auth-page">
+```
+<main class="auth-page">
 
-        <div class="auth-container">
+    <div class="auth-container">
+
+        <!-- BRAND -->
+
+        <div class="auth-brand">
+
+            <a
+                href="../index.html"
+                class="academy-logo"
+            >
+
+                <span class="logo-cws">
+                    CWS
+                </span>
+
+                <span class="logo-text">
+                    Academy
+                </span>
+
+            </a>
+
+        </div>
 
 
-            <!-- BRAND -->
+        <!-- LOGIN CARD -->
 
-            <div class="auth-brand">
+        <section class="auth-card">
 
-                <a
-                    href="../index.html"
-                    class="academy-logo"
-                >
+            <div class="auth-header">
 
-                    <span class="logo-cws">
-                        CWS
-                    </span>
+                <span class="auth-label">
+                    STUDENT ACCESS
+                </span>
 
-                    <span class="logo-text">
-                        Academy
-                    </span>
+                <h1>
+                    Welcome Back
+                </h1>
 
-                </a>
+                <p>
+                    Sign in to continue your
+                    cybersecurity learning journey.
+                </p>
 
             </div>
 
 
-            <!-- LOGIN CARD -->
+            <!-- AUTH MESSAGE
+                 ID MUST MATCH login.js
+            -->
 
-            <section class="auth-card">
+            <div
+                id="loginMessage"
+                class="auth-message"
+                role="alert"
+                aria-live="polite"
+                hidden
+            ></div>
 
-                <div class="auth-header">
 
-                    <span class="auth-label">
-                        STUDENT ACCESS
-                    </span>
+            <!-- LOGIN FORM -->
 
-                    <h1>
-                        Welcome Back
-                    </h1>
+            <form
+                id="loginForm"
+                class="auth-form"
+            >
 
-                    <p>
-                        Sign in to continue your
-                        cybersecurity learning journey.
-                    </p>
+                <div class="form-group">
+
+                    <label for="loginEmail">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                        required
+                    >
 
                 </div>
 
 
-                <!-- AUTH MESSAGE -->
+                <div class="form-group">
 
-                <div
-                    id="authMessage"
-                    class="auth-message"
-                    role="alert"
-                    aria-live="polite"
-                ></div>
+                    <label for="loginPassword">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
 
 
-                <!-- LOGIN FORM -->
+                <div class="form-options">
 
-                <form
-                    id="loginForm"
-                    class="auth-form"
+                    <label class="remember-me">
+
+                        <input
+                            type="checkbox"
+                            id="rememberMe"
+                        >
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
+
+
+                    <a
+                        href="forgot-password.html"
+                        class="forgot-link"
+                    >
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    id="loginBtn"
+                    class="auth-submit"
                 >
+                    Sign In
+                </button>
 
-                    <div class="form-group">
-
-                        <label for="loginEmail">
-                            Email Address
-                        </label>
-
-                        <input
-                            type="email"
-                            id="loginEmail"
-                            name="email"
-                            placeholder="you@example.com"
-                            autocomplete="email"
-                            required
-                        >
-
-                    </div>
-                    
-
-                    <div class="form-group">
-
-                        <label for="loginPassword">
-                            Password
-                        </label>
-
-                        <input
-                            type="password"
-                            id="loginPassword"
-                            name="password"
-                            placeholder="Enter your password"
-                            autocomplete="current-password"
-                            required
-                        >
-
-                    </div>
+            </form>
 
 
-                    <div class="form-options">
+            <!-- REGISTER -->
 
-                        <label class="remember-me">
+            <div class="auth-switch">
 
-                            <input
-                                type="checkbox"
-                                id="rememberMe"
-                            >
+                <p>
+                    Don't have an account?
 
-                            <span>
-                                Remember me
-                            </span>
+                    <a href="register.html">
+                        Create one
+                    </a>
+                </p>
 
-                        </label>
+            </div>
 
 
-                        <a
-                            href="forgot-password.html"
-                            class="forgot-link"
-                        >
-                            Forgot password?
-                        </a>
+            <!-- SOCIAL LOGIN -->
 
-                    </div>
+            <div class="social-login">
 
+                <div class="auth-divider">
+                    <span>
+                        OR CONTINUE WITH
+                    </span>
+                </div>
+
+
+                <div class="social-login-buttons">
+
+                    <!-- GOOGLE -->
 
                     <button
-                        type="submit"
-                        id="loginBtn"
-                        class="auth-submit"
+                        type="button"
+                        id="googleLoginBtn"
+                        class="social-login-btn google-btn"
                     >
-                        Sign In
+
+                        <span class="social-icon">
+                            G
+                        </span>
+
+                        <span>
+                            Continue with Google
+                        </span>
+
                     </button>
 
-                </form>
 
+                    <!-- GITHUB -->
 
-                <!-- REGISTER -->
+                    <button
+                        type="button"
+                        id="githubLoginBtn"
+                        class="social-login-btn github-btn"
+                    >
 
-                <div class="auth-switch">
+                        <span class="social-icon">
+                            <i class="fab fa-github"></i>
+                        </span>
 
-                    <p>
-                        Don't have an account?
-                        <a href="register.html">
-                            Create one
-                        </a>
-                    </p>
+                        <span>
+                            Continue with GitHub
+                        </span>
+
+                    </button>
 
                 </div>
-                <!-- ==================================================
-                            SOCIAL LOGIN
-                    ================================================== -->
 
-                    <div class="social-login">
+            </div>
 
-                        <div class="auth-divider">
-                            <span>OR CONTINUE WITH</span>
-                        </div>
+        </section>
 
 
-                        <div class="social-login-buttons">
+        <!-- RETURN -->
 
-                            <!-- GOOGLE -->
-
-                            <button
-                                type="button"
-                                id="googleLoginBtn"
-                                class="social-login-btn google-btn"
-                            >
-
-                                <span class="social-icon">
-                                    G
-                                </span>
-
-                                <span>
-                                    Continue with Google
-                                </span>
-
-                            </button>
+        <a
+            href="../index.html"
+            class="back-home"
+        >
+            ← Back to CWS Academy
+        </a>
 
 
-                            <!-- GITHUB -->
+    </div>
 
-                            <button
-                                type="button"
-                                id="githubLoginBtn"
-                                class="social-login-btn github-btn"
-                            >
-
-                                <span class="social-icon">
-                                    <i class="fab fa-github"></i>
-                                </span>
-
-                                <span>
-                                    Continue with GitHub
-                                </span>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-            </section>
+</main>
 
 
-            <!-- RETURN -->
+<!-- LOGIN JAVASCRIPT -->
 
-            <a
-                href="../index.html"
-                class="back-home"
-            >
-                ← Back to CWS Academy
-            </a>
-
-
-        </div>
-
-    </main>
-
-
-    
-    <script
+<script
     type="module"
     src="../js/login.js"
-    ></script>
+></script>
+```
 
 </body>
 
