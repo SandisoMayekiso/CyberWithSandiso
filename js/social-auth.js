@@ -4,7 +4,7 @@
    Social Authentication
    Google + GitHub
    Firebase Redirect Authentication
-   ========================================================= */
+========================================================= */
 
 import {
     GoogleAuthProvider,
@@ -20,7 +20,7 @@ import {
 
 /* =========================================================
    DEBUG
-   ========================================================= */
+========================================================= */
 
 console.log(
     "CWS Academy social-auth.js loaded"
@@ -29,7 +29,7 @@ console.log(
 
 /* =========================================================
    ELEMENTS
-   ========================================================= */
+========================================================= */
 
 const googleButton =
     document.getElementById("googleLoginBtn");
@@ -43,22 +43,18 @@ const loginMessage =
 
 console.log(
     "Google button:",
-    googleButton
-        ? "found"
-        : "NOT FOUND"
+    googleButton ? "found" : "NOT FOUND"
 );
 
 console.log(
     "GitHub button:",
-    githubButton
-        ? "found"
-        : "NOT FOUND"
+    githubButton ? "found" : "NOT FOUND"
 );
 
 
 /* =========================================================
    PROVIDERS
-   ========================================================= */
+========================================================= */
 
 const googleProvider =
     new GoogleAuthProvider();
@@ -77,7 +73,7 @@ githubProvider.addScope(
 
 /* =========================================================
    MESSAGE
-   ========================================================= */
+========================================================= */
 
 function showMessage(
     message,
@@ -91,6 +87,7 @@ function showMessage(
         return;
     }
 
+
     loginMessage.textContent =
         message;
 
@@ -103,10 +100,10 @@ function showMessage(
 
 
 /* =========================================================
-   REDIRECT
-   ========================================================= */
+   SAVE REDIRECT DESTINATION
+========================================================= */
 
-function redirectAfterLogin() {
+function saveRedirectDestination() {
 
     const params =
         new URLSearchParams(
@@ -118,7 +115,57 @@ function redirectAfterLogin() {
         params.get("redirect");
 
 
-    /* Labs */
+    if (redirect) {
+
+        sessionStorage.setItem(
+            "cwsAcademyRedirect",
+            redirect
+        );
+
+        console.log(
+            "Saved redirect destination:",
+            redirect
+        );
+
+    } else {
+
+        sessionStorage.removeItem(
+            "cwsAcademyRedirect"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   REDIRECT AFTER SOCIAL LOGIN
+========================================================= */
+
+function redirectAfterLogin() {
+
+    const redirect =
+        sessionStorage.getItem(
+            "cwsAcademyRedirect"
+        );
+
+
+    console.log(
+        "Social login redirect:",
+        redirect || "dashboard"
+    );
+
+
+    /* Clear it after reading */
+
+    sessionStorage.removeItem(
+        "cwsAcademyRedirect"
+    );
+
+
+    /* =====================================================
+       LABS
+    ====================================================== */
 
     if (redirect === "labs") {
 
@@ -130,7 +177,9 @@ function redirectAfterLogin() {
     }
 
 
-    /* Assessments */
+    /* =====================================================
+       ASSESSMENTS
+    ====================================================== */
 
     if (redirect === "assessments") {
 
@@ -142,7 +191,9 @@ function redirectAfterLogin() {
     }
 
 
-    /* Course */
+    /* =====================================================
+       COURSE
+    ====================================================== */
 
     if (
         redirect &&
@@ -157,19 +208,24 @@ function redirectAfterLogin() {
     }
 
 
-    /* Default */
+    /* =====================================================
+       DEFAULT
+    ====================================================== */
 
     window.location.replace(
         "../student/dashboard.html"
     );
+
 }
 
 
 /* =========================================================
    ERROR HANDLING
-   ========================================================= */
+========================================================= */
 
-function getSocialAuthErrorMessage(error) {
+function getSocialAuthErrorMessage(
+    error
+) {
 
     console.error(
         "Firebase social authentication error:",
@@ -182,7 +238,8 @@ function getSocialAuthErrorMessage(error) {
         case "auth/unauthorized-domain":
 
             return (
-                "This website is not authorized for Firebase authentication. Add your GitHub Pages domain to Firebase Authentication → Settings → Authorized domains."
+                "This website is not authorized for Firebase authentication. " +
+                "Add your CWS Academy domain under Firebase Authentication → Settings → Authorized domains."
             );
 
 
@@ -221,10 +278,24 @@ function getSocialAuthErrorMessage(error) {
             );
 
 
+        case "auth/popup-closed-by-user":
+
+            return (
+                "The sign-in window was closed before authentication was completed."
+            );
+
+
         case "auth/invalid-credential":
 
             return (
                 "The authentication credentials were rejected. Please try again."
+            );
+
+
+        case "auth/user-disabled":
+
+            return (
+                "This account has been disabled."
             );
 
 
@@ -234,13 +305,15 @@ function getSocialAuthErrorMessage(error) {
                 error.message ||
                 "Unable to sign in with this provider. Please try again."
             );
+
     }
+
 }
 
 
 /* =========================================================
    GOOGLE LOGIN
-   ========================================================= */
+========================================================= */
 
 async function loginWithGoogle() {
 
@@ -252,6 +325,11 @@ async function loginWithGoogle() {
 
         return;
     }
+
+
+    /* Save requested destination */
+
+    saveRedirectDestination();
 
 
     googleButton.disabled =
@@ -296,13 +374,15 @@ async function loginWithGoogle() {
             getSocialAuthErrorMessage(error),
             "error"
         );
+
     }
+
 }
 
 
 /* =========================================================
    GITHUB LOGIN
-   ========================================================= */
+========================================================= */
 
 async function loginWithGithub() {
 
@@ -314,6 +394,11 @@ async function loginWithGithub() {
 
         return;
     }
+
+
+    /* Save requested destination */
+
+    saveRedirectDestination();
 
 
     githubButton.disabled =
@@ -358,19 +443,21 @@ async function loginWithGithub() {
             getSocialAuthErrorMessage(error),
             "error"
         );
+
     }
+
 }
 
 
 /* =========================================================
    GOOGLE BUTTON
-   ========================================================= */
+========================================================= */
 
 if (googleButton) {
 
     googleButton.addEventListener(
         "click",
-        (event) => {
+        event => {
 
             event.preventDefault();
 
@@ -384,18 +471,19 @@ if (googleButton) {
     console.warn(
         "CWS Academy: Google login button not found."
     );
+
 }
 
 
 /* =========================================================
    GITHUB BUTTON
-   ========================================================= */
+========================================================= */
 
 if (githubButton) {
 
     githubButton.addEventListener(
         "click",
-        (event) => {
+        event => {
 
             event.preventDefault();
 
@@ -409,12 +497,13 @@ if (githubButton) {
     console.warn(
         "CWS Academy: GitHub login button not found."
     );
+
 }
 
 
 /* =========================================================
-   HANDLE REDIRECT RESULT
-   ========================================================= */
+   HANDLE FIREBASE REDIRECT RESULT
+========================================================= */
 
 async function handleRedirectResult() {
 
@@ -429,9 +518,7 @@ async function handleRedirectResult() {
             await getRedirectResult(auth);
 
 
-        /*
-         * No redirect authentication was performed.
-         */
+        /* No social login just completed */
 
         if (!result) {
 
@@ -453,11 +540,19 @@ async function handleRedirectResult() {
         );
 
 
+        console.log(
+            "Signed in provider:",
+            user.providerData?.[0]?.providerId
+        );
+
+
         showMessage(
             "Sign-in successful. Redirecting...",
             "success"
         );
 
+
+        /* Redirect to Academy */
 
         redirectAfterLogin();
 
@@ -474,13 +569,15 @@ async function handleRedirectResult() {
             getSocialAuthErrorMessage(error),
             "error"
         );
+
     }
+
 }
 
 
 /* =========================================================
    START REDIRECT CHECK
-   ========================================================= */
+========================================================= */
 
 handleRedirectResult();
 
