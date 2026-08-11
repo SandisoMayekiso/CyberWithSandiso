@@ -18,8 +18,41 @@ import {
 } from "./firebase-config.js";
 
 
+/* =========================================================
+   DEBUG
+   ========================================================= */
+
 console.log(
     "CWS Academy social-auth.js loaded"
+);
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const googleButton =
+    document.getElementById("googleLoginBtn");
+
+const githubButton =
+    document.getElementById("githubLoginBtn");
+
+const loginMessage =
+    document.getElementById("loginMessage");
+
+
+console.log(
+    "Google button:",
+    googleButton
+        ? "found"
+        : "NOT FOUND"
+);
+
+console.log(
+    "GitHub button:",
+    githubButton
+        ? "found"
+        : "NOT FOUND"
 );
 
 
@@ -30,21 +63,12 @@ console.log(
 const googleProvider =
     new GoogleAuthProvider();
 
+googleProvider.addScope("profile");
+googleProvider.addScope("email");
+
+
 const githubProvider =
     new GithubAuthProvider();
-
-
-/*
- * Request the user's email/profile information.
- */
-
-googleProvider.addScope(
-    "profile"
-);
-
-googleProvider.addScope(
-    "email"
-);
 
 githubProvider.addScope(
     "user:email"
@@ -52,37 +76,34 @@ githubProvider.addScope(
 
 
 /* =========================================================
-   BUTTONS
+   MESSAGE
    ========================================================= */
 
-const googleLoginBtn =
-    document.getElementById(
-        "googleLoginBtn"
-    );
+function showMessage(
+    message,
+    type = "error"
+) {
 
-const githubLoginBtn =
-    document.getElementById(
-        "githubLoginBtn"
-    );
+    if (!loginMessage) {
 
+        console.log(message);
 
-console.log(
-    "Google button:",
-    googleLoginBtn
-        ? "found"
-        : "not found"
-);
+        return;
+    }
 
-console.log(
-    "GitHub button:",
-    githubLoginBtn
-        ? "found"
-        : "not found"
-);
+    loginMessage.textContent =
+        message;
+
+    loginMessage.className =
+        `auth-message ${type}`;
+
+    loginMessage.hidden =
+        false;
+}
 
 
 /* =========================================================
-   REDIRECT DESTINATION
+   REDIRECT
    ========================================================= */
 
 function redirectAfterLogin() {
@@ -97,9 +118,7 @@ function redirectAfterLogin() {
         params.get("redirect");
 
 
-    /* -----------------------------------------------------
-       Labs
-       ----------------------------------------------------- */
+    /* Labs */
 
     if (redirect === "labs") {
 
@@ -111,13 +130,9 @@ function redirectAfterLogin() {
     }
 
 
-    /* -----------------------------------------------------
-       Assessments
-       ----------------------------------------------------- */
+    /* Assessments */
 
-    if (
-        redirect === "assessments"
-    ) {
+    if (redirect === "assessments") {
 
         window.location.replace(
             "../student/assessments.html"
@@ -127,9 +142,7 @@ function redirectAfterLogin() {
     }
 
 
-    /* -----------------------------------------------------
-       Course
-       ----------------------------------------------------- */
+    /* Course */
 
     if (
         redirect &&
@@ -144,9 +157,7 @@ function redirectAfterLogin() {
     }
 
 
-    /* -----------------------------------------------------
-       Default
-       ----------------------------------------------------- */
+    /* Default */
 
     window.location.replace(
         "../student/dashboard.html"
@@ -155,69 +166,137 @@ function redirectAfterLogin() {
 
 
 /* =========================================================
+   ERROR HANDLING
+   ========================================================= */
+
+function getSocialAuthErrorMessage(error) {
+
+    console.error(
+        "Firebase social authentication error:",
+        error
+    );
+
+
+    switch (error.code) {
+
+        case "auth/unauthorized-domain":
+
+            return (
+                "This website is not authorized for Firebase authentication. Add your GitHub Pages domain to Firebase Authentication → Settings → Authorized domains."
+            );
+
+
+        case "auth/operation-not-allowed":
+
+            return (
+                "This social sign-in provider is not enabled in Firebase Authentication."
+            );
+
+
+        case "auth/account-exists-with-different-credential":
+
+            return (
+                "An account already exists with this email using a different sign-in method."
+            );
+
+
+        case "auth/network-request-failed":
+
+            return (
+                "A network error occurred. Please check your internet connection."
+            );
+
+
+        case "auth/popup-blocked":
+
+            return (
+                "The browser blocked the sign-in window."
+            );
+
+
+        case "auth/cancelled-popup-request":
+
+            return (
+                "Another authentication request is already running."
+            );
+
+
+        case "auth/invalid-credential":
+
+            return (
+                "The authentication credentials were rejected. Please try again."
+            );
+
+
+        default:
+
+            return (
+                error.message ||
+                "Unable to sign in with this provider. Please try again."
+            );
+    }
+}
+
+
+/* =========================================================
    GOOGLE LOGIN
    ========================================================= */
 
-if (googleLoginBtn) {
+async function loginWithGoogle() {
 
-    googleLoginBtn.addEventListener(
-        "click",
-        async () => {
+    if (!googleButton) {
 
-            try {
+        console.error(
+            "CWS Academy: Google button was not found."
+        );
 
-                googleLoginBtn.disabled =
-                    true;
-
-                googleLoginBtn.innerHTML =
-                    "Connecting to Google...";
+        return;
+    }
 
 
-                console.log(
-                    "Starting Google authentication..."
-                );
+    googleButton.disabled =
+        true;
+
+    googleButton.dataset.originalText =
+        googleButton.innerHTML;
+
+    googleButton.innerHTML =
+        "Connecting to Google...";
 
 
-                /*
-                 * Firebase redirects the browser to Google.
-                 *
-                 * The browser will leave this page.
-                 * After authentication, Firebase returns
-                 * to the application and getRedirectResult()
-                 * handles the result.
-                 */
+    try {
 
-                await signInWithRedirect(
-                    auth,
-                    googleProvider
-                );
+        console.log(
+            "Starting Google redirect authentication..."
+        );
 
 
-            } catch (error) {
-
-                console.error(
-                    "Google authentication error:",
-                    error
-                );
+        await signInWithRedirect(
+            auth,
+            googleProvider
+        );
 
 
-                googleLoginBtn.disabled =
-                    false;
+    } catch (error) {
 
-                googleLoginBtn.innerHTML =
-                    '<span class="social-icon">G</span>' +
-                    '<span>Continue with Google</span>';
+        console.error(
+            "Google redirect error:",
+            error
+        );
 
 
-                showAuthError(
-                    error
-                );
+        googleButton.disabled =
+            false;
 
-            }
+        googleButton.innerHTML =
+            googleButton.dataset.originalText;
 
-        }
-    );
 
+        showMessage(
+            getSocialAuthErrorMessage(error),
+            "error"
+        );
+    }
 }
 
 
@@ -225,63 +304,111 @@ if (googleLoginBtn) {
    GITHUB LOGIN
    ========================================================= */
 
-if (githubLoginBtn) {
+async function loginWithGithub() {
 
-    githubLoginBtn.addEventListener(
+    if (!githubButton) {
+
+        console.error(
+            "CWS Academy: GitHub button was not found."
+        );
+
+        return;
+    }
+
+
+    githubButton.disabled =
+        true;
+
+    githubButton.dataset.originalText =
+        githubButton.innerHTML;
+
+    githubButton.innerHTML =
+        "Connecting to GitHub...";
+
+
+    try {
+
+        console.log(
+            "Starting GitHub redirect authentication..."
+        );
+
+
+        await signInWithRedirect(
+            auth,
+            githubProvider
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "GitHub redirect error:",
+            error
+        );
+
+
+        githubButton.disabled =
+            false;
+
+        githubButton.innerHTML =
+            githubButton.dataset.originalText;
+
+
+        showMessage(
+            getSocialAuthErrorMessage(error),
+            "error"
+        );
+    }
+}
+
+
+/* =========================================================
+   GOOGLE BUTTON
+   ========================================================= */
+
+if (googleButton) {
+
+    googleButton.addEventListener(
         "click",
-        async () => {
+        (event) => {
 
-            try {
+            event.preventDefault();
 
-                githubLoginBtn.disabled =
-                    true;
-
-                githubLoginBtn.innerHTML =
-                    "Connecting to GitHub...";
-
-
-                console.log(
-                    "Starting GitHub authentication..."
-                );
-
-
-                /*
-                 * Firebase redirects the browser to GitHub.
-                 */
-
-                await signInWithRedirect(
-                    auth,
-                    githubProvider
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "GitHub authentication error:",
-                    error
-                );
-
-
-                githubLoginBtn.disabled =
-                    false;
-
-                githubLoginBtn.innerHTML =
-                    '<span class="social-icon">' +
-                    '<i class="fab fa-github"></i>' +
-                    '</span>' +
-                    '<span>Continue with GitHub</span>';
-
-
-                showAuthError(
-                    error
-                );
-
-            }
+            loginWithGoogle();
 
         }
     );
 
+} else {
+
+    console.warn(
+        "CWS Academy: Google login button not found."
+    );
+}
+
+
+/* =========================================================
+   GITHUB BUTTON
+   ========================================================= */
+
+if (githubButton) {
+
+    githubButton.addEventListener(
+        "click",
+        (event) => {
+
+            event.preventDefault();
+
+            loginWithGithub();
+
+        }
+    );
+
+} else {
+
+    console.warn(
+        "CWS Academy: GitHub login button not found."
+    );
 }
 
 
@@ -294,53 +421,43 @@ async function handleRedirectResult() {
     try {
 
         console.log(
-            "Checking Firebase OAuth redirect..."
+            "Checking Firebase social redirect result..."
         );
 
 
         const result =
-            await getRedirectResult(
-                auth
-            );
+            await getRedirectResult(auth);
 
 
         /*
-         * No OAuth redirect happened.
+         * No redirect authentication was performed.
          */
 
         if (!result) {
 
             console.log(
-                "No OAuth redirect result."
+                "No social redirect result."
             );
 
             return;
         }
 
 
-        /* -------------------------------------------------
-           USER
-           ------------------------------------------------- */
-
         const user =
             result.user;
 
 
         console.log(
-            "Social login successful:",
+            "Social authentication successful:",
             user.uid
         );
 
 
-        console.log(
-            "Signed in as:",
-            user.email
+        showMessage(
+            "Sign-in successful. Redirecting...",
+            "success"
         );
 
-
-        /* -------------------------------------------------
-           SUCCESS
-           ------------------------------------------------- */
 
         redirectAfterLogin();
 
@@ -348,172 +465,22 @@ async function handleRedirectResult() {
     } catch (error) {
 
         console.error(
-            "Firebase OAuth redirect error:",
+            "Social redirect authentication failed:",
             error
         );
 
 
-        showAuthError(
-            error
+        showMessage(
+            getSocialAuthErrorMessage(error),
+            "error"
         );
-
     }
-
 }
 
 
 /* =========================================================
-   START REDIRECT HANDLER
+   START REDIRECT CHECK
    ========================================================= */
 
 handleRedirectResult();
 
-
-/* =========================================================
-   ERROR HANDLING
-   ========================================================= */
-
-function showAuthError(error) {
-
-    console.error(
-        "Authentication error code:",
-        error.code
-    );
-
-
-    let message =
-        "Unable to sign in. Please try again.";
-
-
-    switch (error.code) {
-
-
-        /* -------------------------------------------------
-           USER CLOSED POPUP
-           ------------------------------------------------- */
-
-        case "auth/popup-closed-by-user":
-
-            message =
-                "The sign-in window was closed.";
-
-            break;
-
-
-        /* -------------------------------------------------
-           POPUP BLOCKED
-           ------------------------------------------------- */
-
-        case "auth/popup-blocked":
-
-            message =
-                "Your browser blocked the sign-in popup.";
-
-            break;
-
-
-        /* -------------------------------------------------
-           UNAUTHORIZED DOMAIN
-           ------------------------------------------------- */
-
-        case "auth/unauthorized-domain":
-
-            message =
-                "This domain is not authorized in Firebase Authentication. Add sandisomayekiso.github.io to Firebase Authorized Domains.";
-
-            break;
-
-
-        /* -------------------------------------------------
-           PROVIDER DISABLED
-           ------------------------------------------------- */
-
-        case "auth/operation-not-allowed":
-
-            message =
-                "This sign-in provider is not enabled in Firebase Authentication.";
-
-            break;
-
-
-        /* -------------------------------------------------
-           ACCOUNT EXISTS
-           ------------------------------------------------- */
-
-        case "auth/account-exists-with-different-credential":
-
-            message =
-                "An account already exists using a different sign-in method.";
-
-            break;
-
-
-        /* -------------------------------------------------
-           NETWORK
-           ------------------------------------------------- */
-
-        case "auth/network-request-failed":
-
-            message =
-                "A network error occurred. Please check your internet connection.";
-
-            break;
-
-
-        /* -------------------------------------------------
-           CREDENTIAL
-           ------------------------------------------------- */
-
-        case "auth/credential-already-in-use":
-
-            message =
-                "This account is already linked to another user.";
-
-            break;
-
-
-        /* -------------------------------------------------
-           CANCELLED
-           ------------------------------------------------- */
-
-        case "auth/cancelled-popup-request":
-
-            message =
-                "Another authentication request is already in progress.";
-
-            break;
-
-    }
-
-
-    /*
-     * Use your existing login message if it exists.
-     */
-
-    const loginMessage =
-        document.getElementById(
-            "loginMessage"
-        );
-
-
-    if (loginMessage) {
-
-        loginMessage.textContent =
-            message;
-
-        loginMessage.className =
-            "auth-message error";
-
-        loginMessage.hidden =
-            false;
-
-        return;
-    }
-
-
-    /*
-     * Fallback.
-     */
-
-    alert(message);
-}
