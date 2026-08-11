@@ -1,4 +1,3 @@
-
 /* =========================================================
    CWS ACADEMY
    Firebase Configuration
@@ -51,7 +50,7 @@ import {
 const firebaseConfig = {
 
     apiKey:
-        "AIzaSyDy_s bqkvZwM1UK8DmZzd3u5Na6NpMUCok",
+        "AIzaSyDy_sbqkvZwM1UK8DmZzd3u5Na6NpMUCok",
 
     authDomain:
         "cyberwithsandiso2.firebaseapp.com",
@@ -100,4 +99,3 @@ export const db =
 
 export const analytics =
     getAnalytics(app);
-
