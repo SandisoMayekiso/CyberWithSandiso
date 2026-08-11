@@ -6,7 +6,8 @@
 ========================================================= */
 
 import {
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
@@ -25,20 +26,11 @@ console.log("CWS Academy login.js loaded");
    ELEMENTS
 ========================================================= */
 
-const loginForm =
-    document.getElementById("loginForm");
-
-const emailInput =
-    document.getElementById("loginEmail");
-
-const passwordInput =
-    document.getElementById("loginPassword");
-
-const loginButton =
-    document.getElementById("loginBtn");
-
-const loginMessage =
-    document.getElementById("loginMessage");
+const loginForm = document.getElementById("loginForm");
+const emailInput = document.getElementById("loginEmail");
+const passwordInput = document.getElementById("loginPassword");
+const loginButton = document.getElementById("loginBtn");
+const loginMessage = document.getElementById("loginMessage");
 
 
 console.log(
@@ -76,30 +68,16 @@ console.log(
    SHOW MESSAGE
 ========================================================= */
 
-function showMessage(
-    message,
-    type = "error"
-) {
+function showMessage(message, type = "error") {
 
     if (!loginMessage) {
-
-        console.warn(
-            "CWS Academy:",
-            message
-        );
-
+        console.warn("CWS Academy:", message);
         return;
     }
 
-
-    loginMessage.textContent =
-        message;
-
-    loginMessage.className =
-        `auth-message ${type}`;
-
-    loginMessage.hidden =
-        false;
+    loginMessage.textContent = message;
+    loginMessage.className = `auth-message ${type}`;
+    loginMessage.hidden = false;
 }
 
 
@@ -114,15 +92,24 @@ function hideMessage() {
     }
 
     loginMessage.textContent = "";
-
     loginMessage.hidden = true;
-
 }
 
 
 /* =========================================================
-   RESET LOGIN BUTTON
+   LOGIN BUTTON
 ========================================================= */
+
+function setLoginLoading() {
+
+    if (!loginButton) {
+        return;
+    }
+
+    loginButton.disabled = true;
+    loginButton.textContent = "Signing In...";
+}
+
 
 function resetLoginButton() {
 
@@ -130,12 +117,8 @@ function resetLoginButton() {
         return;
     }
 
-    loginButton.disabled =
-        false;
-
-    loginButton.textContent =
-        "Sign In";
-
+    loginButton.disabled = false;
+    loginButton.textContent = "Sign In";
 }
 
 
@@ -145,15 +128,11 @@ function resetLoginButton() {
 
 function redirectAfterLogin() {
 
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
+    const params = new URLSearchParams(
+        window.location.search
+    );
 
-
-    const redirect =
-        params.get("redirect");
-
+    const redirect = params.get("redirect");
 
     console.log(
         "Requested redirect:",
@@ -163,7 +142,7 @@ function redirectAfterLogin() {
 
     /* =====================================================
        LABS
-    ====================================================== */
+    ===================================================== */
 
     if (redirect === "labs") {
 
@@ -177,7 +156,7 @@ function redirectAfterLogin() {
 
     /* =====================================================
        ASSESSMENTS
-    ====================================================== */
+    ===================================================== */
 
     if (redirect === "assessments") {
 
@@ -191,7 +170,7 @@ function redirectAfterLogin() {
 
     /* =====================================================
        COURSE
-    ====================================================== */
+    ===================================================== */
 
     if (
         redirect &&
@@ -208,12 +187,11 @@ function redirectAfterLogin() {
 
     /* =====================================================
        DEFAULT
-    ====================================================== */
+    ===================================================== */
 
     window.location.replace(
         "../student/dashboard.html"
     );
-
 }
 
 
@@ -232,9 +210,7 @@ function getFirebaseErrorMessage(error) {
     switch (error?.code) {
 
         case "auth/invalid-credential":
-
         case "auth/wrong-password":
-
         case "auth/user-not-found":
 
             return (
@@ -252,14 +228,14 @@ function getFirebaseErrorMessage(error) {
         case "auth/user-disabled":
 
             return (
-                "This account has been disabled."
+                "This account has been disabled. Please contact CWS Academy support."
             );
 
 
         case "auth/too-many-requests":
 
             return (
-                "Too many unsuccessful attempts. Please try again later."
+                "Too many unsuccessful login attempts. Please try again later."
             );
 
 
@@ -282,9 +258,7 @@ function getFirebaseErrorMessage(error) {
             return (
                 "Unable to sign in. Please check your details and try again."
             );
-
     }
-
 }
 
 
@@ -306,7 +280,6 @@ if (!loginForm) {
 
             event.preventDefault();
 
-
             console.log(
                 "CWS Academy: Login form submitted."
             );
@@ -323,7 +296,6 @@ if (!loginForm) {
                 emailInput?.value
                     ?.trim()
                     ?.toLowerCase() || "";
-
 
             const password =
                 passwordInput?.value || "";
@@ -361,15 +333,7 @@ if (!loginForm) {
                BUTTON
             ================================================= */
 
-            if (loginButton) {
-
-                loginButton.disabled =
-                    true;
-
-                loginButton.textContent =
-                    "Signing In...";
-
-            }
+            setLoginLoading();
 
 
             /* =================================================
@@ -402,6 +366,12 @@ if (!loginForm) {
 
 
                 console.log(
+                    "Logged in email:",
+                    user.email
+                );
+
+
+                console.log(
                     "Email verified:",
                     user.emailVerified
                 );
@@ -413,10 +383,43 @@ if (!loginForm) {
 
                 if (!user.emailVerified) {
 
-                    showMessage(
-                        "Please verify your email address before signing in.",
-                        "error"
+                    console.warn(
+                        "CWS Academy: Email is not verified."
                     );
+
+
+                    /*
+                       Automatically send another
+                       verification email.
+                    */
+
+                    try {
+
+                        await sendEmailVerification(user);
+
+                        console.log(
+                            "CWS Academy: Verification email sent."
+                        );
+
+
+                        showMessage(
+                            "Your email address has not been verified. A new verification email has been sent. Please check your inbox and verify your email before signing in again.",
+                            "error"
+                        );
+
+                    } catch (verificationError) {
+
+                        console.error(
+                            "CWS Academy: Could not send verification email:",
+                            verificationError
+                        );
+
+
+                        showMessage(
+                            "Your email address has not been verified. Please check your inbox for the verification email.",
+                            "error"
+                        );
+                    }
 
 
                     resetLoginButton();
@@ -429,15 +432,37 @@ if (!loginForm) {
                    SUCCESS
                 ================================================= */
 
+                console.log(
+                    "CWS Academy: Email verified successfully."
+                );
+
+
                 showMessage(
                     "Login successful. Redirecting...",
                     "success"
                 );
 
 
-                redirectAfterLogin();
+                /*
+                   Small delay allows the success
+                   message to be displayed before
+                   redirecting.
+                */
+
+                setTimeout(() => {
+
+                    redirectAfterLogin();
+
+                }, 500);
+
 
             } catch (error) {
+
+                console.error(
+                    "CWS Academy: Login failed:",
+                    error
+                );
+
 
                 showMessage(
                     getFirebaseErrorMessage(error),
@@ -446,12 +471,10 @@ if (!loginForm) {
 
 
                 resetLoginButton();
-
             }
 
         }
     );
-
 }
 
 
