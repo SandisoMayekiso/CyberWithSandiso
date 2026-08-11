@@ -1,208 +1,404 @@
-// register.js
+```javascript
+/* =========================================================
+   CWS ACADEMY
+   Registration Controller
+   ========================================================= */
 
-const registerForm = document.getElementById("registerForm");
-const registerName = document.getElementById("registerName");
-const registerEmail = document.getElementById("registerEmail");
-const registerPassword = document.getElementById("registerPassword");
-const confirmPassword = document.getElementById("confirmPassword");
-const termsCheckbox = document.getElementById("termsCheckbox");
-const registerBtn = document.getElementById("registerBtn");
-const authMessage = document.getElementById("authMessage");
+import {
+    createUserWithEmailAndPassword,
+    updateProfile,
+    sendEmailVerification
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+import {
+    auth
+} from "./firebase-config.js";
 
 
-// --------------------------------------------------
-// MESSAGE HELPER
-// --------------------------------------------------
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const registerForm =
+    document.getElementById("registerForm");
+
+const nameInput =
+    document.getElementById("registerName");
+
+const emailInput =
+    document.getElementById("registerEmail");
+
+const passwordInput =
+    document.getElementById("registerPassword");
+
+const confirmPasswordInput =
+    document.getElementById("confirmPassword");
+
+const termsCheckbox =
+    document.getElementById("termsCheckbox");
+
+const registerButton =
+    document.getElementById("registerBtn");
+
+const authMessage =
+    document.getElementById("authMessage");
+
+
+console.log("CWS Academy register.js loaded");
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
 
 function showMessage(message, type = "error") {
+
+    if (!authMessage) {
+        console.log(message);
+        return;
+    }
+
     authMessage.textContent = message;
-    authMessage.className = `auth-message ${type}`;
+
+    authMessage.className =
+        `auth-message ${type}`;
+
+    authMessage.hidden = false;
 }
 
 
-// --------------------------------------------------
-// EMAIL VALIDATION
-// --------------------------------------------------
+/* =========================================================
+   RESET BUTTON
+   ========================================================= */
+
+function resetRegisterButton() {
+
+    if (!registerButton) {
+        return;
+    }
+
+    registerButton.disabled = false;
+
+    registerButton.textContent =
+        "Create Account";
+}
+
+
+/* =========================================================
+   VALIDATE EMAIL
+   ========================================================= */
 
 function isValidEmail(email) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
 }
 
 
-// --------------------------------------------------
-// GET USERS
-// --------------------------------------------------
+/* =========================================================
+   REGISTRATION
+   ========================================================= */
 
-function getUsers() {
-    try {
-        const users = localStorage.getItem("cwsUsers");
+if (!registerForm) {
 
-        if (!users) {
-            return [];
-        }
-
-        return JSON.parse(users);
-    } catch (error) {
-        console.error("Unable to read users:", error);
-        return [];
-    }
-}
-
-
-// --------------------------------------------------
-// SAVE USERS
-// --------------------------------------------------
-
-function saveUsers(users) {
-    localStorage.setItem("cwsUsers", JSON.stringify(users));
-}
-
-
-// --------------------------------------------------
-// FORM SUBMISSION
-// --------------------------------------------------
-
-registerForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    // Clear previous message
-    authMessage.textContent = "";
-    authMessage.className = "auth-message";
-
-
-    // Get values
-    const name = registerName.value.trim();
-    const email = registerEmail.value.trim().toLowerCase();
-    const password = registerPassword.value;
-    const confirmPasswordValue = confirmPassword.value;
-
-
-    // --------------------------------------------------
-    // VALIDATION
-    // --------------------------------------------------
-
-    if (!name) {
-        showMessage("Please enter your full name.");
-        registerName.focus();
-        return;
-    }
-
-
-    if (!email) {
-        showMessage("Please enter your email address.");
-        registerEmail.focus();
-        return;
-    }
-
-
-    if (!isValidEmail(email)) {
-        showMessage("Please enter a valid email address.");
-        registerEmail.focus();
-        return;
-    }
-
-
-    if (password.length < 8) {
-        showMessage("Password must contain at least 8 characters.");
-        registerPassword.focus();
-        return;
-    }
-
-
-    if (password !== confirmPasswordValue) {
-        showMessage("Passwords do not match.");
-        confirmPassword.focus();
-        return;
-    }
-
-
-    if (!termsCheckbox.checked) {
-        showMessage("You must agree to the Terms of Use and Privacy Policy.");
-        termsCheckbox.focus();
-        return;
-    }
-
-
-    // --------------------------------------------------
-    // CHECK EXISTING USER
-    // --------------------------------------------------
-
-    const users = getUsers();
-
-    const existingUser = users.find(
-        user => user.email === email
+    console.error(
+        "CWS Academy: registerForm was not found."
     );
 
-    if (existingUser) {
-        showMessage(
-            "An account with this email already exists. Please sign in."
-        );
+} else {
 
-        registerEmail.focus();
-        return;
-    }
+    registerForm.addEventListener(
+        "submit",
+        async (event) => {
 
-
-    // --------------------------------------------------
-    // DISABLE BUTTON
-    // --------------------------------------------------
-
-    registerBtn.disabled = true;
-    registerBtn.textContent = "Creating Account...";
+            event.preventDefault();
 
 
-    // --------------------------------------------------
-    // CREATE USER
-    // --------------------------------------------------
+            /* -------------------------------------------------
+               READ FORM VALUES
+               ------------------------------------------------- */
 
-    const newUser = {
-        id: crypto.randomUUID
-            ? crypto.randomUUID()
-            : Date.now().toString(),
+            const name =
+                nameInput?.value
+                    .trim() || "";
 
-        name: name,
-        email: email,
-        password: password,
+            const email =
+                emailInput?.value
+                    .trim()
+                    .toLowerCase() || "";
 
-        createdAt: new Date().toISOString()
-    };
+            const password =
+                passwordInput?.value || "";
 
-
-    users.push(newUser);
-
-
-    // --------------------------------------------------
-    // SAVE USER
-    // --------------------------------------------------
-
-    try {
-        saveUsers(users);
-
-        showMessage(
-            "Account created successfully! Redirecting to sign in...",
-            "success"
-        );
+            const confirmPassword =
+                confirmPasswordInput?.value || "";
 
 
-        // Clear password fields
-        registerPassword.value = "";
-        confirmPassword.value = "";
+            /* -------------------------------------------------
+               VALIDATION
+               ------------------------------------------------- */
+
+            if (!name) {
+
+                showMessage(
+                    "Please enter your full name."
+                );
+
+                nameInput?.focus();
+
+                return;
+
+            }
 
 
-        // Redirect to login page
-        setTimeout(() => {
-            window.location.href = "login.html";
-        }, 1500);
+            if (!email) {
 
-    } catch (error) {
-        console.error("Registration error:", error);
+                showMessage(
+                    "Please enter your email address."
+                );
 
-        showMessage(
-            "Something went wrong while creating your account. Please try again."
-        );
+                emailInput?.focus();
 
-        registerBtn.disabled = false;
-        registerBtn.textContent = "Create Account";
-    }
-});
+                return;
+
+            }
+
+
+            if (!isValidEmail(email)) {
+
+                showMessage(
+                    "Please enter a valid email address."
+                );
+
+                emailInput?.focus();
+
+                return;
+
+            }
+
+
+            if (password.length < 8) {
+
+                showMessage(
+                    "Password must contain at least 8 characters."
+                );
+
+                passwordInput?.focus();
+
+                return;
+
+            }
+
+
+            if (password !== confirmPassword) {
+
+                showMessage(
+                    "Passwords do not match."
+                );
+
+                confirmPasswordInput?.focus();
+
+                return;
+
+            }
+
+
+            if (
+                termsCheckbox &&
+                !termsCheckbox.checked
+            ) {
+
+                showMessage(
+                    "You must agree to the Terms of Use and Privacy Policy."
+                );
+
+                termsCheckbox.focus();
+
+                return;
+
+            }
+
+
+            /* -------------------------------------------------
+               DISABLE BUTTON
+               ------------------------------------------------- */
+
+            if (registerButton) {
+
+                registerButton.disabled = true;
+
+                registerButton.textContent =
+                    "Creating Account...";
+
+            }
+
+
+            /* -------------------------------------------------
+               FIREBASE REGISTRATION
+               ------------------------------------------------- */
+
+            try {
+
+                console.log(
+                    "Attempting Firebase registration..."
+                );
+
+
+                /*
+                 * Create Firebase Authentication account
+                 */
+
+                const userCredential =
+                    await createUserWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+
+
+                const user =
+                    userCredential.user;
+
+
+                console.log(
+                    "Firebase account created:",
+                    user.uid
+                );
+
+
+                /* -------------------------------------------------
+                   SAVE USER DISPLAY NAME
+                   ------------------------------------------------- */
+
+                await updateProfile(
+                    user,
+                    {
+                        displayName: name
+                    }
+                );
+
+
+                console.log(
+                    "Firebase profile updated."
+                );
+
+
+                /* -------------------------------------------------
+                   SEND VERIFICATION EMAIL
+                   ------------------------------------------------- */
+
+                await sendEmailVerification(user);
+
+
+                console.log(
+                    "Verification email sent."
+                );
+
+
+                /* -------------------------------------------------
+                   SUCCESS MESSAGE
+                   ------------------------------------------------- */
+
+                showMessage(
+                    "Account created successfully! Please check your email to verify your account.",
+                    "success"
+                );
+
+
+                /*
+                 * Keep the user on this page briefly so they
+                 * can see the success message.
+                 */
+
+                setTimeout(() => {
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                }, 2500);
+
+
+            } catch (error) {
+
+                console.error(
+                    "CWS Academy registration error:",
+                    error
+                );
+
+
+                let message =
+                    "Unable to create your account. Please try again.";
+
+
+                /* -------------------------------------------------
+                   FIREBASE ERROR HANDLING
+                   ------------------------------------------------- */
+
+                switch (error.code) {
+
+                    case "auth/email-already-in-use":
+
+                        message =
+                            "An account with this email already exists. Please sign in.";
+
+                        break;
+
+
+                    case "auth/invalid-email":
+
+                        message =
+                            "Please enter a valid email address.";
+
+                        break;
+
+
+                    case "auth/weak-password":
+
+                        message =
+                            "Your password is too weak. Please choose a stronger password.";
+
+                        break;
+
+
+                    case "auth/operation-not-allowed":
+
+                        message =
+                            "Email/password registration is currently disabled.";
+
+                        break;
+
+
+                    case "auth/network-request-failed":
+
+                        message =
+                            "A network error occurred. Check your internet connection.";
+
+                        break;
+
+
+                    case "auth/too-many-requests":
+
+                        message =
+                            "Too many attempts. Please wait and try again later.";
+
+                        break;
+
+                }
+
+
+                showMessage(
+                    message,
+                    "error"
+                );
+
+
+                resetRegisterButton();
+
+            }
+
+        }
+    );
+
+}
+```
