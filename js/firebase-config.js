@@ -27,7 +27,7 @@ import {
 
 
 /* =========================================================
-   FIRESTORE DATABASE
+   CLOUD FIRESTORE
 ========================================================= */
 
 import {
@@ -51,7 +51,7 @@ import {
 const firebaseConfig = {
 
     apiKey:
-        "AIzaSyDy_s bqkvZwM1UK8DmZzd3u5Na6NpMUCok",
+        "AIzaSyDy_sbqkvZwM1UK8DmZzd3u5Na6NpMUCok",
 
     authDomain:
         "cyberwithsandiso2.firebaseapp.com",
@@ -83,12 +83,16 @@ const app =
 
 
 /* =========================================================
-   INITIALIZE FIREBASE SERVICES
+   FIREBASE AUTH
 ========================================================= */
 
 export const auth =
     getAuth(app);
 
+
+/* =========================================================
+   CLOUD FIRESTORE
+========================================================= */
 
 export const db =
     getFirestore(app);
@@ -98,6 +102,37 @@ export const db =
    FIREBASE ANALYTICS
 ========================================================= */
 
-export const analytics =
-    getAnalytics(app);
+let analytics = null;
+
+try {
+
+    analytics =
+        getAnalytics(app);
+
+} catch (error) {
+
+    console.warn(
+        "CWS Academy: Firebase Analytics could not be initialized.",
+        error
+    );
+
+}
+
+export {
+    analytics
+};
+
+
+/* =========================================================
+   INITIALIZATION STATUS
+========================================================= */
+
+console.log(
+    "CWS Academy Firebase initialized successfully."
+);
+
+console.log(
+    "Firebase project:",
+    firebaseConfig.projectId
+);
 
