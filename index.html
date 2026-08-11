@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CWS Academy - Cybersecurity education, practical labs, assessments and hands-on learning."
+    >
+
+    <meta
+        name="keywords"
+        content="CWS Academy, cybersecurity, ethical hacking, penetration testing, networking, Linux"
+    >
+
+    <meta name="author" content="CyberWithSandiso">
+
+    <title>CWS Academy | Cybersecurity Education</title>
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        href="assets/icons/favicon.png"
+        type="image/png"
+    >
+
+    <!-- Main CSS -->
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    
+        
+    >
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+    
+        <link
+        rel="stylesheet"
+        href="css/auth.css"
+    >
+    <link 
+        rel="stylesheet" 
+        href="css/about.css">
+    <link 
+        rel="stylesheet" 
+        href="css/courses.css">
+    <link 
+        rel="stylesheet" 
+        href="css/contact.css">
+</head>
+
+<body>
+
+    <!-- ==========================================
+         HEADER / NAVIGATION
+    =========================================== -->
+
+    <header class="site-header">
+
+        <nav class="navbar">
+
+            <!-- Logo -->
+            <a href="index.html" class="academy-logo">
+                <span class="logo-cws">CWS</span>
+                <span class="logo-text">Academy</span>
+            </a>
+
+            <!-- Navigation -->
+            <ul class="nav-links">
+
+                <li>
+                    <a href="index.html">Home</a>
+                </li>
+
+                <li>
+                    <a href="pages/courses.html">Courses</a>
+                </li>
+
+                <li class="auth-only-nav" hidden>
+                    <a href="../student/labs.html">
+                                                    Labs
+                    </a>
+                </li>
+
+                <li class="auth-only-nav" hidden>
+                    <a href="../student/assessments.html">
+                                                Assessments
+                    </a>
+                </li>
+
+                <li>
+                    <a href="pages/about.html">About</a>
+                </li>
+
+                <li>
+                    <a href="pages/contact.html">Contact</a>
+                </li>
+
+            </ul>
+
+            <!-- Authentication -->
+            <div class="nav-auth">
+
+                <a
+                    href="pages/login.html"
+                    class="btn-login"
+                >
+                    Sign In
+                </a>
+
+                <a
+                    href="pages/register.html"
+                    class="btn-register"
+                >
+                    Get Started
+
+                
+                </a>
+                
+                <span
+                    id="studentNavName"
+                    hidden
+                >
+                    Student
+                </span>
+
+<button
+    type="button"
+    id="logoutNavBtn"
+    hidden
+>
+    Logout
+</button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <button
+                    class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false"
+                    type="button"
+                    >
+                    ☰
+            </button>
+
+        </nav>
+
+    </header>
+
+
+    <!-- ==========================================
+         HERO SECTION
+    =========================================== -->
+
+    <main>
+
+        <section class="hero" id="hero">
+
+            <div class="hero-content">
+
+                <span class="hero-badge">
+                    CWS ACADEMY
+                </span>
+
+                <h1>
+                    Learn Cybersecurity.
+                    <span>Build Real Skills.</span>
+                </h1>
+
+                <p>
+                    Practical cybersecurity education designed
+                    to help you understand, practise, and apply
+                    security concepts in controlled environments.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a
+                        href="pages/courses.html"
+                        class="btn-primary"
+                    >
+                        Explore Courses
+                    </a>
+
+                    <a
+                        href="student/labs.html"
+                        id="exploreLabsBtn"
+                        class="btn-secondary"
+                        hidden
+                    >
+                        Explore Labs
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             ACADEMY FEATURES
+        =========================================== -->
+
+        <section class="features" id="features">
+
+            <div class="section-heading">
+
+                <span>WHY CWS ACADEMY</span>
+
+                <h2>
+                    Learn. Practise. Build.
+                </h2>
+
+                <p>
+                    Develop practical cybersecurity skills
+                    through structured learning and hands-on
+                    laboratory exercises.
+                </p>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        🛡️
+                    </div>
+
+                    <h3>
+                        Structured Learning
+                    </h3>
+
+                    <p>
+                        Follow organised cybersecurity
+                        learning paths from fundamentals
+                        to advanced concepts.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        🧪
+                    </div>
+
+                    <h3>
+                        Practical Labs
+                    </h3>
+
+                    <p>
+                        Reinforce your knowledge through
+                        controlled and deliberately vulnerable
+                        laboratory environments.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        🎯
+                    </div>
+
+                    <h3>
+                        Assessments
+                    </h3>
+
+                    <p>
+                        Test your understanding through
+                        quizzes, practical exercises and
+                        assessments.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        🏆
+                    </div>
+
+                    <h3>
+                        Track Progress
+                    </h3>
+
+                    <p>
+                        Work toward course completion,
+                        achievements and certificates.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             FEATURED COURSES
+        =========================================== -->
+
+        <section
+            class="featured-courses"
+            id="featured-courses"
+        >
+
+            <div class="section-heading">
+
+                <span>START LEARNING</span>
+
+                <h2>
+                    Featured Courses
+                </h2>
+
+                <p>
+                    Build your cybersecurity foundation
+                    one skill at a time.
+                </p>
+
+            </div>
+
+
+            <div class="course-grid">
+
+                <article class="course-card">
+
+                    <div class="course-image">
+                        <img
+                            src="assets/images/cybersecurity.jpg"
+                            alt="Cybersecurity Fundamentals"
+                        >
+                    </div>
+
+                    <div class="course-content">
+
+                        <span class="course-level">
+                            BEGINNER
+                        </span>
+
+                        <h3>
+                            Cybersecurity Fundamentals
+                        </h3>
+
+                        <p>
+                            Learn the fundamental concepts
+                            behind cybersecurity and ethical
+                            security testing.
+                        </p>
+
+                        <a
+                            href="pages/courses.html"
+                            class="course-link"
+                        >
+                            View Course →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+                <article class="course-card">
+
+                    <div class="course-image">
+                        <img
+                            src="assets/images/networking.jpg"
+                            alt="Networking Fundamentals"
+                        >
+                    </div>
+
+                    <div class="course-content">
+
+                        <span class="course-level">
+                            BEGINNER
+                        </span>
+
+                        <h3>
+                            Networking Fundamentals
+                        </h3>
+
+                        <p>
+                            Understand IP addressing, TCP/IP,
+                            DNS, HTTP, routing and networking
+                            concepts used in cybersecurity.
+                        </p>
+
+                        <a
+                            href="pages/courses.html"
+                            class="course-link"
+                        >
+                            View Course →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+                <article class="course-card">
+
+                    <div class="course-image">
+                        <img
+                            src="assets/images/linux.jpg"
+                            alt="Linux Fundamentals"
+                        >
+                    </div>
+
+                    <div class="course-content">
+
+                        <span class="course-level">
+                            BEGINNER
+                        </span>
+
+                        <h3>
+                            Linux Fundamentals
+                        </h3>
+
+                        <p>
+                            Learn Linux commands, file systems,
+                            permissions, networking tools and
+                            essential security concepts.
+                        </p>
+
+                        <a
+                            href="pages/courses.html"
+                            class="course-link"
+                        >
+                            View Course →
+                        </a>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <div class="section-action">
+
+                <a
+                    href="pages/courses.html"
+                    class="btn-primary"
+                >
+                    View All Courses
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             PRACTICAL LABS
+        =========================================== -->
+
+        <section class="labs-preview" id="labs">
+
+            <div class="labs-content">
+
+                <span>
+                    HANDS-ON LEARNING
+                </span>
+
+                <h2>
+                    Don't Just Learn It.
+                    Practise It.
+                </h2>
+
+                <p>
+                    CWS Academy will connect learning
+                    material with practical cybersecurity
+                    laboratories and controlled environments.
+                </p>
+
+                <a
+                    href="student/labs.html"
+                    id="exploreLabsBtn"
+                    class="btn-secondary"
+                    hidden
+                >
+                    Explore Labs
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             CALL TO ACTION
+        =========================================== -->
+
+        <section class="cta">
+
+            <div class="cta-content">
+
+                <h2>
+                    Ready to Start Learning?
+                </h2>
+
+                <p>
+                    Begin building your cybersecurity
+                    knowledge with CWS Academy.
+                </p>
+
+                <a
+                    href="pages/register.html"
+                    class="btn-primary"
+                >
+                    Create Your Account
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ==========================================
+         FOOTER
+    =========================================== -->
+
+    <footer class="site-footer">
+
+        <div class="footer-container">
+
+            <div class="footer-brand">
+
+                <a
+                    href="index.html"
+                    class="academy-logo"
+                >
+                    <span class="logo-cws">CWS</span>
+                    <span class="logo-text">Academy</span>
+                </a>
+
+                <p>
+                    Practical cybersecurity education,
+                    learning and hands-on security training.
+                </p>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h3>
+                    Academy
+                </h3>
+
+                <a href="pages/courses.html">
+                    Courses
+                </a>
+
+                
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h3>
+                    Support
+                </h3>
+
+                <a href="pages/about.html">
+                    About
+                </a>
+
+                <a href="pages/contact.html">
+                    Contact
+                </a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h3>
+                    Account
+                </h3>
+
+                <a href="pages/login.html">
+                    Login
+                </a>
+
+                <a href="pages/register.html">
+                    Register
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                © <span data-year></span> CWS Academy.
+                All rights reserved.
+            </p>
+
+            <p>
+                Part of the CyberWithSandiso ecosystem.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- Main JavaScript -->
+    <script src="main.js"></script>
+    <script
+    type="module"
+    src="../js/social-auth.js"
+></script>
+<script
+    type="module"
+    src="../js/courses.js"
+></script>
+<script
+    type="module"
+    src="../js/contact.js"
+></script>
+<script
+    type="module"
+    src="js/navigation-auth.js"
+></script>
+
+<script
+    type="module"
+    src="../js/firebase-config.js"
+></script>
+
+</body>
+</html>

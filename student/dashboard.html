@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CWS Academy Student Dashboard"
+    >
+
+    <title>CWS Academy | Student Dashboard</title>
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <!-- Dashboard-specific CSS will be added later -->
+
+    <link
+        rel="stylesheet"
+        href="../css/dashboard.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="dashboard-sidebar"
+        id="dashboardSidebar"
+    >
+
+        <div class="dashboard-brand">
+
+            <a href="../index.html">
+
+                <span class="logo-cws">
+                    CWS
+                </span>
+
+                <span class="logo-text">
+                    Academy
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- Student Navigation -->
+
+        <nav class="dashboard-nav">
+
+            <a
+                href="dashboard.html"
+                class="dashboard-nav-link active"
+            >
+
+                <i class="fa-solid fa-gauge-high"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="courses.html"
+                class="dashboard-nav-link"
+            >
+
+                <i class="fa-solid fa-book-open"></i>
+
+                <span>
+                    My Courses
+                </span>
+
+            </a>
+
+
+            <a
+                href="labs.html"
+                class="dashboard-nav-link"
+            >
+
+                <i class="fa-solid fa-flask"></i>
+
+                <span>
+                    Labs
+                </span>
+
+            </a>
+
+
+            <a
+                href="assessments.html"
+                class="dashboard-nav-link"
+            >
+
+                <i class="fa-solid fa-clipboard-check"></i>
+
+                <span>
+                    Assessments
+                </span>
+
+            </a>
+
+
+            <a
+                href="#achievements"
+                class="dashboard-nav-link"
+            >
+
+                <i class="fa-solid fa-trophy"></i>
+
+                <span>
+                    Achievements
+                </span>
+
+            </a>
+
+
+            <a
+                href="#profile"
+                class="dashboard-nav-link"
+            >
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+                    Profile
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- Sidebar Logout -->
+
+        <div class="dashboard-sidebar-footer">
+
+            <button
+                type="button"
+                id="dashboardLogoutBtn"
+                class="dashboard-logout"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN DASHBOARD
+    ====================================================== -->
+
+    <main class="dashboard-main">
+
+
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
+
+        <header class="dashboard-header">
+
+            <button
+                type="button"
+                id="dashboardMenuBtn"
+                class="dashboard-menu-btn"
+                aria-label="Open dashboard menu"
+            >
+
+                <i class="fa-solid fa-bars"></i>
+
+            </button>
+
+
+            <div class="dashboard-header-title">
+
+                <span>
+                    CWS ACADEMY
+                </span>
+
+                <h1>
+                    Student Dashboard
+                </h1>
+
+            </div>
+
+
+            <div class="dashboard-user">
+
+                <div
+                    class="dashboard-user-avatar"
+                    id="dashboardUserAvatar"
+                >
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+
+                <div class="dashboard-user-info">
+
+                    <strong id="dashboardUserName">
+                        Student
+                    </strong>
+
+                    <small id="dashboardUserEmail">
+                        Loading...
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             DASHBOARD CONTENT
+        ================================================== -->
+
+        <section class="dashboard-content">
+
+
+            <!-- =================================================
+                 WELCOME
+            ================================================== -->
+
+            <section class="dashboard-welcome">
+
+                <div>
+
+                    <span class="dashboard-label">
+                        WELCOME BACK
+                    </span>
+
+                    <h2>
+                        Hello,
+                        <span id="welcomeStudentName">
+                            Student
+                        </span>
+                        👋
+                    </h2>
+
+                    <p>
+                        Continue your cybersecurity learning
+                        journey with CWS Academy.
+                    </p>
+
+                </div>
+
+
+                <div class="welcome-icon">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 QUICK STATISTICS
+            ================================================== -->
+
+            <section class="dashboard-stats">
+
+
+                <article class="dashboard-stat-card">
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-book"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Enrolled Courses
+                        </span>
+
+                        <strong id="enrolledCourses">
+                            0
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+
+                <article class="dashboard-stat-card">
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-flask"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Labs Completed
+                        </span>
+
+                        <strong id="completedLabs">
+                            0
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+
+                <article class="dashboard-stat-card">
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-clipboard-check"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Assessments
+                        </span>
+
+                        <strong id="completedAssessments">
+                            0
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+
+                <article class="dashboard-stat-card">
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-award"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Achievements
+                        </span>
+
+                        <strong id="achievementCount">
+                            0
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 LEARNING PROGRESS
+            ================================================== -->
+
+            <section class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            LEARNING
+                        </span>
+
+                        <h2>
+                            Course Progress
+                        </h2>
+
+                    </div>
+
+                    <a href="courses.html">
+                        View Courses
+                    </a>
+
+                </div>
+
+
+                <div
+                    id="courseProgressContainer"
+                    class="course-progress-container"
+                >
+
+                    <!-- Dynamic courses will be inserted here -->
+
+                    <div class="empty-dashboard-state">
+
+                        <i class="fa-solid fa-book-open"></i>
+
+                        <p>
+                            No courses enrolled yet.
+                        </p>
+
+                        <a
+                            href="courses.html"
+                            class="btn-primary"
+                        >
+                            Browse Courses
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 QUICK ACTIONS
+            ================================================== -->
+
+            <section class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            QUICK ACCESS
+                        </span>
+
+                        <h2>
+                            Continue Learning
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-actions">
+
+
+                    <a
+                        href="labs.html"
+                        class="dashboard-action-card"
+                    >
+
+                        <div class="action-icon">
+
+                            <i class="fa-solid fa-flask"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Security Labs
+                            </h3>
+
+                            <p>
+                                Practice cybersecurity
+                                skills in the laboratory.
+                            </p>
+
+                        </div>
+
+                        <i
+                            class="fa-solid fa-arrow-right"
+                        ></i>
+
+                    </a>
+
+
+
+                    <a
+                        href="assessments.html"
+                        class="dashboard-action-card"
+                    >
+
+                        <div class="action-icon">
+
+                            <i class="fa-solid fa-clipboard-check"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Assessments
+                            </h3>
+
+                            <p>
+                                Test your knowledge and
+                                track your results.
+                            </p>
+
+                        </div>
+
+                        <i
+                            class="fa-solid fa-arrow-right"
+                        ></i>
+
+                    </a>
+
+
+
+                    <a
+                        href="#achievements"
+                        class="dashboard-action-card"
+                    >
+
+                        <div class="action-icon">
+
+                            <i class="fa-solid fa-trophy"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Achievements
+                            </h3>
+
+                            <p>
+                                View your learning milestones
+                                and achievements.
+                            </p>
+
+                        </div>
+
+                        <i
+                            class="fa-solid fa-arrow-right"
+                        ></i>
+
+                    </a>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ACHIEVEMENTS
+            ================================================== -->
+
+            <section
+                class="dashboard-panel"
+                id="achievements"
+            >
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            ACHIEVEMENTS
+                        </span>
+
+                        <h2>
+                            Your Progress Milestones
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="achievementsContainer"
+                    class="achievements-container"
+                >
+
+                    <div class="empty-dashboard-state">
+
+                        <i class="fa-solid fa-trophy"></i>
+
+                        <p>
+                            Your achievements will appear
+                            here as you progress.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 PROFILE
+            ================================================== -->
+
+            <section
+                class="dashboard-panel"
+                id="profile"
+            >
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            ACCOUNT
+                        </span>
+
+                        <h2>
+                            Student Profile
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-details">
+
+                    <div class="profile-row">
+
+                        <span>
+                            Name
+                        </span>
+
+                        <strong id="profileName">
+                            Loading...
+                        </strong>
+
+                    </div>
+
+
+                    <div class="profile-row">
+
+                        <span>
+                            Email
+                        </span>
+
+                        <strong id="profileEmail">
+                            Loading...
+                        </strong>
+
+                    </div>
+
+
+                    <div class="profile-row">
+
+                        <span>
+                            Account Provider
+                        </span>
+
+                        <strong id="profileProvider">
+                            Loading...
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         DASHBOARD JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="../js/dashboard.js"
+    ></script>
+
+
+</body>
+
+</html>
