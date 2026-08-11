@@ -2,7 +2,7 @@
 /* =========================================================
    CWS ACADEMY
    Login Controller
-   Firebase Email Authentication
+   Firebase Email Authentication.
    ========================================================= */
 
 import {
