@@ -39,7 +39,10 @@ console.log("CWS Academy login.js loaded");
    MESSAGE
 ========================================================= */
 
-function showLoginMessage(message, type = "error") {
+function showLoginMessage(
+    message,
+    type = "error"
+) {
 
     if (!loginMessage) {
 
@@ -49,7 +52,8 @@ function showLoginMessage(message, type = "error") {
 
     }
 
-    loginMessage.textContent = message;
+    loginMessage.textContent =
+        message;
 
     loginMessage.className =
         `auth-message ${type}`;
@@ -60,7 +64,7 @@ function showLoginMessage(message, type = "error") {
 
 
 /* =========================================================
-   BUTTON
+   BUTTON RESET
 ========================================================= */
 
 function resetLoginButton() {
@@ -68,7 +72,83 @@ function resetLoginButton() {
     if (!loginButton) return;
 
     loginButton.disabled = false;
-    loginButton.textContent = "Sign In";
+
+    loginButton.textContent =
+        "Sign In";
+
+}
+
+
+/* =========================================================
+   REDIRECT
+========================================================= */
+
+function redirectAfterLogin() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const redirect =
+        params.get("redirect");
+
+
+    /* =====================================================
+       LABS
+    ===================================================== */
+
+    if (redirect === "labs") {
+
+        window.location.replace(
+            "../student/labs.html"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       ASSESSMENTS
+    ===================================================== */
+
+    if (redirect === "assessments") {
+
+        window.location.replace(
+            "../student/assessments.html"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       COURSE
+    ===================================================== */
+
+    if (
+        redirect &&
+        redirect.startsWith("course-")
+    ) {
+
+        window.location.replace(
+            "../student/dashboard.html"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       DEFAULT
+    ===================================================== */
+
+    window.location.replace(
+        "../student/dashboard.html"
+    );
 
 }
 
@@ -91,6 +171,10 @@ if (!loginForm) {
 
             event.preventDefault();
 
+
+            /* =================================================
+               GET FORM VALUES
+            ================================================= */
 
             const email =
                 emailInput?.value
@@ -128,7 +212,7 @@ if (!loginForm) {
 
 
             /* =================================================
-               BUTTON
+               DISABLE BUTTON
             ================================================= */
 
             if (loginButton) {
@@ -149,7 +233,7 @@ if (!loginForm) {
 
 
                 /* =================================================
-                   FIREBASE AUTHENTICATION
+                   FIREBASE EMAIL/PASSWORD LOGIN
                 ================================================= */
 
                 const userCredential =
@@ -171,10 +255,10 @@ if (!loginForm) {
 
 
                 /* =================================================
-                   REFRESH FIREBASE USER
+                   REFRESH USER
 
-                   This is important if the user verified
-                   their email in another tab/window.
+                   This detects a verification completed
+                   in another browser tab.
                 ================================================= */
 
                 await user.reload();
@@ -198,7 +282,7 @@ if (!loginForm) {
                 if (!user.emailVerified) {
 
                     showLoginMessage(
-                        "Please verify your email address before signing in.",
+                        "Your account is correct, but your email address has not been verified yet.",
                         "error"
                     );
 
@@ -210,7 +294,7 @@ if (!loginForm) {
 
 
                 /* =================================================
-                   SUCCESS
+                   LOGIN SUCCESS
                 ================================================= */
 
                 showLoginMessage(
@@ -219,77 +303,7 @@ if (!loginForm) {
                 );
 
 
-                /* =================================================
-                   READ REDIRECT
-                ================================================= */
-
-                const params =
-                    new URLSearchParams(
-                        window.location.search
-                    );
-
-
-                const redirect =
-                    params.get("redirect");
-
-
-                /* =================================================
-                   LABS
-                ================================================= */
-
-                if (redirect === "labs") {
-
-                    window.location.replace(
-                        "../student/labs.html"
-                    );
-
-                    return;
-
-                }
-
-
-                /* =================================================
-                   ASSESSMENTS
-                ================================================= */
-
-                if (
-                    redirect === "assessments"
-                ) {
-
-                    window.location.replace(
-                        "../student/assessments.html"
-                    );
-
-                    return;
-
-                }
-
-
-                /* =================================================
-                   COURSE
-                ================================================= */
-
-                if (
-                    redirect &&
-                    redirect.startsWith("course-")
-                ) {
-
-                    window.location.replace(
-                        "../student/dashboard.html"
-                    );
-
-                    return;
-
-                }
-
-
-                /* =================================================
-                   DEFAULT
-                ================================================= */
-
-                window.location.replace(
-                    "../student/dashboard.html"
-                );
+                redirectAfterLogin();
 
 
             } catch (error) {
@@ -346,6 +360,14 @@ if (!loginForm) {
 
                         message =
                             "A network error occurred. Check your internet connection.";
+
+                        break;
+
+
+                    case "auth/operation-not-allowed":
+
+                        message =
+                            "Email/password sign-in is not enabled in Firebase Authentication.";
 
                         break;
 
