@@ -1,8 +1,8 @@
 
 /* =========================================================
    CWS ACADEMY
-   Login Controller
-   Firebase Email Authentication
+   Email / Password Authentication
+   Firebase Authentication
 ========================================================= */
 
 import {
@@ -15,7 +15,7 @@ import {
 
 
 /* =========================================================
-   STARTUP
+   DEBUG
 ========================================================= */
 
 console.log("CWS Academy login.js loaded");
@@ -41,40 +41,42 @@ const loginMessage =
     document.getElementById("loginMessage");
 
 
-/* =========================================================
-   ELEMENT CHECK
-========================================================= */
-
-console.log("Login form:",
+console.log(
+    "Login form:",
     loginForm ? "FOUND" : "NOT FOUND"
 );
 
-console.log("Email input:",
+console.log(
+    "Email input:",
     emailInput ? "FOUND" : "NOT FOUND"
 );
 
-console.log("Password input:",
+console.log(
+    "Password input:",
     passwordInput ? "FOUND" : "NOT FOUND"
 );
 
-console.log("Login button:",
+console.log(
+    "Login button:",
     loginButton ? "FOUND" : "NOT FOUND"
 );
 
-console.log("Login message:",
+console.log(
+    "Login message:",
     loginMessage ? "FOUND" : "NOT FOUND"
 );
 
-console.log("Firebase auth:",
+console.log(
+    "Firebase auth:",
     auth ? "FOUND" : "NOT FOUND"
 );
 
 
 /* =========================================================
-   DISPLAY MESSAGE
+   SHOW MESSAGE
 ========================================================= */
 
-function showLoginMessage(
+function showMessage(
     message,
     type = "error"
 ) {
@@ -82,7 +84,7 @@ function showLoginMessage(
     if (!loginMessage) {
 
         console.warn(
-            "CWS Academy login message element not found:",
+            "CWS Academy:",
             message
         );
 
@@ -98,6 +100,22 @@ function showLoginMessage(
 
     loginMessage.hidden =
         false;
+}
+
+
+/* =========================================================
+   HIDE MESSAGE
+========================================================= */
+
+function hideMessage() {
+
+    if (!loginMessage) {
+        return;
+    }
+
+    loginMessage.textContent = "";
+
+    loginMessage.hidden = true;
 
 }
 
@@ -111,7 +129,6 @@ function resetLoginButton() {
     if (!loginButton) {
         return;
     }
-
 
     loginButton.disabled =
         false;
@@ -201,13 +218,13 @@ function redirectAfterLogin() {
 
 
 /* =========================================================
-   FIREBASE ERROR HANDLING
+   FIREBASE ERROR MESSAGE
 ========================================================= */
 
 function getFirebaseErrorMessage(error) {
 
     console.error(
-        "Firebase error:",
+        "CWS Academy Firebase login error:",
         error
     );
 
@@ -256,7 +273,7 @@ function getFirebaseErrorMessage(error) {
         case "auth/operation-not-allowed":
 
             return (
-                "Email/password authentication is not enabled in Firebase Authentication."
+                "Email/password authentication is not enabled in Firebase."
             );
 
 
@@ -290,8 +307,16 @@ if (!loginForm) {
             event.preventDefault();
 
 
+            console.log(
+                "CWS Academy: Login form submitted."
+            );
+
+
+            hideMessage();
+
+
             /* =================================================
-               READ FORM VALUES
+               GET VALUES
             ================================================= */
 
             const email =
@@ -310,7 +335,7 @@ if (!loginForm) {
 
             if (!email) {
 
-                showLoginMessage(
+                showMessage(
                     "Please enter your email address."
                 );
 
@@ -322,7 +347,7 @@ if (!loginForm) {
 
             if (!password) {
 
-                showLoginMessage(
+                showMessage(
                     "Please enter your password."
                 );
 
@@ -333,7 +358,7 @@ if (!loginForm) {
 
 
             /* =================================================
-               BUTTON STATE
+               BUTTON
             ================================================= */
 
             if (loginButton) {
@@ -348,7 +373,7 @@ if (!loginForm) {
 
 
             /* =================================================
-               FIREBASE AUTHENTICATION
+               FIREBASE LOGIN
             ================================================= */
 
             try {
@@ -388,7 +413,7 @@ if (!loginForm) {
 
                 if (!user.emailVerified) {
 
-                    showLoginMessage(
+                    showMessage(
                         "Please verify your email address before signing in.",
                         "error"
                     );
@@ -404,7 +429,7 @@ if (!loginForm) {
                    SUCCESS
                 ================================================= */
 
-                showLoginMessage(
+                showMessage(
                     "Login successful. Redirecting...",
                     "success"
                 );
@@ -414,7 +439,7 @@ if (!loginForm) {
 
             } catch (error) {
 
-                showLoginMessage(
+                showMessage(
                     getFirebaseErrorMessage(error),
                     "error"
                 );
@@ -431,7 +456,7 @@ if (!loginForm) {
 
 
 /* =========================================================
-   INITIALIZATION COMPLETE
+   COMPLETE
 ========================================================= */
 
 console.log(
