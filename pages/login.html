@@ -1,41 +1,50 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
 
 <head>
 
+    <meta charset="UTF-8">
 
-<meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta
+        name="description"
+        content="Sign in to your CWS Academy student account."
+    >
 
-<meta
-    name="description"
-    content="Sign in to your CWS Academy student account."
->
+    <title>Login | CWS Academy</title>
 
-<title>Login | CWS Academy</title>
 
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
->
+    <!-- FONT AWESOME -->
 
-<link
-    rel="stylesheet"
-    href="../css/style.css"
->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
 
-<link
-    rel="stylesheet"
-    href="../css/auth.css"
->
 
+    <!-- MAIN CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+
+    <!-- AUTH CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../css/auth.css"
+    >
 
 </head>
+
 
 <body>
 
@@ -44,7 +53,10 @@
 
     <div class="auth-container">
 
-        <!-- BRAND -->
+
+        <!-- =================================================
+             BRAND
+        ================================================== -->
 
         <div class="auth-brand">
 
@@ -66,9 +78,14 @@
         </div>
 
 
-        <!-- LOGIN CARD -->
+        <!-- =================================================
+             LOGIN CARD
+        ================================================== -->
 
         <section class="auth-card">
+
+
+            <!-- HEADER -->
 
             <div class="auth-header">
 
@@ -88,9 +105,9 @@
             </div>
 
 
-            <!-- AUTH MESSAGE
-                 ID MUST MATCH login.js
-            -->
+            <!-- =================================================
+                 AUTH MESSAGE
+            ================================================== -->
 
             <div
                 id="loginMessage"
@@ -101,12 +118,31 @@
             ></div>
 
 
-            <!-- LOGIN FORM -->
+            <!-- =================================================
+                 EMAIL VERIFICATION ACTION
+            ================================================== -->
+
+            <button
+                type="button"
+                id="resendVerificationBtn"
+                class="verification-btn"
+                hidden
+            >
+                Resend Verification Email
+            </button>
+
+
+            <!-- =================================================
+                 LOGIN FORM
+            ================================================== -->
 
             <form
                 id="loginForm"
                 class="auth-form"
             >
+
+
+                <!-- EMAIL -->
 
                 <div class="form-group">
 
@@ -126,6 +162,8 @@
                 </div>
 
 
+                <!-- PASSWORD -->
+
                 <div class="form-group">
 
                     <label for="loginPassword">
@@ -144,7 +182,12 @@
                 </div>
 
 
+                <!-- OPTIONS -->
+
                 <div class="form-options">
+
+
+                    <!-- REMEMBER ME -->
 
                     <label class="remember-me">
 
@@ -160,6 +203,8 @@
                     </label>
 
 
+                    <!-- FORGOT PASSWORD -->
+
                     <a
                         href="forgot-password.html"
                         class="forgot-link"
@@ -169,6 +214,8 @@
 
                 </div>
 
+
+                <!-- SIGN IN -->
 
                 <button
                     type="submit"
@@ -181,33 +228,43 @@
             </form>
 
 
-            <!-- REGISTER -->
+            <!-- =================================================
+                 REGISTER
+            ================================================== -->
 
             <div class="auth-switch">
 
                 <p>
+
                     Don't have an account?
 
                     <a href="register.html">
                         Create one
                     </a>
+
                 </p>
 
             </div>
 
 
-            <!-- SOCIAL LOGIN -->
+            <!-- =================================================
+                 SOCIAL LOGIN
+            ================================================== -->
 
             <div class="social-login">
 
+
                 <div class="auth-divider">
+
                     <span>
                         OR CONTINUE WITH
                     </span>
+
                 </div>
 
 
                 <div class="social-login-buttons">
+
 
                     <!-- GOOGLE -->
 
@@ -246,14 +303,18 @@
 
                     </button>
 
+
                 </div>
 
             </div>
 
+
         </section>
 
 
-        <!-- RETURN -->
+        <!-- =================================================
+             RETURN HOME
+        ================================================== -->
 
         <a
             href="../index.html"
@@ -268,14 +329,17 @@
 </main>
 
 
-<!-- LOGIN JAVASCRIPT -->
+<!-- =====================================================
+     LOGIN JAVASCRIPT
+====================================================== -->
 
 <script
     type="module"
     src="../js/login.js"
 ></script>
-```
+
 
 </body>
 
 </html>
+
