@@ -1,0 +1,1305 @@
+/* =========================================================
+   CWS ACADEMY
+   CyberWithSandiso
+   Main Stylesheet
+========================================================= */
+
+
+/* =========================================================
+   01. GOOGLE FONTS
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&display=swap');
+
+
+/* =========================================================
+   02. ROOT VARIABLES
+========================================================= */
+
+:root {
+
+    --bg-primary: #050b12;
+    --bg-secondary: #08131d;
+    --bg-tertiary: #0c1b27;
+
+    --card-bg: rgba(10, 25, 37, 0.82);
+    --card-border: rgba(0, 220, 255, 0.16);
+
+    --accent: #00d9ff;
+    --accent-dark: #009fc2;
+    --accent-soft: rgba(0, 217, 255, 0.10);
+
+    --text-primary: #f2f8fb;
+    --text-secondary: #a9bac4;
+    --text-muted: #70838e;
+
+    --success: #28e7a5;
+    --warning: #ffc857;
+    --danger: #ff5c7a;
+
+    --border: rgba(255, 255, 255, 0.08);
+
+    --shadow:
+        0 15px 40px rgba(0, 0, 0, 0.35);
+
+    --glow:
+        0 0 25px rgba(0, 217, 255, 0.15);
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 22px;
+
+    --max-width: 1200px;
+
+    --transition: 0.25s ease;
+}
+
+
+/* =========================================================
+   03. RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(0, 217, 255, 0.06),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(0, 150, 190, 0.05),
+            transparent 28%
+        ),
+        var(--bg-primary);
+
+    color: var(--text-primary);
+
+    font-family:
+        'Inter',
+        Arial,
+        sans-serif;
+
+    line-height: 1.6;
+
+    overflow-x: hidden;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+}
+
+img {
+    display: block;
+    width: 100%;
+}
+
+ul {
+    list-style: none;
+}
+
+
+/* =========================================================
+   04. GLOBAL CONTAINER
+========================================================= */
+
+.navbar,
+.footer-container,
+.section-heading,
+.feature-grid,
+.course-grid,
+.cta-content,
+.labs-content {
+    width: min(
+        calc(100% - 40px),
+        var(--max-width)
+    );
+
+    margin-inline: auto;
+}
+
+
+/* =========================================================
+   05. HEADER
+========================================================= */
+
+.site-header {
+
+    position: sticky;
+    top: 0;
+
+    z-index: 1000;
+
+    background:
+        rgba(5, 11, 18, 0.88);
+
+    border-bottom:
+        1px solid var(--border);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+
+/* =========================================================
+   06. NAVIGATION
+========================================================= */
+
+.navbar {
+
+    min-height: 78px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 30px;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.academy-logo {
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 9px;
+
+    white-space: nowrap;
+}
+
+.logo-cws {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+
+    border:
+        1px solid rgba(0, 217, 255, 0.45);
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 217, 255, 0.15),
+            rgba(0, 217, 255, 0.03)
+        );
+
+    color: var(--accent);
+
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+
+    box-shadow:
+        0 0 20px rgba(0, 217, 255, 0.08);
+}
+
+.logo-text {
+
+    color: var(--text-primary);
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
+   NAV LINKS
+========================================================= */
+
+.nav-links {
+
+    display: flex;
+    align-items: center;
+
+    gap: 27px;
+
+    margin-left: auto;
+}
+
+.nav-links a {
+
+    position: relative;
+
+    color: var(--text-secondary);
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition:
+        color var(--transition);
+}
+
+.nav-links a::after {
+
+    content: '';
+
+    position: absolute;
+
+    left: 0;
+    bottom: -8px;
+
+    width: 0;
+    height: 2px;
+
+    background: var(--accent);
+
+    box-shadow:
+        0 0 10px rgba(0, 217, 255, 0.5);
+
+    transition:
+        width var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--text-primary);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+
+/* =========================================================
+   NAV AUTH
+========================================================= */
+
+.nav-auth {
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+/* =========================================================
+   AUTHENTICATION VISIBILITY
+   Elements with the hidden attribute stay hidden
+   until JavaScript explicitly reveals them.
+========================================================= */
+
+[hidden] {
+    display: none !important;
+}
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.btn-primary,
+.btn-secondary,
+.btn-login,
+.btn-register {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 44px;
+
+    padding:
+        0 20px;
+
+    border-radius:
+        var(--radius-sm);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        transform var(--transition),
+        background var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+.btn-primary {
+
+    background: var(--accent);
+
+    color: #031017;
+
+    box-shadow:
+        0 8px 25px rgba(0, 217, 255, 0.14);
+}
+
+.btn-primary:hover {
+
+    transform: translateY(-2px);
+
+    background: #34e1ff;
+
+    box-shadow:
+        0 12px 30px rgba(0, 217, 255, 0.24);
+}
+
+
+.btn-secondary {
+
+    border:
+        1px solid var(--card-border);
+
+    background:
+        rgba(0, 217, 255, 0.05);
+
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+
+    transform: translateY(-2px);
+
+    border-color:
+        rgba(0, 217, 255, 0.45);
+
+    background:
+        rgba(0, 217, 255, 0.09);
+}
+
+
+.btn-login {
+
+    color: var(--text-secondary);
+}
+
+.btn-login:hover {
+    color: var(--accent);
+}
+
+
+.btn-register {
+
+    background:
+        var(--accent-soft);
+
+    border:
+        1px solid rgba(0, 217, 255, 0.25);
+
+    color: var(--accent);
+}
+
+.btn-register:hover {
+
+    background:
+        rgba(0, 217, 255, 0.15);
+
+    border-color:
+        rgba(0, 217, 255, 0.45);
+}
+
+
+/* =========================================================
+   MOBILE MENU
+========================================================= */
+
+.menu-toggle {
+
+    display: none;
+
+    width: 42px;
+    height: 42px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        var(--radius-sm);
+
+    background:
+        rgba(255, 255, 255, 0.03);
+
+    color: var(--text-primary);
+
+    font-size: 21px;
+}
+
+
+/* =========================================================
+   07. HERO
+========================================================= */
+
+.hero {
+
+    position: relative;
+
+    min-height: 680px;
+
+    display: flex;
+    align-items: center;
+
+    overflow: hidden;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.hero::before {
+
+    content: '';
+
+    position: absolute;
+
+    width: 600px;
+    height: 600px;
+
+    top: -250px;
+    right: -150px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(0, 217, 255, 0.07);
+
+    filter: blur(80px);
+
+    pointer-events: none;
+}
+
+.hero::after {
+
+    content: '';
+
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px
+        );
+
+    background-size: 50px 50px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            transparent
+        );
+
+    pointer-events: none;
+}
+
+
+.hero-content {
+
+    position: relative;
+
+    z-index: 2;
+
+    width: min(
+        calc(100% - 40px),
+        900px
+    );
+
+    margin-inline: auto;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   HERO BADGE
+========================================================= */
+
+.hero-badge {
+
+    display: inline-flex;
+
+    padding:
+        7px 13px;
+
+    margin-bottom: 22px;
+
+    border:
+        1px solid rgba(0, 217, 255, 0.22);
+
+    border-radius: 50px;
+
+    background:
+        rgba(0, 217, 255, 0.06);
+
+    color: var(--accent);
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   HERO HEADING
+========================================================= */
+
+.hero h1 {
+
+    max-width: 900px;
+
+    margin-inline: auto;
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: clamp(
+        38px,
+        6vw,
+        72px
+    );
+
+    line-height: 1.08;
+
+    letter-spacing: -1.5px;
+}
+
+.hero h1 span {
+
+    display: block;
+
+    color: var(--accent);
+
+    text-shadow:
+        0 0 25px rgba(0, 217, 255, 0.18);
+}
+
+
+.hero p {
+
+    max-width: 680px;
+
+    margin:
+        25px auto 0;
+
+    color: var(--text-secondary);
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   HERO BUTTONS
+========================================================= */
+
+.hero-buttons {
+
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-top: 32px;
+}
+
+
+/* =========================================================
+   08. SECTION HEADING
+========================================================= */
+
+.section-heading {
+
+    margin-bottom: 50px;
+
+    text-align: center;
+}
+
+.section-heading > span {
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: var(--accent);
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+.section-heading h2 {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: clamp(
+        28px,
+        4vw,
+        42px
+    );
+
+    line-height: 1.2;
+}
+
+.section-heading p {
+
+    max-width: 650px;
+
+    margin:
+        15px auto 0;
+
+    color: var(--text-secondary);
+}
+
+
+/* =========================================================
+   09. FEATURES
+========================================================= */
+
+.features {
+
+    padding:
+        100px 0;
+}
+
+.feature-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+}
+
+
+/* =========================================================
+   FEATURE CARD
+========================================================= */
+
+.feature-card {
+
+    padding: 28px 24px;
+
+    border:
+        1px solid var(--card-border);
+
+    border-radius:
+        var(--radius-md);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(13, 31, 45, 0.85),
+            rgba(7, 17, 26, 0.85)
+        );
+
+    box-shadow:
+        var(--shadow);
+
+    transition:
+        transform var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+.feature-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(0, 217, 255, 0.35);
+
+    box-shadow:
+        var(--shadow),
+        var(--glow);
+}
+
+
+.feature-icon {
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    border-radius:
+        12px;
+
+    background:
+        var(--accent-soft);
+
+    font-size: 23px;
+}
+
+.feature-card h3 {
+
+    margin-bottom: 10px;
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 17px;
+}
+
+.feature-card p {
+
+    color: var(--text-secondary);
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   10. FEATURED COURSES
+========================================================= */
+
+.featured-courses {
+
+    padding:
+        100px 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            rgba(0, 217, 255, 0.025),
+            transparent
+        );
+}
+
+
+.course-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 22px;
+}
+
+
+/* =========================================================
+   COURSE CARD
+========================================================= */
+
+.course-card {
+
+    overflow: hidden;
+
+    border:
+        1px solid var(--card-border);
+
+    border-radius:
+        var(--radius-md);
+
+    background:
+        var(--card-bg);
+
+    box-shadow:
+        var(--shadow);
+
+    transition:
+        transform var(--transition),
+        border-color var(--transition);
+}
+
+.course-card:hover {
+
+    transform:
+        translateY(-6px);
+
+    border-color:
+        rgba(0, 217, 255, 0.35);
+}
+
+
+/* =========================================================
+   COURSE IMAGE
+========================================================= */
+
+.course-image {
+
+    position: relative;
+
+    height: 190px;
+
+    overflow: hidden;
+
+    background:
+        var(--bg-tertiary);
+}
+
+.course-image::after {
+
+    content: '';
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(5, 11, 18, 0.75),
+            transparent 60%
+        );
+}
+
+.course-image img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.5s ease;
+}
+
+.course-card:hover .course-image img {
+
+    transform:
+        scale(1.04);
+}
+
+
+/* =========================================================
+   COURSE CONTENT
+========================================================= */
+
+.course-content {
+
+    padding: 25px;
+}
+
+.course-level {
+
+    display: inline-block;
+
+    margin-bottom: 12px;
+
+    color: var(--accent);
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+}
+
+.course-content h3 {
+
+    margin-bottom: 12px;
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 18px;
+
+    line-height: 1.4;
+}
+
+.course-content p {
+
+    min-height: 76px;
+
+    color: var(--text-secondary);
+
+    font-size: 14px;
+}
+
+.course-link {
+
+    display: inline-flex;
+
+    margin-top: 20px;
+
+    color: var(--accent);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition:
+        gap var(--transition),
+        color var(--transition);
+}
+
+.course-link:hover {
+
+    color: var(--text-primary);
+}
+
+
+/* =========================================================
+   SECTION ACTION
+========================================================= */
+
+.section-action {
+
+    margin-top: 40px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   11. LABS PREVIEW
+========================================================= */
+
+.labs-preview {
+
+    position: relative;
+
+    padding:
+        110px 0;
+
+    overflow: hidden;
+
+    border-top:
+        1px solid var(--border);
+
+    border-bottom:
+        1px solid var(--border);
+
+    background:
+        linear-gradient(
+            120deg,
+            #07131d,
+            #081923
+        );
+}
+
+.labs-preview::before {
+
+    content: '';
+
+    position: absolute;
+
+    width: 400px;
+    height: 400px;
+
+    right: -150px;
+    top: -150px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(0, 217, 255, 0.06);
+
+    filter: blur(60px);
+}
+
+.labs-content {
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.labs-content > span {
+
+    color: var(--accent);
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+.labs-content h2 {
+
+    max-width: 650px;
+
+    margin:
+        12px 0 18px;
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: clamp(
+        30px,
+        4vw,
+        48px
+    );
+
+    line-height: 1.2;
+}
+
+.labs-content p {
+
+    max-width: 650px;
+
+    margin-bottom: 28px;
+
+    color: var(--text-secondary);
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   12. CTA
+========================================================= */
+
+.cta {
+
+    padding:
+        100px 0;
+}
+
+.cta-content {
+
+    padding:
+        65px 30px;
+
+    text-align: center;
+
+    border:
+        1px solid var(--card-border);
+
+    border-radius:
+        var(--radius-lg);
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0, 217, 255, 0.08),
+            rgba(8, 19, 29, 0.8) 60%
+        );
+
+    box-shadow:
+        var(--shadow);
+}
+
+.cta-content h2 {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: clamp(
+        27px,
+        4vw,
+        40px
+    );
+}
+
+.cta-content p {
+
+    margin:
+        15px auto 28px;
+
+    color: var(--text-secondary);
+}
+
+
+/* =========================================================
+   13. FOOTER
+========================================================= */
+
+.site-footer {
+
+    border-top:
+        1px solid var(--border);
+
+    background:
+        #03080d;
+}
+
+.footer-container {
+
+    display: grid;
+
+    grid-template-columns:
+        2fr 1fr 1fr 1fr;
+
+    gap: 50px;
+
+    padding:
+        70px 0;
+}
+
+.footer-brand p {
+
+    max-width: 350px;
+
+    margin-top: 18px;
+
+    color: var(--text-muted);
+
+    font-size: 14px;
+}
+
+.footer-column {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 11px;
+}
+
+.footer-column h3 {
+
+    margin-bottom: 7px;
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 13px;
+
+    color: var(--text-primary);
+}
+
+.footer-column a {
+
+    color: var(--text-muted);
+
+    font-size: 13px;
+
+    transition:
+        color var(--transition);
+}
+
+.footer-column a:hover {
+    color: var(--accent);
+}
+
+
+/* =========================================================
+   FOOTER BOTTOM
+========================================================= */
+
+.footer-bottom {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    width: min(
+        calc(100% - 40px),
+        var(--max-width)
+    );
+
+    margin-inline: auto;
+
+    padding:
+        20px 0;
+
+    border-top:
+        1px solid var(--border);
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   14. FOCUS STATES
+========================================================= */
+
+a:focus-visible,
+button:focus-visible {
+
+    outline:
+        2px solid var(--accent);
+
+    outline-offset:
+        4px;
+}
+
+
+/* =========================================================
+   15. SELECTION
+========================================================= */
+
+::selection {
+
+    background:
+        var(--accent);
+
+    color:
+        #031017;
+}
+
+
+/* =========================================================
+   16. SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+    width: 9px;
+}
+
+::-webkit-scrollbar-track {
+    background:
+        var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+
+    background:
+        #17313e;
+
+    border-radius:
+        20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+
+    background:
+        var(--accent-dark);
+}
+
+
+/* =========================================================
+   END OF MAIN STYLESHEET
+========================================================= */
