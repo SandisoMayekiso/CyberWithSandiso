@@ -2,8 +2,8 @@
 /* =========================================================
    CWS ACADEMY
    Login Controller
-   Firebase Email Authentication.
-   ========================================================= */
+   Firebase Email Authentication
+========================================================= */
 
 import {
     signInWithEmailAndPassword
@@ -16,17 +16,14 @@ import {
 
 /* =========================================================
    STARTUP
-   ========================================================= */
+========================================================= */
 
-console.log("=================================");
-console.log("CWS Academy login.js STARTED");
-console.log("Current page:", window.location.href);
-console.log("=================================");
+console.log("CWS Academy login.js loaded");
 
 
 /* =========================================================
    ELEMENTS
-   ========================================================= */
+========================================================= */
 
 const loginForm =
     document.getElementById("loginForm");
@@ -44,56 +41,49 @@ const loginMessage =
     document.getElementById("loginMessage");
 
 
-console.log(
-    "loginForm:",
+/* =========================================================
+   ELEMENT CHECK
+========================================================= */
+
+console.log("Login form:",
     loginForm ? "FOUND" : "NOT FOUND"
 );
 
-console.log(
-    "loginEmail:",
+console.log("Email input:",
     emailInput ? "FOUND" : "NOT FOUND"
 );
 
-console.log(
-    "loginPassword:",
+console.log("Password input:",
     passwordInput ? "FOUND" : "NOT FOUND"
 );
 
-console.log(
-    "loginBtn:",
+console.log("Login button:",
     loginButton ? "FOUND" : "NOT FOUND"
 );
 
-console.log(
-    "loginMessage:",
+console.log("Login message:",
     loginMessage ? "FOUND" : "NOT FOUND"
 );
 
-console.log(
-    "Firebase auth:",
+console.log("Firebase auth:",
     auth ? "FOUND" : "NOT FOUND"
 );
 
 
 /* =========================================================
-   MESSAGE
-   ========================================================= */
+   DISPLAY MESSAGE
+========================================================= */
 
 function showLoginMessage(
     message,
     type = "error"
 ) {
 
-    console.log(
-        "AUTH MESSAGE:",
-        message
-    );
-
-
     if (!loginMessage) {
 
-        console.error(
-            "loginMessage element was not found."
+        console.warn(
+            "CWS Academy login message element not found:",
+            message
         );
 
         return;
@@ -108,12 +98,13 @@ function showLoginMessage(
 
     loginMessage.hidden =
         false;
+
 }
 
 
 /* =========================================================
-   RESET BUTTON
-   ========================================================= */
+   RESET LOGIN BUTTON
+========================================================= */
 
 function resetLoginButton() {
 
@@ -121,24 +112,21 @@ function resetLoginButton() {
         return;
     }
 
+
     loginButton.disabled =
         false;
 
     loginButton.textContent =
         "Sign In";
+
 }
 
 
 /* =========================================================
-   REDIRECT
-   ========================================================= */
+   REDIRECT AFTER LOGIN
+========================================================= */
 
 function redirectAfterLogin() {
-
-    console.log(
-        "Redirecting after successful login..."
-    );
-
 
     const params =
         new URLSearchParams(
@@ -152,9 +140,13 @@ function redirectAfterLogin() {
 
     console.log(
         "Requested redirect:",
-        redirect
+        redirect || "dashboard"
     );
 
+
+    /* =====================================================
+       LABS
+    ====================================================== */
 
     if (redirect === "labs") {
 
@@ -166,6 +158,10 @@ function redirectAfterLogin() {
     }
 
 
+    /* =====================================================
+       ASSESSMENTS
+    ====================================================== */
+
     if (redirect === "assessments") {
 
         window.location.replace(
@@ -175,6 +171,10 @@ function redirectAfterLogin() {
         return;
     }
 
+
+    /* =====================================================
+       COURSE
+    ====================================================== */
 
     if (
         redirect &&
@@ -189,26 +189,26 @@ function redirectAfterLogin() {
     }
 
 
+    /* =====================================================
+       DEFAULT
+    ====================================================== */
+
     window.location.replace(
         "../student/dashboard.html"
     );
+
 }
 
 
 /* =========================================================
-   FIREBASE ERROR
-   ========================================================= */
+   FIREBASE ERROR HANDLING
+========================================================= */
 
 function getFirebaseErrorMessage(error) {
 
     console.error(
-        "Firebase error code:",
-        error?.code
-    );
-
-    console.error(
-        "Firebase error message:",
-        error?.message
+        "Firebase error:",
+        error
     );
 
 
@@ -249,7 +249,7 @@ function getFirebaseErrorMessage(error) {
         case "auth/network-request-failed":
 
             return (
-                "A network error occurred. Check your internet connection."
+                "A network error occurred. Please check your internet connection."
             );
 
 
@@ -263,57 +263,36 @@ function getFirebaseErrorMessage(error) {
         default:
 
             return (
-                error?.message ||
-                "Unable to sign in. Please try again."
+                "Unable to sign in. Please check your details and try again."
             );
+
     }
+
 }
 
 
 /* =========================================================
-   CHECK FORM
-   ========================================================= */
+   LOGIN FORM
+========================================================= */
 
 if (!loginForm) {
 
     console.error(
-        "CWS Academy ERROR: #loginForm was NOT FOUND."
+        "CWS Academy: #loginForm was not found."
     );
 
 } else {
 
-    console.log(
-        "CWS Academy: login form found."
-    );
-
-
-    /* =====================================================
-       SUBMIT EVENT
-       ===================================================== */
-
     loginForm.addEventListener(
         "submit",
-        async (event) => {
-
-            console.log(
-                "================================="
-            );
-
-            console.log(
-                "LOGIN FORM SUBMITTED"
-            );
-
-            console.log(
-                "================================="
-            );
-
+        async event => {
 
             event.preventDefault();
 
 
-            /* ---------------------------------------------
-               READ VALUES
-               --------------------------------------------- */
+            /* =================================================
+               READ FORM VALUES
+            ================================================= */
 
             const email =
                 emailInput?.value
@@ -325,25 +304,9 @@ if (!loginForm) {
                 passwordInput?.value || "";
 
 
-            console.log(
-                "Email entered:",
-                email
-                    ? "[YES]"
-                    : "[EMPTY]"
-            );
-
-
-            console.log(
-                "Password entered:",
-                password
-                    ? "[YES]"
-                    : "[EMPTY]"
-            );
-
-
-            /* ---------------------------------------------
+            /* =================================================
                VALIDATION
-               --------------------------------------------- */
+            ================================================= */
 
             if (!email) {
 
@@ -369,9 +332,9 @@ if (!loginForm) {
             }
 
 
-            /* ---------------------------------------------
-               BUTTON
-               --------------------------------------------- */
+            /* =================================================
+               BUTTON STATE
+            ================================================= */
 
             if (loginButton) {
 
@@ -380,17 +343,18 @@ if (!loginForm) {
 
                 loginButton.textContent =
                     "Signing In...";
+
             }
 
 
-            /* ---------------------------------------------
-               FIREBASE
-               --------------------------------------------- */
+            /* =================================================
+               FIREBASE AUTHENTICATION
+            ================================================= */
 
             try {
 
                 console.log(
-                    "Calling Firebase signInWithEmailAndPassword..."
+                    "Attempting Firebase login..."
                 );
 
 
@@ -402,24 +366,13 @@ if (!loginForm) {
                     );
 
 
-                console.log(
-                    "Firebase authentication completed."
-                );
-
-
                 const user =
                     userCredential.user;
 
 
                 console.log(
-                    "Authenticated UID:",
+                    "Firebase login successful:",
                     user.uid
-                );
-
-
-                console.log(
-                    "Email:",
-                    user.email
                 );
 
 
@@ -429,9 +382,9 @@ if (!loginForm) {
                 );
 
 
-                /* -----------------------------------------
+                /* =================================================
                    EMAIL VERIFICATION
-                   ----------------------------------------- */
+                ================================================= */
 
                 if (!user.emailVerified) {
 
@@ -440,15 +393,16 @@ if (!loginForm) {
                         "error"
                     );
 
+
                     resetLoginButton();
 
                     return;
                 }
 
 
-                /* -----------------------------------------
+                /* =================================================
                    SUCCESS
-                   ----------------------------------------- */
+                ================================================= */
 
                 showLoginMessage(
                     "Login successful. Redirecting...",
@@ -460,23 +414,6 @@ if (!loginForm) {
 
             } catch (error) {
 
-                console.error(
-                    "================================="
-                );
-
-                console.error(
-                    "FIREBASE LOGIN FAILED"
-                );
-
-                console.error(
-                    error
-                );
-
-                console.error(
-                    "================================="
-                );
-
-
                 showLoginMessage(
                     getFirebaseErrorMessage(error),
                     "error"
@@ -484,42 +421,18 @@ if (!loginForm) {
 
 
                 resetLoginButton();
+
             }
 
         }
     );
 
-
-    console.log(
-        "CWS Academy: submit listener attached successfully."
-    );
 }
 
 
 /* =========================================================
-   BUTTON CLICK DIAGNOSTIC
-   ========================================================= */
-
-if (loginButton) {
-
-    loginButton.addEventListener(
-        "click",
-        () => {
-
-            console.log(
-                "SIGN IN BUTTON CLICK DETECTED"
-            );
-
-        }
-    );
-
-} else {
-
-    console.error(
-        "CWS Academy ERROR: #loginBtn was NOT FOUND."
-    );
-}
-
+   INITIALIZATION COMPLETE
+========================================================= */
 
 console.log(
     "CWS Academy login.js initialization complete."
