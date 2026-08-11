@@ -6,37 +6,17 @@
    Firebase Analytics
 ========================================================= */
 
-
-/* =========================================================
-   FIREBASE APP
-========================================================= */
-
 import {
     initializeApp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-
-/* =========================================================
-   FIREBASE AUTHENTICATION
-========================================================= */
 
 import {
     getAuth
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-
-/* =========================================================
-   FIRESTORE DATABASE
-========================================================= */
-
 import {
     getFirestore
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-/* =========================================================
-   FIREBASE ANALYTICS
-========================================================= */
 
 import {
     getAnalytics
@@ -74,7 +54,7 @@ const firebaseConfig = {
 
 
 /* =========================================================
-   INITIALIZE FIREBASE
+   INITIALIZE FIREBASE APP
 ========================================================= */
 
 const app =
@@ -82,12 +62,11 @@ const app =
 
 
 /* =========================================================
-   INITIALIZE FIREBASE SERVICES
+   FIREBASE SERVICES
 ========================================================= */
 
 export const auth =
     getAuth(app);
-
 
 export const db =
     getFirestore(app);
@@ -99,3 +78,13 @@ export const db =
 
 export const analytics =
     getAnalytics(app);
+
+
+/* =========================================================
+   DEBUG INFORMATION
+========================================================= */
+
+console.log(
+    "CWS Academy Firebase initialized:",
+    app.options.projectId
+);
