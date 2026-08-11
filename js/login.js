@@ -1,4 +1,3 @@
-
 /* =========================================================
    CWS ACADEMY
    Login Controller
@@ -61,6 +60,20 @@ function showLoginMessage(message, type = "error") {
 
 
 /* =========================================================
+   BUTTON
+========================================================= */
+
+function resetLoginButton() {
+
+    if (!loginButton) return;
+
+    loginButton.disabled = false;
+    loginButton.textContent = "Sign In";
+
+}
+
+
+/* =========================================================
    LOGIN
 ========================================================= */
 
@@ -88,7 +101,9 @@ if (!loginForm) {
                 passwordInput?.value || "";
 
 
-            /* Validation */
+            /* =================================================
+               VALIDATION
+            ================================================= */
 
             if (!email) {
 
@@ -112,7 +127,9 @@ if (!loginForm) {
             }
 
 
-            /* Button */
+            /* =================================================
+               BUTTON
+            ================================================= */
 
             if (loginButton) {
 
@@ -131,7 +148,9 @@ if (!loginForm) {
                 );
 
 
-                /* Firebase Authentication */
+                /* =================================================
+                   FIREBASE AUTHENTICATION
+                ================================================= */
 
                 const userCredential =
                     await signInWithEmailAndPassword(
@@ -151,7 +170,30 @@ if (!loginForm) {
                 );
 
 
-                /* Email verification */
+                /* =================================================
+                   REFRESH FIREBASE USER
+
+                   This is important if the user verified
+                   their email in another tab/window.
+                ================================================= */
+
+                await user.reload();
+
+
+                console.log(
+                    "Email:",
+                    user.email
+                );
+
+                console.log(
+                    "Email verified:",
+                    user.emailVerified
+                );
+
+
+                /* =================================================
+                   EMAIL VERIFICATION
+                ================================================= */
 
                 if (!user.emailVerified) {
 
@@ -160,24 +202,16 @@ if (!loginForm) {
                         "error"
                     );
 
-
-                    if (loginButton) {
-
-                        loginButton.disabled =
-                            false;
-
-                        loginButton.textContent =
-                            "Sign In";
-
-                    }
-
+                    resetLoginButton();
 
                     return;
 
                 }
 
 
-                /* Success */
+                /* =================================================
+                   SUCCESS
+                ================================================= */
 
                 showLoginMessage(
                     "Login successful. Redirecting...",
@@ -185,7 +219,9 @@ if (!loginForm) {
                 );
 
 
-                /* Read redirect */
+                /* =================================================
+                   READ REDIRECT
+                ================================================= */
 
                 const params =
                     new URLSearchParams(
@@ -197,7 +233,9 @@ if (!loginForm) {
                     params.get("redirect");
 
 
-                /* Labs */
+                /* =================================================
+                   LABS
+                ================================================= */
 
                 if (redirect === "labs") {
 
@@ -210,7 +248,9 @@ if (!loginForm) {
                 }
 
 
-                /* Assessments */
+                /* =================================================
+                   ASSESSMENTS
+                ================================================= */
 
                 if (
                     redirect === "assessments"
@@ -225,7 +265,9 @@ if (!loginForm) {
                 }
 
 
-                /* Course */
+                /* =================================================
+                   COURSE
+                ================================================= */
 
                 if (
                     redirect &&
@@ -241,11 +283,14 @@ if (!loginForm) {
                 }
 
 
-                /* Default */
+                /* =================================================
+                   DEFAULT
+                ================================================= */
 
                 window.location.replace(
                     "../student/dashboard.html"
                 );
+
 
             } catch (error) {
 
@@ -313,15 +358,7 @@ if (!loginForm) {
                 );
 
 
-                if (loginButton) {
-
-                    loginButton.disabled =
-                        false;
-
-                    loginButton.textContent =
-                        "Sign In";
-
-                }
+                resetLoginButton();
 
             }
 
@@ -329,4 +366,3 @@ if (!loginForm) {
     );
 
 }
-
