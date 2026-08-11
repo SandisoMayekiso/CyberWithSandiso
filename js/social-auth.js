@@ -43,12 +43,17 @@ const loginMessage =
 
 console.log(
     "Google button:",
-    googleButton ? "found" : "NOT FOUND"
+    googleButton ? "FOUND" : "NOT FOUND"
 );
 
 console.log(
     "GitHub button:",
-    githubButton ? "found" : "NOT FOUND"
+    githubButton ? "FOUND" : "NOT FOUND"
+);
+
+console.log(
+    "Login message:",
+    loginMessage ? "FOUND" : "NOT FOUND"
 );
 
 
@@ -82,7 +87,10 @@ function showMessage(
 
     if (!loginMessage) {
 
-        console.log(message);
+        console.warn(
+            "CWS Academy:",
+            message
+        );
 
         return;
     }
@@ -96,11 +104,12 @@ function showMessage(
 
     loginMessage.hidden =
         false;
+
 }
 
 
 /* =========================================================
-   SAVE REDIRECT DESTINATION
+   SAVE REDIRECT
 ========================================================= */
 
 function saveRedirectDestination() {
@@ -122,8 +131,9 @@ function saveRedirectDestination() {
             redirect
         );
 
+
         console.log(
-            "Saved redirect destination:",
+            "Saved redirect:",
             redirect
         );
 
@@ -139,24 +149,35 @@ function saveRedirectDestination() {
 
 
 /* =========================================================
+   GET SAVED REDIRECT
+========================================================= */
+
+function getSavedRedirect() {
+
+    return sessionStorage.getItem(
+        "cwsAcademyRedirect"
+    );
+
+}
+
+
+/* =========================================================
    REDIRECT AFTER SOCIAL LOGIN
 ========================================================= */
 
-function redirectAfterLogin() {
+function redirectAfterSocialLogin() {
 
     const redirect =
-        sessionStorage.getItem(
-            "cwsAcademyRedirect"
-        );
+        getSavedRedirect();
 
 
     console.log(
-        "Social login redirect:",
+        "Social login destination:",
         redirect || "dashboard"
     );
 
 
-    /* Clear it after reading */
+    /* Clear destination */
 
     sessionStorage.removeItem(
         "cwsAcademyRedirect"
@@ -220,26 +241,24 @@ function redirectAfterLogin() {
 
 
 /* =========================================================
-   ERROR HANDLING
+   SOCIAL AUTH ERROR
 ========================================================= */
 
-function getSocialAuthErrorMessage(
-    error
-) {
+function getSocialAuthErrorMessage(error) {
 
     console.error(
-        "Firebase social authentication error:",
+        "CWS Academy social authentication error:",
         error
     );
 
 
-    switch (error.code) {
+    switch (error?.code) {
 
         case "auth/unauthorized-domain":
 
             return (
                 "This website is not authorized for Firebase authentication. " +
-                "Add your CWS Academy domain under Firebase Authentication → Settings → Authorized domains."
+                "Add your current domain to Firebase Authentication → Settings → Authorized domains."
             );
 
 
@@ -253,7 +272,7 @@ function getSocialAuthErrorMessage(
         case "auth/account-exists-with-different-credential":
 
             return (
-                "An account already exists with this email using a different sign-in method."
+                "An account already exists using a different sign-in method."
             );
 
 
@@ -267,7 +286,7 @@ function getSocialAuthErrorMessage(
         case "auth/popup-blocked":
 
             return (
-                "The browser blocked the sign-in window."
+                "The browser blocked the authentication request."
             );
 
 
@@ -281,7 +300,7 @@ function getSocialAuthErrorMessage(
         case "auth/popup-closed-by-user":
 
             return (
-                "The sign-in window was closed before authentication was completed."
+                "The authentication window was closed before sign-in completed."
             );
 
 
@@ -302,7 +321,7 @@ function getSocialAuthErrorMessage(
         default:
 
             return (
-                error.message ||
+                error?.message ||
                 "Unable to sign in with this provider. Please try again."
             );
 
@@ -326,8 +345,6 @@ async function loginWithGoogle() {
         return;
     }
 
-
-    /* Save requested destination */
 
     saveRedirectDestination();
 
@@ -353,7 +370,6 @@ async function loginWithGoogle() {
             auth,
             googleProvider
         );
-
 
     } catch (error) {
 
@@ -396,8 +412,6 @@ async function loginWithGithub() {
     }
 
 
-    /* Save requested destination */
-
     saveRedirectDestination();
 
 
@@ -422,7 +436,6 @@ async function loginWithGithub() {
             auth,
             githubProvider
         );
-
 
     } catch (error) {
 
@@ -466,12 +479,6 @@ if (googleButton) {
         }
     );
 
-} else {
-
-    console.warn(
-        "CWS Academy: Google login button not found."
-    );
-
 }
 
 
@@ -492,17 +499,11 @@ if (githubButton) {
         }
     );
 
-} else {
-
-    console.warn(
-        "CWS Academy: GitHub login button not found."
-    );
-
 }
 
 
 /* =========================================================
-   HANDLE FIREBASE REDIRECT RESULT
+   HANDLE REDIRECT RESULT
 ========================================================= */
 
 async function handleRedirectResult() {
@@ -518,7 +519,7 @@ async function handleRedirectResult() {
             await getRedirectResult(auth);
 
 
-        /* No social login just completed */
+        /* No social authentication */
 
         if (!result) {
 
@@ -541,8 +542,9 @@ async function handleRedirectResult() {
 
 
         console.log(
-            "Signed in provider:",
-            user.providerData?.[0]?.providerId
+            "Social provider:",
+            user.providerData?.[0]?.providerId ||
+            "unknown"
         );
 
 
@@ -552,10 +554,7 @@ async function handleRedirectResult() {
         );
 
 
-        /* Redirect to Academy */
-
-        redirectAfterLogin();
-
+        redirectAfterSocialLogin();
 
     } catch (error) {
 
@@ -576,7 +575,7 @@ async function handleRedirectResult() {
 
 
 /* =========================================================
-   START REDIRECT CHECK
+   START
 ========================================================= */
 
 handleRedirectResult();
