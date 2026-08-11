@@ -1,4 +1,4 @@
-```javascript
+
 /* =========================================================
    CWS ACADEMY
    Registration Controller
