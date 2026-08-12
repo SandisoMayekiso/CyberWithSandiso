@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Complete cybersecurity quizzes and assessments at CWS Academy."
+    >
+
+    <meta
+        name="author"
+        content="CyberWithSandiso"
+    >
+
+    <title>Assessments | CWS Academy</title>
+
+
+    <!-- STYLES -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/dashboard.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="site-header">
+
+    <nav class="navbar">
+
+
+        <a
+            href="../index.html"
+            class="academy-logo"
+            aria-label="CWS Academy Home"
+        >
+
+            <span class="logo-cws">
+                CWS
+            </span>
+
+            <span class="logo-text">
+                Academy
+            </span>
+
+        </a>
+
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="../index.html">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="courses.html">
+                    Courses
+                </a>
+            </li>
+
+            <li>
+                <a href="lessons.html">
+                    Lessons
+                </a>
+            </li>
+
+            <li>
+                <a href="labs.html">
+                    Labs
+                </a>
+            </li>
+
+            <li>
+                <a
+                    href="assessments.html"
+                    class="active"
+                >
+                    Assessments
+                </a>
+            </li>
+
+            <li>
+                <a href="about.html">
+                    About
+                </a>
+            </li>
+
+        </ul>
+
+
+        <div class="nav-auth">
+
+            <a
+                href="login.html"
+                id="loginNavBtn"
+                class="btn-login"
+            >
+                Login
+            </a>
+
+            <a
+                href="register.html"
+                id="registerNavBtn"
+                class="btn-register"
+            >
+                Get Started
+            </a>
+
+            <span
+                id="studentNavName"
+                hidden
+            >
+                Student
+            </span>
+
+            <button
+                type="button"
+                id="logoutNavBtn"
+                class="btn-login"
+                hidden
+            >
+                Logout
+            </button>
+
+        </div>
+
+
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+        >
+            ☰
+        </button>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main>
+
+
+    <!-- HERO -->
+
+    <section class="courses-hero">
+
+        <div class="courses-hero-content">
+
+            <span class="hero-badge">
+                CWS ACADEMY
+            </span>
+
+            <h1>
+                Test Your
+                <span>Knowledge</span>
+            </h1>
+
+            <p>
+                Reinforce your cybersecurity knowledge
+                through structured quizzes, assessments
+                and examinations.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ASSESSMENTS -->
+
+    <section class="courses-section">
+
+        <div class="section-heading">
+
+            <span>
+                STUDENT ASSESSMENTS
+            </span>
+
+            <h2>
+                Assessments
+            </h2>
+
+            <p>
+                Complete assessments associated with your
+                learning path and track your performance
+                through your student dashboard.
+            </p>
+
+        </div>
+
+
+        <div class="academy-course-grid">
+
+
+            <!-- QUIZZES -->
+
+            <article class="academy-course-card">
+
+                <div class="academy-course-content">
+
+                    <span class="course-level beginner">
+                        KNOWLEDGE CHECK
+                    </span>
+
+                    <h3>
+                        Quizzes
+                    </h3>
+
+                    <p>
+                        Test your understanding of cybersecurity
+                        concepts after completing lessons and
+                        learning modules.
+                    </p>
+
+                    <div class="course-card-footer">
+
+                        <a
+                            href="../assessments/quizzes.html"
+                            class="course-start-btn"
+                        >
+                            Take a Quiz
+                            <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- EXAMS -->
+
+            <article class="academy-course-card">
+
+                <div class="academy-course-content">
+
+                    <span class="course-level intermediate">
+                        COURSE ASSESSMENT
+                    </span>
+
+                    <h3>
+                        Exams
+                    </h3>
+
+                    <p>
+                        Complete structured course examinations
+                        designed to evaluate your understanding
+                        of the material.
+                    </p>
+
+                    <div class="course-card-footer">
+
+                        <a
+                            href="../assessments/exams.html"
+                            class="course-start-btn"
+                        >
+                            View Exams
+                            <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- PROGRESS -->
+
+            <article class="academy-course-card">
+
+                <div class="academy-course-content">
+
+                    <span class="course-level advanced">
+                        PERFORMANCE
+                    </span>
+
+                    <h3>
+                        My Results
+                    </h3>
+
+                    <p>
+                        Review your assessment performance,
+                        completed work and learning progress
+                        through your student account.
+                    </p>
+
+                    <div class="course-card-footer">
+
+                        <a
+                            href="student/progress.html"
+                            class="course-start-btn"
+                        >
+                            View Progress
+                            <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- ASSESSMENT NOTICE -->
+
+    <section class="courses-access-cta">
+
+        <div class="courses-access-content">
+
+            <span>
+                ACADEMIC INTEGRITY
+            </span>
+
+            <h2>
+                Complete Your Assessments Honestly
+            </h2>
+
+            <p>
+                Assessments are designed to help you measure
+                your own cybersecurity knowledge and identify
+                areas where further study may be useful.
+            </p>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="site-footer">
+
+    <div class="footer-container">
+
+
+        <div class="footer-brand">
+
+            <a
+                href="../index.html"
+                class="academy-logo"
+            >
+
+                <span class="logo-cws">
+                    CWS
+                </span>
+
+                <span class="logo-text">
+                    Academy
+                </span>
+
+            </a>
+
+            <p>
+                Practical cybersecurity education,
+                learning and hands-on security training.
+            </p>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h3>
+                Academy
+            </h3>
+
+            <a href="courses.html">
+                Courses
+            </a>
+
+            <a href="lessons.html">
+                Lessons
+            </a>
+
+            <a href="labs.html">
+                Labs
+            </a>
+
+            <a href="assessments.html">
+                Assessments
+            </a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h3>
+                Student
+            </h3>
+
+            <a href="student/dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="student/my-courses.html">
+                My Courses
+            </a>
+
+            <a href="student/progress.html">
+                Progress
+            </a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h3>
+                Account
+            </h3>
+
+            <a href="student/profile.html">
+                Profile
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © <span data-year></span>
+            CWS Academy.
+            All rights reserved.
+        </p>
+
+        <p>
+            Part of the CyberWithSandiso ecosystem.
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<script
+    src="../js/main.js"
+></script>
+
+<script
+    type="module"
+    src="../js/navigation-auth.js"
+></script>
+
+</body>
+
+</html>
