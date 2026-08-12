@@ -6,7 +6,8 @@
 import {
     onAuthStateChanged,
     signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+} from
+    "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
     auth
@@ -37,6 +38,41 @@ const exploreLabsBtn =
 
 
 /* =========================================================
+   LOGIN URL
+========================================================= */
+
+function getLoginUrl(redirect = "") {
+
+    const currentPath =
+        window.location.pathname;
+
+    /*
+     * Pages directly under /pages/
+     */
+
+    if (
+        currentPath.includes("/pages/")
+    ) {
+
+        return redirect
+            ? `login.html?redirect=${encodeURIComponent(redirect)}`
+            : "login.html";
+
+    }
+
+
+    /*
+     * Root index.html
+     */
+
+    return redirect
+        ? `pages/login.html?redirect=${encodeURIComponent(redirect)}`
+        : "pages/login.html";
+
+}
+
+
+/* =========================================================
    LOGGED-OUT STATE
 ========================================================= */
 
@@ -45,43 +81,57 @@ function showLoggedOutState() {
     /* Hide authenticated navigation */
 
     authOnlyNav.forEach((item) => {
+
         item.hidden = true;
+
     });
 
 
     /* Hide Explore Labs */
 
     if (exploreLabsBtn) {
+
         exploreLabsBtn.hidden = true;
-        exploreLabsBtn.style.display = "none";
+
+        exploreLabsBtn.style.display =
+            "none";
+
     }
 
 
     /* Show Sign In */
 
     if (loginNavBtn) {
+
         loginNavBtn.hidden = false;
+
     }
 
 
-    /* Show Sign Up */
+    /* Show Register */
 
     if (registerNavBtn) {
+
         registerNavBtn.hidden = false;
+
     }
 
 
     /* Hide student name */
 
     if (studentNavName) {
+
         studentNavName.hidden = true;
+
     }
 
 
     /* Hide Logout */
 
     if (logoutNavBtn) {
+
         logoutNavBtn.hidden = true;
+
     }
 
 }
@@ -96,29 +146,39 @@ function showLoggedInState(user) {
     /* Show authenticated navigation */
 
     authOnlyNav.forEach((item) => {
+
         item.hidden = false;
+
     });
 
 
     /* Show Explore Labs */
 
     if (exploreLabsBtn) {
+
         exploreLabsBtn.hidden = false;
-        exploreLabsBtn.style.display = "";
+
+        exploreLabsBtn.style.display =
+            "";
+
     }
 
 
     /* Hide Sign In */
 
     if (loginNavBtn) {
+
         loginNavBtn.hidden = true;
+
     }
 
 
-    /* Hide Sign Up */
+    /* Hide Register */
 
     if (registerNavBtn) {
+
         registerNavBtn.hidden = true;
+
     }
 
 
@@ -132,13 +192,16 @@ function showLoggedInState(user) {
             user.displayName ||
             user.email ||
             "Student";
+
     }
 
 
     /* Show Logout */
 
     if (logoutNavBtn) {
+
         logoutNavBtn.hidden = false;
+
     }
 
 }
@@ -155,27 +218,80 @@ showLoggedOutState();
    FIREBASE AUTH STATE
 ========================================================= */
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(
+    auth,
+    async (user) => {
 
-    if (user) {
+        /*
+         * No Firebase user
+         */
+
+        if (!user) {
+
+            console.log(
+                "CWS Academy: User is not authenticated."
+            );
+
+            showLoggedOutState();
+
+            return;
+
+        }
+
+
+        /*
+         * Refresh user information.
+         *
+         * This ensures emailVerified is current if
+         * the user verified their email in another tab.
+         */
+
+        try {
+
+            await user.reload();
+
+        } catch (error) {
+
+            console.error(
+                "CWS Academy: Unable to refresh user:",
+                error
+            );
+
+        }
+
+
+        /*
+         * Email/password users must verify their email.
+         *
+         * Google/GitHub users can continue normally.
+         */
+
+        if (!user.emailVerified) {
+
+            console.log(
+                "CWS Academy: User email is not verified."
+            );
+
+            showLoggedOutState();
+
+            return;
+
+        }
+
+
+        /*
+         * Fully authenticated Academy user.
+         */
 
         console.log(
-            "CWS Academy: User authenticated."
+            "CWS Academy: User authenticated:",
+            user.uid
         );
 
         showLoggedInState(user);
 
-    } else {
-
-        console.log(
-            "CWS Academy: User is not authenticated."
-        );
-
-        showLoggedOutState();
-
     }
-
-});
+);
 
 
 /* =========================================================
@@ -188,16 +304,39 @@ if (exploreLabsBtn) {
         "click",
         (event) => {
 
+            const user =
+                auth.currentUser;
+
+
             /*
-             * Firebase's current user is the final check.
+             * No authenticated user
              */
 
-            if (!auth.currentUser) {
+            if (!user) {
 
                 event.preventDefault();
 
                 window.location.href =
-                    "pages/login.html?redirect=labs";
+                    getLoginUrl("labs");
+
+                return;
+
+            }
+
+
+            /*
+             * Email/password account has not
+             * verified its email.
+             */
+
+            if (!user.emailVerified) {
+
+                event.preventDefault();
+
+                window.location.href =
+                    getLoginUrl("labs");
+
+                return;
 
             }
 
@@ -225,9 +364,10 @@ if (logoutNavBtn) {
                     "CWS Academy: User signed out."
                 );
 
+
                 /*
-                 * onAuthStateChanged() will automatically
-                 * hide authenticated elements.
+                 * Firebase automatically triggers
+                 * onAuthStateChanged().
                  */
 
             } catch (error) {
