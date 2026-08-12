@@ -1,6 +1,8 @@
 /* =========================================================
    CWS ACADEMY
-   Student Authentication Guard
+   Firebase Authentication Guard
+
+   Protects pages that require a logged-in user.
 ========================================================= */
 
 import {
@@ -13,62 +15,79 @@ import {
 
 
 /* =========================================================
-   CURRENT PAGE
+   CONFIGURATION
 ========================================================= */
 
-const currentPage =
-    window.location.pathname.split("/").pop();
+const LOGIN_PAGE = "../pages/login.html";
 
 
 /* =========================================================
-   AUTHENTICATION CHECK
+   AUTHENTICATION GUARD
 ========================================================= */
 
 onAuthStateChanged(auth, (user) => {
 
+    /* =====================================================
+       USER IS AUTHENTICATED
+    ===================================================== */
+
     if (user) {
 
         console.log(
-            "CWS Academy: Student authenticated:",
+            "CWS Academy Auth Guard: User authenticated.",
             user.uid
         );
 
+        /*
+         * User is authenticated.
+         *
+         * Do nothing.
+         *
+         * The protected page is allowed to continue loading.
+         */
+
         return;
+
     }
 
 
     /* =====================================================
-       NOT AUTHENTICATED
+       USER IS NOT AUTHENTICATED
     ===================================================== */
 
     console.log(
-        "CWS Academy: Authentication required."
+        "CWS Academy Auth Guard: User is not authenticated."
     );
 
 
-    /*
-     * Determine which student page the user
-     * originally attempted to access.
-     */
+    /* =====================================================
+       SAVE CURRENT PAGE
+    ===================================================== */
 
-    let redirect = currentPage
-        .replace(".html", "");
+    const currentPath =
+        window.location.pathname;
+
+    const currentQuery =
+        window.location.search;
 
 
-    /*
-     * Send the user to the login page.
-     *
-     * Example:
-     *
-     * student/labs.html
-     *
-     * becomes:
-     *
-     * pages/login.html?redirect=labs
-     */
+    const returnUrl =
+        currentPath +
+        currentQuery;
 
-    window.location.replace(
-        `../pages/login.html?redirect=${encodeURIComponent(redirect)}`
-    );
+
+    /* =====================================================
+       BUILD LOGIN URL
+    ===================================================== */
+
+    const loginUrl =
+        `${LOGIN_PAGE}?redirect=${encodeURIComponent(returnUrl)}`;
+
+
+    /* =====================================================
+       REDIRECT TO LOGIN
+    ===================================================== */
+
+    window.location.replace(loginUrl);
 
 });
