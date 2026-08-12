@@ -1,13 +1,22 @@
 /* =========================================================
    CWS ACADEMY
    Navigation Authentication Controller
+
+   Handles:
+   - Logged-out navigation
+   - Logged-in navigation
+   - Student Courses link
+   - Labs link
+   - Assessments link
+   - Dashboard link
+   - Login/Register visibility
+   - Logout
 ========================================================= */
 
 import {
     onAuthStateChanged,
     signOut
-} from
-    "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
     auth
@@ -38,6 +47,23 @@ const exploreLabsBtn =
 
 
 /* =========================================================
+   AUTHENTICATED PAGE PATHS
+========================================================= */
+
+const STUDENT_DASHBOARD =
+    "../student/dashboard.html";
+
+const STUDENT_COURSES =
+    "../student/student-courses.html";
+
+const STUDENT_LABS =
+    "../student/labs.html";
+
+const STUDENT_ASSESSMENTS =
+    "../student/assessments.html";
+
+
+/* =========================================================
    LOGIN URL
 ========================================================= */
 
@@ -46,8 +72,9 @@ function getLoginUrl(redirect = "") {
     const currentPath =
         window.location.pathname;
 
+
     /*
-     * Pages directly under /pages/
+     * Pages inside /pages/
      */
 
     if (
@@ -57,6 +84,21 @@ function getLoginUrl(redirect = "") {
         return redirect
             ? `login.html?redirect=${encodeURIComponent(redirect)}`
             : "login.html";
+
+    }
+
+
+    /*
+     * Pages inside /student/
+     */
+
+    if (
+        currentPath.includes("/student/")
+    ) {
+
+        return redirect
+            ? `../pages/login.html?redirect=${encodeURIComponent(redirect)}`
+            : "../pages/login.html";
 
     }
 
@@ -78,7 +120,9 @@ function getLoginUrl(redirect = "") {
 
 function showLoggedOutState() {
 
-    /* Hide authenticated navigation */
+    /*
+     * Hide authenticated navigation
+     */
 
     authOnlyNav.forEach((item) => {
 
@@ -87,7 +131,9 @@ function showLoggedOutState() {
     });
 
 
-    /* Hide Explore Labs */
+    /*
+     * Hide Explore Labs
+     */
 
     if (exploreLabsBtn) {
 
@@ -99,7 +145,9 @@ function showLoggedOutState() {
     }
 
 
-    /* Show Sign In */
+    /*
+     * Show Sign In
+     */
 
     if (loginNavBtn) {
 
@@ -108,7 +156,9 @@ function showLoggedOutState() {
     }
 
 
-    /* Show Register */
+    /*
+     * Show Register
+     */
 
     if (registerNavBtn) {
 
@@ -117,7 +167,9 @@ function showLoggedOutState() {
     }
 
 
-    /* Hide student name */
+    /*
+     * Hide student name
+     */
 
     if (studentNavName) {
 
@@ -126,7 +178,9 @@ function showLoggedOutState() {
     }
 
 
-    /* Hide Logout */
+    /*
+     * Hide Logout
+     */
 
     if (logoutNavBtn) {
 
@@ -143,7 +197,9 @@ function showLoggedOutState() {
 
 function showLoggedInState(user) {
 
-    /* Show authenticated navigation */
+    /*
+     * Show authenticated navigation
+     */
 
     authOnlyNav.forEach((item) => {
 
@@ -152,7 +208,9 @@ function showLoggedInState(user) {
     });
 
 
-    /* Show Explore Labs */
+    /*
+     * Show Explore Labs
+     */
 
     if (exploreLabsBtn) {
 
@@ -164,7 +222,9 @@ function showLoggedInState(user) {
     }
 
 
-    /* Hide Sign In */
+    /*
+     * Hide Sign In
+     */
 
     if (loginNavBtn) {
 
@@ -173,7 +233,9 @@ function showLoggedInState(user) {
     }
 
 
-    /* Hide Register */
+    /*
+     * Hide Register
+     */
 
     if (registerNavBtn) {
 
@@ -182,7 +244,9 @@ function showLoggedInState(user) {
     }
 
 
-    /* Show student name */
+    /*
+     * Show student name
+     */
 
     if (studentNavName) {
 
@@ -196,7 +260,9 @@ function showLoggedInState(user) {
     }
 
 
-    /* Show Logout */
+    /*
+     * Show Logout
+     */
 
     if (logoutNavBtn) {
 
@@ -223,7 +289,7 @@ onAuthStateChanged(
     async (user) => {
 
         /*
-         * No Firebase user
+         * No authenticated user
          */
 
         if (!user) {
@@ -240,10 +306,7 @@ onAuthStateChanged(
 
 
         /*
-         * Refresh user information.
-         *
-         * This ensures emailVerified is current if
-         * the user verified their email in another tab.
+         * Refresh Firebase user information
          */
 
         try {
@@ -261,15 +324,24 @@ onAuthStateChanged(
 
 
         /*
-         * Email/password users must verify their email.
+         * Email/password users must verify
+         * their email address.
          *
-         * Google/GitHub users can continue normally.
+         * Social-login users are normally
+         * already considered verified.
          */
 
-        if (!user.emailVerified) {
+        if (
+            user.providerData.some(
+                provider =>
+                    provider.providerId ===
+                    "password"
+            ) &&
+            !user.emailVerified
+        ) {
 
             console.log(
-                "CWS Academy: User email is not verified."
+                "CWS Academy: Email is not verified."
             );
 
             showLoggedOutState();
@@ -280,7 +352,7 @@ onAuthStateChanged(
 
 
         /*
-         * Fully authenticated Academy user.
+         * Fully authenticated Academy user
          */
 
         console.log(
@@ -309,7 +381,7 @@ if (exploreLabsBtn) {
 
 
             /*
-             * No authenticated user
+             * Not logged in
              */
 
             if (!user) {
@@ -325,18 +397,23 @@ if (exploreLabsBtn) {
 
 
             /*
-             * Email/password account has not
-             * verified its email.
+             * Password account has not
+             * verified email
              */
 
-            if (!user.emailVerified) {
+            if (
+                user.providerData.some(
+                    provider =>
+                        provider.providerId ===
+                        "password"
+                ) &&
+                !user.emailVerified
+            ) {
 
                 event.preventDefault();
 
                 window.location.href =
                     getLoginUrl("labs");
-
-                return;
 
             }
 
@@ -383,3 +460,18 @@ if (logoutNavBtn) {
     );
 
 }
+
+
+/* =========================================================
+   DEBUG: VERIFY STUDENT PAGE PATHS
+========================================================= */
+
+console.log(
+    "CWS Academy student paths:",
+    {
+        dashboard: STUDENT_DASHBOARD,
+        courses: STUDENT_COURSES,
+        labs: STUDENT_LABS,
+        assessments: STUDENT_ASSESSMENTS
+    }
+);
