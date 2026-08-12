@@ -12,10 +12,10 @@
 
     <meta
         name="description"
-        content="CWS Academy cybersecurity courses and learning progress."
+        content="CWS Academy student courses."
     >
 
-    <title>Courses | CWS Academy</title>
+    <title>My Courses | CWS Academy</title>
 
 
     <!-- Font Awesome -->
@@ -34,15 +34,7 @@
     >
 
 
-    <!-- Dashboard / Student Theme -->
-
-    <link
-        rel="stylesheet"
-        href="../css/dashboard.css"
-    >
-
-
-    <!-- Courses CSS -->
+    <!-- Student Courses CSS -->
 
     <link
         rel="stylesheet"
@@ -52,19 +44,16 @@
 </head>
 
 
-<body class="student-dashboard courses-page">
+<body>
 
 
 <!-- =========================================================
-     HEADER
+     NAVIGATION
 ========================================================= -->
 
-<header class="student-header">
+<header class="academy-header">
 
-    <nav class="student-nav">
-
-
-        <!-- LOGO -->
+    <nav class="academy-nav">
 
         <a
             href="dashboard.html"
@@ -82,76 +71,52 @@
         </a>
 
 
-        <!-- NAVIGATION -->
+        <ul class="nav-links">
 
-        <div class="student-nav-links">
+            <li>
+                <a href="dashboard.html">
+                    Dashboard
+                </a>
+            </li>
 
-            <a href="dashboard.html">
+            <li class="active">
+                <a href="student-courses.html">
+                    Courses
+                </a>
+            </li>
 
-                <i class="fa-solid fa-house"></i>
+            <li>
+                <a href="labs.html">
+                    Labs
+                </a>
+            </li>
 
-                Dashboard
+            <li>
+                <a href="assessments.html">
+                    Assessments
+                </a>
+            </li>
 
-            </a>
+            <li>
+                <a href="progress.html">
+                    Progress
+                </a>
+            </li>
 
+            <li>
+                <a href="certificates.html">
+                    Certificates
+                </a>
+            </li>
 
-            <a
-                href="courses.html"
-                class="active"
-            >
-
-                <i class="fa-solid fa-book"></i>
-
-                Courses
-
-            </a>
-
-
-            <a href="labs.html">
-
-                <i class="fa-solid fa-flask"></i>
-
-                Labs
-
-            </a>
-
-
-            <a href="assessments.html">
-
-                <i class="fa-solid fa-clipboard-check"></i>
-
-                Assessments
-
-            </a>
+        </ul>
 
 
-            <a href="progress.html">
-
-                <i class="fa-solid fa-chart-line"></i>
-
-                Progress
-
-            </a>
-
-
-            <a href="certificates.html">
-
-                <i class="fa-solid fa-certificate"></i>
-
-                Certificates
-
-            </a>
-
-        </div>
-
-
-        <!-- ACCOUNT -->
-
-        <div class="student-nav-account">
+        <div class="nav-auth">
 
             <span
-                id="studentName"
-                class="student-nav-name"
+                id="studentNavName"
+                class="student-name"
             >
                 Student
             </span>
@@ -159,14 +124,10 @@
 
             <button
                 type="button"
-                id="logoutBtn"
-                class="dashboard-logout-btn"
+                id="logoutNavBtn"
+                class="btn-login"
             >
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
                 Logout
-
             </button>
 
         </div>
@@ -181,96 +142,28 @@
      MAIN
 ========================================================= -->
 
-<main class="dashboard-main courses-main">
+<main class="student-courses-page">
 
 
-    <!-- =====================================================
-         PAGE HERO
-    ====================================================== -->
+    <!-- HERO -->
 
-    <section class="courses-hero">
+    <section class="student-courses-hero">
 
-        <div class="courses-hero-content">
+        <div>
 
-            <span class="dashboard-label">
-                CWS ACADEMY • LEARNING CENTER
+            <span class="section-label">
+                CWS ACADEMY • STUDENT LEARNING
             </span>
-
 
             <h1>
-                Cybersecurity Courses
+                Explore Your Courses
             </h1>
 
-
             <p>
-                Build your cybersecurity skills through
-                structured courses, practical labs,
-                assessments and hands-on learning.
+                Choose a cybersecurity learning path and
+                continue developing your technical skills.
             </p>
 
-
-            <div class="courses-hero-stats">
-
-                <div>
-
-                    <strong id="totalCourseCount">
-                        0
-                    </strong>
-
-                    <span>
-                        Courses
-                    </span>
-
-                </div>
-
-
-                <div>
-
-                    <strong id="availableCourseCount">
-                        0
-                    </strong>
-
-                    <span>
-                        Available
-                    </span>
-
-                </div>
-
-
-                <div>
-
-                    <strong id="inProgressCourseCount">
-                        0
-                    </strong>
-
-                    <span>
-                        In Progress
-                    </span>
-
-                </div>
-
-
-                <div>
-
-                    <strong id="completedCourseCount">
-                        0
-                    </strong>
-
-                    <span>
-                        Completed
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="courses-hero-icon">
-
-            <i class="fa-solid fa-graduation-cap"></i>
-
         </div>
 
     </section>
@@ -278,311 +171,487 @@
 
 
     <!-- =====================================================
-         COURSE CONTROLS
+         FILTERS
     ====================================================== -->
 
-    <section class="courses-section">
+    <section class="course-controls">
 
-        <div class="section-heading">
+        <div class="course-filter-buttons">
 
-            <div>
-
-                <span class="dashboard-label">
-                    YOUR LEARNING PATH
-                </span>
-
-                <h2>
-                    Explore Courses
-                </h2>
-
-                <p>
-                    Continue a course you've started or
-                    choose a new learning path.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="course-controls">
-
-
-            <!-- SEARCH -->
-
-            <div class="course-search">
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <input
-                    type="search"
-                    id="courseSearch"
-                    placeholder="Search courses..."
-                    autocomplete="off"
-                >
-
-            </div>
-
-
-            <!-- FILTERS -->
-
-            <div class="course-filters">
-
-                <button
-                    type="button"
-                    class="course-filter active"
-                    data-filter="all"
-                >
-                    All Courses
-                </button>
-
-
-                <button
-                    type="button"
-                    class="course-filter"
-                    data-filter="in-progress"
-                >
-                    In Progress
-                </button>
-
-
-                <button
-                    type="button"
-                    class="course-filter"
-                    data-filter="completed"
-                >
-                    Completed
-                </button>
-
-
-                <button
-                    type="button"
-                    class="course-filter"
-                    data-filter="not-started"
-                >
-                    Not Started
-                </button>
-
-
-                <button
-                    type="button"
-                    class="course-filter"
-                    data-filter="available"
-                >
-                    Available
-                </button>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         COURSES
-    ====================================================== -->
-
-    <section class="courses-section">
-
-        <div class="course-results-heading">
-
-            <div>
-
-                <span class="dashboard-label">
-                    CATALOG
-                </span>
-
-                <h2>
-                    Courses
-                </h2>
-
-            </div>
-
-
-            <span
-                id="courseCount"
-                class="course-count"
+            <button
+                type="button"
+                class="course-filter active"
+                data-filter="all"
             >
-                0 Courses
-            </span>
+                All Courses
+            </button>
+
+            <button
+                type="button"
+                class="course-filter"
+                data-filter="beginner"
+            >
+                Beginner
+            </button>
+
+            <button
+                type="button"
+                class="course-filter"
+                data-filter="intermediate"
+            >
+                Intermediate
+            </button>
+
+            <button
+                type="button"
+                class="course-filter"
+                data-filter="advanced"
+            >
+                Advanced
+            </button>
 
         </div>
 
+    </section>
 
-        <!-- DYNAMIC COURSE GRID -->
+
+
+    <!-- =====================================================
+         COURSE GRID
+    ====================================================== -->
+
+    <section class="student-course-section">
 
         <div
-            id="studentCoursesGrid"
-            class="student-courses-grid"
+            id="studentCourseGrid"
+            class="student-course-grid"
         >
 
-            <!-- JavaScript renders courses here -->
+
+            <!-- COURSE 1 -->
+
+            <article
+                class="student-course-card"
+                data-level="beginner"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status available">
+                        AVAILABLE
+                    </span>
+
+                    <span class="course-level">
+                        BEGINNER
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+
+
+                <h2>
+                    Cybersecurity Fundamentals
+                </h2>
+
+
+                <p>
+                    Build a strong foundation in cybersecurity
+                    concepts, threats, vulnerabilities, security
+                    controls and ethical security practices.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fas fa-book"></i>
+                        10 Modules
+                    </span>
+
+                    <span>
+                        <i class="fas fa-flask"></i>
+                        Labs
+                    </span>
+
+                    <span>
+                        <i class="fas fa-clipboard-check"></i>
+                        Assessments
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="lessons.html?course=cybersecurity-fundamentals"
+                    class="course-action"
+                >
+                    Continue Course
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+
+            </article>
+
+
+
+            <!-- COURSE 2 -->
+
+            <article
+                class="student-course-card"
+                data-level="beginner"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status available">
+                        AVAILABLE
+                    </span>
+
+                    <span class="course-level">
+                        BEGINNER
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+
+
+                <h2>
+                    Networking Fundamentals
+                </h2>
+
+
+                <p>
+                    Learn IP addressing, CIDR, ARP, TCP, UDP,
+                    ICMP, routing, DNS, HTTP and HTTPS from a
+                    cybersecurity perspective.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fas fa-book"></i>
+                        10 Modules
+                    </span>
+
+                    <span>
+                        <i class="fas fa-flask"></i>
+                        Network Labs
+                    </span>
+
+                    <span>
+                        <i class="fas fa-clipboard-check"></i>
+                        Assessments
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="lessons.html?course=networking-fundamentals"
+                    class="course-action"
+                >
+                    Continue Course
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+
+            </article>
+
+
+
+            <!-- COURSE 3 -->
+
+            <article
+                class="student-course-card"
+                data-level="beginner"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status available">
+                        AVAILABLE
+                    </span>
+
+                    <span class="course-level">
+                        BEGINNER
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+                    <i class="fab fa-linux"></i>
+                </div>
+
+
+                <h2>
+                    Linux Fundamentals
+                </h2>
+
+
+                <p>
+                    Learn the Linux command line, filesystem,
+                    permissions, processes, networking utilities
+                    and security fundamentals.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fas fa-book"></i>
+                        10 Modules
+                    </span>
+
+                    <span>
+                        <i class="fas fa-terminal"></i>
+                        Linux Labs
+                    </span>
+
+                    <span>
+                        <i class="fas fa-clipboard-check"></i>
+                        Assessments
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="lessons.html?course=linux-fundamentals"
+                    class="course-action"
+                >
+                    Continue Course
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+
+            </article>
+
+
+
+            <!-- COURSE 4 -->
+
+            <article
+                class="student-course-card"
+                data-level="intermediate"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status planned">
+                        PLANNED
+                    </span>
+
+                    <span class="course-level">
+                        INTERMEDIATE
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+                    <i class="fas fa-user-secret"></i>
+                </div>
+
+
+                <h2>
+                    Ethical Hacking Fundamentals
+                </h2>
+
+
+                <p>
+                    Explore penetration testing methodology,
+                    reconnaissance, enumeration, vulnerability
+                    identification and security reporting.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fas fa-book"></i>
+                        Planned
+                    </span>
+
+                    <span>
+                        <i class="fas fa-flask"></i>
+                        Practical Labs
+                    </span>
+
+                    <span>
+                        <i class="fas fa-clipboard-check"></i>
+                        Assessments
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="course-action disabled"
+                    disabled
+                >
+                    Coming Soon
+                </button>
+
+            </article>
+
+
+
+            <!-- COURSE 5 -->
+
+            <article
+                class="student-course-card"
+                data-level="intermediate"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status planned">
+                        PLANNED
+                    </span>
+
+                    <span class="course-level">
+                        INTERMEDIATE
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+
+
+                <h2>
+                    Web Application Security
+                </h2>
+
+
+                <p>
+                    Learn how web applications communicate and
+                    explore authentication, sessions, input
+                    validation and common application security
+                    weaknesses.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fas fa-book"></i>
+                        Planned
+                    </span>
+
+                    <span>
+                        <i class="fas fa-flask"></i>
+                        Web Labs
+                    </span>
+
+                    <span>
+                        <i class="fas fa-clipboard-check"></i>
+                        Assessments
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="course-action disabled"
+                    disabled
+                >
+                    Coming Soon
+                </button>
+
+            </article>
+
+
+
+            <!-- COURSE 6 -->
+
+            <article
+                class="student-course-card"
+                data-level="advanced"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status planned">
+                        PLANNED
+                    </span>
+
+                    <span class="course-level">
+                        ADVANCED
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+                    <i class="fas fa-crosshairs"></i>
+                </div>
+
+
+                <h2>
+                    Practical Penetration Testing
+                </h2>
+
+
+                <p>
+                    Bring reconnaissance, enumeration,
+                    vulnerability analysis, controlled
+                    validation and professional reporting
+                    together in structured laboratory work.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fas fa-book"></i>
+                        Planned
+                    </span>
+
+                    <span>
+                        <i class="fas fa-flask"></i>
+                        Pentest Labs
+                    </span>
+
+                    <span>
+                        <i class="fas fa-flag-checkered"></i>
+                        Capstone
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="course-action disabled"
+                    disabled
+                >
+                    Coming Soon
+                </button>
+
+            </article>
+
 
         </div>
 
-
-        <!-- NO RESULTS -->
 
         <div
             id="noCoursesMessage"
             class="no-courses-message"
             hidden
         >
-
-            <div class="no-courses-icon">
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-            </div>
-
-
-            <h3>
-                No courses found
-            </h3>
-
-
-            <p>
-                Try changing your search or selected filter.
-            </p>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         LEARNING PATH
-    ====================================================== -->
-
-    <section class="courses-section learning-path-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span class="dashboard-label">
-                    RECOMMENDED PATH
-                </span>
-
-                <h2>
-                    Build Your Cybersecurity Foundation
-                </h2>
-
-                <p>
-                    Start with the fundamentals and progressively
-                    develop your technical security skills.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="learning-path">
-
-            <div class="learning-path-step">
-
-                <span>
-                    01
-                </span>
-
-                <i class="fa-solid fa-shield-halved"></i>
-
-                <div>
-
-                    <h3>
-                        Cybersecurity Fundamentals
-                    </h3>
-
-                    <p>
-                        Understand core cybersecurity concepts.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="learning-path-line"></div>
-
-
-            <div class="learning-path-step">
-
-                <span>
-                    02
-                </span>
-
-                <i class="fa-solid fa-network-wired"></i>
-
-                <div>
-
-                    <h3>
-                        Networking Fundamentals
-                    </h3>
-
-                    <p>
-                        Understand how systems communicate.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="learning-path-line"></div>
-
-
-            <div class="learning-path-step">
-
-                <span>
-                    03
-                </span>
-
-                <i class="fa-brands fa-linux"></i>
-
-                <div>
-
-                    <h3>
-                        Linux Fundamentals
-                    </h3>
-
-                    <p>
-                        Build essential Linux security skills.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="learning-path-line"></div>
-
-
-            <div class="learning-path-step planned">
-
-                <span>
-                    04
-                </span>
-
-                <i class="fa-solid fa-user-secret"></i>
-
-                <div>
-
-                    <h3>
-                        Ethical Hacking Fundamentals
-                    </h3>
-
-                    <p>
-                        Progress into practical security testing.
-                    </p>
-
-                </div>
-
-            </div>
-
+            No courses match the selected category.
         </div>
 
     </section>
@@ -595,12 +664,64 @@
      FOOTER
 ========================================================= -->
 
-<footer class="student-footer">
+<footer class="academy-footer">
 
-    <p>
+    <div class="footer-inner">
+
+        <div class="footer-brand">
+
+            <a
+                href="dashboard.html"
+                class="academy-logo"
+            >
+
+                <span class="logo-cws">
+                    CWS
+                </span>
+
+                <span class="logo-text">
+                    Academy
+                </span>
+
+            </a>
+
+            <p>
+                Practical cybersecurity education,
+                learning and hands-on security training.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="student-courses.html">
+                Courses
+            </a>
+
+            <a href="labs.html">
+                Labs
+            </a>
+
+            <a href="assessments.html">
+                Assessments
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
         © 2026 CWS Academy.
-        Part of the CyberWithSandiso ecosystem.
-    </p>
+        All rights reserved.
+
+    </div>
 
 </footer>
 
@@ -615,5 +736,7 @@
     src="../js/student-courses.js"
 ></script>
 
+
 </body>
+
 </html>
