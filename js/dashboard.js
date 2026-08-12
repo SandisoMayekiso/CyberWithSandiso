@@ -30,54 +30,37 @@ console.log(
 const studentName =
     document.getElementById("studentName");
 
-const studentNavName =
-    document.getElementById("studentNavName");
-
-const studentEmail =
-    document.getElementById("studentEmail");
-
-const dashboardMessage =
-    document.getElementById("dashboardMessage");
+const welcomeStudentName =
+    document.getElementById("welcomeStudentName");
 
 const logoutBtn =
     document.getElementById("logoutBtn");
 
-const logoutDashboardBtn =
-    document.getElementById("logoutDashboardBtn");
+const continueLearningContainer =
+    document.getElementById(
+        "continueLearningContainer"
+    );
 
 
 /* =========================================================
-   SHOW MESSAGE
+   LEARNING STAT ELEMENTS
 ========================================================= */
 
-function showMessage(message) {
+const coursesStarted =
+    document.getElementById("coursesStarted");
 
-    if (!dashboardMessage) {
-        console.log(message);
-        return;
-    }
+const labsCompleted =
+    document.getElementById("labsCompleted");
 
-    dashboardMessage.textContent =
-        message;
+const assessmentsCompleted =
+    document.getElementById(
+        "assessmentsCompleted"
+    );
 
-    dashboardMessage.hidden =
-        false;
-}
-
-
-/* =========================================================
-   HIDE MESSAGE
-========================================================= */
-
-function hideMessage() {
-
-    if (!dashboardMessage) {
-        return;
-    }
-
-    dashboardMessage.hidden =
-        true;
-}
+const certificatesEarned =
+    document.getElementById(
+        "certificatesEarned"
+    );
 
 
 /* =========================================================
@@ -86,16 +69,34 @@ function hideMessage() {
 
 function getUserName(user) {
 
-    if (user.displayName) {
+    /*
+     * Firebase displayName
+     */
 
-        return user.displayName;
+    if (user?.displayName) {
+
+        return user.displayName.trim();
 
     }
 
 
-    if (user.email) {
+    /*
+     * Fall back to the first
+     * part of the email address.
+     */
 
-        return user.email.split("@")[0];
+    if (user?.email) {
+
+        const emailName =
+            user.email
+                .split("@")[0]
+                .trim();
+
+        if (emailName) {
+
+            return emailName;
+
+        }
 
     }
 
@@ -114,6 +115,10 @@ function displayUser(user) {
         getUserName(user);
 
 
+    /*
+     * Navigation name
+     */
+
     if (studentName) {
 
         studentName.textContent =
@@ -122,29 +127,120 @@ function displayUser(user) {
     }
 
 
-    if (studentNavName) {
+    /*
+     * Welcome hero name
+     */
 
-        studentNavName.textContent =
+    if (welcomeStudentName) {
+
+        welcomeStudentName.textContent =
             name;
 
     }
 
 
-    if (studentEmail) {
+    console.log(
+        "CWS Academy authenticated user:",
+        {
+            uid: user.uid,
+            email: user.email,
+            name
+        }
+    );
 
-        studentEmail.textContent =
-            user.email ||
-            "No email address available.";
+}
+
+
+/* =========================================================
+   DEFAULT LEARNING STATISTICS
+========================================================= */
+
+function setDefaultStats() {
+
+    if (coursesStarted) {
+
+        coursesStarted.textContent =
+            "0";
 
     }
 
 
-    hideMessage();
+    if (labsCompleted) {
 
+        labsCompleted.textContent =
+            "0";
+
+    }
+
+
+    if (assessmentsCompleted) {
+
+        assessmentsCompleted.textContent =
+            "0";
+
+    }
+
+
+    if (certificatesEarned) {
+
+        certificatesEarned.textContent =
+            "0";
+
+    }
+
+}
+
+
+/* =========================================================
+   LOAD LEARNING STATISTICS
+========================================================= */
+
+function loadLearningStats(user) {
+
+    /*
+     * For now these values are initialized
+     * to zero.
+     *
+     * Later you can replace this function
+     * with Firestore data.
+     */
 
     console.log(
-        "CWS Academy authenticated user:",
+        "Loading learning statistics for:",
         user.uid
+    );
+
+
+    setDefaultStats();
+
+}
+
+
+/* =========================================================
+   CONTINUE LEARNING
+========================================================= */
+
+function setupContinueLearning() {
+
+    if (!continueLearningContainer) {
+
+        return;
+
+    }
+
+
+    /*
+     * The HTML already contains the
+     * "Start Your Learning Journey"
+     * state.
+     *
+     * This function is intentionally
+     * kept ready for Firebase/Firestore
+     * course-progress integration.
+     */
+
+    console.log(
+        "Continue learning section initialized."
     );
 
 }
@@ -156,6 +252,17 @@ function displayUser(user) {
 
 async function logout() {
 
+    if (!auth) {
+
+        console.error(
+            "Firebase Auth is unavailable."
+        );
+
+        return;
+
+    }
+
+
     try {
 
         console.log(
@@ -163,12 +270,35 @@ async function logout() {
         );
 
 
+        /*
+         * Disable button while signing out
+         * to prevent multiple clicks.
+         */
+
+        if (logoutBtn) {
+
+            logoutBtn.disabled =
+                true;
+
+            logoutBtn.style.opacity =
+                "0.6";
+
+            logoutBtn.style.cursor =
+                "wait";
+
+        }
+
+
         await signOut(auth);
 
 
+        console.log(
+            "CWS Academy: Logout successful."
+        );
+
+
         /*
-         * Always return the user to the
-         * public login page after logout.
+         * Return to login page.
          */
 
         window.location.replace(
@@ -184,7 +314,26 @@ async function logout() {
         );
 
 
-        showMessage(
+        /*
+         * Restore logout button
+         * if something went wrong.
+         */
+
+        if (logoutBtn) {
+
+            logoutBtn.disabled =
+                false;
+
+            logoutBtn.style.opacity =
+                "";
+
+            logoutBtn.style.cursor =
+                "";
+
+        }
+
+
+        alert(
             "Unable to sign out. Please try again."
         );
 
@@ -194,22 +343,12 @@ async function logout() {
 
 
 /* =========================================================
-   LOGOUT BUTTONS
+   LOGOUT BUTTON
 ========================================================= */
 
 if (logoutBtn) {
 
     logoutBtn.addEventListener(
-        "click",
-        logout
-    );
-
-}
-
-
-if (logoutDashboardBtn) {
-
-    logoutDashboardBtn.addEventListener(
         "click",
         logout
     );
@@ -234,14 +373,16 @@ onAuthStateChanged(
 
 
         /*
-         * No Firebase user:
-         * protect dashboard.
+         * No authenticated user.
+         *
+         * Protect the dashboard by
+         * sending the visitor to login.
          */
 
         if (!user) {
 
             console.warn(
-                "No authenticated user. Redirecting to login."
+                "No authenticated user."
             );
 
 
@@ -256,10 +397,14 @@ onAuthStateChanged(
 
 
         /*
-         * User is authenticated.
+         * Authenticated user.
          */
 
         displayUser(user);
+
+        loadLearningStats(user);
+
+        setupContinueLearning();
 
     }
 );
