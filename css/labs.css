@@ -1,108 +1,165 @@
 /* =========================================================
    CWS ACADEMY
-   Student Labs
+   LABORATORY PAGE
 ========================================================= */
+
+.labs-content {
+    padding: 30px;
+    max-width: 1500px;
+    margin: 0 auto;
+}
 
 
 /* =========================================================
-   LABS HERO
+   HERO
 ========================================================= */
 
 .labs-hero {
-    padding: 110px 20px 80px;
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(0, 255, 170, 0.12),
-            transparent 35%
-        ),
-        #07110f;
-    border-bottom: 1px solid rgba(0, 255, 170, 0.12);
-}
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
 
+    padding: 35px;
+
+    margin-bottom: 30px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 255, 200, 0.08),
+            rgba(0, 0, 0, 0.25)
+        );
+}
 
 .labs-hero-content {
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-
-.labs-hero .hero-badge {
-    display: inline-block;
-    margin-bottom: 18px;
-    color: #00ffae;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-}
-
-
-.labs-hero h1 {
     max-width: 800px;
-    margin: 0 0 20px;
-    color: #ffffff;
-    font-size: clamp(2.4rem, 5vw, 4.5rem);
-    line-height: 1.05;
 }
 
+.section-kicker {
+    display: inline-block;
 
-.labs-hero h1 span {
-    color: #00ffae;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+
+    opacity: 0.7;
+
+    margin-bottom: 10px;
 }
 
+.labs-hero h2 {
+    margin: 0 0 10px;
+
+    font-size: clamp(28px, 4vw, 44px);
+}
 
 .labs-hero p {
-    max-width: 700px;
     margin: 0;
-    color: #a9b8b4;
-    font-size: 1.05rem;
-    line-height: 1.8;
+
+    line-height: 1.7;
+
+    opacity: 0.75;
+}
+
+.labs-hero-icon {
+    width: 90px;
+    height: 90px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    font-size: 38px;
 }
 
 
 /* =========================================================
-   LAB SECTION
+   CONTROLS
 ========================================================= */
 
-.labs-section {
-    padding: 80px 20px;
-    background: #081311;
+.labs-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 30px;
 }
 
+.labs-search {
+    position: relative;
 
-.labs-container {
-    max-width: 1100px;
-    margin: 0 auto;
+    width: min(100%, 400px);
 }
 
+.labs-search i {
+    position: absolute;
 
-.labs-section-heading {
-    margin-bottom: 45px;
+    left: 15px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    opacity: 0.5;
 }
 
+.labs-search input {
+    width: 100%;
 
-.labs-section-heading span {
-    display: block;
-    margin-bottom: 12px;
-    color: #00ffae;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
+    padding: 13px 15px 13px 42px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.04);
+
+    color: inherit;
+
+    outline: none;
 }
 
-
-.labs-section-heading h2 {
-    margin: 0 0 15px;
-    color: #ffffff;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
+.labs-search input:focus {
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
+.lab-filters {
+    display: flex;
 
-.labs-section-heading p {
-    max-width: 700px;
-    margin: 0;
-    color: #9eafaa;
-    line-height: 1.7;
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+.lab-filter {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    background: rgba(255, 255, 255, 0.04);
+
+    color: inherit;
+
+    border-radius: 8px;
+
+    padding: 9px 15px;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.lab-filter:hover,
+.lab-filter.active {
+    background: rgba(255, 255, 255, 0.12);
 }
 
 
@@ -112,8 +169,14 @@
 
 .labs-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(280px, 1fr)
+        );
+
+    gap: 22px;
 }
 
 
@@ -122,161 +185,442 @@
 ========================================================= */
 
 .lab-card {
-    position: relative;
-    padding: 30px;
-    background: #0c1b18;
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 14px;
-    transition:
-        transform 0.25s ease,
-        border-color 0.25s ease,
-        box-shadow 0.25s ease;
-}
+    display: flex;
+    flex-direction: column;
 
+    padding: 25px;
+
+    min-height: 390px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 16px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
 
 .lab-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(0, 255, 174, 0.35);
-    box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.25);
+    transform: translateY(-4px);
+
+    border-color: rgba(255, 255, 255, 0.18);
+
+    background: rgba(255, 255, 255, 0.045);
 }
 
+.lab-card.hidden {
+    display: none;
+}
 
-.lab-icon {
-    width: 54px;
-    height: 54px;
+.lab-card-top {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 22px;
-    color: #00ffae;
-    background: rgba(0, 255, 174, 0.08);
-    border: 1px solid rgba(0, 255, 174, 0.15);
-    border-radius: 12px;
-    font-size: 1.5rem;
-}
+    justify-content: space-between;
 
-
-.lab-level {
-    display: inline-block;
-    margin-bottom: 12px;
-    color: #00ffae;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-}
-
-
-.lab-card h3 {
-    margin: 0 0 12px;
-    color: #ffffff;
-    font-size: 1.3rem;
-}
-
-
-.lab-card p {
-    margin: 0 0 25px;
-    color: #9eafaa;
-    line-height: 1.7;
-}
-
-
-.lab-meta {
-    display: flex;
-    flex-wrap: wrap;
     gap: 10px;
+
     margin-bottom: 25px;
 }
 
+.lab-level,
+.lab-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.lab-level.beginner {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.lab-level.intermediate {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.lab-level.advanced {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.lab-status {
+    opacity: 0.7;
+}
+
+.lab-status.planned {
+    opacity: 0.5;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.lab-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    font-size: 25px;
+}
+
+.lab-card h3 {
+    margin: 0 0 12px;
+
+    font-size: 20px;
+}
+
+.lab-card p {
+    margin: 0;
+
+    line-height: 1.6;
+
+    font-size: 14px;
+
+    opacity: 0.68;
+}
+
+
+/* =========================================================
+   META
+========================================================= */
+
+.lab-meta {
+    display: flex;
+
+    gap: 18px;
+
+    margin-top: auto;
+
+    padding-top: 25px;
+    padding-bottom: 18px;
+
+    font-size: 12px;
+
+    opacity: 0.6;
+}
 
 .lab-meta span {
-    padding: 6px 10px;
-    color: #b9c7c3;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 6px;
-    font-size: 0.75rem;
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
 }
 
+
+/* =========================================================
+   START BUTTON
+========================================================= */
 
 .lab-start-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 16px;
-    color: #07110f;
-    background: #00ffae;
-    border-radius: 7px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-decoration: none;
-    transition: background 0.2s ease;
-}
+    width: 100%;
 
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 15px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    border-radius: 9px;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    color: inherit;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
 
 .lab-start-btn:hover {
-    background: #62ffc9;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.lab-start-btn.disabled {
+    cursor: not-allowed;
+
+    opacity: 0.45;
 }
 
 
 /* =========================================================
-   LAB NOTICE
+   NO RESULTS
 ========================================================= */
 
-.labs-notice {
-    margin-top: 45px;
-    padding: 22px 25px;
-    background: rgba(0, 255, 174, 0.04);
-    border-left: 3px solid #00ffae;
-    border-radius: 8px;
+.no-labs-message {
+    text-align: center;
+
+    padding: 70px 20px;
+
+    opacity: 0.7;
 }
 
+.no-labs-message i {
+    font-size: 35px;
 
-.labs-notice strong {
-    display: block;
-    margin-bottom: 8px;
-    color: #ffffff;
+    margin-bottom: 15px;
 }
 
+.no-labs-message h3 {
+    margin: 0 0 8px;
+}
 
-.labs-notice p {
+.no-labs-message p {
     margin: 0;
-    color: #9eafaa;
-    line-height: 1.6;
 }
 
 
 /* =========================================================
-   RESPONSIVE
+   MODAL
 ========================================================= */
 
-@media (max-width: 900px) {
+.lab-modal[hidden] {
+    display: none;
+}
 
-    .labs-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.lab-modal {
+    position: fixed;
 
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.lab-modal-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    backdrop-filter: blur(5px);
+}
+
+.lab-modal-card {
+    position: relative;
+
+    z-index: 2;
+
+    width: min(100%, 560px);
+
+    padding: 35px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    border-radius: 18px;
+
+    background: #111;
+
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+}
+
+.lab-modal-close {
+    position: absolute;
+
+    top: 15px;
+    right: 15px;
+
+    width: 36px;
+    height: 36px;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    color: inherit;
+
+    cursor: pointer;
+}
+
+.lab-modal-card h2 {
+    margin: 0 0 12px;
+
+    font-size: 28px;
+}
+
+.lab-modal-card > p {
+    line-height: 1.7;
+
+    opacity: 0.7;
+}
+
+.lab-modal-info {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px;
+
+    margin: 25px 0;
+}
+
+.lab-modal-info div {
+    padding: 15px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.lab-modal-info span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 11px;
+
+    opacity: 0.5;
+
+    text-transform: uppercase;
+}
+
+.lab-modal-info strong {
+    font-size: 15px;
+}
+
+.lab-modal-notice {
+    display: flex;
+
+    gap: 12px;
+
+    padding: 15px;
+
+    margin-bottom: 22px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.lab-modal-notice i {
+    margin-top: 3px;
+}
+
+.lab-modal-notice p {
+    margin: 0;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+    opacity: 0.65;
+}
+
+.lab-launch-btn {
+    width: 100%;
+
+    padding: 13px 18px;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: inherit;
+
+    cursor: pointer;
+}
+
+.lab-launch-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
 }
 
 
-@media (max-width: 600px) {
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .labs-content {
+        padding: 20px 15px;
+    }
 
     .labs-hero {
-        padding: 80px 20px 60px;
+        padding: 25px;
+
+        flex-direction: column;
+
+        align-items: flex-start;
     }
 
+    .labs-hero-icon {
+        width: 65px;
+        height: 65px;
 
-    .labs-section {
-        padding: 60px 20px;
+        font-size: 28px;
     }
 
+    .labs-controls {
+        align-items: stretch;
 
-    .labs-grid {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 
+    .labs-search {
+        width: 100%;
+    }
+
+    .lab-filters {
+        width: 100%;
+    }
+
+    .lab-filter {
+        flex: 1;
+    }
+
+    .lab-modal-card {
+        padding: 25px;
+    }
+
+}
+
+@media (max-width: 480px) {
 
     .lab-card {
-        padding: 25px;
+        min-height: auto;
+
+        padding: 20px;
+    }
+
+    .lab-modal-info {
+        grid-template-columns: 1fr;
     }
 
 }
