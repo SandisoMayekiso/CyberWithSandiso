@@ -1,7 +1,7 @@
 /* =========================================================
    CWS ACADEMY
    STUDENT DASHBOARD
-   Firebase Authentication
+   Firebase Authentication + Dashboard State
 ========================================================= */
 
 import {
@@ -18,9 +18,29 @@ import {
    DEBUG
 ========================================================= */
 
-console.log(
-    "CWS Academy dashboard.js loaded."
-);
+const DEBUG = true;
+
+function log(...messages) {
+
+    if (DEBUG) {
+        console.log("[CWS Dashboard]", ...messages);
+    }
+
+}
+
+function warn(...messages) {
+
+    if (DEBUG) {
+        console.warn("[CWS Dashboard]", ...messages);
+    }
+
+}
+
+function error(...messages) {
+
+    console.error("[CWS Dashboard]", ...messages);
+
+}
 
 
 /* =========================================================
@@ -64,16 +84,52 @@ const certificatesEarned =
 
 
 /* =========================================================
+   DASHBOARD STATE
+========================================================= */
+
+let currentUser = null;
+
+let dashboardInitialized = false;
+
+
+/* =========================================================
+   DEFAULT DASHBOARD DATA
+========================================================= */
+
+const defaultLearningStats = {
+
+    coursesStarted: 0,
+
+    labsCompleted: 0,
+
+    assessmentsCompleted: 0,
+
+    certificatesEarned: 0
+
+};
+
+
+/* =========================================================
    GET USER DISPLAY NAME
 ========================================================= */
 
 function getUserName(user) {
 
+    if (!user) {
+
+        return "Student";
+
+    }
+
+
     /*
      * Firebase displayName
      */
 
-    if (user?.displayName) {
+    if (
+        typeof user.displayName === "string" &&
+        user.displayName.trim()
+    ) {
 
         return user.displayName.trim();
 
@@ -81,11 +137,13 @@ function getUserName(user) {
 
 
     /*
-     * Fall back to the first
-     * part of the email address.
+     * Fall back to email username.
      */
 
-    if (user?.email) {
+    if (
+        typeof user.email === "string" &&
+        user.email.includes("@")
+    ) {
 
         const emailName =
             user.email
@@ -94,7 +152,29 @@ function getUserName(user) {
 
         if (emailName) {
 
-            return emailName;
+            /*
+             * Convert common formats such as:
+             *
+             * john.doe
+             * john_doe
+             * john-doe
+             *
+             * into:
+             *
+             * John Doe
+             */
+
+            return emailName
+                .replace(/[._-]+/g, " ")
+                .replace(/\s+/g, " ")
+                .trim()
+                .split(" ")
+                .map(
+                    word =>
+                        word.charAt(0).toUpperCase() +
+                        word.slice(1)
+                )
+                .join(" ");
 
         }
 
@@ -102,6 +182,7 @@ function getUserName(user) {
 
 
     return "Student";
+
 }
 
 
@@ -139,8 +220,8 @@ function displayUser(user) {
     }
 
 
-    console.log(
-        "CWS Academy authenticated user:",
+    log(
+        "Authenticated user:",
         {
             uid: user.uid,
             email: user.email,
@@ -152,15 +233,21 @@ function displayUser(user) {
 
 
 /* =========================================================
-   DEFAULT LEARNING STATISTICS
+   UPDATE LEARNING STATISTICS
 ========================================================= */
 
-function setDefaultStats() {
+function updateLearningStats(stats) {
+
+    const data = {
+        ...defaultLearningStats,
+        ...stats
+    };
+
 
     if (coursesStarted) {
 
         coursesStarted.textContent =
-            "0";
+            String(data.coursesStarted);
 
     }
 
@@ -168,7 +255,7 @@ function setDefaultStats() {
     if (labsCompleted) {
 
         labsCompleted.textContent =
-            "0";
+            String(data.labsCompleted);
 
     }
 
@@ -176,7 +263,7 @@ function setDefaultStats() {
     if (assessmentsCompleted) {
 
         assessmentsCompleted.textContent =
-            "0";
+            String(data.assessmentsCompleted);
 
     }
 
@@ -184,7 +271,7 @@ function setDefaultStats() {
     if (certificatesEarned) {
 
         certificatesEarned.textContent =
-            "0";
+            String(data.certificatesEarned);
 
     }
 
@@ -195,23 +282,52 @@ function setDefaultStats() {
    LOAD LEARNING STATISTICS
 ========================================================= */
 
-function loadLearningStats(user) {
+async function loadLearningStats(user) {
 
-    /*
-     * For now these values are initialized
-     * to zero.
-     *
-     * Later you can replace this function
-     * with Firestore data.
-     */
+    if (!user) {
 
-    console.log(
+        updateLearningStats(
+            defaultLearningStats
+        );
+
+        return;
+
+    }
+
+
+    log(
         "Loading learning statistics for:",
         user.uid
     );
 
 
-    setDefaultStats();
+    /*
+     * -------------------------------------------------------
+     * CURRENT VERSION
+     * -------------------------------------------------------
+     *
+     * Firebase Authentication is working,
+     * but learning statistics have not yet
+     * been connected to Firestore.
+     *
+     * Therefore the dashboard starts at zero.
+     *
+     * Later this function can become:
+     *
+     * async function loadLearningStats(user) {
+     *
+     *     const snapshot = await getDoc(
+     *         doc(db, "students", user.uid)
+     *     );
+     *
+     *     ...
+     *
+     * }
+     */
+
+    updateLearningStats(
+        defaultLearningStats
+    );
 
 }
 
@@ -220,7 +336,7 @@ function loadLearningStats(user) {
    CONTINUE LEARNING
 ========================================================= */
 
-function setupContinueLearning() {
+function setupContinueLearning(user) {
 
     if (!continueLearningContainer) {
 
@@ -230,18 +346,68 @@ function setupContinueLearning() {
 
 
     /*
-     * The HTML already contains the
-     * "Start Your Learning Journey"
-     * state.
+     * -------------------------------------------------------
+     * CURRENT STATE
+     * -------------------------------------------------------
      *
-     * This function is intentionally
-     * kept ready for Firebase/Firestore
-     * course-progress integration.
+     * The HTML displays:
+     *
+     * "Start Your Learning Journey"
+     *
+     * until actual course progress exists.
+     *
+     * This keeps the dashboard ready for
+     * Firestore integration later.
      */
 
-    console.log(
-        "Continue learning section initialized."
+    continueLearningContainer.dataset.userId =
+        user?.uid || "";
+
+
+    log(
+        "Continue learning initialized."
     );
+
+}
+
+
+/* =========================================================
+   LOGOUT BUTTON STATE
+========================================================= */
+
+function setLogoutLoading(isLoading) {
+
+    if (!logoutBtn) {
+
+        return;
+
+    }
+
+
+    logoutBtn.disabled =
+        isLoading;
+
+
+    logoutBtn.classList.toggle(
+        "is-loading",
+        isLoading
+    );
+
+
+    if (isLoading) {
+
+        logoutBtn.setAttribute(
+            "aria-busy",
+            "true"
+        );
+
+    } else {
+
+        logoutBtn.removeAttribute(
+            "aria-busy"
+        );
+
+    }
 
 }
 
@@ -254,7 +420,7 @@ async function logout() {
 
     if (!auth) {
 
-        console.error(
+        error(
             "Firebase Auth is unavailable."
         );
 
@@ -265,40 +431,27 @@ async function logout() {
 
     try {
 
-        console.log(
-            "CWS Academy: Signing out..."
+        log(
+            "Signing out..."
         );
 
 
-        /*
-         * Disable button while signing out
-         * to prevent multiple clicks.
-         */
-
-        if (logoutBtn) {
-
-            logoutBtn.disabled =
-                true;
-
-            logoutBtn.style.opacity =
-                "0.6";
-
-            logoutBtn.style.cursor =
-                "wait";
-
-        }
+        setLogoutLoading(true);
 
 
         await signOut(auth);
 
 
-        console.log(
-            "CWS Academy: Logout successful."
+        log(
+            "Logout successful."
         );
 
 
         /*
-         * Return to login page.
+         * Firebase onAuthStateChanged()
+         * will also detect the signed-out state.
+         *
+         * We redirect here immediately.
          */
 
         window.location.replace(
@@ -306,31 +459,15 @@ async function logout() {
         );
 
 
-    } catch (error) {
+    } catch (err) {
 
-        console.error(
-            "CWS Academy logout error:",
-            error
+        error(
+            "Logout failed:",
+            err
         );
 
 
-        /*
-         * Restore logout button
-         * if something went wrong.
-         */
-
-        if (logoutBtn) {
-
-            logoutBtn.disabled =
-                false;
-
-            logoutBtn.style.opacity =
-                "";
-
-            logoutBtn.style.cursor =
-                "";
-
-        }
+        setLogoutLoading(false);
 
 
         alert(
@@ -343,7 +480,7 @@ async function logout() {
 
 
 /* =========================================================
-   LOGOUT BUTTON
+   LOGOUT BUTTON EVENT
 ========================================================= */
 
 if (logoutBtn) {
@@ -357,63 +494,124 @@ if (logoutBtn) {
 
 
 /* =========================================================
-   FIREBASE AUTH STATE
+   AUTHENTICATION STATE
 ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    (user) => {
+if (!auth) {
 
-        console.log(
-            "CWS Academy auth state:",
-            user
-                ? "AUTHENTICATED"
-                : "NOT AUTHENTICATED"
-        );
+    error(
+        "Firebase Auth was not initialized."
+    );
 
 
-        /*
-         * No authenticated user.
-         *
-         * Protect the dashboard by
-         * sending the visitor to login.
-         */
+    window.location.replace(
+        "../pages/login.html"
+    );
 
-        if (!user) {
+} else {
 
-            console.warn(
-                "No authenticated user."
+    onAuthStateChanged(
+        auth,
+        async (user) => {
+
+            log(
+                "Authentication state:",
+                user
+                    ? "AUTHENTICATED"
+                    : "NOT AUTHENTICATED"
             );
 
 
-            window.location.replace(
-                "../pages/login.html?redirect=dashboard"
+            /*
+             * ------------------------------------------------
+             * USER NOT AUTHENTICATED
+             * ------------------------------------------------
+             */
+
+            if (!user) {
+
+                currentUser = null;
+
+                warn(
+                    "No authenticated user. Redirecting to login."
+                );
+
+
+                window.location.replace(
+                    "../pages/login.html?redirect=dashboard"
+                );
+
+
+                return;
+
+            }
+
+
+            /*
+             * ------------------------------------------------
+             * USER AUTHENTICATED
+             * ------------------------------------------------
+             */
+
+            currentUser =
+                user;
+
+
+            /*
+             * Prevent unnecessary duplicate
+             * initialization.
+             */
+
+            if (dashboardInitialized) {
+
+                return;
+
+            }
+
+
+            dashboardInitialized =
+                true;
+
+
+            /*
+             * Display authenticated student.
+             */
+
+            displayUser(user);
+
+
+            /*
+             * Load dashboard statistics.
+             */
+
+            await loadLearningStats(
+                user
             );
 
 
-            return;
+            /*
+             * Initialize continue-learning section.
+             */
+
+            setupContinueLearning(
+                user
+            );
+
+
+            log(
+                "Dashboard initialized successfully."
+            );
 
         }
+    );
 
-
-        /*
-         * Authenticated user.
-         */
-
-        displayUser(user);
-
-        loadLearningStats(user);
-
-        setupContinueLearning();
-
-    }
-);
+}
 
 
 /* =========================================================
    INITIALIZATION
 ========================================================= */
 
-console.log(
-    "CWS Academy dashboard.js initialization complete."
+log(
+    "dashboard.js loaded."
 );
