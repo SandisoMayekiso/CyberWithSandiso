@@ -44,17 +44,17 @@
 
 
     <!-- =====================================================
-         RESPONSIVE CSS
+         DASHBOARD / STUDENT CSS
     ====================================================== -->
 
     <link
         rel="stylesheet"
-        href="../css/responsive.css"
+        href="../css/dashboard.css"
     >
 
 
     <!-- =====================================================
-         STUDENT LABS CSS
+         LABS CSS
     ====================================================== -->
 
     <link
@@ -65,78 +65,61 @@
 </head>
 
 
-<body class="student-page">
+<body class="student-dashboard student-labs-page">
 
 
-    <!-- =====================================================
-         STUDENT SIDEBAR
-    ====================================================== -->
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
 
-    <aside class="student-sidebar">
+<header class="student-header">
 
-
-        <!-- BRAND -->
-
-        <div class="student-brand">
-
-            <a
-                href="dashboard.html"
-                class="academy-logo"
-                aria-label="CWS Academy Dashboard"
-            >
-
-                <span class="logo-cws">
-                    CWS
-                </span>
-
-                <span class="logo-text">
-                    Academy
-                </span>
-
-            </a>
-
-        </div>
+    <nav class="student-nav">
 
 
         <!-- =================================================
-             STUDENT NAVIGATION
+             LOGO
         ================================================== -->
 
-        <nav
-            class="student-navigation"
-            aria-label="Student navigation"
+        <a
+            href="dashboard.html"
+            class="academy-logo"
+            aria-label="CWS Academy Dashboard"
         >
+
+            <span class="logo-cws">
+                CWS
+            </span>
+
+            <span class="logo-text">
+                Academy
+            </span>
+
+        </a>
+
+
+
+        <!-- =================================================
+             NAVIGATION LINKS
+        ================================================== -->
+
+        <div class="student-nav-links">
 
 
             <a href="dashboard.html">
 
-                <i class="fa-solid fa-gauge-high"></i>
+                <i class="fa-solid fa-house"></i>
 
-                <span>
-                    Dashboard
-                </span>
+                Dashboard
 
             </a>
 
 
             <a href="courses.html">
 
-                <i class="fa-solid fa-book-open"></i>
+                <i class="fa-solid fa-book"></i>
 
-                <span>
-                    My Courses
-                </span>
-
-            </a>
-
-
-            <a href="lessons.html">
-
-                <i class="fa-solid fa-graduation-cap"></i>
-
-                <span>
-                    Lessons
-                </span>
+                Courses
 
             </a>
 
@@ -149,9 +132,7 @@
 
                 <i class="fa-solid fa-flask"></i>
 
-                <span>
-                    Labs
-                </span>
+                Labs
 
             </a>
 
@@ -160,9 +141,7 @@
 
                 <i class="fa-solid fa-clipboard-check"></i>
 
-                <span>
-                    Assessments
-                </span>
+                Assessments
 
             </a>
 
@@ -171,9 +150,7 @@
 
                 <i class="fa-solid fa-chart-line"></i>
 
-                <span>
-                    Progress
-                </span>
+                Progress
 
             </a>
 
@@ -182,848 +159,981 @@
 
                 <i class="fa-solid fa-certificate"></i>
 
-                <span>
-                    Certificates
-                </span>
+                Certificates
 
             </a>
 
-        </nav>
+        </div>
+
 
 
         <!-- =================================================
-             SIDEBAR FOOTER
+             ACCOUNT
         ================================================== -->
 
-        <div class="student-sidebar-footer">
+        <div class="student-nav-account">
 
 
-            <a href="../index.html">
-
-                <i class="fa-solid fa-house"></i>
-
-                <span>
-                    Academy Home
-                </span>
-
-            </a>
+            <span
+                id="studentName"
+                class="student-nav-name"
+            >
+                Student
+            </span>
 
 
             <button
                 type="button"
                 id="logoutBtn"
-                class="student-logout"
+                class="dashboard-logout-btn"
             >
 
                 <i class="fa-solid fa-right-from-bracket"></i>
 
-                <span>
-                    Logout
-                </span>
+                Logout
 
             </button>
 
         </div>
 
-    </aside>
+    </nav>
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main class="dashboard-main">
+
+
+    <!-- =====================================================
+         LAB HERO
+    ====================================================== -->
+
+    <section class="dashboard-welcome labs-page-hero">
+
+
+        <div class="welcome-content">
+
+
+            <span class="dashboard-label">
+                CWS ACADEMY • HANDS-ON SECURITY
+            </span>
+
+
+            <h1>
+                Practical
+                <span>
+                    Cybersecurity Labs
+                </span>
+            </h1>
+
+
+            <p>
+                Build practical cybersecurity skills through
+                structured, controlled laboratory exercises.
+                Practice networking, Linux, web security,
+                reconnaissance and security operations.
+            </p>
+
+
+            <div class="welcome-actions">
+
+
+                <a
+                    href="#availableLabs"
+                    class="dashboard-primary-btn"
+                >
+
+                    <i class="fa-solid fa-flask"></i>
+
+                    Explore Labs
+
+                </a>
+
+
+                <a
+                    href="courses.html"
+                    class="dashboard-secondary-btn"
+                >
+
+                    <i class="fa-solid fa-book-open"></i>
+
+                    View Courses
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="welcome-icon">
+
+            <i class="fa-solid fa-flask-vial"></i>
+
+        </div>
+
+    </section>
 
 
 
     <!-- =====================================================
-         MAIN CONTENT
+         LAB CONTENT
     ====================================================== -->
 
-    <main class="student-main">
+    <section
+        id="availableLabs"
+        class="dashboard-section labs-content"
+    >
 
 
         <!-- =================================================
-             TOP BAR
+             SECTION HEADING
         ================================================== -->
 
-        <header class="student-topbar">
+        <div class="section-heading">
 
 
             <div>
 
-                <span class="student-section-label">
-                    CWS ACADEMY
+                <span class="dashboard-label">
+                    CONTROLLED PRACTICE
                 </span>
 
-                <h1>
-                    Practical Labs
-                </h1>
+
+                <h2>
+                    Available Labs
+                </h2>
+
+
+                <p>
+                    Select a laboratory that matches your
+                    current cybersecurity learning path.
+                </p>
 
             </div>
 
 
-            <div class="student-profile">
+            <a
+                href="dashboard.html"
+                class="section-view-all"
+            >
 
+                Back to Dashboard
 
-                <div class="student-avatar">
+                <i class="fa-solid fa-arrow-right"></i>
 
-                    <i class="fa-solid fa-user"></i>
+            </a>
 
-                </div>
-
-
-                <div>
-
-                    <span
-                        id="studentName"
-                        class="student-name"
-                    >
-                        Student
-                    </span>
-
-                    <small>
-                        CWS Academy Student
-                    </small>
-
-                </div>
-
-            </div>
-
-        </header>
+        </div>
 
 
 
         <!-- =================================================
-             LAB CONTENT
+             SEARCH + FILTERS
         ================================================== -->
 
-        <section class="labs-content">
+        <div class="labs-controls">
 
 
-            <!-- =================================================
-                 LAB HERO
-            ================================================== -->
-
-            <div class="labs-hero">
-
-
-                <div class="labs-hero-content">
-
-
-                    <span class="section-kicker">
-                        HANDS-ON SECURITY TRAINING
-                    </span>
-
-
-                    <h2>
-                        Cybersecurity Laboratory
-                    </h2>
-
-
-                    <p>
-                        Practice cybersecurity concepts through
-                        structured, controlled laboratory exercises.
-                    </p>
-
-
-                </div>
-
-
-                <div class="labs-hero-icon">
-
-                    <i class="fa-solid fa-flask-vial"></i>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 LAB CONTROLS
-            ================================================== -->
-
-            <div class="labs-controls">
-
-
-                <div class="labs-search">
-
-
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-
-                    <input
-                        type="search"
-                        id="labSearch"
-                        placeholder="Search labs..."
-                        autocomplete="off"
-                        aria-label="Search labs"
-                    >
-
-                </div>
-
-
-                <div
-                    class="lab-filters"
-                    role="group"
-                    aria-label="Filter labs"
-                >
-
-
-                    <button
-                        type="button"
-                        class="lab-filter active"
-                        data-filter="all"
-                    >
-                        All
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="lab-filter"
-                        data-filter="beginner"
-                    >
-                        Beginner
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="lab-filter"
-                        data-filter="intermediate"
-                    >
-                        Intermediate
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="lab-filter"
-                        data-filter="advanced"
-                    >
-                        Advanced
-                    </button>
-
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 LAB GRID
-            ================================================== -->
-
-            <div
-                id="labsGrid"
-                class="labs-grid"
-            >
-
-
-                <!-- =================================================
-                     LAB 1
-                ================================================== -->
-
-                <article
-                    class="lab-card"
-                    data-level="beginner"
-                    data-search="network reconnaissance nmap scanning"
-                >
-
-
-                    <div class="lab-card-top">
-
-
-                        <span class="lab-level beginner">
-                            Beginner
-                        </span>
-
-
-                        <span class="lab-status">
-                            Available
-                        </span>
-
-
-                    </div>
-
-
-                    <div class="lab-icon">
-
-                        <i class="fa-solid fa-network-wired"></i>
-
-                    </div>
-
-
-                    <h3>
-                        Network Reconnaissance
-                    </h3>
-
-
-                    <p>
-                        Learn the fundamentals of network
-                        discovery and host identification
-                        in a controlled laboratory environment.
-                    </p>
-
-
-                    <div class="lab-meta">
-
-
-                        <span>
-
-                            <i class="fa-regular fa-clock"></i>
-
-                            30 min
-
-                        </span>
-
-
-                        <span>
-
-                            <i class="fa-solid fa-layer-group"></i>
-
-                            Beginner
-
-                        </span>
-
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        class="lab-start-btn"
-                        data-lab="network-recon"
-                    >
-
-                        Start Lab
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </button>
-
-
-                </article>
-
-
-
-                <!-- =================================================
-                     LAB 2
-                ================================================== -->
-
-                <article
-                    class="lab-card"
-                    data-level="beginner"
-                    data-search="linux command line permissions filesystem"
-                >
-
-
-                    <div class="lab-card-top">
-
-
-                        <span class="lab-level beginner">
-                            Beginner
-                        </span>
-
-
-                        <span class="lab-status">
-                            Available
-                        </span>
-
-
-                    </div>
-
-
-                    <div class="lab-icon">
-
-                        <i class="fa-brands fa-linux"></i>
-
-                    </div>
-
-
-                    <h3>
-                        Linux Security Fundamentals
-                    </h3>
-
-
-                    <p>
-                        Practice Linux command-line fundamentals,
-                        permissions, filesystems and basic
-                        security operations.
-                    </p>
-
-
-                    <div class="lab-meta">
-
-
-                        <span>
-
-                            <i class="fa-regular fa-clock"></i>
-
-                            35 min
-
-                        </span>
-
-
-                        <span>
-
-                            <i class="fa-solid fa-layer-group"></i>
-
-                            Beginner
-
-                        </span>
-
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        class="lab-start-btn"
-                        data-lab="linux-security"
-                    >
-
-                        Start Lab
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </button>
-
-
-                </article>
-
-
-
-                <!-- =================================================
-                     LAB 3
-                ================================================== -->
-
-                <article
-                    class="lab-card"
-                    data-level="intermediate"
-                    data-search="web security http headers authentication sessions"
-                >
-
-
-                    <div class="lab-card-top">
-
-
-                        <span class="lab-level intermediate">
-                            Intermediate
-                        </span>
-
-
-                        <span class="lab-status">
-                            Available
-                        </span>
-
-
-                    </div>
-
-
-                    <div class="lab-icon">
-
-                        <i class="fa-solid fa-globe"></i>
-
-                    </div>
-
-
-                    <h3>
-                        Web Security Fundamentals
-                    </h3>
-
-
-                    <p>
-                        Explore HTTP communication, authentication,
-                        sessions and common web security concepts
-                        in a controlled environment.
-                    </p>
-
-
-                    <div class="lab-meta">
-
-
-                        <span>
-
-                            <i class="fa-regular fa-clock"></i>
-
-                            45 min
-
-                        </span>
-
-
-                        <span>
-
-                            <i class="fa-solid fa-layer-group"></i>
-
-                            Intermediate
-
-                        </span>
-
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        class="lab-start-btn"
-                        data-lab="web-security"
-                    >
-
-                        Start Lab
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </button>
-
-
-                </article>
-
-
-
-                <!-- =================================================
-                     LAB 4
-                ================================================== -->
-
-                <article
-                    class="lab-card"
-                    data-level="intermediate"
-                    data-search="enumeration service discovery security"
-                >
-
-
-                    <div class="lab-card-top">
-
-
-                        <span class="lab-level intermediate">
-                            Intermediate
-                        </span>
-
-
-                        <span class="lab-status">
-                            Available
-                        </span>
-
-
-                    </div>
-
-
-                    <div class="lab-icon">
-
-                        <i class="fa-solid fa-magnifying-glass-chart"></i>
-
-                    </div>
-
-
-                    <h3>
-                        Service Enumeration
-                    </h3>
-
-
-                    <p>
-                        Learn how security professionals identify
-                        services and understand the information
-                        exposed by a target system.
-                    </p>
-
-
-                    <div class="lab-meta">
-
-
-                        <span>
-
-                            <i class="fa-regular fa-clock"></i>
-
-                            45 min
-
-                        </span>
-
-
-                        <span>
-
-                            <i class="fa-solid fa-layer-group"></i>
-
-                            Intermediate
-
-                        </span>
-
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        class="lab-start-btn"
-                        data-lab="service-enumeration"
-                    >
-
-                        Start Lab
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </button>
-
-
-                </article>
-
-
-
-                <!-- =================================================
-                     LAB 5
-                ================================================== -->
-
-                <article
-                    class="lab-card"
-                    data-level="advanced"
-                    data-search="penetration testing reconnaissance vulnerability assessment"
-                >
-
-
-                    <div class="lab-card-top">
-
-
-                        <span class="lab-level advanced">
-                            Advanced
-                        </span>
-
-
-                        <span class="lab-status planned">
-                            Coming Soon
-                        </span>
-
-
-                    </div>
-
-
-                    <div class="lab-icon">
-
-                        <i class="fa-solid fa-user-secret"></i>
-
-                    </div>
-
-
-                    <h3>
-                        Penetration Testing Workflow
-                    </h3>
-
-
-                    <p>
-                        Follow a structured penetration testing
-                        workflow from reconnaissance through
-                        vulnerability analysis and reporting.
-                    </p>
-
-
-                    <div class="lab-meta">
-
-
-                        <span>
-
-                            <i class="fa-regular fa-clock"></i>
-
-                            Planned
-
-                        </span>
-
-
-                        <span>
-
-                            <i class="fa-solid fa-layer-group"></i>
-
-                            Advanced
-
-                        </span>
-
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        class="lab-start-btn disabled"
-                        disabled
-                    >
-
-                        Coming Soon
-
-                    </button>
-
-
-                </article>
-
-
-            </div>
-
-
-
-            <!-- =================================================
-                 NO RESULTS
-            ================================================== -->
-
-            <div
-                id="noLabsMessage"
-                class="no-labs-message"
-                hidden
-            >
-
+            <div class="labs-search">
 
                 <i class="fa-solid fa-magnifying-glass"></i>
 
 
+                <input
+                    type="search"
+                    id="labSearch"
+                    placeholder="Search labs..."
+                    autocomplete="off"
+                    aria-label="Search labs"
+                >
+
+            </div>
+
+
+
+            <div
+                class="lab-filters"
+                role="group"
+                aria-label="Filter labs"
+            >
+
+
+                <button
+                    type="button"
+                    class="lab-filter active"
+                    data-filter="all"
+                >
+                    All
+                </button>
+
+
+                <button
+                    type="button"
+                    class="lab-filter"
+                    data-filter="beginner"
+                >
+                    Beginner
+                </button>
+
+
+                <button
+                    type="button"
+                    class="lab-filter"
+                    data-filter="intermediate"
+                >
+                    Intermediate
+                </button>
+
+
+                <button
+                    type="button"
+                    class="lab-filter"
+                    data-filter="advanced"
+                >
+                    Advanced
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             LAB GRID
+        ================================================== -->
+
+        <div
+            id="labsGrid"
+            class="labs-grid"
+        >
+
+
+
+            <!-- =================================================
+                 LAB 1
+            ================================================== -->
+
+            <article
+                class="lab-card"
+                data-lab="network-recon"
+                data-level="beginner"
+                data-search="network reconnaissance nmap scanning host discovery"
+            >
+
+
+                <div class="lab-card-top">
+
+
+                    <span class="lab-level beginner">
+                        BEGINNER
+                    </span>
+
+
+                    <span class="lab-status">
+                        AVAILABLE
+                    </span>
+
+                </div>
+
+
+
+                <div class="lab-icon">
+
+                    <i class="fa-solid fa-network-wired"></i>
+
+                </div>
+
+
+
+                <span class="lab-category">
+                    NETWORK SECURITY
+                </span>
+
+
                 <h3>
-                    No labs found
+                    Network Reconnaissance
                 </h3>
 
 
                 <p>
-                    Try changing your search or filter.
+                    Learn the fundamentals of network discovery,
+                    host identification and reconnaissance in a
+                    controlled laboratory environment.
                 </p>
 
 
-            </div>
+
+                <div class="lab-meta">
 
 
-        </section>
+                    <span>
 
-    </main>
+                        <i class="fa-regular fa-clock"></i>
 
+                        30 min
 
-
-    <!-- =====================================================
-         LAB MODAL
-    ====================================================== -->
-
-    <div
-        id="labModal"
-        class="lab-modal"
-        hidden
-        aria-hidden="true"
-    >
+                    </span>
 
 
-        <div
-            class="lab-modal-overlay"
-            data-close-modal
-        ></div>
+                    <span>
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        Beginner
+
+                    </span>
+
+                </div>
 
 
-        <div
-            class="lab-modal-card"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="labModalTitle"
-        >
+
+                <button
+                    type="button"
+                    class="lab-start-btn"
+                    data-lab="network-recon"
+                    data-lab-name="Network Reconnaissance"
+                    data-lab-level="Beginner"
+                    data-lab-duration="30 min"
+                >
+
+                    Start Lab
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+            </article>
 
 
-            <button
-                type="button"
-                id="closeLabModal"
-                class="lab-modal-close"
-                aria-label="Close lab"
+
+            <!-- =================================================
+                 LAB 2
+            ================================================== -->
+
+            <article
+                class="lab-card"
+                data-lab="linux-security"
+                data-level="beginner"
+                data-search="linux command line permissions filesystem security terminal"
             >
 
-                <i class="fa-solid fa-xmark"></i>
 
-            </button>
-
-
-            <span class="section-kicker">
-                LAB INFORMATION
-            </span>
+                <div class="lab-card-top">
 
 
-            <h2 id="labModalTitle">
-                Laboratory
-            </h2>
-
-
-            <p id="labModalDescription">
-                Laboratory information.
-            </p>
-
-
-            <div class="lab-modal-info">
-
-
-                <div>
-
-                    <span>
-                        Difficulty
+                    <span class="lab-level beginner">
+                        BEGINNER
                     </span>
 
-                    <strong id="labModalLevel">
-                        Beginner
-                    </strong>
+
+                    <span class="lab-status">
+                        AVAILABLE
+                    </span>
 
                 </div>
 
 
-                <div>
 
-                    <span>
-                        Duration
-                    </span>
+                <div class="lab-icon">
 
-                    <strong id="labModalDuration">
-                        30 min
-                    </strong>
+                    <i class="fa-brands fa-linux"></i>
 
                 </div>
 
 
-            </div>
+
+                <span class="lab-category">
+                    LINUX SECURITY
+                </span>
 
 
-            <div class="lab-modal-notice">
-
-
-                <i class="fa-solid fa-shield-halved"></i>
+                <h3>
+                    Linux Security Fundamentals
+                </h3>
 
 
                 <p>
-                    Labs are designed for authorized educational
-                    practice. Only perform security testing inside
-                    environments you own or have permission to test.
+                    Practice Linux command-line fundamentals,
+                    permissions, filesystems, processes and
+                    basic security operations.
                 </p>
 
+
+
+                <div class="lab-meta">
+
+
+                    <span>
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        35 min
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        Beginner
+
+                    </span>
+
+                </div>
+
+
+
+                <button
+                    type="button"
+                    class="lab-start-btn"
+                    data-lab="linux-security"
+                    data-lab-name="Linux Security Fundamentals"
+                    data-lab-level="Beginner"
+                    data-lab-duration="35 min"
+                >
+
+                    Start Lab
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+            </article>
+
+
+
+            <!-- =================================================
+                 LAB 3
+            ================================================== -->
+
+            <article
+                class="lab-card"
+                data-lab="web-security"
+                data-level="intermediate"
+                data-search="web security http headers authentication sessions application security"
+            >
+
+
+                <div class="lab-card-top">
+
+
+                    <span class="lab-level intermediate">
+                        INTERMEDIATE
+                    </span>
+
+
+                    <span class="lab-status">
+                        AVAILABLE
+                    </span>
+
+                </div>
+
+
+
+                <div class="lab-icon">
+
+                    <i class="fa-solid fa-globe"></i>
+
+                </div>
+
+
+
+                <span class="lab-category">
+                    WEB SECURITY
+                </span>
+
+
+                <h3>
+                    Web Security Fundamentals
+                </h3>
+
+
+                <p>
+                    Explore HTTP communication, authentication,
+                    sessions, headers and common web security
+                    concepts in a controlled environment.
+                </p>
+
+
+
+                <div class="lab-meta">
+
+
+                    <span>
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        45 min
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        Intermediate
+
+                    </span>
+
+                </div>
+
+
+
+                <button
+                    type="button"
+                    class="lab-start-btn"
+                    data-lab="web-security"
+                    data-lab-name="Web Security Fundamentals"
+                    data-lab-level="Intermediate"
+                    data-lab-duration="45 min"
+                >
+
+                    Start Lab
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+            </article>
+
+
+
+            <!-- =================================================
+                 LAB 4
+            ================================================== -->
+
+            <article
+                class="lab-card"
+                data-lab="service-enumeration"
+                data-level="intermediate"
+                data-search="enumeration service discovery network security services"
+            >
+
+
+                <div class="lab-card-top">
+
+
+                    <span class="lab-level intermediate">
+                        INTERMEDIATE
+                    </span>
+
+
+                    <span class="lab-status">
+                        AVAILABLE
+                    </span>
+
+                </div>
+
+
+
+                <div class="lab-icon">
+
+                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+
+                </div>
+
+
+
+                <span class="lab-category">
+                    RECONNAISSANCE
+                </span>
+
+
+                <h3>
+                    Service Enumeration
+                </h3>
+
+
+                <p>
+                    Learn how security professionals identify
+                    services and understand information exposed
+                    by a target system.
+                </p>
+
+
+
+                <div class="lab-meta">
+
+
+                    <span>
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        45 min
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        Intermediate
+
+                    </span>
+
+                </div>
+
+
+
+                <button
+                    type="button"
+                    class="lab-start-btn"
+                    data-lab="service-enumeration"
+                    data-lab-name="Service Enumeration"
+                    data-lab-level="Intermediate"
+                    data-lab-duration="45 min"
+                >
+
+                    Start Lab
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+            </article>
+
+
+
+            <!-- =================================================
+                 LAB 5
+            ================================================== -->
+
+            <article
+                class="lab-card"
+                data-lab="penetration-testing"
+                data-level="advanced"
+                data-search="penetration testing reconnaissance vulnerability assessment reporting"
+            >
+
+
+                <div class="lab-card-top">
+
+
+                    <span class="lab-level advanced">
+                        ADVANCED
+                    </span>
+
+
+                    <span class="lab-status planned">
+                        COMING SOON
+                    </span>
+
+                </div>
+
+
+
+                <div class="lab-icon">
+
+                    <i class="fa-solid fa-user-secret"></i>
+
+                </div>
+
+
+
+                <span class="lab-category">
+                    PENETRATION TESTING
+                </span>
+
+
+                <h3>
+                    Penetration Testing Workflow
+                </h3>
+
+
+                <p>
+                    Follow a structured penetration testing
+                    workflow from reconnaissance through
+                    vulnerability analysis and professional
+                    reporting.
+                </p>
+
+
+
+                <div class="lab-meta">
+
+
+                    <span>
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        Planned
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        Advanced
+
+                    </span>
+
+                </div>
+
+
+
+                <button
+                    type="button"
+                    class="lab-start-btn disabled"
+                    disabled
+                >
+
+                    Coming Soon
+
+                </button>
+
+            </article>
+
+        </div>
+
+
+
+        <!-- =================================================
+             NO RESULTS
+        ================================================== -->
+
+        <div
+            id="noLabsMessage"
+            class="no-labs-message"
+            hidden
+        >
+
+
+            <i class="fa-solid fa-folder-open"></i>
+
+
+            <h3>
+                No labs found
+            </h3>
+
+
+            <p>
+                Try changing your search or filter.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         LAB SAFETY / EDUCATION NOTICE
+    ====================================================== -->
+
+    <section class="dashboard-section lab-notice-section">
+
+
+        <div class="lab-safety-notice">
+
+
+            <div class="lab-safety-icon">
+
+                <i class="fa-solid fa-shield-halved"></i>
 
             </div>
 
 
-            <button
-                type="button"
-                id="launchLabBtn"
-                class="lab-launch-btn"
-            >
+            <div>
 
-                Enter Laboratory
+                <span class="dashboard-label">
+                    AUTHORIZED PRACTICE
+                </span>
 
-                <i class="fa-solid fa-arrow-right"></i>
 
-            </button>
+                <h2>
+                    Learn in a Controlled Environment
+                </h2>
 
+
+                <p>
+                    CWS Academy labs are designed for authorized
+                    educational practice. Perform security testing
+                    only against systems you own or have explicit
+                    permission to test.
+                </p>
+
+            </div>
 
         </div>
 
+    </section>
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="student-footer">
+
+    <p>
+        © 2026 CWS Academy.
+        Part of the CyberWithSandiso ecosystem.
+    </p>
+
+</footer>
+
+
+
+<!-- =========================================================
+     LAB MODAL
+========================================================= -->
+
+<div
+    id="labModal"
+    class="lab-modal"
+    hidden
+    aria-hidden="true"
+>
+
+
+    <div
+        class="lab-modal-overlay"
+        data-close-modal
+    ></div>
+
+
+
+    <div
+        class="lab-modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="labModalTitle"
+    >
+
+
+        <button
+            type="button"
+            id="closeLabModal"
+            class="lab-modal-close"
+            aria-label="Close laboratory information"
+        >
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+
+
+        <span class="dashboard-label">
+            LAB INFORMATION
+        </span>
+
+
+
+        <h2 id="labModalTitle">
+            Laboratory
+        </h2>
+
+
+
+        <p id="labModalDescription">
+            Laboratory information.
+        </p>
+
+
+
+        <div class="lab-modal-info">
+
+
+            <div>
+
+                <span>
+                    Difficulty
+                </span>
+
+                <strong id="labModalLevel">
+                    Beginner
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Duration
+                </span>
+
+                <strong id="labModalDuration">
+                    30 min
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="lab-modal-notice">
+
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+
+            <p>
+                This laboratory is intended for authorized
+                educational practice only. Do not perform
+                security testing against systems without
+                permission.
+            </p>
+
+        </div>
+
+
+
+        <button
+            type="button"
+            id="launchLabBtn"
+            class="lab-launch-btn"
+        >
+
+            Enter Laboratory
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+        </button>
+
     </div>
 
+</div>
 
 
-    <!-- =====================================================
-         FIREBASE AUTH GUARD
-    ====================================================== -->
 
-    <script
-        type="module"
-        src="../js/auth-guard.js"
-    ></script>
+<!-- =========================================================
+     FIREBASE AUTH GUARD
+========================================================= -->
+
+<script
+    type="module"
+    src="../js/auth-guard.js"
+></script>
 
 
-    <!-- =====================================================
-         LAB JAVASCRIPT
-    ====================================================== -->
 
-    <script
-        type="module"
-        src="../js/labs.js"
-    ></script>
+<!-- =========================================================
+     LAB JAVASCRIPT
+========================================================= -->
 
+<script
+    type="module"
+    src="../js/labs.js"
+></script>
 
 </body>
 
