@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CWS Academy student learning progress, course completion and academic performance."
+    >
+
+    <meta
+        name="author"
+        content="CyberWithSandiso"
+    >
+
+    <title>My Progress | CWS Academy</title>
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+
+    <!-- =====================================================
+         RESPONSIVE CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+
+    <!-- =====================================================
+         STUDENT PROGRESS CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/student-progress.css"
+    >
+
+</head>
+
+
+<body class="student-page">
+
+
+    <!-- =====================================================
+         STUDENT SIDEBAR
+    ====================================================== -->
+
+    <aside class="student-sidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="student-brand">
+
+            <a
+                href="dashboard.html"
+                class="academy-logo"
+                aria-label="CWS Academy Dashboard"
+            >
+
+                <span class="logo-cws">
+                    CWS
+                </span>
+
+                <span class="logo-text">
+                    Academy
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             STUDENT NAVIGATION
+        ================================================== -->
+
+        <nav
+            class="student-navigation"
+            aria-label="Student navigation"
+        >
+
+
+            <a href="dashboard.html">
+
+                <i class="fa-solid fa-gauge-high"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a href="courses.html">
+
+                <i class="fa-solid fa-book-open"></i>
+
+                <span>
+                    My Courses
+                </span>
+
+            </a>
+
+
+            <a href="lessons.html">
+
+                <i class="fa-solid fa-graduation-cap"></i>
+
+                <span>
+                    Lessons
+                </span>
+
+            </a>
+
+
+            <a href="labs.html">
+
+                <i class="fa-solid fa-flask"></i>
+
+                <span>
+                    Labs
+                </span>
+
+            </a>
+
+
+            <a href="assessments.html">
+
+                <i class="fa-solid fa-clipboard-check"></i>
+
+                <span>
+                    Assessments
+                </span>
+
+            </a>
+
+
+            <a
+                href="progress.html"
+                class="active"
+                aria-current="page"
+            >
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                <span>
+                    Progress
+                </span>
+
+            </a>
+
+
+            <a href="certificates.html">
+
+                <i class="fa-solid fa-certificate"></i>
+
+                <span>
+                    Certificates
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- =================================================
+             SIDEBAR FOOTER
+        ================================================== -->
+
+        <div class="student-sidebar-footer">
+
+
+            <a href="../index.html">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Academy Home
+                </span>
+
+            </a>
+
+
+            <button
+                type="button"
+                id="logoutBtn"
+                class="student-logout"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="student-main">
+
+
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
+
+        <header class="student-topbar">
+
+
+            <div>
+
+                <span class="student-section-label">
+                    CWS ACADEMY
+                </span>
+
+                <h1>
+                    My Progress
+                </h1>
+
+            </div>
+
+
+            <div class="student-profile">
+
+
+                <div class="student-avatar">
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span
+                        id="studentName"
+                        class="student-name"
+                    >
+                        Student
+                    </span>
+
+                    <small>
+                        CWS Academy Student
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             PROGRESS INTRODUCTION
+        ================================================== -->
+
+        <section class="progress-introduction">
+
+
+            <div>
+
+                <span class="progress-label">
+                    LEARNING ANALYTICS
+                </span>
+
+
+                <h2>
+                    Track Your Progress
+                </h2>
+
+
+                <p>
+                    Monitor your course completion,
+                    lessons, laboratory work and assessment
+                    performance as you build your cybersecurity
+                    skills.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             OVERALL PROGRESS
+        ================================================== -->
+
+        <section class="student-progress-section">
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <span>
+                        OVERALL PERFORMANCE
+                    </span>
+
+                    <h2>
+                        Learning Overview
+                    </h2>
+
+                </div>
+
+
+                <a
+                    href="courses.html"
+                    class="section-view-all"
+                >
+
+                    View Courses
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PROGRESS STAT CARDS
+            ================================================== -->
+
+            <div class="progress-stat-grid">
+
+
+                <!-- COURSES -->
+
+                <article class="progress-stat-card">
+
+
+                    <div class="progress-stat-icon">
+
+                        <i class="fa-solid fa-book-open"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            COURSES STARTED
+                        </span>
+
+
+                        <strong id="coursesStarted">
+                            0
+                        </strong>
+
+
+                        <small>
+                            Courses in your learning journey
+                        </small>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- LESSONS -->
+
+                <article class="progress-stat-card">
+
+
+                    <div class="progress-stat-icon">
+
+                        <i class="fa-solid fa-graduation-cap"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            LESSONS COMPLETED
+                        </span>
+
+
+                        <strong id="lessonsCompleted">
+                            0
+                        </strong>
+
+
+                        <small>
+                            Lessons successfully completed
+                        </small>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- LABS -->
+
+                <article class="progress-stat-card">
+
+
+                    <div class="progress-stat-icon">
+
+                        <i class="fa-solid fa-flask"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            LABS COMPLETED
+                        </span>
+
+
+                        <strong id="labsCompleted">
+                            0
+                        </strong>
+
+
+                        <small>
+                            Practical laboratories completed
+                        </small>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- ASSESSMENTS -->
+
+                <article class="progress-stat-card">
+
+
+                    <div class="progress-stat-icon">
+
+                        <i class="fa-solid fa-clipboard-check"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            ASSESSMENTS
+                        </span>
+
+
+                        <strong id="assessmentsCompleted">
+                            0
+                        </strong>
+
+
+                        <small>
+                            Assessments completed
+                        </small>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             OVERALL COMPLETION
+        ================================================== -->
+
+        <section class="student-progress-section">
+
+
+            <div class="progress-overview-card">
+
+
+                <div class="progress-overview-header">
+
+
+                    <div>
+
+                        <span>
+                            ACADEMY COMPLETION
+                        </span>
+
+                        <h2>
+                            Overall Learning Progress
+                        </h2>
+
+                    </div>
+
+
+                    <strong
+                        id="overallProgressPercent"
+                        class="overall-progress-percent"
+                    >
+                        0%
+                    </strong>
+
+                </div>
+
+
+                <div class="overall-progress-track">
+
+                    <div
+                        id="overallProgressBar"
+                        class="overall-progress-bar"
+                        style="width: 0%;"
+                    ></div>
+
+                </div>
+
+
+                <div class="overall-progress-footer">
+
+
+                    <span id="overallProgressText">
+                        Your learning progress will appear here.
+                    </span>
+
+
+                    <a
+                        href="lessons.html"
+                        class="progress-action"
+                    >
+
+                        Continue Learning
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             COURSE PROGRESS
+        ================================================== -->
+
+        <section class="student-progress-section">
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <span>
+                        COURSE PERFORMANCE
+                    </span>
+
+                    <h2>
+                        Course Progress
+                    </h2>
+
+                    <p>
+                        Track your progress across enrolled courses.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="courses.html"
+                    class="section-view-all"
+                >
+
+                    All Courses
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+
+
+            <div
+                id="courseProgressList"
+                class="course-progress-list"
+            >
+
+
+                <!-- =================================================
+                     COURSE PROGRESS ITEM
+                ================================================== -->
+
+                <article
+                    class="course-progress-item"
+                    data-course-id="cybersecurity-fundamentals"
+                >
+
+
+                    <div class="course-progress-icon">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                    </div>
+
+
+                    <div class="course-progress-info">
+
+
+                        <div class="course-progress-title">
+
+
+                            <div>
+
+                                <span>
+                                    BEGINNER
+                                </span>
+
+                                <h3>
+                                    Cybersecurity Fundamentals
+                                </h3>
+
+                            </div>
+
+
+                            <strong>
+                                <span
+                                    class="course-progress-percent"
+                                >
+                                    0
+                                </span>%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="course-progress-track">
+
+                            <div
+                                class="course-progress-bar"
+                                style="width: 0%;"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="course-progress-meta">
+
+                            <span>
+                                <i class="fa-solid fa-book"></i>
+                                <span class="completed-lessons">
+                                    0
+                                </span>
+                                / 10 Modules
+                            </span>
+
+
+                            <span>
+                                <i class="fa-solid fa-flask"></i>
+                                Labs
+                            </span>
+
+
+                            <span>
+                                <i class="fa-solid fa-clipboard-check"></i>
+                                Assessments
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="lessons.html?course=cybersecurity-fundamentals"
+                        class="course-progress-action"
+                    >
+
+                        Continue
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </article>
+
+
+
+                <!-- =================================================
+                     NETWORKING
+                ================================================== -->
+
+                <article
+                    class="course-progress-item"
+                    data-course-id="networking-fundamentals"
+                >
+
+
+                    <div class="course-progress-icon">
+
+                        <i class="fa-solid fa-network-wired"></i>
+
+                    </div>
+
+
+                    <div class="course-progress-info">
+
+
+                        <div class="course-progress-title">
+
+
+                            <div>
+
+                                <span>
+                                    BEGINNER
+                                </span>
+
+                                <h3>
+                                    Networking Fundamentals
+                                </h3>
+
+                            </div>
+
+
+                            <strong>
+                                <span
+                                    class="course-progress-percent"
+                                >
+                                    0
+                                </span>%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="course-progress-track">
+
+                            <div
+                                class="course-progress-bar"
+                                style="width: 0%;"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="course-progress-meta">
+
+                            <span>
+                                <i class="fa-solid fa-book"></i>
+                                <span class="completed-lessons">
+                                    0
+                                </span>
+                                / 10 Modules
+                            </span>
+
+
+                            <span>
+                                <i class="fa-solid fa-network-wired"></i>
+                                Labs
+                            </span>
+
+
+                            <span>
+                                <i class="fa-solid fa-clipboard-check"></i>
+                                Assessments
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="lessons.html?course=networking-fundamentals"
+                        class="course-progress-action"
+                    >
+
+                        Continue
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </article>
+
+
+
+                <!-- =================================================
+                     LINUX
+                ================================================== -->
+
+                <article
+                    class="course-progress-item"
+                    data-course-id="linux-fundamentals"
+                >
+
+
+                    <div class="course-progress-icon">
+
+                        <i class="fa-brands fa-linux"></i>
+
+                    </div>
+
+
+                    <div class="course-progress-info">
+
+
+                        <div class="course-progress-title">
+
+
+                            <div>
+
+                                <span>
+                                    BEGINNER
+                                </span>
+
+                                <h3>
+                                    Linux Fundamentals
+                                </h3>
+
+                            </div>
+
+
+                            <strong>
+                                <span
+                                    class="course-progress-percent"
+                                >
+                                    0
+                                </span>%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="course-progress-track">
+
+                            <div
+                                class="course-progress-bar"
+                                style="width: 0%;"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="course-progress-meta">
+
+                            <span>
+                                <i class="fa-solid fa-book"></i>
+                                <span class="completed-lessons">
+                                    0
+                                </span>
+                                / 10 Modules
+                            </span>
+
+
+                            <span>
+                                <i class="fa-solid fa-terminal"></i>
+                                Labs
+                            </span>
+
+
+                            <span>
+                                <i class="fa-solid fa-clipboard-check"></i>
+                                Assessments
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="lessons.html?course=linux-fundamentals"
+                        class="course-progress-action"
+                    >
+
+                        Continue
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </article>
+
+            </div>
+
+
+            <!-- EMPTY COURSE STATE -->
+
+            <div
+                id="noCourseProgress"
+                class="progress-empty-state"
+                hidden
+            >
+
+                <div class="empty-icon">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                </div>
+
+
+                <h3>
+                    No Course Progress Yet
+                </h3>
+
+
+                <p>
+                    Enroll in a course and begin your first
+                    lesson to start building your progress.
+                </p>
+
+
+                <a
+                    href="courses.html"
+                    class="progress-action"
+                >
+
+                    Explore Courses
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             RECENT ACTIVITY
+        ================================================== -->
+
+        <section class="student-progress-section">
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <span>
+                        LEARNING ACTIVITY
+                    </span>
+
+                    <h2>
+                        Recent Activity
+                    </h2>
+
+                    <p>
+                        Your latest learning activity will appear here.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="recentActivity"
+                class="recent-activity"
+            >
+
+
+                <!-- EMPTY STATE -->
+
+                <div
+                    id="noRecentActivity"
+                    class="progress-empty-state"
+                >
+
+                    <div class="empty-icon">
+
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    </div>
+
+
+                    <h3>
+                        No Recent Activity
+                    </h3>
+
+
+                    <p>
+                        Complete a lesson, lab or assessment
+                        and your activity will appear here.
+                    </p>
+
+
+                    <a
+                        href="lessons.html"
+                        class="progress-action"
+                    >
+
+                        Start Learning
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             LEARNING GOALS
+        ================================================== -->
+
+        <section class="student-progress-section">
+
+
+            <div class="learning-goals-card">
+
+
+                <div class="learning-goals-icon">
+
+                    <i class="fa-solid fa-bullseye"></i>
+
+                </div>
+
+
+                <div class="learning-goals-content">
+
+
+                    <span>
+                        KEEP BUILDING YOUR SKILLS
+                    </span>
+
+
+                    <h2>
+                        Your Cybersecurity Journey
+                    </h2>
+
+
+                    <p>
+                        Complete lessons, practice in the
+                        laboratories and pass assessments to
+                        steadily advance toward course completion
+                        and certification.
+                    </p>
+
+
+                    <div class="learning-goals-actions">
+
+
+                        <a
+                            href="lessons.html"
+                            class="progress-primary-btn"
+                        >
+
+                            Continue Learning
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </a>
+
+
+                        <a
+                            href="labs.html"
+                            class="progress-secondary-btn"
+                        >
+
+                            Practice in Labs
+
+                            <i class="fa-solid fa-flask"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FIREBASE AUTH GUARD
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="../js/auth-guard.js"
+    ></script>
+
+
+    <!-- =====================================================
+         STUDENT PROGRESS JS
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="../js/student-progress.js"
+    ></script>
+
+
+</body>
+
+</html>
