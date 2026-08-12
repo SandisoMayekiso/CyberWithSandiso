@@ -1,6 +1,7 @@
 /* =========================================================
    CWS ACADEMY
-   Student Courses Controller
+   STUDENT COURSES
+   Firebase Authentication + Course Filters
 ========================================================= */
 
 import {
@@ -13,9 +14,49 @@ import {
 } from "./firebase-config.js";
 
 
-console.log(
-    "CWS Academy student-courses.js loaded."
-);
+/* =========================================================
+   DEBUG
+========================================================= */
+
+const DEBUG = true;
+
+
+function log(...messages) {
+
+    if (DEBUG) {
+
+        console.log(
+            "[CWS Courses]",
+            ...messages
+        );
+
+    }
+
+}
+
+
+function warn(...messages) {
+
+    if (DEBUG) {
+
+        console.warn(
+            "[CWS Courses]",
+            ...messages
+        );
+
+    }
+
+}
+
+
+function error(...messages) {
+
+    console.error(
+        "[CWS Courses]",
+        ...messages
+    );
+
+}
 
 
 /* =========================================================
@@ -23,116 +64,148 @@ console.log(
 ========================================================= */
 
 const filterButtons =
-    document.querySelectorAll(".course-filter");
+    document.querySelectorAll(
+        ".course-filter"
+    );
+
 
 const courseCards =
-    document.querySelectorAll(".student-course-card");
+    document.querySelectorAll(
+        ".student-course-card"
+    );
+
 
 const noCoursesMessage =
-    document.getElementById("noCoursesMessage");
+    document.getElementById(
+        "noCoursesMessage"
+    );
 
-const studentNavName =
-    document.getElementById("studentNavName");
 
-const logoutNavBtn =
-    document.getElementById("logoutNavBtn");
+const studentName =
+    document.getElementById(
+        "studentName"
+    );
+
+
+const logoutBtn =
+    document.getElementById(
+        "logoutBtn"
+    );
 
 
 /* =========================================================
-   AUTHENTICATION GUARD
+   STATE
 ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    async (user) => {
+let currentUser = null;
 
-        if (!user) {
-
-            console.warn(
-                "CWS Academy: Student courses requires authentication."
-            );
-
-            window.location.replace(
-                "../pages/login.html?redirect=courses"
-            );
-
-            return;
-
-        }
-
-
-        /*
-         * Refresh Firebase user data.
-         */
-
-        try {
-
-            await user.reload();
-
-        } catch (error) {
-
-            console.error(
-                "Unable to refresh Firebase user:",
-                error
-            );
-
-        }
-
-
-        /*
-         * Password accounts must have verified email.
-         */
-
-        const usesPassword =
-            user.providerData.some(
-                provider =>
-                    provider.providerId === "password"
-            );
-
-
-        if (
-            usesPassword &&
-            !user.emailVerified
-        ) {
-
-            console.warn(
-                "CWS Academy: Email verification required."
-            );
-
-            window.location.replace(
-                "../pages/login.html?redirect=courses"
-            );
-
-            return;
-
-        }
-
-
-        /*
-         * Display student identity.
-         */
-
-        if (studentNavName) {
-
-            studentNavName.textContent =
-                user.displayName ||
-                user.email ||
-                "Student";
-
-        }
-
-
-        console.log(
-            "CWS Academy: Student courses authenticated:",
-            user.uid
-        );
-
-    }
-);
+let coursesInitialized = false;
 
 
 /* =========================================================
-   COURSE FILTER
+   GET USER DISPLAY NAME
+========================================================= */
+
+function getUserName(user) {
+
+    if (!user) {
+
+        return "Student";
+
+    }
+
+
+    /*
+     * Firebase displayName
+     */
+
+    if (
+        typeof user.displayName === "string" &&
+        user.displayName.trim()
+    ) {
+
+        return user.displayName.trim();
+
+    }
+
+
+    /*
+     * Email fallback.
+     */
+
+    if (
+        typeof user.email === "string" &&
+        user.email.includes("@")
+    ) {
+
+        const emailName =
+            user.email
+                .split("@")[0]
+                .trim();
+
+
+        if (emailName) {
+
+            return emailName
+                .replace(
+                    /[._-]+/g,
+                    " "
+                )
+                .replace(
+                    /\s+/g,
+                    " "
+                )
+                .trim()
+                .split(" ")
+                .map(
+                    word =>
+                        word.charAt(0).toUpperCase() +
+                        word.slice(1)
+                )
+                .join(" ");
+
+        }
+
+    }
+
+
+    return "Student";
+
+}
+
+
+/* =========================================================
+   DISPLAY STUDENT
+========================================================= */
+
+function displayStudent(user) {
+
+    const name =
+        getUserName(user);
+
+
+    if (studentName) {
+
+        studentName.textContent =
+            name;
+
+    }
+
+
+    log(
+        "Student:",
+        {
+            uid: user.uid,
+            email: user.email,
+            name
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FILTER COURSES
 ========================================================= */
 
 function filterCourses(
@@ -142,30 +215,32 @@ function filterCourses(
     let visibleCourses = 0;
 
 
-    courseCards.forEach((card) => {
+    courseCards.forEach(
+        (card) => {
 
-        const courseLevel =
-            card.dataset.level;
-
-
-        const shouldShow =
-            selectedFilter === "all" ||
-            courseLevel === selectedFilter;
+            const courseLevel =
+                card.dataset.level;
 
 
-        if (shouldShow) {
+            const shouldShow =
+                selectedFilter === "all" ||
+                courseLevel === selectedFilter;
 
-            card.hidden = false;
 
-            visibleCourses++;
+            if (shouldShow) {
 
-        } else {
+                card.hidden = false;
 
-            card.hidden = true;
+                visibleCourses++;
+
+            } else {
+
+                card.hidden = true;
+
+            }
 
         }
-
-    });
+    );
 
 
     /*
@@ -175,9 +250,50 @@ function filterCourses(
     if (noCoursesMessage) {
 
         noCoursesMessage.hidden =
-            visibleCourses !== 0;
+            visibleCourses > 0;
 
     }
+
+
+    log(
+        "Course filter:",
+        selectedFilter,
+        "Visible:",
+        visibleCourses
+    );
+
+}
+
+
+/* =========================================================
+   SET ACTIVE FILTER
+========================================================= */
+
+function setActiveFilter(
+    selectedFilter
+) {
+
+    filterButtons.forEach(
+        (button) => {
+
+            const isActive =
+                button.dataset.filter ===
+                selectedFilter;
+
+
+            button.classList.toggle(
+                "active",
+                isActive
+            );
+
+
+            button.setAttribute(
+                "aria-pressed",
+                String(isActive)
+            );
+
+        }
+    );
 
 }
 
@@ -186,84 +302,288 @@ function filterCourses(
    FILTER BUTTON EVENTS
 ========================================================= */
 
-filterButtons.forEach((button) => {
+filterButtons.forEach(
+    (button) => {
 
-    button.addEventListener(
-        "click",
-        () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-            const selectedFilter =
-                button.dataset.filter;
-
-
-            filterButtons.forEach(
-                (item) => {
-
-                    item.classList.remove(
-                        "active"
-                    );
-
-                }
-            );
+                const selectedFilter =
+                    button.dataset.filter ||
+                    "all";
 
 
-            button.classList.add(
-                "active"
-            );
+                setActiveFilter(
+                    selectedFilter
+                );
 
 
-            filterCourses(
-                selectedFilter
-            );
+                filterCourses(
+                    selectedFilter
+                );
 
-        }
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   LOGOUT BUTTON STATE
+========================================================= */
+
+function setLogoutLoading(
+    isLoading
+) {
+
+    if (!logoutBtn) {
+
+        return;
+
+    }
+
+
+    logoutBtn.disabled =
+        isLoading;
+
+
+    logoutBtn.classList.toggle(
+        "is-loading",
+        isLoading
     );
 
-});
+
+    if (isLoading) {
+
+        logoutBtn.setAttribute(
+            "aria-busy",
+            "true"
+        );
+
+    } else {
+
+        logoutBtn.removeAttribute(
+            "aria-busy"
+        );
+
+    }
+
+}
 
 
 /* =========================================================
    LOGOUT
 ========================================================= */
 
-if (logoutNavBtn) {
+async function logout() {
 
-    logoutNavBtn.addEventListener(
+    if (!auth) {
+
+        error(
+            "Firebase Auth is unavailable."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        log(
+            "Signing out..."
+        );
+
+
+        setLogoutLoading(
+            true
+        );
+
+
+        await signOut(auth);
+
+
+        log(
+            "Logout successful."
+        );
+
+
+        /*
+         * Same destination used
+         * by the dashboard.
+         */
+
+        window.location.replace(
+            "../pages/login.html"
+        );
+
+    } catch (err) {
+
+        error(
+            "Logout failed:",
+            err
+        );
+
+
+        setLogoutLoading(
+            false
+        );
+
+
+        alert(
+            "Unable to sign out. Please try again."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGOUT EVENT
+========================================================= */
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener(
         "click",
-        async () => {
+        logout
+    );
 
-            try {
-
-                logoutNavBtn.disabled =
-                    true;
-
-                logoutNavBtn.textContent =
-                    "Logging out...";
+}
 
 
-                await signOut(auth);
+/* =========================================================
+   AUTHENTICATION
+========================================================= */
+
+if (!auth) {
+
+    error(
+        "Firebase Auth was not initialized."
+    );
+
+
+    window.location.replace(
+        "../pages/login.html"
+    );
+
+} else {
+
+    onAuthStateChanged(
+        auth,
+        async (user) => {
+
+            log(
+                "Authentication state:",
+                user
+                    ? "AUTHENTICATED"
+                    : "NOT AUTHENTICATED"
+            );
+
+
+            /*
+             * ------------------------------------------------
+             * NOT AUTHENTICATED
+             * ------------------------------------------------
+             */
+
+            if (!user) {
+
+                currentUser = null;
+
+                warn(
+                    "No authenticated user. Redirecting."
+                );
 
 
                 window.location.replace(
-                    "../index.html"
+                    "../pages/login.html?redirect=courses"
                 );
 
 
-            } catch (error) {
-
-                console.error(
-                    "CWS Academy logout error:",
-                    error
-                );
-
-
-                logoutNavBtn.disabled =
-                    false;
-
-                logoutNavBtn.textContent =
-                    "Logout";
+                return;
 
             }
+
+
+            /*
+             * ------------------------------------------------
+             * AUTHENTICATED
+             * ------------------------------------------------
+             */
+
+            currentUser =
+                user;
+
+
+            /*
+             * Refresh Firebase user.
+             */
+
+            try {
+
+                await user.reload();
+
+            } catch (err) {
+
+                warn(
+                    "Unable to refresh Firebase user:",
+                    err
+                );
+
+            }
+
+
+            /*
+             * Use refreshed user object.
+             */
+
+            const refreshedUser =
+                auth.currentUser ||
+                user;
+
+
+            displayStudent(
+                refreshedUser
+            );
+
+
+            /*
+             * Prevent duplicate
+             * initialization.
+             */
+
+            if (coursesInitialized) {
+
+                return;
+
+            }
+
+
+            coursesInitialized =
+                true;
+
+
+            /*
+             * Initial filter.
+             */
+
+            setActiveFilter(
+                "all"
+            );
+
+
+            filterCourses(
+                "all"
+            );
+
+
+            log(
+                "Student courses initialized successfully."
+            );
 
         }
     );
@@ -272,16 +592,9 @@ if (logoutNavBtn) {
 
 
 /* =========================================================
-   INITIAL FILTER
+   INITIAL LOAD
 ========================================================= */
 
-filterCourses("all");
-
-
-/* =========================================================
-   DEBUG
-========================================================= */
-
-console.log(
-    "CWS Academy student courses initialized."
+log(
+    "student-courses.js loaded."
 );
