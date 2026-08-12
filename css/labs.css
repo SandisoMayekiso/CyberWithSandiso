@@ -1,0 +1,282 @@
+/* =========================================================
+   CWS ACADEMY
+   Student Labs
+========================================================= */
+
+
+/* =========================================================
+   LABS HERO
+========================================================= */
+
+.labs-hero {
+    padding: 110px 20px 80px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(0, 255, 170, 0.12),
+            transparent 35%
+        ),
+        #07110f;
+    border-bottom: 1px solid rgba(0, 255, 170, 0.12);
+}
+
+
+.labs-hero-content {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+.labs-hero .hero-badge {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: #00ffae;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+
+
+.labs-hero h1 {
+    max-width: 800px;
+    margin: 0 0 20px;
+    color: #ffffff;
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    line-height: 1.05;
+}
+
+
+.labs-hero h1 span {
+    color: #00ffae;
+}
+
+
+.labs-hero p {
+    max-width: 700px;
+    margin: 0;
+    color: #a9b8b4;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   LAB SECTION
+========================================================= */
+
+.labs-section {
+    padding: 80px 20px;
+    background: #081311;
+}
+
+
+.labs-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+.labs-section-heading {
+    margin-bottom: 45px;
+}
+
+
+.labs-section-heading span {
+    display: block;
+    margin-bottom: 12px;
+    color: #00ffae;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+}
+
+
+.labs-section-heading h2 {
+    margin: 0 0 15px;
+    color: #ffffff;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+}
+
+
+.labs-section-heading p {
+    max-width: 700px;
+    margin: 0;
+    color: #9eafaa;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   LAB GRID
+========================================================= */
+
+.labs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+
+/* =========================================================
+   LAB CARD
+========================================================= */
+
+.lab-card {
+    position: relative;
+    padding: 30px;
+    background: #0c1b18;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.lab-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 255, 174, 0.35);
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+
+.lab-icon {
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+    color: #00ffae;
+    background: rgba(0, 255, 174, 0.08);
+    border: 1px solid rgba(0, 255, 174, 0.15);
+    border-radius: 12px;
+    font-size: 1.5rem;
+}
+
+
+.lab-level {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #00ffae;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+
+.lab-card h3 {
+    margin: 0 0 12px;
+    color: #ffffff;
+    font-size: 1.3rem;
+}
+
+
+.lab-card p {
+    margin: 0 0 25px;
+    color: #9eafaa;
+    line-height: 1.7;
+}
+
+
+.lab-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+
+.lab-meta span {
+    padding: 6px 10px;
+    color: #b9c7c3;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    font-size: 0.75rem;
+}
+
+
+.lab-start-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    color: #07110f;
+    background: #00ffae;
+    border-radius: 7px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+
+.lab-start-btn:hover {
+    background: #62ffc9;
+}
+
+
+/* =========================================================
+   LAB NOTICE
+========================================================= */
+
+.labs-notice {
+    margin-top: 45px;
+    padding: 22px 25px;
+    background: rgba(0, 255, 174, 0.04);
+    border-left: 3px solid #00ffae;
+    border-radius: 8px;
+}
+
+
+.labs-notice strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+
+.labs-notice p {
+    margin: 0;
+    color: #9eafaa;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .labs-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .labs-hero {
+        padding: 80px 20px 60px;
+    }
+
+
+    .labs-section {
+        padding: 60px 20px;
+    }
+
+
+    .labs-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .lab-card {
+        padding: 25px;
+    }
+
+}
