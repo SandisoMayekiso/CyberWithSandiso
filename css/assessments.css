@@ -1,0 +1,269 @@
+/* =========================================================
+   CWS ACADEMY
+   Student Assessments
+========================================================= */
+
+
+/* =========================================================
+   ASSESSMENTS HERO
+========================================================= */
+
+.assessments-hero {
+    padding: 110px 20px 80px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(0, 180, 255, 0.12),
+            transparent 35%
+        ),
+        #071019;
+    border-bottom: 1px solid rgba(0, 180, 255, 0.12);
+}
+
+
+.assessments-hero-content {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+.assessments-hero .hero-badge {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: #3db8ff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+
+
+.assessments-hero h1 {
+    max-width: 800px;
+    margin: 0 0 20px;
+    color: #ffffff;
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    line-height: 1.05;
+}
+
+
+.assessments-hero h1 span {
+    color: #3db8ff;
+}
+
+
+.assessments-hero p {
+    max-width: 700px;
+    margin: 0;
+    color: #a9b5bd;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   ASSESSMENT SECTION
+========================================================= */
+
+.assessments-section {
+    padding: 80px 20px;
+    background: #081219;
+}
+
+
+.assessments-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+.assessments-section-heading {
+    margin-bottom: 45px;
+}
+
+
+.assessments-section-heading span {
+    display: block;
+    margin-bottom: 12px;
+    color: #3db8ff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+}
+
+
+.assessments-section-heading h2 {
+    margin: 0 0 15px;
+    color: #ffffff;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+}
+
+
+.assessments-section-heading p {
+    max-width: 700px;
+    margin: 0;
+    color: #9eabb4;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   ASSESSMENT GRID
+========================================================= */
+
+.assessments-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+
+/* =========================================================
+   ASSESSMENT CARD
+========================================================= */
+
+.assessment-card {
+    padding: 30px;
+    background: #0c1922;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+.assessment-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(61, 184, 255, 0.35);
+}
+
+
+.assessment-icon {
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+    color: #3db8ff;
+    background: rgba(61, 184, 255, 0.08);
+    border: 1px solid rgba(61, 184, 255, 0.15);
+    border-radius: 12px;
+    font-size: 1.5rem;
+}
+
+
+.assessment-type {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #3db8ff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+
+.assessment-card h3 {
+    margin: 0 0 12px;
+    color: #ffffff;
+    font-size: 1.3rem;
+}
+
+
+.assessment-card p {
+    margin: 0 0 25px;
+    color: #9eabb4;
+    line-height: 1.7;
+}
+
+
+.assessment-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+
+.assessment-meta span {
+    padding: 6px 10px;
+    color: #b8c4cb;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    font-size: 0.75rem;
+}
+
+
+.assessment-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    color: #071019;
+    background: #3db8ff;
+    border-radius: 7px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+
+.assessment-btn:hover {
+    background: #72cbff;
+}
+
+
+/* =========================================================
+   PROGRESS NOTE
+========================================================= */
+
+.assessment-progress-note {
+    margin-top: 45px;
+    padding: 22px 25px;
+    background: rgba(61, 184, 255, 0.04);
+    border-left: 3px solid #3db8ff;
+    border-radius: 8px;
+}
+
+
+.assessment-progress-note strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+
+.assessment-progress-note p {
+    margin: 0;
+    color: #9eabb4;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .assessments-hero {
+        padding: 80px 20px 60px;
+    }
+
+
+    .assessments-section {
+        padding: 60px 20px;
+    }
+
+
+    .assessments-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .assessment-card {
+        padding: 25px;
+    }
+
+}
