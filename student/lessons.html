@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CWS Academy student lessons and cybersecurity course learning."
+    >
+
+    <meta
+        name="author"
+        content="CyberWithSandiso"
+    >
+
+    <title>Lessons | CWS Academy</title>
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+
+    <!-- =====================================================
+         RESPONSIVE CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+
+    <!-- =====================================================
+         STUDENT LESSONS CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/student-lessons.css"
+    >
+
+</head>
+
+
+<body class="student-page">
+
+
+    <!-- =====================================================
+         STUDENT SIDEBAR
+    ====================================================== -->
+
+    <aside class="student-sidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="student-brand">
+
+            <a
+                href="dashboard.html"
+                class="academy-logo"
+                aria-label="CWS Academy Dashboard"
+            >
+
+                <span class="logo-cws">
+                    CWS
+                </span>
+
+                <span class="logo-text">
+                    Academy
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             STUDENT NAVIGATION
+        ================================================== -->
+
+        <nav
+            class="student-navigation"
+            aria-label="Student navigation"
+        >
+
+
+            <a href="dashboard.html">
+
+                <i class="fa-solid fa-gauge-high"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a href="courses.html">
+
+                <i class="fa-solid fa-book-open"></i>
+
+                <span>
+                    My Courses
+                </span>
+
+            </a>
+
+
+            <a
+                href="lessons.html"
+                class="active"
+                aria-current="page"
+            >
+
+                <i class="fa-solid fa-graduation-cap"></i>
+
+                <span>
+                    Lessons
+                </span>
+
+            </a>
+
+
+            <a href="labs.html">
+
+                <i class="fa-solid fa-flask"></i>
+
+                <span>
+                    Labs
+                </span>
+
+            </a>
+
+
+            <a href="assessments.html">
+
+                <i class="fa-solid fa-clipboard-check"></i>
+
+                <span>
+                    Assessments
+                </span>
+
+            </a>
+
+
+            <a href="progress.html">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                <span>
+                    Progress
+                </span>
+
+            </a>
+
+
+            <a href="certificates.html">
+
+                <i class="fa-solid fa-certificate"></i>
+
+                <span>
+                    Certificates
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- =================================================
+             SIDEBAR FOOTER
+        ================================================== -->
+
+        <div class="student-sidebar-footer">
+
+
+            <a href="../index.html">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Academy Home
+                </span>
+
+            </a>
+
+
+            <button
+                type="button"
+                id="logoutBtn"
+                class="student-logout"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="student-main">
+
+
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
+
+        <header class="student-topbar">
+
+
+            <div>
+
+                <span class="student-section-label">
+                    CWS ACADEMY
+                </span>
+
+                <h1>
+                    Lessons
+                </h1>
+
+            </div>
+
+
+            <div class="student-profile">
+
+
+                <div class="student-avatar">
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span
+                        id="studentName"
+                        class="student-name"
+                    >
+                        Student
+                    </span>
+
+                    <small>
+                        CWS Academy Student
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             LESSONS CONTENT
+        ================================================== -->
+
+        <section class="lessons-content">
+
+
+            <!-- =================================================
+                 LESSON HERO
+            ================================================== -->
+
+            <div class="lessons-hero">
+
+
+                <div class="lessons-hero-content">
+
+
+                    <span class="section-kicker">
+                        CWS ACADEMY LEARNING
+                    </span>
+
+
+                    <h2 id="lessonCourseTitle">
+                        Course Lessons
+                    </h2>
+
+
+                    <p id="lessonCourseDescription">
+                        Continue your cybersecurity training
+                        through structured lessons and modules.
+                    </p>
+
+
+                    <!-- COURSE PROGRESS -->
+
+                    <div class="lesson-overall-progress">
+
+
+                        <div class="progress-header">
+
+
+                            <span>
+                                Course Progress
+                            </span>
+
+
+                            <strong id="courseProgressPercent">
+                                0%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="progress-track">
+
+                            <div
+                                id="courseProgressBar"
+                                class="progress-bar"
+                                style="width: 0%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="lessons-hero-icon">
+
+                    <i class="fa-solid fa-graduation-cap"></i>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 LESSON CONTROLS
+            ================================================== -->
+
+            <div class="lessons-controls">
+
+
+                <div class="lesson-search">
+
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+
+                    <input
+                        type="search"
+                        id="lessonSearch"
+                        placeholder="Search lessons..."
+                        autocomplete="off"
+                        aria-label="Search lessons"
+                    >
+
+                </div>
+
+
+                <div
+                    class="lesson-filters"
+                    role="group"
+                    aria-label="Lesson filters"
+                >
+
+
+                    <button
+                        type="button"
+                        class="lesson-filter active"
+                        data-filter="all"
+                    >
+                        All
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="lesson-filter"
+                        data-filter="completed"
+                    >
+                        Completed
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="lesson-filter"
+                        data-filter="current"
+                    >
+                        Current
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="lesson-filter"
+                        data-filter="locked"
+                    >
+                        Locked
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 COURSE MODULES
+            ================================================== -->
+
+            <section class="lessons-section">
+
+
+                <div class="section-heading">
+
+
+                    <div>
+
+                        <span>
+                            COURSE CURRICULUM
+                        </span>
+
+                        <h2>
+                            Learning Modules
+                        </h2>
+
+                    </div>
+
+
+                    <a
+                        href="courses.html"
+                        class="section-view-all"
+                    >
+
+                        All Courses
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     LESSON GRID
+                ================================================== -->
+
+                <div
+                    id="lessonsGrid"
+                    class="lessons-grid"
+                >
+
+
+                    <!-- =================================================
+                         LESSON 1
+                    ================================================== -->
+
+                    <article
+                        class="lesson-card"
+                        data-status="current"
+                        data-search="introduction cybersecurity fundamentals security"
+                        data-course="cybersecurity-fundamentals"
+                    >
+
+
+                        <div class="lesson-card-number">
+                            01
+                        </div>
+
+
+                        <div class="lesson-card-icon">
+
+                            <i class="fa-solid fa-shield-halved"></i>
+
+                        </div>
+
+
+                        <div class="lesson-card-content">
+
+
+                            <div class="lesson-card-top">
+
+
+                                <span class="lesson-status current">
+                                    CURRENT
+                                </span>
+
+
+                                <span class="lesson-duration">
+
+                                    <i class="fa-regular fa-clock"></i>
+
+                                    25 min
+
+                                </span>
+
+                            </div>
+
+
+                            <h3>
+                                Introduction to Cybersecurity
+                            </h3>
+
+
+                            <p>
+                                Understand cybersecurity fundamentals,
+                                security principles and the role of
+                                cybersecurity professionals.
+                            </p>
+
+
+                            <div class="lesson-card-meta">
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-book-open"></i>
+
+                                    Module 1
+
+                                </span>
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-signal"></i>
+
+                                    Beginner
+
+                                </span>
+
+                            </div>
+
+
+                            <a
+                                href="lesson.html?course=cybersecurity-fundamentals&lesson=introduction"
+                                class="lesson-action"
+                            >
+
+                                Start Lesson
+
+                                <i class="fa-solid fa-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =================================================
+                         LESSON 2
+                    ================================================== -->
+
+                    <article
+                        class="lesson-card"
+                        data-status="locked"
+                        data-search="threats vulnerabilities cyber attacks"
+                        data-course="cybersecurity-fundamentals"
+                    >
+
+
+                        <div class="lesson-card-number">
+                            02
+                        </div>
+
+
+                        <div class="lesson-card-icon">
+
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        </div>
+
+
+                        <div class="lesson-card-content">
+
+
+                            <div class="lesson-card-top">
+
+
+                                <span class="lesson-status locked">
+                                    LOCKED
+                                </span>
+
+
+                                <span class="lesson-duration">
+
+                                    <i class="fa-regular fa-clock"></i>
+
+                                    30 min
+
+                                </span>
+
+                            </div>
+
+
+                            <h3>
+                                Threats & Vulnerabilities
+                            </h3>
+
+
+                            <p>
+                                Learn how common cybersecurity threats
+                                exploit vulnerabilities and understand
+                                basic risk concepts.
+                            </p>
+
+
+                            <div class="lesson-card-meta">
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-book-open"></i>
+
+                                    Module 2
+
+                                </span>
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-signal"></i>
+
+                                    Beginner
+
+                                </span>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="lesson-action disabled"
+                                disabled
+                            >
+
+                                Complete Previous Lesson
+
+                                <i class="fa-solid fa-lock"></i>
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =================================================
+                         LESSON 3
+                    ================================================== -->
+
+                    <article
+                        class="lesson-card"
+                        data-status="locked"
+                        data-search="security controls authentication authorization"
+                        data-course="cybersecurity-fundamentals"
+                    >
+
+
+                        <div class="lesson-card-number">
+                            03
+                        </div>
+
+
+                        <div class="lesson-card-icon">
+
+                            <i class="fa-solid fa-key"></i>
+
+                        </div>
+
+
+                        <div class="lesson-card-content">
+
+
+                            <div class="lesson-card-top">
+
+
+                                <span class="lesson-status locked">
+                                    LOCKED
+                                </span>
+
+
+                                <span class="lesson-duration">
+
+                                    <i class="fa-regular fa-clock"></i>
+
+                                    30 min
+
+                                </span>
+
+                            </div>
+
+
+                            <h3>
+                                Security Controls
+                            </h3>
+
+
+                            <p>
+                                Explore administrative, technical and
+                                physical security controls used to
+                                protect systems and information.
+                            </p>
+
+
+                            <div class="lesson-card-meta">
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-book-open"></i>
+
+                                    Module 3
+
+                                </span>
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-signal"></i>
+
+                                    Beginner
+
+                                </span>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="lesson-action disabled"
+                                disabled
+                            >
+
+                                Complete Previous Lesson
+
+                                <i class="fa-solid fa-lock"></i>
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =================================================
+                         LESSON 4
+                    ================================================== -->
+
+                    <article
+                        class="lesson-card"
+                        data-status="locked"
+                        data-search="network security protocols communication"
+                        data-course="cybersecurity-fundamentals"
+                    >
+
+
+                        <div class="lesson-card-number">
+                            04
+                        </div>
+
+
+                        <div class="lesson-card-icon">
+
+                            <i class="fa-solid fa-network-wired"></i>
+
+                        </div>
+
+
+                        <div class="lesson-card-content">
+
+
+                            <div class="lesson-card-top">
+
+
+                                <span class="lesson-status locked">
+                                    LOCKED
+                                </span>
+
+
+                                <span class="lesson-duration">
+
+                                    <i class="fa-regular fa-clock"></i>
+
+                                    35 min
+
+                                </span>
+
+                            </div>
+
+
+                            <h3>
+                                Network Security Basics
+                            </h3>
+
+
+                            <p>
+                                Build an understanding of network
+                                communication, common protocols and
+                                fundamental network security concepts.
+                            </p>
+
+
+                            <div class="lesson-card-meta">
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-book-open"></i>
+
+                                    Module 4
+
+                                </span>
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-signal"></i>
+
+                                    Beginner
+
+                                </span>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="lesson-action disabled"
+                                disabled
+                            >
+
+                                Complete Previous Lesson
+
+                                <i class="fa-solid fa-lock"></i>
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =================================================
+                         LESSON 5
+                    ================================================== -->
+
+                    <article
+                        class="lesson-card"
+                        data-status="locked"
+                        data-search="linux security operating systems"
+                        data-course="cybersecurity-fundamentals"
+                    >
+
+
+                        <div class="lesson-card-number">
+                            05
+                        </div>
+
+
+                        <div class="lesson-card-icon">
+
+                            <i class="fa-brands fa-linux"></i>
+
+                        </div>
+
+
+                        <div class="lesson-card-content">
+
+
+                            <div class="lesson-card-top">
+
+
+                                <span class="lesson-status locked">
+                                    LOCKED
+                                </span>
+
+
+                                <span class="lesson-duration">
+
+                                    <i class="fa-regular fa-clock"></i>
+
+                                    35 min
+
+                                </span>
+
+                            </div>
+
+
+                            <h3>
+                                Linux Security Fundamentals
+                            </h3>
+
+
+                            <p>
+                                Learn how Linux systems are structured
+                                and explore permissions, processes and
+                                basic security operations.
+                            </p>
+
+
+                            <div class="lesson-card-meta">
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-book-open"></i>
+
+                                    Module 5
+
+                                </span>
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-signal"></i>
+
+                                    Beginner
+
+                                </span>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="lesson-action disabled"
+                                disabled
+                            >
+
+                                Complete Previous Lesson
+
+                                <i class="fa-solid fa-lock"></i>
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =================================================
+                         LESSON 6
+                    ================================================== -->
+
+                    <article
+                        class="lesson-card"
+                        data-status="locked"
+                        data-search="security operations incident response"
+                        data-course="cybersecurity-fundamentals"
+                    >
+
+
+                        <div class="lesson-card-number">
+                            06
+                        </div>
+
+
+                        <div class="lesson-card-icon">
+
+                            <i class="fa-solid fa-radar"></i>
+
+                        </div>
+
+
+                        <div class="lesson-card-content">
+
+
+                            <div class="lesson-card-top">
+
+
+                                <span class="lesson-status locked">
+                                    LOCKED
+                                </span>
+
+
+                                <span class="lesson-duration">
+
+                                    <i class="fa-regular fa-clock"></i>
+
+                                    35 min
+
+                                </span>
+
+                            </div>
+
+
+                            <h3>
+                                Security Operations
+                            </h3>
+
+
+                            <p>
+                                Understand monitoring, detection and
+                                basic incident response processes used
+                                by security teams.
+                            </p>
+
+
+                            <div class="lesson-card-meta">
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-book-open"></i>
+
+                                    Module 6
+
+                                </span>
+
+
+                                <span>
+
+                                    <i class="fa-solid fa-signal"></i>
+
+                                    Beginner
+
+                                </span>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="lesson-action disabled"
+                                disabled
+                            >
+
+                                Complete Previous Lesson
+
+                                <i class="fa-solid fa-lock"></i>
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     NO RESULTS
+                ================================================== -->
+
+                <div
+                    id="noLessonsMessage"
+                    class="lessons-empty-state"
+                    hidden
+                >
+
+                    <div class="empty-icon">
+
+                        <i class="fa-solid fa-book-open"></i>
+
+                    </div>
+
+
+                    <h3>
+                        No lessons found
+                    </h3>
+
+
+                    <p>
+                        Try changing your search or filter.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 COURSE LEARNING NOTICE
+            ================================================== -->
+
+            <section class="lessons-learning-notice">
+
+
+                <div class="notice-icon">
+
+                    <i class="fa-solid fa-lightbulb"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        LEARNING GUIDANCE
+                    </span>
+
+
+                    <h2>
+                        Complete Lessons Sequentially
+                    </h2>
+
+
+                    <p>
+                        Work through each module in order.
+                        Completing lessons will unlock the
+                        next stage of your course and contribute
+                        to your overall learning progress.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FIREBASE AUTH GUARD
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="../js/auth-guard.js"
+    ></script>
+
+
+    <!-- =====================================================
+         STUDENT LESSONS JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="../js/student-lessons.js"
+    ></script>
+
+</body>
+
+</html>
