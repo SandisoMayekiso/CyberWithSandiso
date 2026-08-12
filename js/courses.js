@@ -1,39 +1,15 @@
 /* =========================================================
    CWS ACADEMY
    Student Courses
-   Authentication + Search + Filtering + Enrollment
-========================================================= */
-
-
-/* =========================================================
-   FIREBASE AUTH
+   courses.js
 ========================================================= */
 
 import {
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-
-/* =========================================================
-   FIREBASE FIRESTORE
-========================================================= */
-
 import {
-    doc,
-    getDoc,
-    setDoc,
-    updateDoc,
-    arrayUnion
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-/* =========================================================
-   FIREBASE CONFIG
-========================================================= */
-
-import {
-    auth,
-    db
+    auth
 } from "./firebase-config.js";
 
 
@@ -41,1192 +17,300 @@ import {
    DEBUG
 ========================================================= */
 
-console.log(
-    "CWS Academy student-courses.js loaded."
-);
+console.log("CWS Academy courses.js loaded");
 
 
 /* =========================================================
-   DOM ELEMENTS
+   DOM READY
 ========================================================= */
 
-const courseSearch =
-    document.getElementById(
-        "courseSearch"
+document.addEventListener("DOMContentLoaded", () => {
+
+    const filterButtons =
+        document.querySelectorAll(".course-filter");
+
+    const courseCards =
+        document.querySelectorAll(".academy-course-card");
+
+    const emptyState =
+        document.querySelector(".course-empty-state");
+
+
+    console.log(
+        "Course filters:",
+        filterButtons.length
+    );
+
+    console.log(
+        "Course cards:",
+        courseCards.length
     );
 
 
-const filterButtons =
-    document.querySelectorAll(
-        ".course-filter"
-    );
+    /* =====================================================
+       FILTER COURSES
+    ===================================================== */
 
+    function filterCourses(selectedFilter) {
 
-const courseGrid =
-    document.getElementById(
-        "studentCoursesGrid"
-    );
+        let visibleCourses = 0;
 
 
-const courseCount =
-    document.getElementById(
-        "courseCount"
-    );
+        courseCards.forEach(card => {
 
+            const courseLevel =
+                card.dataset.level;
 
-const noCoursesMessage =
-    document.getElementById(
-        "noCoursesMessage"
-    );
 
+            const shouldShow =
+                selectedFilter === "all" ||
+                courseLevel === selectedFilter;
 
-const studentName =
-    document.getElementById(
-        "studentName"
-    );
 
+            if (shouldShow) {
 
-const courseCards =
-    document.querySelectorAll(
-        ".student-course-card"
-    );
+                card.classList.remove("hidden");
 
+                visibleCourses++;
 
-/* =========================================================
-   STATE
-========================================================= */
+            } else {
 
-let currentUser = null;
+                card.classList.add("hidden");
 
-let currentFilter =
-    "all";
+            }
 
-let searchTerm =
-    "";
+        });
 
 
-/* =========================================================
-   COURSE DATA
-========================================================= */
+        /* ================================================
+           EMPTY STATE
+        ================================================= */
 
-const courseCatalog = {
+        if (emptyState) {
 
-    "cybersecurity-fundamentals": {
+            if (visibleCourses === 0) {
 
-        name:
-            "Cybersecurity Fundamentals",
+                emptyState.classList.add("visible");
 
-        level:
-            "beginner"
+            } else {
 
-    },
+                emptyState.classList.remove("visible");
 
-
-    "networking-fundamentals": {
-
-        name:
-            "Networking Fundamentals",
-
-        level:
-            "beginner"
-
-    },
-
-
-    "linux-fundamentals": {
-
-        name:
-            "Linux Fundamentals",
-
-        level:
-            "beginner"
-
-    },
-
-
-    "ethical-hacking-fundamentals": {
-
-        name:
-            "Ethical Hacking Fundamentals",
-
-        level:
-            "intermediate"
-
-    },
-
-
-    "web-application-security": {
-
-        name:
-            "Web Application Security",
-
-        level:
-            "intermediate"
-
-    },
-
-
-    "practical-penetration-testing": {
-
-        name:
-            "Practical Penetration Testing",
-
-        level:
-            "advanced"
-
-    }
-
-};
-
-
-/* =========================================================
-   GET COURSE ID
-========================================================= */
-
-function getCourseId(card) {
-
-    /*
-     * Prefer an explicit data-course-id
-     * if you add one later.
-     */
-
-    if (card.dataset.courseId) {
-
-        return card.dataset.courseId;
-
-    }
-
-
-    /*
-     * Fall back to the current
-     * data-course value.
-     */
-
-    const courseName =
-        card.dataset.course || "";
-
-
-    return normalizeCourseId(
-        courseName
-    );
-
-}
-
-
-/* =========================================================
-   NORMALIZE COURSE ID
-========================================================= */
-
-function normalizeCourseId(value) {
-
-    return value
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-
-}
-
-
-/* =========================================================
-   GET COURSE NAME
-========================================================= */
-
-function getCourseName(card) {
-
-    const heading =
-        card.querySelector("h3");
-
-
-    if (heading) {
-
-        return heading.textContent.trim();
-
-    }
-
-
-    return "Course";
-
-}
-
-
-/* =========================================================
-   GET USER DISPLAY NAME
-========================================================= */
-
-function getUserName(user) {
-
-    if (user?.displayName) {
-
-        return user.displayName.trim();
-
-    }
-
-
-    if (user?.email) {
-
-        const emailName =
-            user.email
-                .split("@")[0]
-                .trim();
-
-
-        if (emailName) {
-
-            return emailName;
+            }
 
         }
 
     }
 
 
-    return "Student";
-
-}
-
-
-/* =========================================================
-   DISPLAY STUDENT NAME
-========================================================= */
-
-function displayStudentName(user) {
-
-    if (!studentName) {
-
-        return;
-
-    }
-
-
-    studentName.textContent =
-        getUserName(user);
-
-}
-
-
-/* =========================================================
-   UPDATE COURSE COUNT
-========================================================= */
-
-function updateCourseCount(visibleCount) {
-
-    if (!courseCount) {
-
-        return;
-
-    }
-
-
-    courseCount.textContent =
-        visibleCount === 1
-            ? "1 Course"
-            : `${visibleCount} Courses`;
-
-}
-
-
-/* =========================================================
-   SHOW / HIDE NO RESULTS
-========================================================= */
-
-function updateNoResultsState(visibleCount) {
-
-    if (!noCoursesMessage) {
-
-        return;
-
-    }
-
-
-    noCoursesMessage.hidden =
-        visibleCount !== 0;
-
-}
-
-
-/* =========================================================
-   FILTER COURSES
-========================================================= */
-
-function filterCourses() {
-
-    const normalizedSearch =
-        searchTerm
-            .toLowerCase()
-            .trim();
-
-
-    let visibleCount =
-        0;
-
-
-    courseCards.forEach(card => {
-
-        const courseName =
-            getCourseName(card)
-                .toLowerCase();
-
-
-        const courseDescription =
-            card.querySelector("p")
-                ?.textContent
-                .toLowerCase() || "";
-
-
-        const cardCourse =
-            card.dataset.course
-                ?.toLowerCase() || "";
-
-
-        const status =
-            card.dataset.status
-                ?.toLowerCase() || "";
-
-
-        /*
-         * SEARCH
-         */
-
-        const matchesSearch =
-            !normalizedSearch ||
-            courseName.includes(
-                normalizedSearch
-            ) ||
-            courseDescription.includes(
-                normalizedSearch
-            ) ||
-            cardCourse.includes(
-                normalizedSearch
-            );
-
-
-        /*
-         * FILTER
-         */
-
-        const matchesFilter =
-            currentFilter === "all" ||
-            status === currentFilter;
-
-
-        /*
-         * FINAL VISIBILITY
-         */
-
-        const shouldShow =
-            matchesSearch &&
-            matchesFilter;
-
-
-        if (shouldShow) {
-
-            card.hidden =
-                false;
-
-            card.classList.remove(
-                "hidden"
-            );
-
-            visibleCount++;
-
-        } else {
-
-            card.hidden =
-                true;
-
-            card.classList.add(
-                "hidden"
-            );
-
-        }
-
-    });
-
-
-    updateCourseCount(
-        visibleCount
-    );
-
-
-    updateNoResultsState(
-        visibleCount
-    );
-
-}
-
-
-/* =========================================================
-   FILTER BUTTONS
-========================================================= */
-
-function setupFilters() {
-
-    if (!filterButtons.length) {
-
-        return;
-
-    }
-
+    /* =====================================================
+       FILTER BUTTON EVENTS
+    ===================================================== */
 
     filterButtons.forEach(button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+        button.addEventListener("click", () => {
 
-                currentFilter =
-                    button.dataset.filter ||
-                    "all";
+            const selectedFilter =
+                button.dataset.filter || "all";
 
 
-                filterButtons.forEach(
-                    item => {
+            /* Remove active state */
 
-                        item.classList.remove(
-                            "active"
-                        );
+            filterButtons.forEach(item => {
 
-                    }
-                );
+                item.classList.remove("active");
+
+            });
 
 
-                button.classList.add(
-                    "active"
-                );
+            /* Activate selected filter */
+
+            button.classList.add("active");
 
 
-                filterCourses();
+            /* Filter */
 
-            }
-        );
-
-    });
-
-}
+            filterCourses(selectedFilter);
 
 
-/* =========================================================
-   SEARCH
-========================================================= */
-
-function setupSearch() {
-
-    if (!courseSearch) {
-
-        return;
-
-    }
-
-
-    courseSearch.addEventListener(
-        "input",
-        () => {
-
-            searchTerm =
-                courseSearch.value;
-
-            filterCourses();
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   GET STUDENT DOCUMENT
-========================================================= */
-
-async function getStudentDocument(user) {
-
-    if (!user) {
-
-        return null;
-
-    }
-
-
-    try {
-
-        const studentRef =
-            doc(
-                db,
-                "students",
-                user.uid
+            console.log(
+                "Course filter:",
+                selectedFilter
             );
 
-
-        const snapshot =
-            await getDoc(
-                studentRef
-            );
-
-
-        if (!snapshot.exists()) {
-
-            return null;
-
-        }
-
-
-        return snapshot.data();
-
-    } catch (error) {
-
-        console.error(
-            "Unable to load student data:",
-            error
-        );
-
-
-        return null;
-
-    }
-
-}
-
-
-/* =========================================================
-   FIND ENROLLED COURSE
-========================================================= */
-
-function findEnrolledCourse(
-    enrolledCourses,
-    courseId
-) {
-
-    if (!Array.isArray(enrolledCourses)) {
-
-        return null;
-
-    }
-
-
-    return enrolledCourses.find(
-        course => {
-
-            return (
-                course?.id === courseId
-            );
-
-        }
-    ) || null;
-
-}
-
-
-/* =========================================================
-   APPLY STUDENT COURSE DATA
-========================================================= */
-
-function applyCourseData(
-    card,
-    enrollment
-) {
-
-    if (!enrollment) {
-
-        return;
-
-    }
-
-
-    const progress =
-        Number(
-            enrollment.progress || 0
-        );
-
-
-    const status =
-        enrollment.status ||
-        (
-            progress >= 100
-                ? "completed"
-                : "in-progress"
-        );
-
-
-    /*
-     * Update card state
-     */
-
-    card.dataset.status =
-        status;
-
-
-    /*
-     * Status label
-     */
-
-    const statusElement =
-        card.querySelector(
-            ".course-status"
-        );
-
-
-    if (statusElement) {
-
-        statusElement.className =
-            `course-status ${status}`;
-
-        statusElement.textContent =
-            status === "completed"
-                ? "COMPLETED"
-                : status === "in-progress"
-                    ? "IN PROGRESS"
-                    : "NOT STARTED";
-
-    }
-
-
-    /*
-     * Progress percentage
-     */
-
-    const progressValue =
-        card.querySelector(
-            ".progress-header strong"
-        );
-
-
-    if (progressValue) {
-
-        progressValue.textContent =
-            `${progress}%`;
-
-    }
-
-
-    /*
-     * Progress bar
-     */
-
-    const progressBar =
-        card.querySelector(
-            ".progress-bar"
-        );
-
-
-    if (progressBar) {
-
-        progressBar.style.width =
-            `${progress}%`;
-
-    }
-
-
-    /*
-     * Action button
-     */
-
-    const action =
-        card.querySelector(
-            ".course-action"
-        );
-
-
-    if (!action) {
-
-        return;
-
-    }
-
-
-    const courseId =
-        getCourseId(card);
-
-
-    action.href =
-        `lessons.html?course=${encodeURIComponent(courseId)}`;
-
-
-    if (status === "completed") {
-
-        action.innerHTML =
-            `
-                Review Course
-                <i class="fa-solid fa-arrow-right"></i>
-            `;
-
-    } else if (status === "in-progress") {
-
-        action.innerHTML =
-            `
-                Continue Learning
-                <i class="fa-solid fa-arrow-right"></i>
-            `;
-
-    } else {
-
-        action.innerHTML =
-            `
-                Start Learning
-                <i class="fa-solid fa-arrow-right"></i>
-            `;
-
-    }
-
-}
-
-
-/* =========================================================
-   LOAD STUDENT COURSES
-========================================================= */
-
-async function loadStudentCourses(user) {
-
-    console.log(
-        "Loading courses for:",
-        user.uid
-    );
-
-
-    const studentData =
-        await getStudentDocument(
-            user
-        );
-
-
-    if (!studentData) {
-
-        console.log(
-            "No student document found."
-        );
-
-
-        filterCourses();
-
-        return;
-
-    }
-
-
-    const enrolledCourses =
-        Array.isArray(
-            studentData.enrolledCourses
-        )
-            ? studentData.enrolledCourses
-            : [];
-
-
-    courseCards.forEach(card => {
-
-        const courseId =
-            getCourseId(card);
-
-
-        const enrollment =
-            findEnrolledCourse(
-                enrolledCourses,
-                courseId
-            );
-
-
-        if (enrollment) {
-
-            applyCourseData(
-                card,
-                enrollment
-            );
-
-        }
+        });
 
     });
 
 
-    /*
-     * Re-run filtering because
-     * enrollment statuses may
-     * have changed.
-     */
+    /* =====================================================
+       INITIAL FILTER
+    ===================================================== */
 
-    filterCourses();
-
-}
+    filterCourses("all");
 
 
-/* =========================================================
-   ENROLL STUDENT
-========================================================= */
+    /* =====================================================
+       COURSE ACTION BUTTONS
+    ===================================================== */
 
-async function enrollStudent(
-    user,
-    courseId,
-    courseName,
-    button,
-    card
-) {
+    const courseButtons =
+        document.querySelectorAll(
+            ".course-card-btn"
+        );
 
-    if (!user) {
 
-        return;
+    courseButtons.forEach(button => {
+
+        button.addEventListener("click", event => {
+
+            /*
+             * If the button is disabled,
+             * do nothing.
+             */
+
+            if (
+                button.disabled ||
+                button.classList.contains("disabled")
+            ) {
+
+                event.preventDefault();
+
+                return;
+
+            }
+
+
+            /*
+             * If it is a normal link,
+             * allow the browser to navigate.
+             */
+
+        });
+
+    });
+
+
+    /* =====================================================
+       AUTHENTICATION
+    ===================================================== */
+
+    onAuthStateChanged(
+        auth,
+        user => {
+
+            if (user) {
+
+                console.log(
+                    "Courses page: authenticated user",
+                    user.uid
+                );
+
+                enableAuthenticatedCourses();
+
+            } else {
+
+                console.log(
+                    "Courses page: visitor is not authenticated"
+                );
+
+                prepareGuestCourses();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       AUTHENTICATED USER
+    ===================================================== */
+
+    function enableAuthenticatedCourses() {
+
+        const protectedButtons =
+            document.querySelectorAll(
+                "[data-auth-required]"
+            );
+
+
+        protectedButtons.forEach(button => {
+
+            button.removeAttribute("aria-disabled");
+
+        });
 
     }
 
 
-    const originalHTML =
-        button.innerHTML;
+    /* =====================================================
+       GUEST USER
+    ===================================================== */
 
+    function prepareGuestCourses() {
 
-    try {
-
-        /*
-         * Disable button
-         */
-
-        button.disabled =
-            true;
-
-
-        button.classList.add(
-            "enrolling"
-        );
-
-
-        button.innerHTML =
-            `
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                Enrolling...
-            `;
-
-
-        /*
-         * Student document
-         */
-
-        const studentRef =
-            doc(
-                db,
-                "students",
-                user.uid
+        const protectedLinks =
+            document.querySelectorAll(
+                "[data-auth-required]"
             );
 
 
-        /*
-         * Enrollment record
-         */
+        protectedLinks.forEach(link => {
 
-        const enrollment = {
+            /*
+             * Don't completely hide the course.
+             *
+             * The course catalogue remains public.
+             * Only the actual learning area requires
+             * authentication.
+             */
 
-            id:
-                courseId,
+            link.addEventListener(
+                "click",
+                handleProtectedCourseAccess
+            );
 
-            name:
-                courseName,
+        });
 
-            progress:
-                0,
-
-            status:
-                "in-progress",
-
-            enrolledAt:
-                new Date().toISOString(),
-
-            currentLesson:
-                0
-
-        };
+    }
 
 
-        /*
-         * Save enrollment
-         */
+    /* =====================================================
+       PROTECTED COURSE ACCESS
+    ===================================================== */
 
-        await setDoc(
-            studentRef,
-            {
+    function handleProtectedCourseAccess(event) {
 
-                uid:
-                    user.uid,
+        event.preventDefault();
 
-                email:
-                    user.email || "",
 
-                enrolledCourses:
-                    arrayUnion(
-                        enrollment
-                    )
-
-            },
-            {
-                merge:
-                    true
-            }
-        );
+        const destination =
+            this.getAttribute("href");
 
 
         /*
-         * Update local card
+         * Preserve the destination so login.js
+         * can return the user to the correct page.
          */
 
-        applyCourseData(
-            card,
-            enrollment
-        );
-
-
-        /*
-         * Success state
-         */
-
-        button.classList.remove(
-            "enrolling"
-        );
-
-
-        button.classList.add(
-            "enrolled"
-        );
-
-
-        button.innerHTML =
-            `
-                <i class="fa-solid fa-circle-check"></i>
-                Enrolled
-            `;
-
-
-        console.log(
-            "Successfully enrolled:",
-            courseName
-        );
-
-
-        /*
-         * Re-run filtering
-         */
-
-        filterCourses();
-
-
-        /*
-         * Go directly into
-         * the course after enrollment.
-         */
-
-        setTimeout(() => {
+        if (!destination) {
 
             window.location.href =
-                `lessons.html?course=${encodeURIComponent(courseId)}`;
-
-        }, 600);
-
-
-    } catch (error) {
-
-        console.error(
-            "Course enrollment error:",
-            error
-        );
-
-
-        /*
-         * Restore button
-         */
-
-        button.disabled =
-            false;
-
-
-        button.classList.remove(
-            "enrolling",
-            "enrolled"
-        );
-
-
-        button.innerHTML =
-            originalHTML;
-
-
-        alert(
-            "We couldn't enroll you in this course. Please try again."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   COURSE ACTIONS
-========================================================= */
-
-function setupCourseActions() {
-
-    courseCards.forEach(card => {
-
-        const action =
-            card.querySelector(
-                ".course-action"
-            );
-
-
-        if (!action) {
+                "login.html";
 
             return;
 
         }
 
 
-        const courseId =
-            getCourseId(card);
+        const encodedDestination =
+            encodeURIComponent(destination);
 
 
-        /*
-         * Courses which are already
-         * enrolled simply use their
-         * existing lessons link.
-         */
-
-        action.href =
-            `lessons.html?course=${encodeURIComponent(courseId)}`;
-
-
-        /*
-         * Existing status
-         */
-
-        const status =
-            card.dataset.status;
-
-
-        /*
-         * Not-started courses:
-         *
-         * We treat the action as
-         * enrollment + start.
-         */
-
-        if (
-            status === "not-started"
-        ) {
-
-            action.addEventListener(
-                "click",
-                async event => {
-
-                    event.preventDefault();
-
-
-                    /*
-                     * Wait for Firebase
-                     * authentication.
-                     */
-
-                    if (!currentUser) {
-
-                        window.location.href =
-                            `../pages/login.html?redirect=course-${encodeURIComponent(courseId)}`;
-
-                        return;
-
-                    }
-
-
-                    const courseName =
-                        getCourseName(card);
-
-
-                    await enrollStudent(
-                        currentUser,
-                        courseId,
-                        courseName,
-                        action,
-                        card
-                    );
-
-                }
-            );
-
-        }
-
-    });
-
-}
-
-
-/* =========================================================
-   AUTH STATE
-========================================================= */
-
-onAuthStateChanged(
-    auth,
-    async user => {
-
-        console.log(
-            "CWS Academy course auth:",
-            user
-                ? "AUTHENTICATED"
-                : "NOT AUTHENTICATED"
-        );
-
-
-        /*
-         * This page is protected.
-         */
-
-        if (!user) {
-
-            window.location.replace(
-                "../pages/login.html?redirect=courses"
-            );
-
-
-            return;
-
-        }
-
-
-        /*
-         * Save current user.
-         */
-
-        currentUser =
-            user;
-
-
-        /*
-         * Display student name.
-         */
-
-        displayStudentName(
-            user
-        );
-
-
-        /*
-         * Load Firestore course data.
-         */
-
-        await loadStudentCourses(
-            user
-        );
+        window.location.href =
+            `login.html?redirect=${encodedDestination}`;
 
     }
-);
 
-
-/* =========================================================
-   INITIALIZATION
-========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        setupFilters();
-
-        setupSearch();
-
-        setupCourseActions();
-
-        filterCourses();
-
-
-        console.log(
-            "CWS Academy courses page initialized."
-        );
-
-    }
-);
+});
