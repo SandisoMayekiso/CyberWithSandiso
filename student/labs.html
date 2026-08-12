@@ -44,7 +44,8 @@
 
 
     <!-- =====================================================
-         DASHBOARD / STUDENT CSS
+         DASHBOARD CSS
+         Keeps navigation/header visually consistent
     ====================================================== -->
 
     <link
@@ -65,7 +66,7 @@
 </head>
 
 
-<body class="student-dashboard student-labs-page">
+<body class="student-dashboard">
 
 
 <!-- =========================================================
@@ -76,10 +77,7 @@
 
     <nav class="student-nav">
 
-
-        <!-- =================================================
-             LOGO
-        ================================================== -->
+        <!-- LOGO -->
 
         <a
             href="dashboard.html"
@@ -98,13 +96,9 @@
         </a>
 
 
-
-        <!-- =================================================
-             NAVIGATION LINKS
-        ================================================== -->
+        <!-- NAVIGATION LINKS -->
 
         <div class="student-nav-links">
-
 
             <a href="dashboard.html">
 
@@ -166,13 +160,9 @@
         </div>
 
 
-
-        <!-- =================================================
-             ACCOUNT
-        ================================================== -->
+        <!-- ACCOUNT -->
 
         <div class="student-nav-account">
-
 
             <span
                 id="studentName"
@@ -206,18 +196,16 @@
      MAIN CONTENT
 ========================================================= -->
 
-<main class="dashboard-main">
+<main class="labs-main">
 
 
     <!-- =====================================================
          LAB HERO
     ====================================================== -->
 
-    <section class="dashboard-welcome labs-page-hero">
+    <section class="labs-hero">
 
-
-        <div class="welcome-content">
-
+        <div class="labs-hero-content">
 
             <span class="dashboard-label">
                 CWS ACADEMY • HANDS-ON SECURITY
@@ -226,43 +214,27 @@
 
             <h1>
                 Practical
-                <span>
-                    Cybersecurity Labs
-                </span>
+                <span>Cybersecurity Labs</span>
             </h1>
 
 
             <p>
-                Build practical cybersecurity skills through
-                structured, controlled laboratory exercises.
-                Practice networking, Linux, web security,
-                reconnaissance and security operations.
+                Turn cybersecurity knowledge into practical
+                skills through controlled, authorized laboratory
+                exercises.
             </p>
 
 
-            <div class="welcome-actions">
-
-
-                <a
-                    href="#availableLabs"
-                    class="dashboard-primary-btn"
-                >
-
-                    <i class="fa-solid fa-flask"></i>
-
-                    Explore Labs
-
-                </a>
-
+            <div class="labs-hero-actions">
 
                 <a
                     href="courses.html"
-                    class="dashboard-secondary-btn"
+                    class="labs-secondary-btn"
                 >
 
-                    <i class="fa-solid fa-book-open"></i>
+                    <i class="fa-solid fa-book"></i>
 
-                    View Courses
+                    Browse Courses
 
                 </a>
 
@@ -271,8 +243,7 @@
         </div>
 
 
-
-        <div class="welcome-icon">
+        <div class="labs-hero-icon">
 
             <i class="fa-solid fa-flask-vial"></i>
 
@@ -283,52 +254,41 @@
 
 
     <!-- =====================================================
-         LAB CONTENT
+         LAB SECTION
     ====================================================== -->
 
-    <section
-        id="availableLabs"
-        class="dashboard-section labs-content"
-    >
+    <section class="labs-section">
 
 
-        <!-- =================================================
-             SECTION HEADING
-        ================================================== -->
+        <!-- SECTION HEADING -->
 
-        <div class="section-heading">
-
+        <div class="labs-section-heading">
 
             <div>
 
                 <span class="dashboard-label">
-                    CONTROLLED PRACTICE
+                    SECURITY PRACTICE ENVIRONMENT
                 </span>
 
-
                 <h2>
-                    Available Labs
+                    Explore Labs
                 </h2>
 
-
                 <p>
-                    Select a laboratory that matches your
-                    current cybersecurity learning path.
+                    Practice reconnaissance, Linux security,
+                    networking and web security in controlled
+                    educational environments.
                 </p>
 
             </div>
 
 
-            <a
-                href="dashboard.html"
-                class="section-view-all"
+            <span
+                id="labCount"
+                class="lab-count"
             >
-
-                Back to Dashboard
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-            </a>
+                0 Labs
+            </span>
 
         </div>
 
@@ -340,11 +300,9 @@
 
         <div class="labs-controls">
 
-
             <div class="labs-search">
 
                 <i class="fa-solid fa-magnifying-glass"></i>
-
 
                 <input
                     type="search"
@@ -357,13 +315,11 @@
             </div>
 
 
-
             <div
                 class="lab-filters"
                 role="group"
                 aria-label="Filter labs"
             >
-
 
                 <button
                     type="button"
@@ -416,33 +372,28 @@
         >
 
 
-
             <!-- =================================================
                  LAB 1
             ================================================== -->
 
             <article
-                class="lab-card"
-                data-lab="network-recon"
+                class="dashboard-lab-card lab-card"
                 data-level="beginner"
-                data-search="network reconnaissance nmap scanning host discovery"
+                data-search="network reconnaissance nmap scanning network discovery host identification"
             >
 
-
                 <div class="lab-card-top">
-
 
                     <span class="lab-level beginner">
                         BEGINNER
                     </span>
 
 
-                    <span class="lab-status">
+                    <span class="lab-status available">
                         AVAILABLE
                     </span>
 
                 </div>
-
 
 
                 <div class="lab-icon">
@@ -450,7 +401,6 @@
                     <i class="fa-solid fa-network-wired"></i>
 
                 </div>
-
 
 
                 <span class="lab-category">
@@ -464,15 +414,13 @@
 
 
                 <p>
-                    Learn the fundamentals of network discovery,
-                    host identification and reconnaissance in a
-                    controlled laboratory environment.
+                    Learn the fundamentals of network discovery
+                    and host identification in a controlled
+                    laboratory environment.
                 </p>
 
 
-
                 <div class="lab-meta">
-
 
                     <span>
 
@@ -494,7 +442,6 @@
                 </div>
 
 
-
                 <button
                     type="button"
                     class="lab-start-btn"
@@ -502,6 +449,7 @@
                     data-lab-name="Network Reconnaissance"
                     data-lab-level="Beginner"
                     data-lab-duration="30 min"
+                    data-lab-description="Learn the fundamentals of network discovery and host identification in a controlled laboratory environment."
                 >
 
                     Start Lab
@@ -519,27 +467,23 @@
             ================================================== -->
 
             <article
-                class="lab-card"
-                data-lab="linux-security"
+                class="dashboard-lab-card lab-card"
                 data-level="beginner"
-                data-search="linux command line permissions filesystem security terminal"
+                data-search="linux command line permissions filesystem linux security"
             >
 
-
                 <div class="lab-card-top">
-
 
                     <span class="lab-level beginner">
                         BEGINNER
                     </span>
 
 
-                    <span class="lab-status">
+                    <span class="lab-status available">
                         AVAILABLE
                     </span>
 
                 </div>
-
 
 
                 <div class="lab-icon">
@@ -547,7 +491,6 @@
                     <i class="fa-brands fa-linux"></i>
 
                 </div>
-
 
 
                 <span class="lab-category">
@@ -562,14 +505,12 @@
 
                 <p>
                     Practice Linux command-line fundamentals,
-                    permissions, filesystems, processes and
-                    basic security operations.
+                    permissions, filesystems and basic security
+                    operations.
                 </p>
 
 
-
                 <div class="lab-meta">
-
 
                     <span>
 
@@ -591,7 +532,6 @@
                 </div>
 
 
-
                 <button
                     type="button"
                     class="lab-start-btn"
@@ -599,6 +539,7 @@
                     data-lab-name="Linux Security Fundamentals"
                     data-lab-level="Beginner"
                     data-lab-duration="35 min"
+                    data-lab-description="Practice Linux command-line fundamentals, permissions, filesystems and basic security operations."
                 >
 
                     Start Lab
@@ -616,27 +557,23 @@
             ================================================== -->
 
             <article
-                class="lab-card"
-                data-lab="web-security"
+                class="dashboard-lab-card lab-card"
                 data-level="intermediate"
-                data-search="web security http headers authentication sessions application security"
+                data-search="web security http headers authentication sessions web application"
             >
 
-
                 <div class="lab-card-top">
-
 
                     <span class="lab-level intermediate">
                         INTERMEDIATE
                     </span>
 
 
-                    <span class="lab-status">
+                    <span class="lab-status available">
                         AVAILABLE
                     </span>
 
                 </div>
-
 
 
                 <div class="lab-icon">
@@ -644,7 +581,6 @@
                     <i class="fa-solid fa-globe"></i>
 
                 </div>
-
 
 
                 <span class="lab-category">
@@ -659,14 +595,12 @@
 
                 <p>
                     Explore HTTP communication, authentication,
-                    sessions, headers and common web security
-                    concepts in a controlled environment.
+                    sessions and common web security concepts
+                    in a controlled environment.
                 </p>
 
 
-
                 <div class="lab-meta">
-
 
                     <span>
 
@@ -688,7 +622,6 @@
                 </div>
 
 
-
                 <button
                     type="button"
                     class="lab-start-btn"
@@ -696,6 +629,7 @@
                     data-lab-name="Web Security Fundamentals"
                     data-lab-level="Intermediate"
                     data-lab-duration="45 min"
+                    data-lab-description="Explore HTTP communication, authentication, sessions and common web security concepts in a controlled environment."
                 >
 
                     Start Lab
@@ -713,27 +647,23 @@
             ================================================== -->
 
             <article
-                class="lab-card"
-                data-lab="service-enumeration"
+                class="dashboard-lab-card lab-card"
                 data-level="intermediate"
-                data-search="enumeration service discovery network security services"
+                data-search="enumeration service discovery security network services"
             >
 
-
                 <div class="lab-card-top">
-
 
                     <span class="lab-level intermediate">
                         INTERMEDIATE
                     </span>
 
 
-                    <span class="lab-status">
+                    <span class="lab-status available">
                         AVAILABLE
                     </span>
 
                 </div>
-
 
 
                 <div class="lab-icon">
@@ -743,9 +673,8 @@
                 </div>
 
 
-
                 <span class="lab-category">
-                    RECONNAISSANCE
+                    SECURITY ENUMERATION
                 </span>
 
 
@@ -761,9 +690,7 @@
                 </p>
 
 
-
                 <div class="lab-meta">
-
 
                     <span>
 
@@ -785,7 +712,6 @@
                 </div>
 
 
-
                 <button
                     type="button"
                     class="lab-start-btn"
@@ -793,6 +719,7 @@
                     data-lab-name="Service Enumeration"
                     data-lab-level="Intermediate"
                     data-lab-duration="45 min"
+                    data-lab-description="Learn how security professionals identify services and understand information exposed by a target system."
                 >
 
                     Start Lab
@@ -810,15 +737,12 @@
             ================================================== -->
 
             <article
-                class="lab-card"
-                data-lab="penetration-testing"
+                class="dashboard-lab-card lab-card planned"
                 data-level="advanced"
                 data-search="penetration testing reconnaissance vulnerability assessment reporting"
             >
 
-
                 <div class="lab-card-top">
-
 
                     <span class="lab-level advanced">
                         ADVANCED
@@ -832,13 +756,11 @@
                 </div>
 
 
-
                 <div class="lab-icon">
 
                     <i class="fa-solid fa-user-secret"></i>
 
                 </div>
-
 
 
                 <span class="lab-category">
@@ -854,14 +776,11 @@
                 <p>
                     Follow a structured penetration testing
                     workflow from reconnaissance through
-                    vulnerability analysis and professional
-                    reporting.
+                    vulnerability analysis and reporting.
                 </p>
 
 
-
                 <div class="lab-meta">
-
 
                     <span>
 
@@ -881,7 +800,6 @@
                     </span>
 
                 </div>
-
 
 
                 <button
@@ -910,14 +828,11 @@
             hidden
         >
 
-
             <i class="fa-solid fa-folder-open"></i>
-
 
             <h3>
                 No labs found
             </h3>
-
 
             <p>
                 Try changing your search or filter.
@@ -930,16 +845,14 @@
 
 
     <!-- =====================================================
-         LAB SAFETY / EDUCATION NOTICE
+         LAB SAFETY NOTICE
     ====================================================== -->
 
-    <section class="dashboard-section lab-notice-section">
+    <section class="labs-notice-section">
 
+        <div class="labs-notice">
 
-        <div class="lab-safety-notice">
-
-
-            <div class="lab-safety-icon">
+            <div class="labs-notice-icon">
 
                 <i class="fa-solid fa-shield-halved"></i>
 
@@ -949,20 +862,18 @@
             <div>
 
                 <span class="dashboard-label">
-                    AUTHORIZED PRACTICE
+                    AUTHORIZED TRAINING ONLY
                 </span>
 
-
                 <h2>
-                    Learn in a Controlled Environment
+                    Practice Responsibly
                 </h2>
-
 
                 <p>
                     CWS Academy labs are designed for authorized
-                    educational practice. Perform security testing
-                    only against systems you own or have explicit
-                    permission to test.
+                    educational practice. Only perform security
+                    testing inside systems and environments that
+                    you own or have explicit permission to test.
                 </p>
 
             </div>
@@ -1001,12 +912,10 @@
     aria-hidden="true"
 >
 
-
     <div
         class="lab-modal-overlay"
         data-close-modal
     ></div>
-
 
 
     <div
@@ -1016,12 +925,11 @@
         aria-labelledby="labModalTitle"
     >
 
-
         <button
             type="button"
             id="closeLabModal"
             class="lab-modal-close"
-            aria-label="Close laboratory information"
+            aria-label="Close lab"
         >
 
             <i class="fa-solid fa-xmark"></i>
@@ -1029,11 +937,9 @@
         </button>
 
 
-
         <span class="dashboard-label">
             LAB INFORMATION
         </span>
-
 
 
         <h2 id="labModalTitle">
@@ -1041,15 +947,12 @@
         </h2>
 
 
-
         <p id="labModalDescription">
             Laboratory information.
         </p>
 
 
-
         <div class="lab-modal-info">
-
 
             <div>
 
@@ -1079,22 +982,18 @@
         </div>
 
 
-
         <div class="lab-modal-notice">
-
 
             <i class="fa-solid fa-shield-halved"></i>
 
-
             <p>
-                This laboratory is intended for authorized
-                educational practice only. Do not perform
-                security testing against systems without
-                permission.
+                This laboratory is designed for authorized
+                educational practice. Only perform security
+                testing inside environments you own or have
+                permission to test.
             </p>
 
         </div>
-
 
 
         <button
@@ -1125,7 +1024,6 @@
 ></script>
 
 
-
 <!-- =========================================================
      LAB JAVASCRIPT
 ========================================================= -->
@@ -1135,6 +1033,6 @@
     src="../js/labs.js"
 ></script>
 
-</body>
 
+</body>
 </html>
