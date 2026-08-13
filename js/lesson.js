@@ -3,12 +3,25 @@
    LESSON SYSTEM
    Firebase Authentication + Firestore Progress
 
-   URL FORMAT:
+   SUPPORTED URL FORMATS:
 
-   lesson.html
-       ?course=cybersecurity-fundamentals
-       &module=module-01
-       &lesson=lesson-01
+   1. Start module:
+      lesson.html
+      ?course=cybersecurity-fundamentals
+      &module=module-01
+
+      -> Automatically opens lesson-01
+
+   2. Specific lesson:
+      lesson.html
+      ?course=cybersecurity-fundamentals
+      &module=module-01
+      &lesson=lesson-02
+========================================================= */
+
+
+/* =========================================================
+   FIREBASE AUTH
 ========================================================= */
 
 import {
@@ -16,12 +29,22 @@ import {
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+
+/* =========================================================
+   FIREBASE FIRESTORE
+========================================================= */
+
 import {
     doc,
     getDoc,
     setDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
 
 import {
     auth,
@@ -232,7 +255,12 @@ const courses = {
 
         modules: [
 
+            /* =================================================
+               MODULE 01
+            ================================================= */
+
             {
+
                 id:
                     "module-01",
 
@@ -247,7 +275,12 @@ const courses = {
 
                 lessons: [
 
+                    /* =========================================
+                       LESSON 01
+                    ========================================= */
+
                     {
+
                         id:
                             "lesson-01",
 
@@ -275,46 +308,57 @@ const courses = {
                         content: [
 
                             {
+
                                 type:
                                     "heading",
 
                                 text:
                                     "Understanding Cybersecurity"
+
                             },
 
                             {
+
                                 type:
                                     "paragraph",
 
                                 text:
                                     "Cybersecurity is the practice of protecting computers, networks, applications, devices and information from unauthorized access, misuse, disruption, modification or destruction."
+
                             },
 
                             {
+
                                 type:
                                     "paragraph",
 
                                 text:
                                     "Modern organizations depend heavily on digital systems. Businesses store customer information, financial records, employee information and operational data on computers and networked systems. Protecting these resources is therefore an important part of operating a modern organization."
+
                             },
 
                             {
+
                                 type:
                                     "heading",
 
                                 text:
                                     "What Does Cybersecurity Protect?"
+
                             },
 
                             {
+
                                 type:
                                     "paragraph",
 
                                 text:
                                     "Cybersecurity protects more than just computers. Security teams may be responsible for protecting networks, servers, cloud services, websites, applications, databases, mobile devices and the information stored on those systems."
+
                             },
 
                             {
+
                                 type:
                                     "list",
 
@@ -337,25 +381,31 @@ const courses = {
                                     "Personal information"
 
                                 ]
+
                             },
 
                             {
+
                                 type:
                                     "heading",
 
                                 text:
                                     "Why Cybersecurity Matters"
+
                             },
 
                             {
+
                                 type:
                                     "paragraph",
 
                                 text:
                                     "A security incident can have serious consequences. Attackers may steal information, disrupt services, compromise accounts or damage systems. Cybersecurity helps organizations reduce these risks and respond when security incidents occur."
+
                             },
 
                             {
+
                                 type:
                                     "callout",
 
@@ -364,6 +414,7 @@ const courses = {
 
                                 text:
                                     "Cybersecurity is not simply about installing antivirus software or building firewalls. It is a broader discipline involving people, processes and technology."
+
                             }
 
                         ]
@@ -371,7 +422,12 @@ const courses = {
                     },
 
 
+                    /* =========================================
+                       LESSON 02
+                    ========================================= */
+
                     {
+
                         id:
                             "lesson-02",
 
@@ -399,30 +455,37 @@ const courses = {
                         content: [
 
                             {
+
                                 type:
                                     "heading",
 
                                 text:
                                     "The Importance of Security"
+
                             },
 
                             {
+
                                 type:
                                     "paragraph",
 
                                 text:
                                     "Cybersecurity is important because digital systems have become essential to everyday life. Organizations rely on technology to communicate, process payments, store information and provide services."
+
                             },
 
                             {
+
                                 type:
                                     "heading",
 
                                 text:
                                     "Consequences of Security Incidents"
+
                             },
 
                             {
+
                                 type:
                                     "list",
 
@@ -441,9 +504,11 @@ const courses = {
                                     "Loss of customer trust"
 
                                 ]
+
                             },
 
                             {
+
                                 type:
                                     "callout",
 
@@ -460,7 +525,12 @@ const courses = {
                     },
 
 
+                    /* =========================================
+                       LESSON 03
+                    ========================================= */
+
                     {
+
                         id:
                             "lesson-03",
 
@@ -486,43 +556,53 @@ const courses = {
                         content: [
 
                             {
+
                                 type:
                                     "heading",
 
                                 text:
                                     "A Changing Environment"
+
                             },
 
                             {
+
                                 type:
                                     "paragraph",
 
                                 text:
                                     "Cybersecurity is constantly changing. New technologies create new opportunities, but they can also introduce new security risks."
+
                             },
 
                             {
+
                                 type:
                                     "paragraph",
 
                                 text:
                                     "Security professionals therefore need to continuously learn about operating systems, networks, applications, cloud environments, vulnerabilities and emerging threats."
+
                             },
 
                             {
+
                                 type:
                                     "heading",
 
                                 text:
                                     "Attackers and Defenders"
+
                             },
 
                             {
+
                                 type:
                                     "paragraph",
 
                                 text:
                                     "Cybersecurity involves understanding how systems can be attacked and how those systems can be defended. Security professionals use this knowledge to identify weaknesses, reduce risk and improve defenses."
+
                             }
 
                         ]
@@ -530,7 +610,12 @@ const courses = {
                     },
 
 
+                    /* =========================================
+                       LESSON 04
+                    ========================================= */
+
                     {
+
                         id:
                             "lesson-04",
 
@@ -558,22 +643,27 @@ const courses = {
                         content: [
 
                             {
+
                                 type:
                                     "heading",
 
                                 text:
                                     "Thinking Like a Security Professional"
+
                             },
 
                             {
+
                                 type:
                                     "paragraph",
 
                                 text:
                                     "Cybersecurity professionals need to think critically about how systems work and how those systems could fail. They ask questions about trust, access, configuration and potential weaknesses."
+
                             },
 
                             {
+
                                 type:
                                     "list",
 
@@ -590,25 +680,31 @@ const courses = {
                                     "How could the system be abused?"
 
                                 ]
+
                             },
 
                             {
+
                                 type:
                                     "heading",
 
                                 text:
                                     "Ethical Responsibility"
+
                             },
 
                             {
+
                                 type:
                                     "paragraph",
 
                                 text:
                                     "Security knowledge must be used responsibly. Testing systems without authorization can cause damage and may be illegal. Professional cybersecurity work requires permission, clearly defined scope and responsible handling of information."
+
                             },
 
                             {
+
                                 type:
                                     "callout",
 
@@ -617,6 +713,7 @@ const courses = {
 
                                 text:
                                     "Authorization comes before security testing."
+
                             }
 
                         ]
@@ -1001,6 +1098,12 @@ function getDefaultProgress() {
         completedLessons:
             [],
 
+        completedLabs:
+            [],
+
+        completedAssessments:
+            [],
+
         currentModule:
             currentModule.id,
 
@@ -1062,7 +1165,7 @@ async function loadProgress() {
     if (!db) {
 
         warn(
-            "Firestore unavailable. Using local progress."
+            "Firestore unavailable. Using memory progress."
         );
 
         return;
@@ -1181,10 +1284,17 @@ async function saveProgress() {
 
 
 /* =========================================================
-   CALCULATE COURSE PROGRESS
+   CALCULATE PROGRESS
 ========================================================= */
 
 function calculateProgress() {
+
+    if (!currentCourse) {
+
+        return 0;
+
+    }
+
 
     const total =
         getTotalLessons(
@@ -1334,6 +1444,7 @@ function renderObjectives(
                 icon
             );
 
+
             li.appendChild(
                 span
             );
@@ -1350,7 +1461,7 @@ function renderObjectives(
 
 
 /* =========================================================
-   RENDER LESSON CONTENT
+   RENDER LESSON BODY
 ========================================================= */
 
 function renderLessonBody(
@@ -1371,7 +1482,7 @@ function renderLessonBody(
     content.forEach(
         block => {
 
-            let element;
+            let element = null;
 
 
             switch (block.type) {
@@ -1410,26 +1521,28 @@ function renderLessonBody(
                         );
 
 
-                    (block.items || [])
-                        .forEach(
-                            item => {
+                    (
+                        block.items ||
+                        []
+                    ).forEach(
+                        item => {
 
-                                const li =
-                                    document.createElement(
-                                        "li"
-                                    );
-
-
-                                li.textContent =
-                                    item;
-
-
-                                element.appendChild(
-                                    li
+                            const li =
+                                document.createElement(
+                                    "li"
                                 );
 
-                            }
-                        );
+
+                            li.textContent =
+                                item;
+
+
+                            element.appendChild(
+                                li
+                            );
+
+                        }
+                    );
 
                     break;
 
@@ -1446,33 +1559,34 @@ function renderLessonBody(
                         "lesson-callout";
 
 
-                    const title =
+                    const calloutTitle =
                         document.createElement(
                             "strong"
                         );
 
 
-                    title.textContent =
+                    calloutTitle.textContent =
                         block.title ||
                         "Important";
 
 
-                    const text =
+                    const calloutText =
                         document.createElement(
                             "p"
                         );
 
 
-                    text.textContent =
+                    calloutText.textContent =
                         block.text;
 
 
                     element.appendChild(
-                        title
+                        calloutTitle
                     );
 
+
                     element.appendChild(
-                        text
+                        calloutText
                     );
 
                     break;
@@ -1485,8 +1599,10 @@ function renderLessonBody(
                             "p"
                         );
 
+
                     element.textContent =
-                        block.text || "";
+                        block.text ||
+                        "";
 
             }
 
@@ -1506,7 +1622,32 @@ function renderLessonBody(
 
 
 /* =========================================================
-   RENDER MODULE SIDEBAR
+   LESSON URL
+========================================================= */
+
+function buildLessonUrl(
+    courseId,
+    moduleId,
+    lessonId
+) {
+
+    return (
+        `lesson.html?course=${encodeURIComponent(
+            courseId
+        )}` +
+        `&module=${encodeURIComponent(
+            moduleId
+        )}` +
+        `&lesson=${encodeURIComponent(
+            lessonId
+        )}`
+    );
+
+}
+
+
+/* =========================================================
+   RENDER MODULE LIST
 ========================================================= */
 
 function renderModuleList() {
@@ -1520,6 +1661,18 @@ function renderModuleList() {
 
     lessonModuleList.innerHTML =
         "";
+
+
+    if (
+        !currentModule ||
+        !Array.isArray(
+            currentModule.lessons
+        )
+    ) {
+
+        return;
+
+    }
 
 
     currentModule.lessons.forEach(
@@ -1565,39 +1718,73 @@ function renderModuleList() {
 
 
             link.href =
-                `lesson.html?course=${encodeURIComponent(
-                    currentCourse.id
-                )}&module=${encodeURIComponent(
-                    currentModule.id
-                )}&lesson=${encodeURIComponent(
+                buildLessonUrl(
+                    currentCourse.id,
+                    currentModule.id,
                     lesson.id
-                )}`;
+                );
 
 
-            link.innerHTML = `
+            const number =
+                document.createElement(
+                    "span"
+                );
 
-                <span class="lesson-module-item-number">
-                    ${String(
-                        lesson.number
-                    ).padStart(
-                        2,
-                        "0"
-                    )}
-                </span>
 
-                <span class="lesson-module-item-title">
-                    ${lesson.title}
-                </span>
+            number.className =
+                "lesson-module-item-number";
 
-                ${
-                    completed
-                        ? `
-                            <i class="fa-solid fa-check"></i>
-                          `
-                        : ""
-                }
 
-            `;
+            number.textContent =
+                String(
+                    lesson.number
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+
+            const title =
+                document.createElement(
+                    "span"
+                );
+
+
+            title.className =
+                "lesson-module-item-title";
+
+
+            title.textContent =
+                lesson.title;
+
+
+            link.appendChild(
+                number
+            );
+
+
+            link.appendChild(
+                title
+            );
+
+
+            if (completed) {
+
+                const icon =
+                    document.createElement(
+                        "i"
+                    );
+
+
+                icon.className =
+                    "fa-solid fa-check";
+
+
+                link.appendChild(
+                    icon
+                );
+
+            }
 
 
             lessonModuleList.appendChild(
@@ -1616,7 +1803,11 @@ function renderModuleList() {
 
 function renderLesson() {
 
-    if (!currentLesson) {
+    if (
+        !currentCourse ||
+        !currentModule ||
+        !currentLesson
+    ) {
 
         return;
 
@@ -1729,14 +1920,19 @@ function updateNavigation() {
 
     const previous =
         currentIndex > 0
-            ? lessons[currentIndex - 1]
+            ? lessons[
+                currentIndex - 1
+            ]
             : null;
 
 
     const next =
+        currentIndex >= 0 &&
         currentIndex <
             lessons.length - 1
-            ? lessons[currentIndex + 1]
+            ? lessons[
+                currentIndex + 1
+            ]
             : null;
 
 
@@ -1747,14 +1943,13 @@ function updateNavigation() {
             previousLessonBtn.hidden =
                 false;
 
+
             previousLessonBtn.href =
-                `lesson.html?course=${encodeURIComponent(
-                    currentCourse.id
-                )}&module=${encodeURIComponent(
-                    previous.moduleId
-                )}&lesson=${encodeURIComponent(
+                buildLessonUrl(
+                    currentCourse.id,
+                    previous.moduleId,
                     previous.lessonId
-                )}`;
+                );
 
         } else {
 
@@ -1773,14 +1968,13 @@ function updateNavigation() {
             nextLessonBtn.hidden =
                 false;
 
+
             nextLessonBtn.href =
-                `lesson.html?course=${encodeURIComponent(
-                    currentCourse.id
-                )}&module=${encodeURIComponent(
-                    next.moduleId
-                )}&lesson=${encodeURIComponent(
+                buildLessonUrl(
+                    currentCourse.id,
+                    next.moduleId,
                     next.lessonId
-                )}`;
+                );
 
         } else {
 
@@ -1872,19 +2066,16 @@ async function markLessonComplete() {
     }
 
 
-    const completed =
-        currentProgress.completedLessons
+    if (
+        !currentProgress.completedLessons
             .includes(
                 currentLesson.id
-            );
+            )
+    ) {
 
-
-    if (!completed) {
-
-        currentProgress.completedLessons
-            .push(
-                currentLesson.id
-            );
+        currentProgress.completedLessons.push(
+            currentLesson.id
+        );
 
     }
 
@@ -1901,16 +2092,13 @@ async function markLessonComplete() {
         true;
 
 
-    const percent =
+    currentProgress.progressPercent =
         calculateProgress();
 
 
-    currentProgress.progressPercent =
-        percent;
-
-
     if (
-        percent >= 100
+        currentProgress.progressPercent >=
+        100
     ) {
 
         currentProgress.completed =
@@ -1921,7 +2109,9 @@ async function markLessonComplete() {
 
     updateProgressUI();
 
+
     updateCompleteButton();
+
 
     renderModuleList();
 
@@ -1968,7 +2158,7 @@ async function rememberCurrentLesson() {
 
 
 /* =========================================================
-   LOGOUT LOADING
+   LOGOUT STATE
 ========================================================= */
 
 function setLogoutLoading(
@@ -2111,7 +2301,7 @@ async function loadLesson() {
 
 
     log(
-        "Requested:",
+        "Requested URL parameters:",
         {
             courseId,
             moduleId,
@@ -2120,9 +2310,9 @@ async function loadLesson() {
     );
 
 
-    /*
-     * Course
-     */
+    /* =====================================================
+       COURSE
+    ====================================================== */
 
     if (!courseId) {
 
@@ -2159,9 +2349,9 @@ async function loadLesson() {
     }
 
 
-    /*
-     * Module
-     */
+    /* =====================================================
+       MODULE
+    ====================================================== */
 
     if (!moduleId) {
 
@@ -2199,28 +2389,63 @@ async function loadLesson() {
     }
 
 
-    /*
-     * Lesson
-     */
+    /* =====================================================
+       LESSON
+       
+       IMPORTANT:
+       
+       If no lesson parameter was supplied,
+       automatically use the first lesson.
+    ====================================================== */
 
-    if (!lessonId) {
-
-        warn(
-            "No lesson ID supplied."
-        );
+    let selectedLessonId =
+        lessonId;
 
 
-        showLessonNotFound();
+    if (!selectedLessonId) {
 
-        return;
+        if (
+            Array.isArray(
+                module.lessons
+            ) &&
+            module.lessons.length > 0
+        ) {
+
+            selectedLessonId =
+                module.lessons[0].id;
+
+
+            log(
+                "No lesson supplied.",
+                "Automatically starting:",
+                selectedLessonId
+            );
+
+        } else {
+
+            warn(
+                "Module contains no lessons:",
+                module.id
+            );
+
+
+            showLessonNotFound();
+
+            return;
+
+        }
 
     }
 
 
+    /* =====================================================
+       FIND SELECTED LESSON
+    ====================================================== */
+
     const lesson =
         findLesson(
             module,
-            lessonId
+            selectedLessonId
         );
 
 
@@ -2228,7 +2453,7 @@ async function loadLesson() {
 
         warn(
             "Lesson not found:",
-            lessonId
+            selectedLessonId
         );
 
 
@@ -2239,42 +2464,85 @@ async function loadLesson() {
     }
 
 
-    /*
-     * Set current state.
-     */
+    /* =====================================================
+       SET CURRENT STATE
+    ====================================================== */
 
     currentCourse =
         course;
 
+
     currentModule =
         module;
+
 
     currentLesson =
         lesson;
 
 
-    /*
-     * Load Firestore progress.
-     */
+    log(
+        "Current lesson:",
+        {
+            course:
+                currentCourse.id,
+
+            module:
+                currentModule.id,
+
+            lesson:
+                currentLesson.id
+        }
+    );
+
+
+    /* =====================================================
+       LOAD PROGRESS
+    ====================================================== */
 
     await loadProgress();
 
 
-    /*
-     * Remember where the student is.
-     */
+    /* =====================================================
+       REMEMBER CURRENT LESSON
+    ====================================================== */
 
     await rememberCurrentLesson();
 
 
-    /*
-     * Render everything.
-     */
+    /* =====================================================
+       RENDER
+    ====================================================== */
 
     renderLesson();
 
 
     showLessonContent();
+
+
+    /* =====================================================
+       UPDATE URL
+       
+       This makes the automatic lesson selection visible
+       in the browser address bar without reloading.
+    ====================================================== */
+
+    if (!lessonId) {
+
+        const newUrl =
+            buildLessonUrl(
+                currentCourse.id,
+                currentModule.id,
+                currentLesson.id
+            );
+
+
+        window.history.replaceState(
+            {},
+            "",
+            newUrl
+        );
+
+    }
 
 
     log(
@@ -2314,6 +2582,10 @@ if (!auth) {
             );
 
 
+            /* =================================================
+               NOT AUTHENTICATED
+            ================================================== */
+
             if (!user) {
 
                 currentUser =
@@ -2343,6 +2615,10 @@ if (!auth) {
 
             }
 
+
+            /* =================================================
+               AUTHENTICATED
+            ================================================== */
 
             currentUser =
                 user;
