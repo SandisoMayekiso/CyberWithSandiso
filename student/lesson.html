@@ -71,6 +71,9 @@
 
     <nav class="student-nav">
 
+
+        <!-- LOGO -->
+
         <a
             href="dashboard.html"
             class="academy-logo"
@@ -86,6 +89,8 @@
 
         </a>
 
+
+        <!-- NAVIGATION -->
 
         <div class="student-nav-links">
 
@@ -148,6 +153,8 @@
         </div>
 
 
+        <!-- ACCOUNT -->
+
         <div class="student-nav-account">
 
             <span
@@ -182,7 +189,7 @@
      MAIN
 ========================================================= -->
 
-<main class="dashboard-main lesson-main">
+<main class="lesson-main">
 
 
     <!-- =====================================================
@@ -194,7 +201,12 @@
         class="lesson-loading"
     >
 
-        <i class="fa-solid fa-circle-notch fa-spin"></i>
+        <div class="lesson-loading-icon">
+
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+
+        </div>
+
 
         <p>
             Loading lesson...
@@ -214,19 +226,27 @@
         hidden
     >
 
-        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div class="lesson-not-found-icon">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+        </div>
+
 
         <span class="dashboard-label">
             LESSON UNAVAILABLE
         </span>
 
+
         <h1>
             Lesson Not Found
         </h1>
 
+
         <p>
-            The requested lesson could not be found.
+            We couldn't find the lesson you're looking for.
         </p>
+
 
         <a
             href="student-courses.html"
@@ -249,98 +269,75 @@
 
     <div
         id="lessonContent"
-        class="lesson-layout"
+        class="lesson-content-wrapper"
         hidden
     >
 
 
         <!-- =================================================
-             SIDEBAR
+             BREADCRUMB
         ================================================== -->
 
-        <aside class="lesson-sidebar">
+        <nav
+            class="lesson-breadcrumb"
+            aria-label="Breadcrumb"
+        >
 
+            <a href="student-courses.html">
 
-            <a
-                id="backToCourse"
-                href="#"
-                class="lesson-back-link"
-            >
+                <i class="fa-solid fa-book"></i>
 
-                <i class="fa-solid fa-arrow-left"></i>
-
-                Back to Course
+                Courses
 
             </a>
 
 
-            <div class="lesson-sidebar-course">
-
-                <span class="dashboard-label">
-                    COURSE
-                </span>
+            <i class="fa-solid fa-chevron-right"></i>
 
 
-                <h2 id="sidebarCourseTitle">
-                    Cybersecurity Fundamentals
-                </h2>
-
-            </div>
-
-
-            <div class="lesson-sidebar-module">
-
-                <span id="sidebarModuleNumber">
-                    MODULE 01
-                </span>
-
-
-                <h3 id="sidebarModuleTitle">
-                    Introduction to Cybersecurity
-                </h3>
-
-            </div>
-
-
-            <nav
-                id="lessonNavigation"
-                class="lesson-navigation"
-                aria-label="Lesson navigation"
+            <a
+                id="lessonCourseLink"
+                href="#"
             >
-            </nav>
+                Cybersecurity Fundamentals
+            </a>
 
-        </aside>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+
+            <span id="lessonBreadcrumbTitle">
+                Lesson
+            </span>
+
+        </nav>
 
 
 
         <!-- =================================================
-             MAIN LESSON
+             LESSON HEADER
         ================================================== -->
 
-        <article class="lesson-article">
+        <section class="lesson-header">
 
+            <div class="lesson-header-content">
 
-            <!-- LESSON HEADER -->
+                <div class="lesson-meta">
 
-            <header class="lesson-header">
-
-                <div class="lesson-breadcrumb">
-
-                    <span id="lessonCourseBreadcrumb">
-                        Cybersecurity Fundamentals
+                    <span id="lessonModuleBadge">
+                        MODULE 1
                     </span>
 
-                    <i class="fa-solid fa-chevron-right"></i>
 
-                    <span id="lessonModuleBreadcrumb">
-                        Module 1
+                    <span id="lessonTypeBadge">
+                        LESSON
                     </span>
 
                 </div>
 
 
                 <span class="dashboard-label">
-                    LESSON
+                    CYBERSECURITY FUNDAMENTALS
                 </span>
 
 
@@ -349,14 +346,20 @@
                 </h1>
 
 
-                <div class="lesson-meta">
+                <p id="lessonSubtitle">
+                    Understanding the purpose of cybersecurity
+                    and why it matters.
+                </p>
+
+
+                <div class="lesson-header-info">
 
                     <span>
 
-                        <i class="fa-regular fa-clock"></i>
+                        <i class="fa-solid fa-clock"></i>
 
                         <span id="lessonDuration">
-                            20 min
+                            15 minutes
                         </span>
 
                     </span>
@@ -364,159 +367,536 @@
 
                     <span>
 
-                        <i class="fa-solid fa-signal"></i>
+                        <i class="fa-solid fa-layer-group"></i>
 
-                        Beginner
+                        Lesson <span id="lessonNumber">1</span>
 
                     </span>
 
                 </div>
 
-            </header>
-
-
-
-            <!-- =================================================
-                 LEARNING OBJECTIVES
-            ================================================== -->
-
-            <section class="lesson-objectives">
-
-                <div class="lesson-section-icon">
-
-                    <i class="fa-solid fa-bullseye"></i>
-
-                </div>
-
-
-                <div>
-
-                    <span class="dashboard-label">
-                        LEARNING OBJECTIVES
-                    </span>
-
-
-                    <h2>
-                        By the end of this lesson, you should be able to:
-                    </h2>
-
-
-                    <ul id="lessonObjectives">
-                    </ul>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- =================================================
-                 LESSON BODY
-            ================================================== -->
-
-            <div
-                id="lessonBody"
-                class="lesson-body"
-            >
             </div>
 
 
+            <div class="lesson-header-icon">
 
-            <!-- =================================================
-                 KEY TAKEAWAYS
-            ================================================== -->
+                <i class="fa-solid fa-shield-halved"></i>
 
-            <section class="lesson-takeaways">
+            </div>
 
-                <div class="lesson-section-icon">
+        </section>
 
-                    <i class="fa-solid fa-lightbulb"></i>
 
-                </div>
 
+        <!-- =================================================
+             LESSON PROGRESS
+        ================================================== -->
+
+        <section class="lesson-progress-section">
+
+            <div class="lesson-progress-header">
 
                 <div>
 
                     <span class="dashboard-label">
-                        KEY TAKEAWAYS
+                        COURSE PROGRESS
                     </span>
 
-
-                    <h2>
-                        Remember These Points
-                    </h2>
-
-
-                    <ul id="lessonTakeaways">
-                    </ul>
+                    <strong id="lessonProgressText">
+                        Lesson 1 of 50
+                    </strong>
 
                 </div>
+
+
+                <strong id="lessonProgressPercent">
+                    0%
+                </strong>
+
+            </div>
+
+
+            <div
+                class="lesson-progress-bar"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+            >
+
+                <div
+                    id="lessonProgressFill"
+                    class="lesson-progress-fill"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             LESSON BODY
+        ================================================== -->
+
+        <article class="lesson-article">
+
+
+            <!-- INTRODUCTION -->
+
+            <section class="lesson-section">
+
+                <span class="lesson-section-number">
+                    01
+                </span>
+
+
+                <h2>
+                    What Is Cybersecurity?
+                </h2>
+
+
+                <p>
+                    Cybersecurity is the practice of protecting
+                    computers, networks, applications, systems
+                    and information from unauthorized access,
+                    misuse, disruption, modification or
+                    destruction.
+                </p>
+
+
+                <p>
+                    Modern organizations depend heavily on
+                    technology. Businesses store customer
+                    information, process financial transactions,
+                    communicate through digital systems and
+                    operate critical infrastructure using
+                    computers and networks.
+                </p>
+
+
+                <p>
+                    This dependence creates opportunities for
+                    attackers. Cybersecurity exists to reduce
+                    those risks and help organizations protect
+                    the systems and information they depend on.
+                </p>
 
             </section>
 
 
 
-            <!-- =================================================
-                 KNOWLEDGE CHECK
-            ================================================== -->
+            <!-- WHY IT MATTERS -->
 
-            <section
-                id="knowledgeCheck"
-                class="knowledge-check"
-            >
+            <section class="lesson-section">
 
-                <div class="knowledge-check-header">
-
-                    <div>
-
-                        <span class="dashboard-label">
-                            KNOWLEDGE CHECK
-                        </span>
+                <span class="lesson-section-number">
+                    02
+                </span>
 
 
-                        <h2>
-                            Test Your Understanding
-                        </h2>
+                <h2>
+                    Why Does Cybersecurity Matter?
+                </h2>
+
+
+                <p>
+                    A successful cyberattack can have consequences
+                    far beyond a single compromised computer.
+                    Organizations can experience financial loss,
+                    operational disruption, reputational damage
+                    and exposure of sensitive information.
+                </p>
+
+
+                <div class="lesson-info-grid">
+
+
+                    <div class="lesson-info-card">
+
+                        <div class="lesson-info-icon">
+
+                            <i class="fa-solid fa-database"></i>
+
+                        </div>
+
+
+                        <h3>
+                            Protect Information
+                        </h3>
+
+
+                        <p>
+                            Prevent unauthorized people from
+                            accessing sensitive or confidential
+                            information.
+                        </p>
 
                     </div>
 
 
-                    <span
-                        id="knowledgeCheckStatus"
-                        class="knowledge-check-status"
-                    >
-                        Not completed
-                    </span>
+
+                    <div class="lesson-info-card">
+
+                        <div class="lesson-info-icon">
+
+                            <i class="fa-solid fa-server"></i>
+
+                        </div>
+
+
+                        <h3>
+                            Protect Systems
+                        </h3>
+
+
+                        <p>
+                            Keep computers, applications and
+                            infrastructure secure and reliable.
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="lesson-info-card">
+
+                        <div class="lesson-info-icon">
+
+                            <i class="fa-solid fa-building-shield"></i>
+
+                        </div>
+
+
+                        <h3>
+                            Protect Organizations
+                        </h3>
+
+
+                        <p>
+                            Reduce operational, financial and
+                            reputational risks.
+                        </p>
+
+                    </div>
 
                 </div>
 
+            </section>
 
-                <div
-                    id="knowledgeQuestions"
-                    class="knowledge-questions"
-                >
+
+
+            <!-- SECURITY OBJECTIVES -->
+
+            <section class="lesson-section">
+
+                <span class="lesson-section-number">
+                    03
+                </span>
+
+
+                <h2>
+                    The Three Core Security Objectives
+                </h2>
+
+
+                <p>
+                    One of the most important concepts in
+                    cybersecurity is the CIA triad. CIA stands
+                    for Confidentiality, Integrity and
+                    Availability.
+                </p>
+
+
+                <div class="cia-grid">
+
+
+                    <div class="cia-card">
+
+                        <div class="cia-letter">
+                            C
+                        </div>
+
+
+                        <h3>
+                            Confidentiality
+                        </h3>
+
+
+                        <p>
+                            Information should only be accessible
+                            to authorized individuals and systems.
+                        </p>
+
+
+                        <span>
+                            Example: Access controls
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="cia-card">
+
+                        <div class="cia-letter">
+                            I
+                        </div>
+
+
+                        <h3>
+                            Integrity
+                        </h3>
+
+
+                        <p>
+                            Information should remain accurate,
+                            trustworthy and protected from
+                            unauthorized modification.
+                        </p>
+
+
+                        <span>
+                            Example: File integrity monitoring
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="cia-card">
+
+                        <div class="cia-letter">
+                            A
+                        </div>
+
+
+                        <h3>
+                            Availability
+                        </h3>
+
+
+                        <p>
+                            Systems and information should be
+                            accessible when authorized users
+                            need them.
+                        </p>
+
+
+                        <span>
+                            Example: Backups and redundancy
+                        </span>
+
+                    </div>
+
                 </div>
 
-
-                <button
-                    type="button"
-                    id="submitKnowledgeCheck"
-                    class="lesson-primary-btn"
-                >
-
-                    Check Answers
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </button>
+            </section>
 
 
-                <div
-                    id="knowledgeResult"
-                    class="knowledge-result"
-                    hidden
-                >
+
+            <!-- CYBERSECURITY DOMAINS -->
+
+            <section class="lesson-section">
+
+                <span class="lesson-section-number">
+                    04
+                </span>
+
+
+                <h2>
+                    What Does Cybersecurity Protect?
+                </h2>
+
+
+                <p>
+                    Cybersecurity covers many different
+                    technologies and environments.
+                </p>
+
+
+                <ul class="lesson-check-list">
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Computers and endpoints
+
+                    </li>
+
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Networks and network infrastructure
+
+                    </li>
+
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Web and mobile applications
+
+                    </li>
+
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Cloud environments
+
+                    </li>
+
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Databases and information systems
+
+                    </li>
+
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        User identities and accounts
+
+                    </li>
+
+                </ul>
+
+            </section>
+
+
+
+            <!-- SECURITY MINDSET -->
+
+            <section class="lesson-section">
+
+                <span class="lesson-section-number">
+                    05
+                </span>
+
+
+                <h2>
+                    Developing a Security Mindset
+                </h2>
+
+
+                <p>
+                    Cybersecurity is not simply about installing
+                    security software. It involves understanding
+                    how systems work, identifying weaknesses,
+                    evaluating risk and implementing appropriate
+                    protections.
+                </p>
+
+
+                <div class="lesson-callout">
+
+                    <div class="lesson-callout-icon">
+
+                        <i class="fa-solid fa-lightbulb"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Security mindset
+                        </strong>
+
+
+                        <p>
+                            When examining a system, ask:
+                            What are we protecting? What could go
+                            wrong? Who could cause the problem?
+                            What would happen if the system were
+                            compromised? How can we reduce the risk?
+                        </p>
+
+                    </div>
+
                 </div>
+
+            </section>
+
+
+
+            <!-- KEY TAKEAWAYS -->
+
+            <section class="lesson-section lesson-takeaways">
+
+                <span class="lesson-section-number">
+                    06
+                </span>
+
+
+                <h2>
+                    Key Takeaways
+                </h2>
+
+
+                <ul class="lesson-check-list">
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Cybersecurity protects systems,
+                        networks and information.
+
+                    </li>
+
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Cybersecurity helps reduce the impact
+                        of cyber threats and security risks.
+
+                    </li>
+
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Confidentiality protects information
+                        from unauthorized access.
+
+                    </li>
+
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Integrity protects information from
+                        unauthorized modification.
+
+                    </li>
+
+
+                    <li>
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Availability ensures systems and
+                        information remain accessible when needed.
+
+                    </li>
+
+                </ul>
 
             </section>
 
@@ -526,12 +906,19 @@
                  LESSON COMPLETION
             ================================================== -->
 
-            <section class="lesson-completion">
+            <section class="lesson-completion-section">
 
-                <div>
+                <div class="lesson-completion-icon">
+
+                    <i class="fa-solid fa-flag-checkered"></i>
+
+                </div>
+
+
+                <div class="lesson-completion-content">
 
                     <span class="dashboard-label">
-                        LESSON PROGRESS
+                        LESSON COMPLETE?
                     </span>
 
 
@@ -540,89 +927,67 @@
                     </h2>
 
 
-                    <p id="completionMessage">
-                        Complete the knowledge check before
-                        marking this lesson complete.
+                    <p>
+                        Mark this lesson as complete to record
+                        your progress and continue to the next
+                        lesson.
                     </p>
+
+
+                    <button
+                        type="button"
+                        id="completeLessonBtn"
+                        class="lesson-primary-btn"
+                    >
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Mark Lesson Complete
+
+                    </button>
 
                 </div>
 
-
-                <button
-                    type="button"
-                    id="completeLessonBtn"
-                    class="lesson-primary-btn"
-                    disabled
-                >
-
-                    <i class="fa-solid fa-circle-check"></i>
-
-                    Mark Lesson Complete
-
-                </button>
-
             </section>
 
+        </article>
 
 
-            <!-- =================================================
-                 PREVIOUS / NEXT
-            ================================================== -->
 
-            <nav
-                class="lesson-pagination"
-                aria-label="Lesson pagination"
+        <!-- =================================================
+             LESSON NAVIGATION
+        ================================================== -->
+
+        <nav
+            class="lesson-navigation"
+            aria-label="Lesson navigation"
+        >
+
+            <a
+                href="course-details.html?course=cybersecurity-fundamentals"
+                class="lesson-nav-btn lesson-nav-back"
             >
 
-                <a
-                    id="previousLessonBtn"
-                    href="#"
-                    class="lesson-pagination-btn previous"
-                >
+                <i class="fa-solid fa-arrow-left"></i>
 
-                    <i class="fa-solid fa-arrow-left"></i>
+                Course Overview
 
-                    <span>
-
-                        <small>
-                            Previous
-                        </small>
-
-                        <strong>
-                            Previous Lesson
-                        </strong>
-
-                    </span>
-
-                </a>
+            </a>
 
 
-                <a
-                    id="nextLessonBtn"
-                    href="#"
-                    class="lesson-pagination-btn next"
-                >
+            <button
+                type="button"
+                id="nextLessonBtn"
+                class="lesson-nav-btn lesson-nav-next"
+            >
 
-                    <span>
+                Next Lesson
 
-                        <small>
-                            Next
-                        </small>
+                <i class="fa-solid fa-arrow-right"></i>
 
-                        <strong>
-                            Next Lesson
-                        </strong>
+            </button>
 
-                    </span>
-
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </a>
-
-            </nav>
-
-        </article>
+        </nav>
 
     </div>
 
