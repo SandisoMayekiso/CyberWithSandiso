@@ -95,52 +95,59 @@
 ========================================================= */
 
 .academy-logo {
-    flex-shrink: 0;
 
     display: inline-flex;
     align-items: center;
-    gap: 8px;
 
-    color: var(--dashboard-text);
-    text-decoration: none;
+    gap: 9px;
 
-    font-weight: 800;
-    letter-spacing: -0.03em;
+    white-space: nowrap;
 }
 
-
 .logo-cws {
+
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
 
-    min-width: 46px;
-    height: 34px;
+    width: 42px;
+    height: 42px;
 
-    padding: 0 9px;
+    border:
+        1px solid rgba(0, 217, 255, 0.45);
 
-    border: 1px solid rgba(56, 189, 248, 0.35);
-    border-radius: 8px;
+    border-radius: 9px;
 
-    color: #07111f;
-    background: linear-gradient(
-        135deg,
-        var(--dashboard-primary),
-        var(--dashboard-accent)
-    );
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 217, 255, 0.15),
+            rgba(0, 217, 255, 0.03)
+        );
 
-    font-size: 0.82rem;
-    font-weight: 900;
-    letter-spacing: 0.04em;
+    color: var(--accent);
+
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
 
     box-shadow:
-        0 0 22px rgba(56, 189, 248, 0.16);
+        0 0 20px rgba(0, 217, 255, 0.08);
 }
-
 
 .logo-text {
-    font-size: 1.05rem;
+
+    color: var(--text-primary);
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
 }
+
 
 
 /* =========================================================
