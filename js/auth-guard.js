@@ -2,6 +2,22 @@
    CWS ACADEMY
    AUTH GUARD
    Authentication + Logout Controller
+
+   Student pages:
+   /student/dashboard.html
+   /student/student-courses.html
+   /student/labs.html
+   /student/assessments.html
+   /student/progress.html
+   /student/certificates.html
+
+   Login page:
+   /pages/login.html
+========================================================= */
+
+
+/* =========================================================
+   FIREBASE AUTH
 ========================================================= */
 
 import {
@@ -9,149 +25,321 @@ import {
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+
 import {
     auth
 } from "./firebase-config.js";
 
 
+
 /* =========================================================
-   STARTUP
+   CONFIGURATION
 ========================================================= */
 
-console.log("=================================");
-console.log("CWS Academy auth-guard.js STARTED");
-console.log("Current page:", window.location.href);
-console.log("=================================");
+/*
+ * All student pages are inside /student/
+ *
+ * Therefore:
+ *
+ * ../pages/login.html
+ *
+ * resolves to:
+ *
+ * /CyberWithSandiso/pages/login.html
+ */
+
+const LOGIN_PAGE = "../pages/login.html";
 
 
 /* =========================================================
-   LOGIN REDIRECT
+   DEBUG
 ========================================================= */
 
-const LOGIN_PAGE = "../auth/login.html";
+console.log(
+    "========================================"
+);
+
+console.log(
+    "CWS Academy Auth Guard Loaded"
+);
+
+console.log(
+    "Current page:",
+    window.location.pathname
+);
+
+console.log(
+    "Login page:",
+    LOGIN_PAGE
+);
+
+console.log(
+    "========================================"
+);
+
 
 
 /* =========================================================
-   LOGOUT BUTTON
+   DOM ELEMENTS
 ========================================================= */
 
 const logoutBtn =
     document.getElementById("logoutBtn");
 
-
-console.log(
-    "Logout button:",
-    logoutBtn ? "FOUND" : "NOT FOUND"
-);
+const studentName =
+    document.getElementById("studentName");
 
 
 /* =========================================================
-   LOGOUT
+   CHECK LOGOUT BUTTON
 ========================================================= */
 
-async function handleLogout() {
+if (logoutBtn) {
 
     console.log(
-        "CWS Academy: Logout button clicked."
+        "CWS Academy: Logout button FOUND."
     );
 
+} else {
 
-    if (!auth) {
+    console.warn(
+        "CWS Academy: Logout button NOT FOUND."
+    );
 
-        console.error(
-            "CWS Academy: Firebase auth is unavailable."
-        );
+}
+
+
+
+/* =========================================================
+   DISPLAY STUDENT NAME
+========================================================= */
+
+function updateStudentName(user) {
+
+    if (!studentName) {
 
         return;
 
     }
 
 
+    if (!user) {
+
+        studentName.textContent =
+            "Student";
+
+        return;
+
+    }
+
+
+    /*
+     * Priority:
+     *
+     * 1. Firebase displayName
+     * 2. Email username
+     * 3. Student
+     */
+
+    let name =
+        user.displayName;
+
+
+    if (
+        !name &&
+        user.email
+    ) {
+
+        name =
+            user.email.split("@")[0];
+
+    }
+
+
+    if (!name) {
+
+        name =
+            "Student";
+
+    }
+
+
+    studentName.textContent =
+        name;
+
+}
+
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function handleLogout(event) {
+
+    /*
+     * Prevent the button from submitting
+     * a form if it happens to be inside one.
+     */
+
+    if (event) {
+
+        event.preventDefault();
+
+    }
+
+
+    /*
+     * Prevent multiple clicks.
+     */
+
+    if (
+        logoutBtn &&
+        logoutBtn.disabled
+    ) {
+
+        return;
+
+    }
+
+
+    console.log(
+        "CWS Academy: Logout requested."
+    );
+
+
+    /*
+     * Disable button while Firebase
+     * processes the sign-out.
+     */
+
     if (logoutBtn) {
 
-        logoutBtn.disabled = true;
+        logoutBtn.disabled =
+            true;
 
-        const originalHTML =
+
+        logoutBtn.dataset.originalContent =
             logoutBtn.innerHTML;
 
+
         logoutBtn.innerHTML = `
+
             <i class="fa-solid fa-spinner fa-spin"></i>
-            <span>Logging out...</span>
+
+            <span>
+                Logging out...
+            </span>
+
         `;
 
+    }
+
+
+    try {
+
+        /*
+         * Firebase logout
+         */
+
+        await signOut(auth);
+
+
+        console.log(
+            "CWS Academy: Firebase sign-out successful."
+        );
+
+
+        /*
+         * Clear temporary session data.
+         *
+         * DO NOT use localStorage.clear()
+         * because other CWS functionality may
+         * use localStorage.
+         */
 
         try {
 
-            await signOut(auth);
-
-
-            console.log(
-                "CWS Academy: Firebase sign-out successful."
-            );
-
-
-            /*
-             * Clear any temporary client-side
-             * authentication state.
-             */
-
             sessionStorage.clear();
 
+        } catch (storageError) {
 
-            /*
-             * IMPORTANT:
-             *
-             * Do NOT clear localStorage here.
-             *
-             * Your visitor analytics uses localStorage
-             * for visitorId.
-             */
-
-
-            window.location.replace(
-                LOGIN_PAGE
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "CWS Academy: Logout failed.",
-                error
-            );
-
-
-            console.error(
-                "Firebase error code:",
-                error?.code
-            );
-
-
-            console.error(
-                "Firebase error message:",
-                error?.message
-            );
-
-
-            logoutBtn.disabled = false;
-
-            logoutBtn.innerHTML =
-                originalHTML;
-
-
-            alert(
-                "Unable to log out. Please try again."
+            console.warn(
+                "Session storage could not be cleared:",
+                storageError
             );
 
         }
+
+
+        /*
+         * Redirect to the actual login page.
+         *
+         * Because all student pages are inside
+         * /student/, this resolves correctly.
+         */
+
+        window.location.replace(
+            LOGIN_PAGE
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "CWS Academy: Firebase logout failed.",
+            error
+        );
+
+
+        console.error(
+            "Error code:",
+            error?.code
+        );
+
+
+        console.error(
+            "Error message:",
+            error?.message
+        );
+
+
+        /*
+         * Restore button.
+         */
+
+        if (logoutBtn) {
+
+            logoutBtn.disabled =
+                false;
+
+
+            logoutBtn.innerHTML =
+                logoutBtn.dataset.originalContent ||
+                `
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                `;
+
+        }
+
+
+        /*
+         * Inform the student.
+         */
+
+        alert(
+            "Logout failed. Please try again."
+        );
 
     }
 
 }
 
 
+
 /* =========================================================
-   ATTACH LOGOUT EVENT
+   ATTACH LOGOUT LISTENER
 ========================================================= */
 
 if (logoutBtn) {
@@ -161,47 +349,41 @@ if (logoutBtn) {
         handleLogout
     );
 
-
-    console.log(
-        "CWS Academy: Logout listener attached."
-    );
-
-} else {
-
-    console.warn(
-        "CWS Academy: #logoutBtn was not found on this page."
-    );
-
 }
 
 
 
 /* =========================================================
-   AUTH STATE
+   AUTHENTICATION STATE
 ========================================================= */
 
 onAuthStateChanged(
     auth,
+
     (user) => {
 
         console.log(
-            "CWS Academy auth state:",
+            "CWS Academy Auth State:",
             user
-                ? `Authenticated: ${user.email}`
-                : "Not authenticated"
+                ? `SIGNED IN — ${user.email}`
+                : "SIGNED OUT"
         );
 
 
         /*
-         * If there is no authenticated user,
-         * prevent access to student pages.
+         * -------------------------------------------------
+         * USER IS NOT AUTHENTICATED
+         * -------------------------------------------------
          */
 
         if (!user) {
 
+            updateStudentName(null);
+
+
             /*
-             * Don't immediately redirect the login page
-             * itself if auth-guard is ever reused there.
+             * Check whether we're already
+             * on the login page.
              */
 
             const currentPath =
@@ -210,14 +392,25 @@ onAuthStateChanged(
 
             const isLoginPage =
                 currentPath.includes(
-                    "/auth/login.html"
+                    "/pages/login.html"
                 );
 
+
+            /*
+             * Only redirect if we're NOT
+             * already on login.html.
+             */
 
             if (!isLoginPage) {
 
                 console.log(
-                    "No authenticated user. Redirecting to login."
+                    "CWS Academy: No authenticated user."
+                );
+
+
+                console.log(
+                    "Redirecting to:",
+                    LOGIN_PAGE
                 );
 
 
@@ -233,35 +426,29 @@ onAuthStateChanged(
         }
 
 
+
         /*
-         * Update student name if the element exists.
+         * -------------------------------------------------
+         * USER IS AUTHENTICATED
+         * -------------------------------------------------
          */
 
-        const studentName =
-            document.getElementById(
-                "studentName"
-            );
+        console.log(
+            "CWS Academy: Student authenticated."
+        );
 
 
-        if (
-            studentName &&
-            user.email
-        ) {
-
-            studentName.textContent =
-                user.displayName ||
-                user.email.split("@")[0];
-
-        }
+        updateStudentName(user);
 
     },
 
     (error) => {
 
         console.error(
-            "CWS Academy auth state error:",
+            "CWS Academy: Authentication state error.",
             error
         );
 
     }
+
 );
