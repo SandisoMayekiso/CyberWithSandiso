@@ -1,473 +1,886 @@
 /* =========================================================
    CWS ACADEMY
-   STUDENT ASSESSMENTS
-   Firebase Authentication + Statistics
+   ASSESSMENTS CONTROLLER
 ========================================================= */
-
-import {
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-import {
-    doc,
-    getDoc
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-import {
-    auth,
-    db
-} from "./firebase-config.js";
 
 
 /* =========================================================
-   DEBUG
+   ASSESSMENT DATA
 ========================================================= */
 
-console.log(
-    "CWS Academy student-assessments.js loaded."
-);
-
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const studentName =
-    document.getElementById("studentName");
-
-const logoutBtn =
-    document.getElementById("logoutBtn");
-
-const assessmentsCompleted =
-    document.getElementById(
-        "assessmentsCompleted"
-    );
-
-const quizzesCompleted =
-    document.getElementById(
-        "quizzesCompleted"
-    );
-
-const averageScore =
-    document.getElementById(
-        "averageScore"
-    );
-
-const highestScore =
-    document.getElementById(
-        "highestScore"
-    );
-
-const recentAssessments =
-    document.getElementById(
-        "recentAssessments"
-    );
-
-const noRecentAssessments =
-    document.getElementById(
-        "noRecentAssessments"
-    );
-
-
-/* =========================================================
-   USER NAME
-========================================================= */
-
-function getUserName(user) {
-
-    if (user?.displayName) {
-
-        return user.displayName.trim();
-
-    }
-
-
-    if (user?.email) {
-
-        const emailName =
-            user.email
-                .split("@")[0]
-                .trim();
-
-        if (emailName) {
-
-            return emailName;
-
-        }
-
-    }
-
-
-    return "Student";
-}
-
-
-/* =========================================================
-   DISPLAY USER
-========================================================= */
-
-function displayUser(user) {
-
-    const name =
-        getUserName(user);
-
-
-    if (studentName) {
-
-        studentName.textContent =
-            name;
-
-    }
-
-
-    console.log(
-        "Assessment page user:",
-        {
-            uid: user.uid,
-            email: user.email,
-            name
-        }
-    );
-
-}
-
-
-/* =========================================================
-   DEFAULT STATISTICS
-========================================================= */
-
-function setDefaultStats() {
-
-    if (assessmentsCompleted) {
-
-        assessmentsCompleted.textContent =
-            "0";
-
-    }
-
-
-    if (quizzesCompleted) {
-
-        quizzesCompleted.textContent =
-            "0";
-
-    }
-
-
-    if (averageScore) {
-
-        averageScore.textContent =
-            "—";
-
-    }
-
-
-    if (highestScore) {
-
-        highestScore.textContent =
-            "—";
-
-    }
-
-}
-
-
-/* =========================================================
-   LOAD ASSESSMENT DATA
-========================================================= */
-
-async function loadAssessmentData(user) {
-
-    setDefaultStats();
-
-
-    console.log(
-        "Loading assessment data for:",
-        user.uid
-    );
-
+const ASSESSMENTS = [
 
     /*
-     * This is ready for Firestore integration.
+     * These are intentionally empty.
      *
-     * Example future structure:
+     * Firebase will eventually populate this array.
      *
-     * students/{uid}
+     * Example:
      *
      * {
-     *     assessmentStats: {
-     *         completed: 5,
-     *         quizzesCompleted: 4,
-     *         averageScore: 82,
-     *         highestScore: 95
-     *     }
+     *     id: "cybersecurity-101-final",
+     *     title: "Cybersecurity Fundamentals Assessment",
+     *     description: "...",
+     *     course: "Cybersecurity Fundamentals",
+     *     questions: 25,
+     *     duration: 30,
+     *     passMark: 70,
+     *     available: true
      * }
      */
 
+];
 
-    try {
 
-        if (!db) {
+/* =========================================================
+   RESULTS DATA
+========================================================= */
 
-            console.warn(
-                "Firestore database is unavailable."
-            );
+const ASSESSMENT_RESULTS = [
 
-            return;
+    /*
+     * Firebase will eventually populate this.
+     *
+     * Example:
+     *
+     * {
+     *     id: "result-001",
+     *     assessmentId: "cybersecurity-101-final",
+     *     title: "Cybersecurity Fundamentals Assessment",
+     *     score: 86,
+     *     passMark: 70,
+     *     completedAt: "2026-08-10T10:30:00Z"
+     * }
+     */
 
+];
+
+
+
+/* =========================================================
+   SAFE NUMBER
+========================================================= */
+
+function safeNumber(value) {
+
+    const number =
+        Number(value);
+
+
+    if (!Number.isFinite(number)) {
+
+        return 0;
+
+    }
+
+
+    return number;
+
+}
+
+
+
+/* =========================================================
+   FORMAT DATE
+========================================================= */
+
+function formatDate(dateValue) {
+
+    if (!dateValue) {
+
+        return "Date unavailable";
+
+    }
+
+
+    const date =
+        new Date(dateValue);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "Date unavailable";
+
+    }
+
+
+    return date.toLocaleDateString(
+        undefined,
+        {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
         }
+    );
+
+}
 
 
-        const studentRef =
-            doc(
-                db,
-                "students",
-                user.uid
-            );
+
+/* =========================================================
+   CALCULATE AVERAGE
+========================================================= */
+
+function calculateAverageScore() {
+
+    if (!ASSESSMENT_RESULTS.length) {
+
+        return 0;
+
+    }
 
 
-        const studentSnapshot =
-            await getDoc(studentRef);
+    const total =
+        ASSESSMENT_RESULTS.reduce(
+            (
+                sum,
+                result
+            ) => {
 
+                return sum +
+                    safeNumber(
+                        result.score
+                    );
 
-        if (!studentSnapshot.exists()) {
-
-            console.log(
-                "No student assessment data found yet."
-            );
-
-            return;
-
-        }
-
-
-        const studentData =
-            studentSnapshot.data();
-
-
-        const stats =
-            studentData.assessmentStats;
-
-
-        if (!stats) {
-
-            return;
-
-        }
-
-
-        if (assessmentsCompleted) {
-
-            assessmentsCompleted.textContent =
-                stats.completed ?? 0;
-
-        }
-
-
-        if (quizzesCompleted) {
-
-            quizzesCompleted.textContent =
-                stats.quizzesCompleted ?? 0;
-
-        }
-
-
-        if (averageScore) {
-
-            averageScore.textContent =
-                stats.averageScore != null
-                    ? `${stats.averageScore}%`
-                    : "—";
-
-        }
-
-
-        if (highestScore) {
-
-            highestScore.textContent =
-                stats.highestScore != null
-                    ? `${stats.highestScore}%`
-                    : "—";
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Unable to load assessment data:",
-            error
+            },
+            0
         );
+
+
+    return Math.round(
+        total /
+        ASSESSMENT_RESULTS.length
+    );
+
+}
+
+
+
+/* =========================================================
+   CALCULATE PASSED
+========================================================= */
+
+function calculatePassedAssessments() {
+
+    return ASSESSMENT_RESULTS.filter(
+        result => {
+
+            const score =
+                safeNumber(
+                    result.score
+                );
+
+
+            const passMark =
+                safeNumber(
+                    result.passMark || 70
+                );
+
+
+            return score >= passMark;
+
+        }
+    ).length;
+
+}
+
+
+
+/* =========================================================
+   UPDATE STATISTICS
+========================================================= */
+
+function updateAssessmentStatistics() {
+
+    const available =
+        ASSESSMENTS.filter(
+            assessment =>
+                assessment.available !== false
+        ).length;
+
+
+    const completed =
+        ASSESSMENT_RESULTS.length;
+
+
+    const average =
+        calculateAverageScore();
+
+
+    const passed =
+        calculatePassedAssessments();
+
+
+    const availableElement =
+        document.getElementById(
+            "availableAssessments"
+        );
+
+
+    const completedElement =
+        document.getElementById(
+            "completedAssessments"
+        );
+
+
+    const averageElement =
+        document.getElementById(
+            "averageScore"
+        );
+
+
+    const passedElement =
+        document.getElementById(
+            "passedAssessments"
+        );
+
+
+    if (availableElement) {
+
+        availableElement.textContent =
+            available;
+
+    }
+
+
+    if (completedElement) {
+
+        completedElement.textContent =
+            completed;
+
+    }
+
+
+    if (averageElement) {
+
+        averageElement.textContent =
+            `${average}%`;
+
+    }
+
+
+    if (passedElement) {
+
+        passedElement.textContent =
+            passed;
 
     }
 
 }
 
 
+
 /* =========================================================
-   RECENT ASSESSMENTS
+   CREATE ASSESSMENT CARD
 ========================================================= */
 
-function setupRecentAssessments() {
+function createAssessmentCard(
+    assessment
+) {
 
-    /*
-     * Until Firestore assessment history
-     * is implemented, keep the empty state.
-     */
+    const card =
+        document.createElement("article");
 
-    if (!recentAssessments) {
+
+    card.className =
+        "assessment-card";
+
+
+    const isCompleted =
+        ASSESSMENT_RESULTS.some(
+            result =>
+                result.assessmentId ===
+                assessment.id
+        );
+
+
+    const result =
+        ASSESSMENT_RESULTS.find(
+            item =>
+                item.assessmentId ===
+                assessment.id
+        );
+
+
+    const score =
+        result
+            ? safeNumber(result.score)
+            : null;
+
+
+    card.innerHTML = `
+
+        <div class="assessment-card-header">
+
+            <div class="assessment-card-icon">
+
+                <i class="fa-solid ${
+                    assessment.icon ||
+                    "fa-clipboard-check"
+                }"></i>
+
+            </div>
+
+
+            <span
+                class="assessment-status ${
+                    isCompleted
+                        ? "completed"
+                        : ""
+                }"
+            >
+
+                ${
+                    isCompleted
+                        ? "Completed"
+                        : "Available"
+                }
+
+            </span>
+
+        </div>
+
+
+        <div class="assessment-card-content">
+
+            <h3>
+                ${assessment.title}
+            </h3>
+
+
+            <p>
+                ${assessment.description}
+            </p>
+
+
+            <div class="assessment-meta">
+
+                <div class="assessment-meta-item">
+
+                    <span>
+                        QUESTIONS
+                    </span>
+
+                    <strong>
+                        ${
+                            assessment.questions ||
+                            0
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div class="assessment-meta-item">
+
+                    <span>
+                        DURATION
+                    </span>
+
+                    <strong>
+                        ${
+                            assessment.duration ||
+                            0
+                        } min
+                    </strong>
+
+                </div>
+
+
+                <div class="assessment-meta-item">
+
+                    <span>
+                        PASS MARK
+                    </span>
+
+                    <strong>
+                        ${
+                            assessment.passMark ||
+                            70
+                        }%
+                    </strong>
+
+                </div>
+
+
+                <div class="assessment-meta-item">
+
+                    <span>
+                        COURSE
+                    </span>
+
+                    <strong>
+                        ${
+                            assessment.course ||
+                            "CWS Academy"
+                        }
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="assessment-card-footer">
+
+            ${
+                result
+                    ? `
+                        <span class="assessment-score">
+
+                            Score:
+
+                            <strong>
+                                ${score}%
+                            </strong>
+
+                        </span>
+                    `
+                    : `
+                        <span class="assessment-score">
+
+                            Ready when you are.
+
+                        </span>
+                    `
+            }
+
+
+            <button
+                type="button"
+                class="assessment-start-btn ${
+                    assessment.available === false
+                        ? "disabled"
+                        : ""
+                }"
+                data-assessment-id="${assessment.id}"
+                ${
+                    assessment.available === false
+                        ? "disabled"
+                        : ""
+                }
+            >
+
+                ${
+                    isCompleted
+                        ? "Retake"
+                        : "Start Assessment"
+                }
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    return card;
+
+}
+
+
+
+/* =========================================================
+   RENDER ASSESSMENTS
+========================================================= */
+
+function renderAssessments() {
+
+    const container =
+        document.getElementById(
+            "assessmentsGrid"
+        );
+
+
+    const emptyState =
+        document.getElementById(
+            "noAssessments"
+        );
+
+
+    const count =
+        document.getElementById(
+            "assessmentCount"
+        );
+
+
+    if (!container) {
 
         return;
 
     }
 
 
-    if (noRecentAssessments) {
+    container.innerHTML = "";
 
-        noRecentAssessments.hidden =
-            false;
+
+    const available =
+        ASSESSMENTS.filter(
+            assessment =>
+                assessment.available !== false
+        );
+
+
+    if (count) {
+
+        count.textContent =
+            `${available.length} Available`;
 
     }
+
+
+    if (!available.length) {
+
+        if (emptyState) {
+
+            emptyState.hidden =
+                false;
+
+        }
+
+        return;
+
+    }
+
+
+    if (emptyState) {
+
+        emptyState.hidden =
+            true;
+
+    }
+
+
+    available.forEach(
+        assessment => {
+
+            container.appendChild(
+                createAssessmentCard(
+                    assessment
+                )
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   CREATE RESULT ROW
+========================================================= */
+
+function createResultRow(result) {
+
+    const row =
+        document.createElement("article");
+
+
+    row.className =
+        "assessment-result-row";
+
+
+    const score =
+        safeNumber(
+            result.score
+        );
+
+
+    const passMark =
+        safeNumber(
+            result.passMark || 70
+        );
+
+
+    const passed =
+        score >= passMark;
+
+
+    row.innerHTML = `
+
+        <div class="assessment-result-title">
+
+            <div class="assessment-result-icon">
+
+                <i class="fa-solid fa-clipboard-check"></i>
+
+            </div>
+
+
+            <div>
+
+                <strong>
+                    ${
+                        result.title ||
+                        "Assessment"
+                    }
+                </strong>
+
+                <small>
+                    Pass mark:
+                    ${passMark}%
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="assessment-result-score ${
+                passed
+                    ? "pass"
+                    : "fail"
+            }"
+        >
+
+            ${score}%
+
+        </div>
+
+
+        <span
+            class="assessment-result-status ${
+                passed
+                    ? ""
+                    : "fail"
+            }"
+        >
+
+            ${
+                passed
+                    ? "PASSED"
+                    : "REVIEW"
+            }
+
+        </span>
+
+
+        <span class="assessment-result-date">
+
+            ${
+                formatDate(
+                    result.completedAt
+                )
+            }
+
+        </span>
+
+    `;
+
+
+    return row;
+
+}
+
+
+
+/* =========================================================
+   RENDER RESULTS
+========================================================= */
+
+function renderResults() {
+
+    const container =
+        document.getElementById(
+            "resultsContainer"
+        );
+
+
+    const emptyState =
+        document.getElementById(
+            "noResults"
+        );
+
+
+    if (!container) {
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!ASSESSMENT_RESULTS.length) {
+
+        if (emptyState) {
+
+            emptyState.hidden =
+                false;
+
+        }
+
+        return;
+
+    }
+
+
+    if (emptyState) {
+
+        emptyState.hidden =
+            true;
+
+    }
+
+
+    const sortedResults =
+        [...ASSESSMENT_RESULTS].sort(
+            (
+                first,
+                second
+            ) => {
+
+                return (
+                    new Date(
+                        second.completedAt
+                    ) -
+                    new Date(
+                        first.completedAt
+                    )
+                );
+
+            }
+        );
+
+
+    sortedResults.forEach(
+        result => {
+
+            container.appendChild(
+                createResultRow(
+                    result
+                )
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   ASSESSMENT ACTION
+========================================================= */
+
+function startAssessment(
+    assessmentId
+) {
+
+    const assessment =
+        ASSESSMENTS.find(
+            item =>
+                item.id ===
+                assessmentId
+        );
+
+
+    if (!assessment) {
+
+        return;
+
+    }
+
+
+    /*
+     * IMPORTANT:
+     *
+     * We are not automatically sending
+     * the student anywhere yet.
+     *
+     * Once the actual assessment engine
+     * is ready, this function can become:
+     *
+     * window.location.href =
+     *     `assessment.html?id=${assessmentId}`;
+     */
 
 
     console.log(
-        "Recent assessments initialized."
+        "Starting assessment:",
+        assessment
     );
 
 }
 
 
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function logout() {
-
-    if (!auth) {
-
-        console.error(
-            "Firebase Auth is unavailable."
-        );
-
-        return;
-
-    }
-
-
-    try {
-
-        if (logoutBtn) {
-
-            logoutBtn.disabled =
-                true;
-
-            logoutBtn.style.opacity =
-                "0.6";
-
-            logoutBtn.style.cursor =
-                "wait";
-
-        }
-
-
-        await signOut(auth);
-
-
-        console.log(
-            "CWS Academy logout successful."
-        );
-
-
-        window.location.replace(
-            "../pages/login.html"
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Logout error:",
-            error
-        );
-
-
-        if (logoutBtn) {
-
-            logoutBtn.disabled =
-                false;
-
-            logoutBtn.style.opacity =
-                "";
-
-            logoutBtn.style.cursor =
-                "";
-
-        }
-
-
-        alert(
-            "Unable to sign out. Please try again."
-        );
-
-    }
-
-}
-
 
 /* =========================================================
-   LOGOUT BUTTON
+   CLICK HANDLER
 ========================================================= */
 
-if (logoutBtn) {
+function setupAssessmentActions() {
 
-    logoutBtn.addEventListener(
+    document.addEventListener(
         "click",
-        logout
-    );
+        event => {
 
-}
-
-
-/* =========================================================
-   FIREBASE AUTH STATE
-========================================================= */
-
-onAuthStateChanged(
-    auth,
-    async user => {
-
-        console.log(
-            "CWS Academy assessment auth state:",
-            user
-                ? "AUTHENTICATED"
-                : "NOT AUTHENTICATED"
-        );
+            const button =
+                event.target.closest(
+                    "[data-assessment-id]"
+                );
 
 
-        if (!user) {
+            if (!button) {
 
-            window.location.replace(
-                "../pages/login.html?redirect=assessments"
+                return;
+
+            }
+
+
+            if (
+                button.disabled
+            ) {
+
+                return;
+
+            }
+
+
+            const assessmentId =
+                button.dataset.assessmentId;
+
+
+            startAssessment(
+                assessmentId
             );
 
-            return;
-
         }
+    );
 
+}
 
-        displayUser(user);
-
-        await loadAssessmentData(user);
-
-        setupRecentAssessments();
-
-    }
-);
 
 
 /* =========================================================
-   INITIALIZATION
+   INITIALISE
 ========================================================= */
 
-console.log(
-    "CWS Academy assessments initialization complete."
+function initialiseAssessmentsPage() {
+
+    updateAssessmentStatistics();
+
+    renderAssessments();
+
+    renderResults();
+
+    setupAssessmentActions();
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initialiseAssessmentsPage
 );
