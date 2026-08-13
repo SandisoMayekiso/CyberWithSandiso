@@ -12,12 +12,7 @@
 
     <meta
         name="description"
-        content="CWS Academy student assessments, quizzes and cybersecurity examinations."
-    >
-
-    <meta
-        name="author"
-        content="CyberWithSandiso"
+        content="CWS Academy assessments, quizzes and examination results."
     >
 
     <title>Assessments | CWS Academy</title>
@@ -34,7 +29,7 @@
 
 
     <!-- =====================================================
-         MAIN CSS
+         GLOBAL CSS
     ====================================================== -->
 
     <link
@@ -44,7 +39,7 @@
 
 
     <!-- =====================================================
-         DASHBOARD / STUDENT CSS
+         DASHBOARD CSS
     ====================================================== -->
 
     <link
@@ -59,17 +54,17 @@
 
     <link
         rel="stylesheet"
-        href="../css/student-assessments.css"
+        href="../css/assessments.css"
     >
 
 </head>
 
 
-<body class="student-dashboard">
+<body class="student-page">
 
 
 <!-- =========================================================
-     NAVIGATION
+     HEADER
 ========================================================= -->
 
 <header class="student-header">
@@ -77,9 +72,7 @@
     <nav class="student-nav">
 
 
-        <!-- =================================================
-             LOGO
-        ================================================== -->
+        <!-- BRAND -->
 
         <a
             href="dashboard.html"
@@ -98,27 +91,28 @@
         </a>
 
 
-        <!-- =================================================
-             NAVIGATION LINKS
-        ================================================== -->
+        <!-- NAVIGATION -->
 
         <div class="student-nav-links">
-
 
             <a href="dashboard.html">
 
                 <i class="fa-solid fa-house"></i>
 
-                Dashboard
+                <span>
+                    Dashboard
+                </span>
 
             </a>
 
 
             <a href="student-courses.html">
 
-                <i class="fa-solid fa-book"></i>
+                <i class="fa-solid fa-book-open"></i>
 
-                Courses
+                <span>
+                    Courses
+                </span>
 
             </a>
 
@@ -127,7 +121,9 @@
 
                 <i class="fa-solid fa-flask"></i>
 
-                Labs
+                <span>
+                    Labs
+                </span>
 
             </a>
 
@@ -140,7 +136,9 @@
 
                 <i class="fa-solid fa-clipboard-check"></i>
 
-                Assessments
+                <span>
+                    Assessments
+                </span>
 
             </a>
 
@@ -149,7 +147,9 @@
 
                 <i class="fa-solid fa-chart-line"></i>
 
-                Progress
+                <span>
+                    Progress
+                </span>
 
             </a>
 
@@ -158,26 +158,32 @@
 
                 <i class="fa-solid fa-certificate"></i>
 
-                Certificates
+                <span>
+                    Certificates
+                </span>
 
             </a>
 
         </div>
 
 
-        <!-- =================================================
-             ACCOUNT
-        ================================================== -->
+        <!-- ACCOUNT -->
 
         <div class="student-nav-account">
 
+            <div class="assessment-user">
 
-            <span
-                id="studentName"
-                class="student-nav-name"
-            >
-                Student
-            </span>
+                <div class="assessment-user-avatar">
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+                <span id="studentName">
+                    Student
+                </span>
+
+            </div>
 
 
             <button
@@ -204,56 +210,58 @@
      MAIN
 ========================================================= -->
 
-<main class="dashboard-main">
+<main class="assessments-main">
 
 
     <!-- =====================================================
-         ASSESSMENT HERO
+         HERO
     ====================================================== -->
 
-    <section class="assessment-hero">
-
-        <div class="assessment-hero-content">
+    <section class="assessments-hero">
 
 
-            <span class="dashboard-label">
-                CWS ACADEMY • KNOWLEDGE EVALUATION
+        <div class="assessments-hero-content">
+
+            <span class="assessments-eyebrow">
+                CWS ACADEMY • KNOWLEDGE CHECK
             </span>
 
 
             <h1>
-                Test Your
-                <span>
-                    Cybersecurity Knowledge
-                </span>
+
+                Test your
+                <span>knowledge.</span>
+
             </h1>
 
 
             <p>
-                Complete quizzes, course assessments and
-                examinations to reinforce your knowledge,
-                measure your understanding and track your
-                academic progress.
+
+                Complete quizzes and assessments to measure
+                your understanding, identify areas for
+                improvement and progress toward your next
+                CWS Academy achievement.
+
             </p>
 
 
             <div class="assessment-hero-actions">
 
                 <a
-                    href="../assessments/quizzes.html"
-                    class="dashboard-primary-btn"
+                    href="student-courses.html"
+                    class="assessment-primary-btn"
                 >
 
-                    <i class="fa-solid fa-circle-question"></i>
+                    <i class="fa-solid fa-book-open"></i>
 
-                    Take a Quiz
+                    Continue Learning
 
                 </a>
 
 
                 <a
                     href="progress.html"
-                    class="dashboard-secondary-btn"
+                    class="assessment-secondary-btn"
                 >
 
                     <i class="fa-solid fa-chart-line"></i>
@@ -267,416 +275,29 @@
         </div>
 
 
-        <div class="assessment-hero-icon">
+        <!-- HERO VISUAL -->
 
-            <i class="fa-solid fa-clipboard-check"></i>
+        <div class="assessments-hero-visual">
 
-        </div>
+            <div class="assessment-hero-glow"></div>
 
-    </section>
 
+            <div class="assessment-hero-icon">
 
-
-    <!-- =====================================================
-         ASSESSMENT OVERVIEW
-    ====================================================== -->
-
-    <section class="dashboard-section">
-
-
-        <div class="section-heading">
-
-            <div>
-
-                <span class="dashboard-label">
-                    LEARNING EVALUATION
-                </span>
-
-                <h2>
-                    Assessments
-                </h2>
-
-                <p>
-                    Test your knowledge as you progress
-                    through your cybersecurity learning paths.
-                </p>
-
-            </div>
-
-
-            <a
-                href="progress.html"
-                class="section-view-all"
-            >
-
-                View Progress
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-            </a>
-
-        </div>
-
-
-
-        <!-- =================================================
-             ASSESSMENT GRID
-        ================================================== -->
-
-        <div class="assessment-grid">
-
-
-            <!-- =================================================
-                 QUIZZES
-            ================================================== -->
-
-            <article class="assessment-card">
-
-
-                <div class="assessment-card-icon">
-
-                    <i class="fa-solid fa-circle-question"></i>
-
-                </div>
-
-
-                <div class="assessment-card-content">
-
-
-                    <span class="assessment-type">
-                        KNOWLEDGE CHECK
-                    </span>
-
-
-                    <h3>
-                        Quizzes
-                    </h3>
-
-
-                    <p>
-                        Test your understanding of cybersecurity
-                        concepts after completing lessons and modules.
-                    </p>
-
-
-                    <div class="assessment-meta">
-
-                        <span>
-
-                            <i class="fa-solid fa-list-check"></i>
-
-                            Knowledge Checks
-
-                        </span>
-
-
-                        <span>
-
-                            <i class="fa-solid fa-clock"></i>
-
-                            Short Assessments
-
-                        </span>
-
-                    </div>
-
-
-                    <a
-                        href="../assessments/quizzes.html"
-                        class="assessment-action"
-                    >
-
-                        Take a Quiz
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </a>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 COURSE EXAMS
-            ================================================== -->
-
-            <article class="assessment-card">
-
-
-                <div class="assessment-card-icon">
-
-                    <i class="fa-solid fa-file-circle-check"></i>
-
-                </div>
-
-
-                <div class="assessment-card-content">
-
-
-                    <span class="assessment-type">
-                        COURSE ASSESSMENT
-                    </span>
-
-
-                    <h3>
-                        Course Exams
-                    </h3>
-
-
-                    <p>
-                        Complete structured examinations designed
-                        to evaluate your understanding of course
-                        material.
-                    </p>
-
-
-                    <div class="assessment-meta">
-
-                        <span>
-
-                            <i class="fa-solid fa-book"></i>
-
-                            Course Exams
-
-                        </span>
-
-
-                        <span>
-
-                            <i class="fa-solid fa-chart-column"></i>
-
-                            Graded
-
-                        </span>
-
-                    </div>
-
-
-                    <a
-                        href="../assessments/exams.html"
-                        class="assessment-action"
-                    >
-
-                        View Exams
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </a>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 RESULTS
-            ================================================== -->
-
-            <article class="assessment-card">
-
-
-                <div class="assessment-card-icon">
-
-                    <i class="fa-solid fa-chart-line"></i>
-
-                </div>
-
-
-                <div class="assessment-card-content">
-
-
-                    <span class="assessment-type">
-                        PERFORMANCE
-                    </span>
-
-
-                    <h3>
-                        My Results
-                    </h3>
-
-
-                    <p>
-                        Review completed assessments, scores
-                        and your overall learning performance.
-                    </p>
-
-
-                    <div class="assessment-meta">
-
-                        <span>
-
-                            <i class="fa-solid fa-check-double"></i>
-
-                            Completed
-
-                        </span>
-
-
-                        <span>
-
-                            <i class="fa-solid fa-chart-simple"></i>
-
-                            Performance
-
-                        </span>
-
-                    </div>
-
-
-                    <a
-                        href="progress.html"
-                        class="assessment-action"
-                    >
-
-                        View Results
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </a>
-
-                </div>
-
-            </article>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         ASSESSMENT STATISTICS
-    ====================================================== -->
-
-    <section class="dashboard-section">
-
-
-        <div class="section-heading">
-
-            <div>
-
-                <span class="dashboard-label">
-                    YOUR PERFORMANCE
-                </span>
-
-                <h2>
-                    Assessment Overview
-                </h2>
-
-            </div>
-
-        </div>
-
-
-        <div class="assessment-stats-grid">
-
-
-            <div class="assessment-stat-card">
-
-                <div class="stat-icon">
+                <div class="assessment-icon-ring">
 
                     <i class="fa-solid fa-clipboard-check"></i>
 
                 </div>
 
-                <div>
 
-                    <span
-                        id="assessmentsCompleted"
-                        class="stat-value"
-                    >
-                        0
-                    </span>
+                <strong>
+                    CWS
+                </strong>
 
-                    <span class="stat-label">
-                        Assessments Completed
-                    </span>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="assessment-stat-card">
-
-                <div class="stat-icon">
-
-                    <i class="fa-solid fa-circle-question"></i>
-
-                </div>
-
-                <div>
-
-                    <span
-                        id="quizzesCompleted"
-                        class="stat-value"
-                    >
-                        0
-                    </span>
-
-                    <span class="stat-label">
-                        Quizzes Completed
-                    </span>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="assessment-stat-card">
-
-                <div class="stat-icon">
-
-                    <i class="fa-solid fa-chart-simple"></i>
-
-                </div>
-
-                <div>
-
-                    <span
-                        id="averageScore"
-                        class="stat-value"
-                    >
-                        —
-                    </span>
-
-                    <span class="stat-label">
-                        Average Score
-                    </span>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="assessment-stat-card">
-
-                <div class="stat-icon">
-
-                    <i class="fa-solid fa-trophy"></i>
-
-                </div>
-
-                <div>
-
-                    <span
-                        id="highestScore"
-                        class="stat-value"
-                    >
-                        —
-                    </span>
-
-                    <span class="stat-label">
-                        Highest Score
-                    </span>
-
-                </div>
+                <span>
+                    ASSESSMENTS
+                </span>
 
             </div>
 
@@ -687,27 +308,241 @@
 
 
     <!-- =====================================================
-         RECENT ASSESSMENTS
+         STATISTICS
     ====================================================== -->
 
-    <section class="dashboard-section">
+    <section class="assessment-stats">
 
 
-        <div class="section-heading">
+        <article class="assessment-stat-card">
+
+            <div class="assessment-stat-icon">
+
+                <i class="fa-solid fa-list-check"></i>
+
+            </div>
 
             <div>
 
-                <span class="dashboard-label">
-                    YOUR ACTIVITY
+                <span>
+                    AVAILABLE
+                </span>
+
+                <strong id="availableAssessments">
+                    0
+                </strong>
+
+                <small>
+                    Assessments
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <article class="assessment-stat-card">
+
+            <div class="assessment-stat-icon">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    COMPLETED
+                </span>
+
+                <strong id="completedAssessments">
+                    0
+                </strong>
+
+                <small>
+                    Assessments
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <article class="assessment-stat-card">
+
+            <div class="assessment-stat-icon">
+
+                <i class="fa-solid fa-percent"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    AVERAGE SCORE
+                </span>
+
+                <strong id="averageScore">
+                    0%
+                </strong>
+
+                <small>
+                    Overall performance
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <article class="assessment-stat-card">
+
+            <div class="assessment-stat-icon">
+
+                <i class="fa-solid fa-trophy"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    PASSED
+                </span>
+
+                <strong id="passedAssessments">
+                    0
+                </strong>
+
+                <small>
+                    Successful attempts
+                </small>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         AVAILABLE ASSESSMENTS
+    ====================================================== -->
+
+    <section class="assessment-section">
+
+
+        <div class="assessment-section-heading">
+
+            <div>
+
+                <span>
+                    KNOWLEDGE CHECKS
                 </span>
 
                 <h2>
-                    Recent Assessments
+                    Available Assessments
                 </h2>
 
                 <p>
-                    Your latest assessment activity will
-                    appear here.
+                    Select an assessment when you are ready
+                    to test your understanding.
+                </p>
+
+            </div>
+
+
+            <span
+                id="assessmentCount"
+                class="assessment-count-badge"
+            >
+                0 Available
+            </span>
+
+        </div>
+
+
+        <div
+            id="assessmentsGrid"
+            class="assessments-grid"
+        >
+
+            <!-- Generated by assessments.js -->
+
+        </div>
+
+
+        <!-- EMPTY -->
+
+        <div
+            id="noAssessments"
+            class="assessment-empty-state"
+            hidden
+        >
+
+            <div class="assessment-empty-icon">
+
+                <i class="fa-solid fa-clipboard-question"></i>
+
+            </div>
+
+
+            <span>
+                NO ASSESSMENTS AVAILABLE
+            </span>
+
+
+            <h3>
+                Your next knowledge check is coming.
+            </h3>
+
+
+            <p>
+                Continue working through your courses and
+                lessons. Assessments will become available
+                as you progress through the Academy.
+            </p>
+
+
+            <a
+                href="student-courses.html"
+                class="assessment-primary-btn"
+            >
+
+                <i class="fa-solid fa-book-open"></i>
+
+                Explore Courses
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         RECENT RESULTS
+    ====================================================== -->
+
+    <section class="assessment-section">
+
+
+        <div class="assessment-section-heading">
+
+            <div>
+
+                <span>
+                    PERFORMANCE HISTORY
+                </span>
+
+                <h2>
+                    Recent Results
+                </h2>
+
+                <p>
+                    Review your latest assessment attempts
+                    and identify where you can improve.
                 </p>
 
             </div>
@@ -716,52 +551,116 @@
 
 
         <div
-            id="recentAssessments"
-            class="recent-assessments"
+            id="resultsContainer"
+            class="assessment-results"
         >
 
+            <!-- Generated by JS -->
 
-            <!-- EMPTY STATE -->
-
-            <div
-                id="noRecentAssessments"
-                class="assessment-empty-state"
-            >
-
-                <div class="empty-icon">
-
-                    <i class="fa-solid fa-clipboard-list"></i>
-
-                </div>
+        </div>
 
 
-                <span class="dashboard-label">
-                    NO ACTIVITY YET
-                </span>
+        <div
+            id="noResults"
+            class="assessment-empty-state compact"
+        >
+
+            <div class="assessment-empty-icon">
+
+                <i class="fa-solid fa-chart-simple"></i>
+
+            </div>
 
 
-                <h3>
-                    No Assessments Completed
-                </h3>
+            <span>
+                NO RESULTS YET
+            </span>
 
 
-                <p>
-                    Complete your first quiz or course
-                    assessment and your results will
-                    appear here.
-                </p>
+            <h3>
+                Complete your first assessment.
+            </h3>
 
 
-                <a
-                    href="../assessments/quizzes.html"
-                    class="dashboard-primary-btn"
-                >
+            <p>
+                Your results and performance history will
+                appear here after you complete an assessment.
+            </p>
 
-                    <i class="fa-solid fa-play"></i>
+        </div>
 
-                    Start Your First Quiz
+    </section>
 
-                </a>
+
+
+    <!-- =====================================================
+         ASSESSMENT GUIDANCE
+    ====================================================== -->
+
+    <section class="assessment-guidance">
+
+
+        <div class="assessment-guidance-icon">
+
+            <i class="fa-solid fa-lightbulb"></i>
+
+        </div>
+
+
+        <div class="assessment-guidance-content">
+
+            <span>
+                BEFORE YOU START
+            </span>
+
+            <h2>
+                Approach every assessment strategically.
+            </h2>
+
+            <p>
+                Review the relevant lessons and practical
+                exercises before beginning. Read every
+                question carefully and use your results to
+                identify topics that need more attention.
+            </p>
+
+        </div>
+
+
+        <div class="assessment-guidance-list">
+
+            <div>
+
+                <i class="fa-solid fa-check"></i>
+
+                Review course material
+
+            </div>
+
+
+            <div>
+
+                <i class="fa-solid fa-check"></i>
+
+                Complete practical labs
+
+            </div>
+
+
+            <div>
+
+                <i class="fa-solid fa-check"></i>
+
+                Read questions carefully
+
+            </div>
+
+
+            <div>
+
+                <i class="fa-solid fa-check"></i>
+
+                Review incorrect answers
 
             </div>
 
@@ -772,37 +671,62 @@
 
 
     <!-- =====================================================
-         ACADEMIC INTEGRITY
+         NEXT STEP
     ====================================================== -->
 
-    <section class="assessment-integrity">
+    <section class="assessment-next-step">
 
 
-        <div class="integrity-icon">
+        <div class="assessment-next-icon">
 
-            <i class="fa-solid fa-shield-halved"></i>
+            <i class="fa-solid fa-arrow-up-right-dots"></i>
 
         </div>
 
 
-        <div>
+        <div class="assessment-next-content">
 
-            <span class="dashboard-label">
-                ACADEMIC INTEGRITY
+            <span>
+                NEXT MILESTONE
             </span>
 
-
             <h2>
-                Build Your Knowledge Honestly
+                Assessments are part of your certification path.
             </h2>
 
-
             <p>
-                Assessments are designed to measure your
-                own cybersecurity knowledge, identify areas
-                for improvement and help you build confidence
-                in your technical skills.
+                Complete your required assessments and
+                continue progressing toward your CWS Academy
+                certificates.
             </p>
+
+        </div>
+
+
+        <div class="assessment-next-actions">
+
+            <a
+                href="progress.html"
+                class="assessment-primary-btn"
+            >
+
+                Track Progress
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+
+            <a
+                href="certificates.html"
+                class="assessment-secondary-btn"
+            >
+
+                <i class="fa-solid fa-certificate"></i>
+
+                Certificates
+
+            </a>
 
         </div>
 
@@ -828,7 +752,7 @@
 
 
 <!-- =========================================================
-     FIREBASE AUTH GUARD
+     AUTH GUARD
 ========================================================= -->
 
 <script
@@ -837,8 +761,9 @@
 ></script>
 
 
+
 <!-- =========================================================
-     ASSESSMENTS JAVASCRIPT
+     ASSESSMENTS JS
 ========================================================= -->
 
 <script
@@ -848,4 +773,5 @@
 
 
 </body>
+
 </html>
