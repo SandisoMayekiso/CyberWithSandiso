@@ -1,475 +1,312 @@
 /* =========================================================
    CWS ACADEMY
-   STUDENT CERTIFICATES
-   Firebase Authentication + Firestore
+   CERTIFICATES CONTROLLER
 ========================================================= */
 
-import {
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-import {
-    collection,
-    getDocs,
-    query,
-    where,
-    orderBy
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+const CERTIFICATES = [
 
-import {
-    auth,
-    db
-} from "./firebase-config.js";
+    /*
+     * Earned certificates will eventually come
+     * from Firebase.
+     *
+     * Example:
+     *
+     * {
+     *     id: "cybersecurity-fundamentals",
+     *     title: "Cybersecurity Fundamentals",
+     *     description: "...",
+     *     issuedDate: "...",
+     *     credentialId: "...",
+     *     earned: true
+     * }
+     */
 
-
-/* =========================================================
-   DEBUG
-========================================================= */
-
-console.log(
-    "CWS Academy certificates.js loaded."
-);
+];
 
 
-/* =========================================================
-   ELEMENTS
-========================================================= */
+const CERTIFICATE_PATHS = [
 
-const studentName =
-    document.getElementById("studentName");
+    {
+        id: "cybersecurity-fundamentals",
+        title: "Cybersecurity Fundamentals",
+        description:
+            "Build a strong foundation in cybersecurity concepts, threats, vulnerabilities and security practices.",
+        icon: "fa-shield-halved",
+        level: "BEGINNER",
+        progress: 0,
+        status: "Available"
+    },
 
-const logoutBtn =
-    document.getElementById("logoutBtn");
+    {
+        id: "networking-fundamentals",
+        title: "Networking Fundamentals",
+        description:
+            "Understand networking concepts and protocols from a cybersecurity perspective.",
+        icon: "fa-network-wired",
+        level: "BEGINNER",
+        progress: 0,
+        status: "Available"
+    },
 
-const certificatesGrid =
-    document.getElementById("certificatesGrid");
+    {
+        id: "linux-fundamentals",
+        title: "Linux Fundamentals",
+        description:
+            "Develop Linux command-line, filesystem, permissions and security fundamentals.",
+        icon: "fa-terminal",
+        level: "BEGINNER",
+        progress: 0,
+        status: "Available"
+    },
 
-const certificateCount =
-    document.getElementById("certificateCount");
+    {
+        id: "ethical-hacking-fundamentals",
+        title: "Ethical Hacking Fundamentals",
+        description:
+            "Explore reconnaissance, enumeration, vulnerability identification and professional security testing.",
+        icon: "fa-user-secret",
+        level: "INTERMEDIATE",
+        progress: 0,
+        status: "Planned"
+    },
 
-const noCertificatesMessage =
-    document.getElementById("noCertificatesMessage");
+    {
+        id: "web-application-security",
+        title: "Web Application Security",
+        description:
+            "Explore authentication, sessions, input validation and common web security weaknesses.",
+        icon: "fa-globe",
+        level: "INTERMEDIATE",
+        progress: 0,
+        status: "Planned"
+    },
 
-const certificatesLoading =
-    document.getElementById("certificatesLoading");
-
-
-/* =========================================================
-   GET USER NAME
-========================================================= */
-
-function getUserName(user) {
-
-    if (user?.displayName) {
-
-        return user.displayName.trim();
-
+    {
+        id: "penetration-testing",
+        title: "Practical Penetration Testing",
+        description:
+            "Bring reconnaissance, enumeration, vulnerability analysis and reporting together.",
+        icon: "fa-user-shield",
+        level: "ADVANCED",
+        progress: 0,
+        status: "Planned"
     }
 
+];
 
-    if (user?.email) {
-
-        const emailName =
-            user.email
-                .split("@")[0]
-                .trim();
-
-        if (emailName) {
-
-            return emailName;
-
-        }
-
-    }
-
-
-    return "Student";
-
-}
 
 
 /* =========================================================
-   DISPLAY USER
+   SAFE NUMBER
 ========================================================= */
 
-function displayUser(user) {
+function safeNumber(value) {
 
-    const name =
-        getUserName(user);
+    const number =
+        Number(value);
 
-
-    if (studentName) {
-
-        studentName.textContent =
-            name;
-
+    if (!Number.isFinite(number)) {
+        return 0;
     }
 
-
-    console.log(
-        "Authenticated certificate user:",
-        {
-            uid: user.uid,
-            email: user.email,
-            name
-        }
+    return Math.min(
+        Math.max(number, 0),
+        100
     );
 
 }
 
-
-/* =========================================================
-   LOADING STATE
-========================================================= */
-
-function showLoading() {
-
-    if (certificatesLoading) {
-
-        certificatesLoading.hidden =
-            false;
-
-    }
-
-
-    if (certificatesGrid) {
-
-        certificatesGrid.innerHTML =
-            "";
-
-    }
-
-
-    if (noCertificatesMessage) {
-
-        noCertificatesMessage.hidden =
-            true;
-
-    }
-
-}
-
-
-/* =========================================================
-   HIDE LOADING
-========================================================= */
-
-function hideLoading() {
-
-    if (certificatesLoading) {
-
-        certificatesLoading.hidden =
-            true;
-
-    }
-
-}
-
-
-/* =========================================================
-   UPDATE COUNT
-========================================================= */
-
-function updateCertificateCount(count) {
-
-    if (!certificateCount) {
-
-        return;
-
-    }
-
-
-    certificateCount.textContent =
-        `${count} ${
-            count === 1
-                ? "Certificate"
-                : "Certificates"
-        }`;
-
-}
-
-
-/* =========================================================
-   EMPTY STATE
-========================================================= */
-
-function showEmptyState() {
-
-    hideLoading();
-
-
-    if (certificatesGrid) {
-
-        certificatesGrid.innerHTML =
-            "";
-
-    }
-
-
-    if (noCertificatesMessage) {
-
-        noCertificatesMessage.hidden =
-            false;
-
-    }
-
-
-    updateCertificateCount(0);
-
-}
 
 
 /* =========================================================
    FORMAT DATE
 ========================================================= */
 
-function formatDate(value) {
+function formatCertificateDate(dateValue) {
 
-    if (!value) {
-
+    if (!dateValue) {
         return "Date unavailable";
-
     }
 
+    const date =
+        new Date(dateValue);
 
-    let date;
-
-
-    /*
-     * Firestore Timestamp
-     */
-
-    if (
-        typeof value === "object" &&
-        typeof value.toDate === "function"
-    ) {
-
-        date =
-            value.toDate();
-
-    }
-
-
-    /*
-     * JavaScript Date
-     */
-
-    else if (
-        value instanceof Date
-    ) {
-
-        date =
-            value;
-
-    }
-
-
-    /*
-     * String / timestamp
-     */
-
-    else {
-
-        date =
-            new Date(value);
-
-    }
-
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
-
+    if (Number.isNaN(date.getTime())) {
         return "Date unavailable";
-
     }
 
-
-    return new Intl.DateTimeFormat(
-        "en-US",
+    return date.toLocaleDateString(
+        undefined,
         {
             year: "numeric",
-            month: "long",
+            month: "short",
             day: "numeric"
         }
-    ).format(date);
+    );
 
 }
 
 
+
 /* =========================================================
-   ESCAPE HTML
+   UPDATE STATISTICS
 ========================================================= */
 
-function escapeHTML(value) {
+function updateCertificateStatistics() {
 
-    if (
-        value === null ||
-        value === undefined
-    ) {
+    const earned =
+        CERTIFICATES.length;
 
-        return "";
+    const available =
+        CERTIFICATE_PATHS.length;
 
+    const completedCourses =
+        CERTIFICATES.filter(
+            certificate =>
+                certificate.courseCompleted === true
+        ).length;
+
+    const achievements =
+        earned;
+
+
+    const earnedElement =
+        document.getElementById(
+            "certificatesEarned"
+        );
+
+    const availableElement =
+        document.getElementById(
+            "certificatesAvailable"
+        );
+
+    const coursesElement =
+        document.getElementById(
+            "coursesCompleted"
+        );
+
+    const achievementsElement =
+        document.getElementById(
+            "achievementCount"
+        );
+
+
+    if (earnedElement) {
+
+        earnedElement.textContent =
+            earned;
     }
 
 
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    if (availableElement) {
+
+        availableElement.textContent =
+            available;
+    }
+
+
+    if (coursesElement) {
+
+        coursesElement.textContent =
+            completedCourses;
+    }
+
+
+    if (achievementsElement) {
+
+        achievementsElement.textContent =
+            achievements;
+    }
 
 }
 
 
+
 /* =========================================================
-   CREATE CERTIFICATE CARD
+   EARNED CERTIFICATE CARD
 ========================================================= */
 
-function createCertificateCard(
-    certificate
-) {
+function createCertificateCard(certificate) {
 
     const card =
-        document.createElement(
-            "article"
-        );
-
+        document.createElement("article");
 
     card.className =
         "certificate-card";
 
 
-    const certificateId =
-        escapeHTML(
-            certificate.certificateId ||
-            certificate.id ||
-            "CWS-CERTIFICATE"
+    const date =
+        formatCertificateDate(
+            certificate.issuedDate
         );
-
-
-    const courseName =
-        escapeHTML(
-            certificate.courseName ||
-            certificate.course ||
-            "CWS Academy Course"
-        );
-
-
-    const issuedDate =
-        formatDate(
-            certificate.issuedAt ||
-            certificate.completedAt ||
-            certificate.createdAt
-        );
-
-
-    const verificationUrl =
-        certificate.verificationUrl ||
-        "";
 
 
     card.innerHTML = `
 
-        <div class="certificate-card-header">
+        <div class="certificate-preview">
 
-            <span class="certificate-status">
+            <div class="certificate-preview-icon">
 
-                <i class="fa-solid fa-circle-check"></i>
+                <i class="fa-solid fa-certificate"></i>
 
-                EARNED
+            </div>
 
-            </span>
+            <small>
+                CWS ACADEMY
+            </small>
 
-        </div>
-
-
-        <div class="certificate-icon">
-
-            <i class="fa-solid fa-certificate"></i>
+            <strong>
+                ${certificate.title}
+            </strong>
 
         </div>
 
 
         <div class="certificate-card-content">
 
-            <span class="certificate-label">
-                CWS ACADEMY CERTIFICATE
-            </span>
-
-
             <h3>
-                ${courseName}
+                ${certificate.title}
             </h3>
 
-
-            <div class="certificate-details">
-
-
-                <div>
-
-                    <span>
-                        Certificate ID
-                    </span>
-
-                    <strong>
-                        ${certificateId}
-                    </strong>
-
-                </div>
+            <p>
+                ${certificate.description || "CWS Academy achievement certificate."}
+            </p>
 
 
-                <div>
+            <div class="certificate-meta">
 
-                    <span>
-                        Issued
-                    </span>
+                <span>
 
-                    <strong>
-                        ${issuedDate}
-                    </strong>
+                    <i class="fa-solid fa-calendar"></i>
 
-                </div>
+                    ${date}
+
+                </span>
+
+
+                <span>
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    Verified
+
+                </span>
 
             </div>
 
 
-            <div class="certificate-actions">
-
-                ${
-                    verificationUrl
-                        ? `
-                            <a
-                                href="${escapeHTML(
-                                    verificationUrl
-                                )}"
-                                class="certificate-action"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-
-                                Verify Certificate
-
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-
-                            </a>
-                        `
-                        : ""
-                }
-
+            <div class="certificate-card-actions">
 
                 <button
                     type="button"
-                    class="certificate-action certificate-print-btn"
+                    class="certificate-view-btn"
+                    data-certificate-id="${certificate.id}"
                 >
 
-                    <i class="fa-solid fa-print"></i>
+                    <i class="fa-solid fa-eye"></i>
 
-                    Print / Save
+                    View Certificate
 
                 </button>
 
@@ -480,28 +317,146 @@ function createCertificateCard(
     `;
 
 
-    /*
-     * Print / Save
-     */
+    return card;
 
-    const printButton =
-        card.querySelector(
-            ".certificate-print-btn"
+}
+
+
+
+/* =========================================================
+   RENDER EARNED CERTIFICATES
+========================================================= */
+
+function renderEarnedCertificates() {
+
+    const container =
+        document.getElementById(
+            "earnedCertificatesGrid"
+        );
+
+    const emptyState =
+        document.getElementById(
+            "noCertificates"
+        );
+
+    const count =
+        document.getElementById(
+            "earnedCertificateCount"
         );
 
 
-    if (printButton) {
-
-        printButton.addEventListener(
-            "click",
-            () => {
-
-                window.print();
-
-            }
-        );
-
+    if (!container) {
+        return;
     }
+
+
+    container.innerHTML = "";
+
+
+    if (count) {
+
+        count.textContent =
+            `${CERTIFICATES.length} Earned`;
+    }
+
+
+    if (!CERTIFICATES.length) {
+
+        if (emptyState) {
+            emptyState.hidden = false;
+        }
+
+        return;
+    }
+
+
+    if (emptyState) {
+        emptyState.hidden = true;
+    }
+
+
+    CERTIFICATES.forEach(
+        certificate => {
+
+            container.appendChild(
+                createCertificateCard(
+                    certificate
+                )
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   UPCOMING CERTIFICATE CARD
+========================================================= */
+
+function createUpcomingCertificateCard(path) {
+
+    const card =
+        document.createElement("article");
+
+    card.className =
+        "upcoming-certificate-card";
+
+
+    const progress =
+        safeNumber(path.progress);
+
+
+    card.innerHTML = `
+
+        <div class="upcoming-icon">
+
+            <i class="fa-solid ${path.icon}"></i>
+
+        </div>
+
+
+        <span class="course-level">
+
+            ${path.level}
+
+        </span>
+
+
+        <h3>
+            ${path.title}
+        </h3>
+
+
+        <p>
+            ${path.description}
+        </p>
+
+
+        <div class="upcoming-progress-label">
+
+            <span>
+                Progress
+            </span>
+
+            <strong>
+                ${progress}%
+            </strong>
+
+        </div>
+
+
+        <div class="upcoming-progress-track">
+
+            <div
+                class="upcoming-progress-bar"
+                style="width:${progress}%"
+            ></div>
+
+        </div>
+
+    `;
 
 
     return card;
@@ -509,426 +464,328 @@ function createCertificateCard(
 }
 
 
-/* =========================================================
-   RENDER CERTIFICATES
-========================================================= */
-
-function renderCertificates(
-    certificates
-) {
-
-    hideLoading();
-
-
-    if (!certificates.length) {
-
-        showEmptyState();
-
-        return;
-
-    }
-
-
-    if (!certificatesGrid) {
-
-        return;
-
-    }
-
-
-    if (noCertificatesMessage) {
-
-        noCertificatesMessage.hidden =
-            true;
-
-    }
-
-
-    certificatesGrid.innerHTML =
-        "";
-
-
-    certificates.forEach(
-        certificate => {
-
-            const card =
-                createCertificateCard(
-                    certificate
-                );
-
-
-            certificatesGrid.appendChild(
-                card
-            );
-
-        }
-    );
-
-
-    updateCertificateCount(
-        certificates.length
-    );
-
-
-    console.log(
-        "Certificates rendered:",
-        certificates.length
-    );
-
-}
-
 
 /* =========================================================
-   LOAD CERTIFICATES
+   RENDER UPCOMING
 ========================================================= */
 
-async function loadCertificates(user) {
+function renderUpcomingCertificates() {
 
-    if (!db) {
-
-        console.error(
-            "Firestore is unavailable."
+    const container =
+        document.getElementById(
+            "upcomingCertificatesGrid"
         );
 
 
-        showEmptyState();
-
+    if (!container) {
         return;
-
     }
 
 
-    showLoading();
+    container.innerHTML = "";
 
 
-    try {
+    CERTIFICATE_PATHS.forEach(
+        path => {
 
-        const certificatesRef =
-            collection(
-                db,
-                "certificates"
-            );
-
-
-        const certificatesQuery =
-            query(
-                certificatesRef,
-                where(
-                    "studentUid",
-                    "==",
-                    user.uid
-                ),
-                orderBy(
-                    "issuedAt",
-                    "desc"
+            container.appendChild(
+                createUpcomingCertificateCard(
+                    path
                 )
             );
 
-
-        const snapshot =
-            await getDocs(
-                certificatesQuery
-            );
-
-
-        const certificates =
-            snapshot.docs.map(
-                certificateDoc => ({
-
-                    id:
-                        certificateDoc.id,
-
-                    ...certificateDoc.data()
-
-                })
-            );
-
-
-        renderCertificates(
-            certificates
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Certificate query error:",
-            error
-        );
-
-
-        /*
-         * Fallback query.
-         *
-         * This is useful if Firestore
-         * requires a composite index.
-         */
-
-        try {
-
-            const certificatesRef =
-                collection(
-                    db,
-                    "certificates"
-                );
-
-
-            const fallbackQuery =
-                query(
-                    certificatesRef,
-                    where(
-                        "studentUid",
-                        "==",
-                        user.uid
-                    )
-                );
-
-
-            const snapshot =
-                await getDocs(
-                    fallbackQuery
-                );
-
-
-            const certificates =
-                snapshot.docs.map(
-                    certificateDoc => ({
-
-                        id:
-                            certificateDoc.id,
-
-                        ...certificateDoc.data()
-
-                    })
-                );
-
-
-            certificates.sort(
-                (a, b) => {
-
-                    const dateA =
-                        getTimestamp(
-                            a.issuedAt
-                        );
-
-
-                    const dateB =
-                        getTimestamp(
-                            b.issuedAt
-                        );
-
-
-                    return dateB - dateA;
-
-                }
-            );
-
-
-            renderCertificates(
-                certificates
-            );
-
-
-        } catch (fallbackError) {
-
-            console.error(
-                "Certificate fallback error:",
-                fallbackError
-            );
-
-
-            showEmptyState();
-
         }
-
-    }
-
-}
-
-
-/* =========================================================
-   DATE TIMESTAMP HELPER
-========================================================= */
-
-function getTimestamp(value) {
-
-    if (!value) {
-
-        return 0;
-
-    }
-
-
-    if (
-        typeof value === "object" &&
-        typeof value.toDate === "function"
-    ) {
-
-        return value.toDate().getTime();
-
-    }
-
-
-    const timestamp =
-        new Date(value).getTime();
-
-
-    return Number.isNaN(timestamp)
-        ? 0
-        : timestamp;
-
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function logout() {
-
-    if (!auth) {
-
-        console.error(
-            "Firebase Auth is unavailable."
-        );
-
-        return;
-
-    }
-
-
-    try {
-
-        if (logoutBtn) {
-
-            logoutBtn.disabled =
-                true;
-
-            logoutBtn.style.opacity =
-                "0.6";
-
-            logoutBtn.style.cursor =
-                "wait";
-
-        }
-
-
-        console.log(
-            "CWS Academy: Signing out..."
-        );
-
-
-        await signOut(auth);
-
-
-        console.log(
-            "CWS Academy: Logout successful."
-        );
-
-
-        window.location.replace(
-            "../pages/login.html"
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "CWS Academy logout error:",
-            error
-        );
-
-
-        if (logoutBtn) {
-
-            logoutBtn.disabled =
-                false;
-
-            logoutBtn.style.opacity =
-                "";
-
-            logoutBtn.style.cursor =
-                "";
-
-        }
-
-
-        alert(
-            "Unable to sign out. Please try again."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   LOGOUT BUTTON
-========================================================= */
-
-if (logoutBtn) {
-
-    logoutBtn.addEventListener(
-        "click",
-        logout
     );
 
 }
 
 
+
 /* =========================================================
-   FIREBASE AUTH STATE
+   MODAL
 ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    user => {
+function createCertificateModal() {
 
-        console.log(
-            "CWS Academy certificates auth state:",
-            user
-                ? "AUTHENTICATED"
-                : "NOT AUTHENTICATED"
+    if (
+        document.getElementById(
+            "certificateModal"
+        )
+    ) {
+
+        return;
+    }
+
+
+    const modal =
+        document.createElement("div");
+
+    modal.id =
+        "certificateModal";
+
+    modal.className =
+        "certificate-modal";
+
+    modal.hidden = true;
+
+
+    modal.innerHTML = `
+
+        <div
+            class="certificate-modal-content"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="certificateModalTitle"
+        >
+
+            <button
+                type="button"
+                class="certificate-modal-close"
+                id="certificateModalClose"
+                aria-label="Close certificate"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+
+            <div
+                id="certificateModalBody"
+                class="certificate-modal-preview"
+            >
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        modal
+    );
+
+
+    const closeButton =
+        document.getElementById(
+            "certificateModalClose"
         );
 
 
-        /*
-         * Protect page.
-         */
-
-        if (!user) {
-
-            console.warn(
-                "No authenticated user."
-            );
+    closeButton?.addEventListener(
+        "click",
+        closeCertificateModal
+    );
 
 
-            window.location.replace(
-                "../pages/login.html?redirect=certificates"
-            );
+    modal.addEventListener(
+        "click",
+        event => {
 
+            if (
+                event.target === modal
+            ) {
 
-            return;
+                closeCertificateModal();
+
+            }
 
         }
+    );
 
+}
 
-        /*
-         * Authenticated student.
-         */
-
-        displayUser(user);
-
-        loadCertificates(user);
-
-    }
-);
 
 
 /* =========================================================
-   INITIALIZATION
+   OPEN MODAL
 ========================================================= */
 
-console.log(
-    "CWS Academy certificates.js initialization complete."
+function openCertificateModal(
+    certificateId
+) {
+
+    const certificate =
+        CERTIFICATES.find(
+            item =>
+                item.id === certificateId
+        );
+
+
+    if (!certificate) {
+        return;
+    }
+
+
+    const modal =
+        document.getElementById(
+            "certificateModal"
+        );
+
+    const body =
+        document.getElementById(
+            "certificateModalBody"
+        );
+
+
+    if (!modal || !body) {
+        return;
+    }
+
+
+    const date =
+        formatCertificateDate(
+            certificate.issuedDate
+        );
+
+
+    body.innerHTML = `
+
+        <i class="fa-solid fa-certificate"></i>
+
+        <h2 id="certificateModalTitle">
+            ${certificate.title}
+        </h2>
+
+        <p>
+            ${certificate.description || "CWS Academy achievement certificate."}
+        </p>
+
+        <p>
+            Issued:
+            <strong>
+                ${date}
+            </strong>
+        </p>
+
+        ${
+            certificate.credentialId
+                ? `
+                    <p>
+                        Credential ID:
+                        <strong>
+                            ${certificate.credentialId}
+                        </strong>
+                    </p>
+                `
+                : ""
+        }
+
+    `;
+
+
+    modal.hidden =
+        false;
+
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeCertificateModal() {
+
+    const modal =
+        document.getElementById(
+            "certificateModal"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    modal.hidden =
+        true;
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+
+/* =========================================================
+   CERTIFICATE CLICK HANDLER
+========================================================= */
+
+function setupCertificateActions() {
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    "[data-certificate-id]"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const certificateId =
+                button.dataset.certificateId;
+
+
+            openCertificateModal(
+                certificateId
+            );
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeCertificateModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   INITIALISE
+========================================================= */
+
+function initialiseCertificatesPage() {
+
+    createCertificateModal();
+
+    updateCertificateStatistics();
+
+    renderEarnedCertificates();
+
+    renderUpcomingCertificates();
+
+    setupCertificateActions();
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initialiseCertificatesPage
 );
