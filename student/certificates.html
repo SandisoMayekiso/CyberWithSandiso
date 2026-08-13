@@ -12,7 +12,7 @@
 
     <meta
         name="description"
-        content="View your CWS Academy cybersecurity certificates, academic achievements, and completed training credentials."
+        content="CWS Academy student certificates and achievements."
     >
 
     <meta
@@ -20,14 +20,7 @@
         content="CyberWithSandiso"
     >
 
-    <meta
-        name="theme-color"
-        content="#06101c"
-    >
-
-    <title>
-        Certificates | CWS Academy
-    </title>
+    <title>Certificates | CWS Academy</title>
 
 
     <!-- =====================================================
@@ -41,7 +34,7 @@
 
 
     <!-- =====================================================
-         CORE STYLES
+         MAIN CSS
     ====================================================== -->
 
     <link
@@ -51,7 +44,7 @@
 
 
     <!-- =====================================================
-         STUDENT DASHBOARD
+         DASHBOARD CSS
     ====================================================== -->
 
     <link
@@ -61,7 +54,7 @@
 
 
     <!-- =====================================================
-         CERTIFICATES
+         CERTIFICATES CSS
     ====================================================== -->
 
     <link
@@ -72,880 +65,814 @@
 </head>
 
 
-<body class="student-page student-certificates-page">
+<body class="student-page">
 
 
-    <!-- =====================================================
-         APPLICATION SHELL
-    ====================================================== -->
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
-    <div class="student-app-shell">
+<header class="student-header">
+
+    <nav class="student-nav">
 
 
-        <!-- =================================================
-             SIDEBAR
-        ================================================== -->
+        <!-- BRAND -->
 
-        <aside
-            class="student-sidebar"
-            aria-label="Student navigation"
+        <a
+            href="dashboard.html"
+            class="academy-logo"
+            aria-label="CWS Academy Dashboard"
         >
 
+            <span class="logo-cws">
+                CWS
+            </span>
 
-            <!-- =============================================
-                 BRAND
-            ============================================== -->
+            <span class="logo-text">
+                Academy
+            </span>
 
-            <div class="student-brand">
+        </a>
 
-                <a
-                    href="dashboard.html"
-                    class="academy-logo"
-                    aria-label="CWS Academy Dashboard"
-                >
 
-                    <span
-                        class="logo-cws"
-                        aria-hidden="true"
-                    >
-                        CWS
-                    </span>
+        <!-- NAVIGATION -->
 
-                    <span class="logo-text">
-                        Academy
-                    </span>
+        <div class="student-nav-links">
 
-                </a>
+            <a href="dashboard.html">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a href="student-courses.html">
+
+                <i class="fa-solid fa-book-open"></i>
+
+                <span>
+                    Courses
+                </span>
+
+            </a>
+
+
+            <a href="labs.html">
+
+                <i class="fa-solid fa-flask"></i>
+
+                <span>
+                    Labs
+                </span>
+
+            </a>
+
+
+            <a href="assessments.html">
+
+                <i class="fa-solid fa-clipboard-check"></i>
+
+                <span>
+                    Assessments
+                </span>
+
+            </a>
+
+
+            <a href="progress.html">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                <span>
+                    Progress
+                </span>
+
+            </a>
+
+
+            <a
+                href="certificates.html"
+                class="active"
+                aria-current="page"
+            >
+
+                <i class="fa-solid fa-certificate"></i>
+
+                <span>
+                    Certificates
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- ACCOUNT -->
+
+        <div class="student-nav-account">
+
+            <div class="certificate-user">
+
+                <div class="certificate-user-avatar">
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+                <span id="studentName">
+                    Student
+                </span>
 
             </div>
 
 
-            <!-- =============================================
-                 PRIMARY NAVIGATION
-            ============================================== -->
-
-            <nav
-                class="student-navigation"
-                aria-label="Student navigation"
+            <button
+                type="button"
+                id="logoutBtn"
+                class="dashboard-logout-btn"
             >
 
-                <a
-                    href="dashboard.html"
-                >
+                <i class="fa-solid fa-right-from-bracket"></i>
 
-                    <i
-                        class="fa-solid fa-gauge-high"
-                        aria-hidden="true"
-                    ></i>
+                Logout
 
-                    <span>
-                        Dashboard
-                    </span>
+            </button>
 
-                </a>
+        </div>
+
+    </nav>
+
+</header>
 
 
-                <a
-                    href="student-courses.html"
-                >
 
-                    <i
-                        class="fa-solid fa-book-open"
-                        aria-hidden="true"
-                    ></i>
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
 
-                    <span>
-                        My Courses
-                    </span>
-
-                </a>
+<main class="certificates-main">
 
 
-                <a
-                    href="lessons.html"
-                >
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
 
-                    <i
-                        class="fa-solid fa-graduation-cap"
-                        aria-hidden="true"
-                    ></i>
-
-                    <span>
-                        Lessons
-                    </span>
-
-                </a>
+    <section class="certificates-hero">
 
 
-                <a
-                    href="labs.html"
-                >
+        <div class="certificates-hero-content">
 
-                    <i
-                        class="fa-solid fa-flask"
-                        aria-hidden="true"
-                    ></i>
-
-                    <span>
-                        Labs
-                    </span>
-
-                </a>
+            <span class="certificates-eyebrow">
+                CWS ACADEMY • ACHIEVEMENTS
+            </span>
 
 
-                <a
-                    href="assessments.html"
-                >
+            <h1>
+                Your
+                <span>Certificates</span>
+            </h1>
 
-                    <i
-                        class="fa-solid fa-clipboard-check"
-                        aria-hidden="true"
-                    ></i>
 
-                    <span>
-                        Assessments
-                    </span>
+            <p>
+                Track the certificates you have earned through
+                your CWS Academy learning journey and see what
+                achievements are still ahead.
+            </p>
 
-                </a>
 
+            <div class="certificate-hero-actions">
 
                 <a
                     href="progress.html"
+                    class="certificate-primary-btn"
                 >
 
-                    <i
-                        class="fa-solid fa-chart-line"
-                        aria-hidden="true"
-                    ></i>
+                    <i class="fa-solid fa-chart-line"></i>
 
-                    <span>
-                        Progress
-                    </span>
+                    View Progress
 
                 </a>
 
 
                 <a
-                    href="certificates.html"
-                    class="active"
-                    aria-current="page"
+                    href="dashboard.html"
+                    class="certificate-secondary-btn"
                 >
 
-                    <i
-                        class="fa-solid fa-certificate"
-                        aria-hidden="true"
-                    ></i>
+                    <i class="fa-solid fa-arrow-left"></i>
 
-                    <span>
-                        Certificates
-                    </span>
+                    Dashboard
 
                 </a>
-
-            </nav>
-
-
-            <!-- =============================================
-                 SIDEBAR FOOTER
-            ============================================== -->
-
-            <div class="student-sidebar-footer">
-
-                <a
-                    href="../index.html"
-                >
-
-                    <i
-                        class="fa-solid fa-house"
-                        aria-hidden="true"
-                    ></i>
-
-                    <span>
-                        Academy Home
-                    </span>
-
-                </a>
-
-
-                <button
-                    type="button"
-                    id="logoutBtn"
-                    class="student-logout"
-                    aria-label="Log out of CWS Academy"
-                >
-
-                    <i
-                        class="fa-solid fa-right-from-bracket"
-                        aria-hidden="true"
-                    ></i>
-
-                    <span>
-                        Logout
-                    </span>
-
-                </button>
 
             </div>
 
-        </aside>
+        </div>
 
 
-        <!-- =================================================
-             MAIN APPLICATION
-        ================================================== -->
+        <!-- HERO BADGE -->
 
-        <main
-            class="student-main"
-            id="main-content"
+        <div class="certificates-hero-visual">
+
+            <div class="certificate-glow"></div>
+
+
+            <div class="certificate-hero-badge">
+
+                <div class="certificate-badge-ring">
+
+                    <i class="fa-solid fa-certificate"></i>
+
+                </div>
+
+
+                <span>
+                    CWS
+                </span>
+
+                <strong>
+                    ACADEMY
+                </strong>
+
+                <small>
+                    ACHIEVEMENT
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CERTIFICATE STATISTICS
+    ====================================================== -->
+
+    <section class="certificate-stats">
+
+
+        <article class="certificate-stat-card">
+
+            <div class="certificate-stat-icon">
+
+                <i class="fa-solid fa-certificate"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    EARNED
+                </span>
+
+                <strong id="certificatesEarned">
+                    0
+                </strong>
+
+                <small>
+                    Certificates
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <article class="certificate-stat-card">
+
+            <div class="certificate-stat-icon">
+
+                <i class="fa-solid fa-lock-open"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    AVAILABLE
+                </span>
+
+                <strong id="certificatesAvailable">
+                    0
+                </strong>
+
+                <small>
+                    Learning milestones
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <article class="certificate-stat-card">
+
+            <div class="certificate-stat-icon">
+
+                <i class="fa-solid fa-graduation-cap"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    COURSES
+                </span>
+
+                <strong id="coursesCompleted">
+                    0
+                </strong>
+
+                <small>
+                    Completed
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <article class="certificate-stat-card">
+
+            <div class="certificate-stat-icon">
+
+                <i class="fa-solid fa-trophy"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    ACHIEVEMENTS
+                </span>
+
+                <strong id="achievementCount">
+                    0
+                </strong>
+
+                <small>
+                    Milestones
+                </small>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         EARNED CERTIFICATES
+    ====================================================== -->
+
+    <section class="certificate-section">
+
+
+        <div class="certificate-section-heading">
+
+            <div>
+
+                <span>
+                    YOUR ACHIEVEMENTS
+                </span>
+
+                <h2>
+                    Earned Certificates
+                </h2>
+
+                <p>
+                    Certificates you have successfully earned
+                    through your CWS Academy learning journey.
+                </p>
+
+            </div>
+
+
+            <span
+                id="earnedCertificateCount"
+                class="certificate-count-badge"
+            >
+                0 Earned
+            </span>
+
+        </div>
+
+
+        <div
+            id="earnedCertificatesGrid"
+            class="certificates-grid"
         >
 
+            <!-- Generated by certificates.js -->
 
-            <!-- =============================================
-                 TOP BAR
-            ============================================== -->
+        </div>
 
-            <header class="student-topbar">
 
+        <!-- EMPTY STATE -->
 
-                <div class="student-topbar-heading">
+        <div
+            id="noCertificates"
+            class="certificate-empty-state"
+        >
 
-                    <span class="student-section-label">
-                        CWS ACADEMY
-                    </span>
+            <div class="certificate-empty-icon">
 
-                    <h1>
-                        Certificates
-                    </h1>
-
-                </div>
-
-
-                <!-- =========================================
-                     STUDENT PROFILE
-                ========================================== -->
-
-                <div
-                    class="student-profile"
-                    aria-label="Student profile"
-                >
-
-                    <div
-                        class="student-avatar"
-                        aria-hidden="true"
-                    >
-
-                        <i class="fa-solid fa-user"></i>
-
-                    </div>
-
-
-                    <div class="student-profile-info">
-
-                        <span
-                            id="studentName"
-                            class="student-name"
-                        >
-                            Student
-                        </span>
-
-                        <small>
-                            CWS Academy Student
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </header>
-
-
-            <!-- =================================================
-                 PAGE CONTENT
-            ================================================== -->
-
-            <div class="certificates-content">
-
-
-                <!-- =================================================
-                     HERO
-                ================================================== -->
-
-                <section
-                    class="certificates-hero"
-                    aria-labelledby="certificates-page-title"
-                >
-
-
-                    <div class="certificates-hero-content">
-
-
-                        <span class="section-kicker">
-                            <i
-                                class="fa-solid fa-shield-halved"
-                                aria-hidden="true"
-                            ></i>
-
-                            ACADEMIC ACHIEVEMENT
-                        </span>
-
-
-                        <h2 id="certificates-page-title">
-                            Your Certificates
-                        </h2>
-
-
-                        <p>
-                            Build your cybersecurity credentials
-                            through verified CWS Academy training,
-                            practical labs, and assessment-based
-                            achievements.
-                        </p>
-
-
-                        <!-- =========================================
-                             HERO STATUS
-                        ========================================== -->
-
-                        <div class="certificates-hero-status">
-
-                            <span>
-                                <i
-                                    class="fa-solid fa-lock-open"
-                                    aria-hidden="true"
-                                ></i>
-
-                                Credential Progress
-                            </span>
-
-                            <span>
-                                <i
-                                    class="fa-solid fa-shield-check"
-                                    aria-hidden="true"
-                                ></i>
-
-                                Verified Learning
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- =========================================
-                         HERO VISUAL
-                    ========================================== -->
-
-                    <div
-                        class="certificates-hero-visual"
-                        aria-hidden="true"
-                    >
-
-                        <div class="certificates-hero-ring">
-
-                            <div class="certificates-hero-icon">
-
-                                <i class="fa-solid fa-award"></i>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-
-                <!-- =================================================
-                     CERTIFICATE OVERVIEW
-                ================================================== -->
-
-                <section
-                    class="certificate-section"
-                    aria-labelledby="certificate-overview-title"
-                >
-
-
-                    <header class="section-heading">
-
-
-                        <div>
-
-                            <span>
-                                YOUR ACHIEVEMENTS
-                            </span>
-
-
-                            <h2 id="certificate-overview-title">
-                                Certificate Overview
-                            </h2>
-
-
-                            <p>
-                                A summary of your completed
-                                academic achievements.
-                            </p>
-
-                        </div>
-
-
-                        <a
-                            href="progress.html"
-                            class="section-view-all"
-                        >
-
-                            <span>
-                                View Progress
-                            </span>
-
-                            <i
-                                class="fa-solid fa-arrow-right"
-                                aria-hidden="true"
-                            ></i>
-
-                        </a>
-
-                    </header>
-
-
-
-                    <!-- =================================================
-                         STATISTICS
-                    ================================================== -->
-
-                    <div
-                        class="certificate-stat-grid"
-                        aria-label="Certificate statistics"
-                    >
-
-
-                        <!-- =============================================
-                             CERTIFICATES
-                        ============================================== -->
-
-                        <article
-                            class="certificate-stat-card"
-                        >
-
-                            <div
-                                class="certificate-stat-icon"
-                                aria-hidden="true"
-                            >
-
-                                <i class="fa-solid fa-certificate"></i>
-
-                            </div>
-
-
-                            <div class="certificate-stat-content">
-
-                                <strong
-                                    id="certificatesEarned"
-                                >
-                                    0
-                                </strong>
-
-
-                                <span>
-                                    Certificates Earned
-                                </span>
-
-                            </div>
-
-                        </article>
-
-
-
-                        <!-- =============================================
-                             COURSES
-                        ============================================== -->
-
-                        <article
-                            class="certificate-stat-card"
-                        >
-
-                            <div
-                                class="certificate-stat-icon"
-                                aria-hidden="true"
-                            >
-
-                                <i class="fa-solid fa-graduation-cap"></i>
-
-                            </div>
-
-
-                            <div class="certificate-stat-content">
-
-                                <strong
-                                    id="coursesCompleted"
-                                >
-                                    0
-                                </strong>
-
-
-                                <span>
-                                    Courses Completed
-                                </span>
-
-                            </div>
-
-                        </article>
-
-
-
-                        <!-- =============================================
-                             ACHIEVEMENTS
-                        ============================================== -->
-
-                        <article
-                            class="certificate-stat-card"
-                        >
-
-                            <div
-                                class="certificate-stat-icon"
-                                aria-hidden="true"
-                            >
-
-                                <i class="fa-solid fa-trophy"></i>
-
-                            </div>
-
-
-                            <div class="certificate-stat-content">
-
-                                <strong
-                                    id="achievementsEarned"
-                                >
-                                    0
-                                </strong>
-
-
-                                <span>
-                                    Achievements
-                                </span>
-
-                            </div>
-
-                        </article>
-
-                    </div>
-
-                </section>
-
-
-
-                <!-- =================================================
-                     EARNED CERTIFICATES
-                ================================================== -->
-
-                <section
-                    class="certificate-section"
-                    aria-labelledby="my-certificates-title"
-                >
-
-
-                    <header class="section-heading">
-
-                        <div>
-
-                            <span>
-                                COMPLETED TRAINING
-                            </span>
-
-
-                            <h2 id="my-certificates-title">
-                                My Certificates
-                            </h2>
-
-
-                            <p>
-                                Your verified credentials appear
-                                here after completing qualifying
-                                training.
-                            </p>
-
-                        </div>
-
-                    </header>
-
-
-
-                    <!-- =================================================
-                         CERTIFICATE GRID
-                    ================================================== -->
-
-                    <div
-                        id="certificatesGrid"
-                        class="certificates-grid"
-                        aria-live="polite"
-                    >
-
-
-                        <!-- =================================================
-                             EMPTY STATE
-                        ================================================= -->
-
-                        <div
-                            id="certificateEmptyState"
-                            class="certificate-empty-state"
-                        >
-
-
-                            <div
-                                class="certificate-empty-icon"
-                                aria-hidden="true"
-                            >
-
-                                <i class="fa-solid fa-award"></i>
-
-                            </div>
-
-
-                            <span class="empty-state-kicker">
-                                CREDENTIALS AWAIT
-                            </span>
-
-
-                            <h3>
-                                No Certificates Yet
-                            </h3>
-
-
-                            <p>
-                                Complete your CWS Academy courses,
-                                practical labs, and required
-                                assessments to earn your first
-                                cybersecurity certificate.
-                            </p>
-
-
-                            <a
-                                href="student-courses.html"
-                                class="certificate-action"
-                            >
-
-                                <span>
-                                    Explore Courses
-                                </span>
-
-                                <i
-                                    class="fa-solid fa-arrow-right"
-                                    aria-hidden="true"
-                                ></i>
-
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-
-                <!-- =================================================
-                     CERTIFICATION REQUIREMENTS
-                ================================================== -->
-
-                <section
-                    class="certificate-section"
-                    aria-labelledby="requirements-title"
-                >
-
-
-                    <div class="certificate-requirements">
-
-
-                        <!-- =============================================
-                             ICON
-                        ============================================== -->
-
-                        <div
-                            class="requirements-icon"
-                            aria-hidden="true"
-                        >
-
-                            <i class="fa-solid fa-shield-halved"></i>
-
-                        </div>
-
-
-                        <!-- =============================================
-                             CONTENT
-                        ============================================== -->
-
-                        <div class="requirements-content">
-
-
-                            <span>
-                                CERTIFICATION REQUIREMENTS
-                            </span>
-
-
-                            <h2 id="requirements-title">
-                                Build Your Credentials
-                            </h2>
-
-
-                            <p>
-                                CWS Academy certificates recognize
-                                learners who successfully complete
-                                the required theoretical, practical,
-                                and assessment components of a course.
-                            </p>
-
-
-                            <!-- =========================================
-                                 REQUIREMENTS
-                            ========================================== -->
-
-                            <div
-                                class="requirements-list"
-                                role="list"
-                            >
-
-
-                                <div role="listitem">
-
-                                    <i
-                                        class="fa-solid fa-circle-check"
-                                        aria-hidden="true"
-                                    ></i>
-
-                                    <span>
-                                        Complete required course lessons
-                                    </span>
-
-                                </div>
-
-
-                                <div role="listitem">
-
-                                    <i
-                                        class="fa-solid fa-circle-check"
-                                        aria-hidden="true"
-                                    ></i>
-
-                                    <span>
-                                        Complete required practical labs
-                                    </span>
-
-                                </div>
-
-
-                                <div role="listitem">
-
-                                    <i
-                                        class="fa-solid fa-circle-check"
-                                        aria-hidden="true"
-                                    ></i>
-
-                                    <span>
-                                        Meet the required assessment score
-                                    </span>
-
-                                </div>
-
-
-                                <div role="listitem">
-
-                                    <i
-                                        class="fa-solid fa-circle-check"
-                                        aria-hidden="true"
-                                    ></i>
-
-                                    <span>
-                                        Successfully complete the course
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-
-                <!-- =================================================
-                     CONTINUE LEARNING CTA
-                ================================================== -->
-
-                <section
-                    class="certificate-cta"
-                    aria-labelledby="certificate-cta-title"
-                >
-
-
-                    <div class="certificate-cta-content">
-
-
-                        <span>
-                            KEEP LEARNING
-                        </span>
-
-
-                        <h2 id="certificate-cta-title">
-                            Your Next Certificate Starts Here
-                        </h2>
-
-
-                        <p>
-                            Continue your cybersecurity journey,
-                            strengthen your practical skills, and
-                            work toward your next academic achievement.
-                        </p>
-
-                    </div>
-
-
-                    <a
-                        href="student-courses.html"
-                        class="certificate-cta-button"
-                    >
-
-                        <span>
-                            View My Courses
-                        </span>
-
-                        <i
-                            class="fa-solid fa-arrow-right"
-                            aria-hidden="true"
-                        ></i>
-
-                    </a>
-
-                </section>
+                <i class="fa-solid fa-certificate"></i>
 
             </div>
 
-        </main>
 
-    </div>
+            <span class="empty-label">
+                NO CERTIFICATES YET
+            </span>
+
+
+            <h3>
+                Your first certificate starts here
+            </h3>
+
+
+            <p>
+                Complete the required courses, lessons,
+                practical labs and assessments to begin
+                earning CWS Academy certificates.
+            </p>
+
+
+            <a
+                href="student-courses.html"
+                class="certificate-primary-btn"
+            >
+
+                <i class="fa-solid fa-book-open"></i>
+
+                Explore Courses
+
+            </a>
+
+        </div>
+
+    </section>
 
 
 
     <!-- =====================================================
-         AUTH GUARD
+         UPCOMING CERTIFICATES
     ====================================================== -->
 
-    <script
-        type="module"
-        src="../js/auth-guard.js"
-    ></script>
+    <section class="certificate-section">
+
+
+        <div class="certificate-section-heading">
+
+            <div>
+
+                <span>
+                    YOUR LEARNING PATH
+                </span>
+
+                <h2>
+                    Certificates Ahead
+                </h2>
+
+                <p>
+                    Continue progressing through the Academy
+                    to unlock future achievements.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="upcomingCertificatesGrid"
+            class="upcoming-certificates-grid"
+        >
+
+            <!-- Generated by certificates.js -->
+
+        </div>
+
+    </section>
+
 
 
     <!-- =====================================================
-         CERTIFICATES LOGIC
+         CERTIFICATION PATH
     ====================================================== -->
 
-    <script
-        type="module"
-        src="../js/certificates.js"
-    ></script>
+    <section class="certificate-path-section">
+
+
+        <div class="certificate-path-header">
+
+            <div>
+
+                <span>
+                    ACHIEVEMENT PATH
+                </span>
+
+                <h2>
+                    Your Certification Journey
+                </h2>
+
+                <p>
+                    Build your knowledge progressively and
+                    work toward each achievement.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="certificate-path">
+
+
+            <!-- STEP 1 -->
+
+            <article class="certificate-path-step active">
+
+                <div class="path-number">
+                    01
+                </div>
+
+                <div class="path-icon">
+
+                    <i class="fa-solid fa-book-open"></i>
+
+                </div>
+
+                <div class="path-content">
+
+                    <span>
+                        STEP ONE
+                    </span>
+
+                    <h3>
+                        Start a Course
+                    </h3>
+
+                    <p>
+                        Begin your cybersecurity learning
+                        journey through the CWS Academy courses.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <!-- STEP 2 -->
+
+            <article class="certificate-path-step">
+
+                <div class="path-number">
+                    02
+                </div>
+
+                <div class="path-icon">
+
+                    <i class="fa-solid fa-graduation-cap"></i>
+
+                </div>
+
+                <div class="path-content">
+
+                    <span>
+                        STEP TWO
+                    </span>
+
+                    <h3>
+                        Complete Lessons
+                    </h3>
+
+                    <p>
+                        Work through the required learning
+                        modules and strengthen your understanding.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <!-- STEP 3 -->
+
+            <article class="certificate-path-step">
+
+                <div class="path-number">
+                    03
+                </div>
+
+                <div class="path-icon">
+
+                    <i class="fa-solid fa-flask"></i>
+
+                </div>
+
+                <div class="path-content">
+
+                    <span>
+                        STEP THREE
+                    </span>
+
+                    <h3>
+                        Complete Practical Labs
+                    </h3>
+
+                    <p>
+                        Apply your knowledge through controlled
+                        hands-on cybersecurity exercises.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <!-- STEP 4 -->
+
+            <article class="certificate-path-step">
+
+                <div class="path-number">
+                    04
+                </div>
+
+                <div class="path-icon">
+
+                    <i class="fa-solid fa-clipboard-check"></i>
+
+                </div>
+
+                <div class="path-content">
+
+                    <span>
+                        STEP FOUR
+                    </span>
+
+                    <h3>
+                        Pass Assessments
+                    </h3>
+
+                    <p>
+                        Demonstrate your understanding by
+                        successfully completing assessments.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <!-- STEP 5 -->
+
+            <article class="certificate-path-step">
+
+                <div class="path-number">
+                    05
+                </div>
+
+                <div class="path-icon">
+
+                    <i class="fa-solid fa-certificate"></i>
+
+                </div>
+
+                <div class="path-content">
+
+                    <span>
+                        FINAL STEP
+                    </span>
+
+                    <h3>
+                        Earn Your Certificate
+                    </h3>
+
+                    <p>
+                        Complete the required pathway and
+                        unlock your CWS Academy certificate.
+                    </p>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         NEXT ACTION
+    ====================================================== -->
+
+    <section class="certificate-next-step">
+
+
+        <div class="certificate-next-icon">
+
+            <i class="fa-solid fa-rocket"></i>
+
+        </div>
+
+
+        <div class="certificate-next-content">
+
+            <span>
+                KEEP GOING
+            </span>
+
+            <h2>
+                Your next achievement is waiting.
+            </h2>
+
+            <p>
+                Continue learning, complete your practical
+                work and move closer to your next certificate.
+            </p>
+
+        </div>
+
+
+        <div class="certificate-next-actions">
+
+            <a
+                href="student-courses.html"
+                class="certificate-primary-btn"
+            >
+
+                Continue Learning
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+
+            <a
+                href="progress.html"
+                class="certificate-secondary-btn"
+            >
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                Track Progress
+
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="student-footer">
+
+    <p>
+        © 2026 CWS Academy.
+        Part of the CyberWithSandiso ecosystem.
+    </p>
+
+</footer>
+
+
+
+<!-- =========================================================
+     AUTH
+========================================================= -->
+
+<script
+    type="module"
+    src="../js/auth-guard.js"
+></script>
+
+
+
+<!-- =========================================================
+     CERTIFICATES JS
+========================================================= -->
+
+<script
+    type="module"
+    src="../js/certificates.js"
+></script>
+
 
 </body>
 
