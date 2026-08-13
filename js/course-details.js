@@ -1,7 +1,7 @@
 /* =========================================================
    CWS ACADEMY
    COURSE DETAILS
-   Firebase Authentication + Course Curriculum
+   Firebase Authentication + Firestore Progress
 ========================================================= */
 
 import {
@@ -10,7 +10,16 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
-    auth
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+    auth,
+    db
 } from "./firebase-config.js";
 
 
@@ -26,7 +35,7 @@ function log(...messages) {
     if (DEBUG) {
 
         console.log(
-            "[CWS Course]",
+            "[CWS Course Details]",
             ...messages
         );
 
@@ -40,7 +49,7 @@ function warn(...messages) {
     if (DEBUG) {
 
         console.warn(
-            "[CWS Course]",
+            "[CWS Course Details]",
             ...messages
         );
 
@@ -52,7 +61,7 @@ function warn(...messages) {
 function error(...messages) {
 
     console.error(
-        "[CWS Course]",
+        "[CWS Course Details]",
         ...messages
     );
 
@@ -60,600 +69,151 @@ function error(...messages) {
 
 
 /* =========================================================
-   COURSE DATA
-========================================================= */
-
-const courses = {
-
-    "cybersecurity-fundamentals": {
-
-        id: "cybersecurity-fundamentals",
-
-        title: "Cybersecurity Fundamentals",
-
-        shortDescription:
-            "Build a strong foundation in cybersecurity concepts, threats, vulnerabilities, security controls and ethical security practices.",
-
-        longDescription:
-            "Cybersecurity Fundamentals introduces the principles, terminology and practices that form the foundation of modern cybersecurity. You will learn how organizations identify threats, understand vulnerabilities, manage risk and apply security controls to protect systems, networks, applications and data.",
-
-        category:
-            "CWS ACADEMY • CYBERSECURITY",
-
-        level:
-            "Beginner",
-
-        status:
-            "available",
-
-        icon:
-            "fa-shield-halved",
-
-        duration:
-            "40–50 hours",
-
-        objectives: [
-
-            "Explain the purpose and importance of cybersecurity.",
-
-            "Describe common cybersecurity threats and attack types.",
-
-            "Distinguish between threats, vulnerabilities, risks and security controls.",
-
-            "Explain the confidentiality, integrity and availability principles.",
-
-            "Describe fundamental authentication and access-control concepts.",
-
-            "Identify common network, endpoint, application and data security controls.",
-
-            "Explain basic security monitoring and incident-response concepts.",
-
-            "Apply cybersecurity concepts to realistic security scenarios.",
-
-            "Understand the importance of ethical and responsible security practices."
-
-        ],
-
-
-        modules: [
-
-            {
-                id: "csf-module-01",
-                number: 1,
-                title: "Introduction to Cybersecurity",
-                description:
-                    "Understand what cybersecurity is, why it matters and how organizations approach security.",
-                status: "available",
-                lessons: [
-                    {
-                        id: "csf-m01-l01",
-                        title: "What Is Cybersecurity?",
-                        type: "lesson",
-                        duration: "20 min",
-                        status: "available"
-                    },
-                    {
-                        id: "csf-m01-l02",
-                        title: "Why Cybersecurity Matters",
-                        type: "lesson",
-                        duration: "20 min",
-                        status: "available"
-                    },
-                    {
-                        id: "csf-m01-l03",
-                        title: "The Cybersecurity Landscape",
-                        type: "lesson",
-                        duration: "25 min",
-                        status: "available"
-                    },
-                    {
-                        id: "csf-m01-l04",
-                        title: "Threats, Vulnerabilities and Risk",
-                        type: "lesson",
-                        duration: "25 min",
-                        status: "available"
-                    },
-                    {
-                        id: "csf-m01-l05",
-                        title: "Security Controls",
-                        type: "lesson",
-                        duration: "25 min",
-                        status: "available"
-                    }
-                ],
-                assessment: {
-                    id: "csf-m01-assessment",
-                    title: "Module 1 Knowledge Check",
-                    type: "assessment",
-                    status: "available"
-                }
-            },
-
-
-            {
-                id: "csf-module-02",
-                number: 2,
-                title: "The CIA Triad",
-                description:
-                    "Explore confidentiality, integrity and availability and how they guide security decisions.",
-                status: "locked",
-                lessons: [
-                    {
-                        id: "csf-m02-l01",
-                        title: "Confidentiality",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m02-l02",
-                        title: "Integrity",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m02-l03",
-                        title: "Availability",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m02-l04",
-                        title: "Applying the CIA Triad",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m02-l05",
-                        title: "Real-World Security Scenarios",
-                        type: "lesson"
-                    }
-                ],
-                assessment: {
-                    id: "csf-m02-assessment",
-                    title: "CIA Triad Assessment",
-                    type: "assessment"
-                }
-            },
-
-
-            {
-                id: "csf-module-03",
-                number: 3,
-                title: "Threats and Attack Types",
-                description:
-                    "Learn how common cyber threats affect people, systems, networks and organizations.",
-                status: "locked",
-                lessons: [
-                    {
-                        id: "csf-m03-l01",
-                        title: "Malware",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m03-l02",
-                        title: "Phishing and Social Engineering",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m03-l03",
-                        title: "Password Attacks",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m03-l04",
-                        title: "Network-Based Attacks",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m03-l05",
-                        title: "Insider Threats",
-                        type: "lesson"
-                    }
-                ],
-                assessment: {
-                    id: "csf-m03-assessment",
-                    title: "Threats and Attack Types Assessment",
-                    type: "assessment"
-                }
-            },
-
-
-            {
-                id: "csf-module-04",
-                number: 4,
-                title: "Vulnerabilities and Risk",
-                description:
-                    "Understand vulnerabilities, risk assessment and how organizations prioritize security issues.",
-                status: "locked",
-                lessons: [
-                    {
-                        id: "csf-m04-l01",
-                        title: "What Is a Vulnerability?",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m04-l02",
-                        title: "Vulnerability vs Threat vs Risk",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m04-l03",
-                        title: "Common Vulnerability Categories",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m04-l04",
-                        title: "Risk Assessment",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m04-l05",
-                        title: "Security Prioritization",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m04-lab",
-                        title: "Security Risk Analysis Lab",
-                        type: "lab"
-                    }
-                ],
-                assessment: {
-                    id: "csf-m04-assessment",
-                    title: "Vulnerabilities and Risk Assessment",
-                    type: "assessment"
-                }
-            },
-
-
-            {
-                id: "csf-module-05",
-                number: 5,
-                title: "Authentication and Access Control",
-                description:
-                    "Learn how organizations verify identities and control access to resources.",
-                status: "locked",
-                lessons: [
-                    {
-                        id: "csf-m05-l01",
-                        title: "Authentication",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m05-l02",
-                        title: "Authorization",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m05-l03",
-                        title: "Password Security",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m05-l04",
-                        title: "Multi-Factor Authentication",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m05-l05",
-                        title: "Access Control Models",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m05-lab",
-                        title: "Access Control Lab",
-                        type: "lab"
-                    }
-                ],
-                assessment: {
-                    id: "csf-m05-assessment",
-                    title: "Authentication and Access Control Assessment",
-                    type: "assessment"
-                }
-            },
-
-
-            {
-                id: "csf-module-06",
-                number: 6,
-                title: "Network Security",
-                description:
-                    "Understand fundamental network security technologies and defensive architecture.",
-                status: "locked",
-                lessons: [
-                    {
-                        id: "csf-m06-l01",
-                        title: "Network Security Fundamentals",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m06-l02",
-                        title: "Firewalls",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m06-l03",
-                        title: "IDS and IPS",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m06-l04",
-                        title: "Network Segmentation",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m06-l05",
-                        title: "Secure Network Architecture",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m06-lab",
-                        title: "Network Security Lab",
-                        type: "lab"
-                    }
-                ],
-                assessment: {
-                    id: "csf-m06-assessment",
-                    title: "Network Security Assessment",
-                    type: "assessment"
-                }
-            },
-
-
-            {
-                id: "csf-module-07",
-                number: 7,
-                title: "Endpoint and System Security",
-                description:
-                    "Learn how endpoints and operating systems are protected against security threats.",
-                status: "locked",
-                lessons: [
-                    {
-                        id: "csf-m07-l01",
-                        title: "Endpoint Security",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m07-l02",
-                        title: "Operating System Hardening",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m07-l03",
-                        title: "Patch Management",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m07-l04",
-                        title: "Antivirus and EDR",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m07-l05",
-                        title: "Secure Configuration",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m07-lab",
-                        title: "Linux Security Lab",
-                        type: "lab"
-                    }
-                ],
-                assessment: {
-                    id: "csf-m07-assessment",
-                    title: "Endpoint Security Assessment",
-                    type: "assessment"
-                }
-            },
-
-
-            {
-                id: "csf-module-08",
-                number: 8,
-                title: "Application and Data Security",
-                description:
-                    "Explore the fundamentals of protecting applications and sensitive data.",
-                status: "locked",
-                lessons: [
-                    {
-                        id: "csf-m08-l01",
-                        title: "Application Security",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m08-l02",
-                        title: "Data Protection",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m08-l03",
-                        title: "Encryption",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m08-l04",
-                        title: "Secure Development",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m08-l05",
-                        title: "Input Validation",
-                        type: "lesson"
-                    }
-                ],
-                assessment: {
-                    id: "csf-m08-assessment",
-                    title: "Application and Data Security Assessment",
-                    type: "assessment"
-                }
-            },
-
-
-            {
-                id: "csf-module-09",
-                number: 9,
-                title: "Security Operations",
-                description:
-                    "Learn how security teams monitor systems, detect threats and respond to incidents.",
-                status: "locked",
-                lessons: [
-                    {
-                        id: "csf-m09-l01",
-                        title: "Security Monitoring",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m09-l02",
-                        title: "Logging",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m09-l03",
-                        title: "Incident Detection",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m09-l04",
-                        title: "Incident Response",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m09-l05",
-                        title: "Security Operations Centres",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m09-lab",
-                        title: "Incident Response Lab",
-                        type: "lab"
-                    }
-                ],
-                assessment: {
-                    id: "csf-m09-assessment",
-                    title: "Security Operations Assessment",
-                    type: "assessment"
-                }
-            },
-
-
-            {
-                id: "csf-module-10",
-                number: 10,
-                title: "Cybersecurity in Practice",
-                description:
-                    "Bring the concepts together through security policies, ethics, incident response and realistic scenarios.",
-                status: "locked",
-                lessons: [
-                    {
-                        id: "csf-m10-l01",
-                        title: "Security Policies",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m10-l02",
-                        title: "Security Awareness",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m10-l03",
-                        title: "Incident Response",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m10-l04",
-                        title: "Ethics and Legal Responsibilities",
-                        type: "lesson"
-                    },
-                    {
-                        id: "csf-m10-l05",
-                        title: "Putting It All Together",
-                        type: "lesson"
-                    }
-                ],
-                assessment: {
-                    id: "csf-final-assessment",
-                    title: "Cybersecurity Fundamentals Final Assessment",
-                    type: "assessment"
-                }
-            }
-
-        ]
-
-    }
-
-};
-
-
-/* =========================================================
    ELEMENTS
 ========================================================= */
 
 const courseLoading =
-    document.getElementById("courseLoading");
+    document.getElementById(
+        "courseLoading"
+    );
+
 
 const courseNotFound =
-    document.getElementById("courseNotFound");
+    document.getElementById(
+        "courseNotFound"
+    );
+
 
 const courseContent =
-    document.getElementById("courseContent");
+    document.getElementById(
+        "courseContent"
+    );
+
 
 const studentName =
-    document.getElementById("studentName");
+    document.getElementById(
+        "studentName"
+    );
+
 
 const logoutBtn =
-    document.getElementById("logoutBtn");
+    document.getElementById(
+        "logoutBtn"
+    );
+
 
 const breadcrumbCourse =
-    document.getElementById("breadcrumbCourse");
+    document.getElementById(
+        "breadcrumbCourse"
+    );
+
 
 const courseStatus =
-    document.getElementById("courseStatus");
+    document.getElementById(
+        "courseStatus"
+    );
+
 
 const courseLevel =
-    document.getElementById("courseLevel");
+    document.getElementById(
+        "courseLevel"
+    );
+
 
 const courseCategory =
-    document.getElementById("courseCategory");
+    document.getElementById(
+        "courseCategory"
+    );
+
 
 const courseTitle =
-    document.getElementById("courseTitle");
+    document.getElementById(
+        "courseTitle"
+    );
+
 
 const courseDescription =
-    document.getElementById("courseDescription");
+    document.getElementById(
+        "courseDescription"
+    );
+
 
 const courseLongDescription =
-    document.getElementById("courseLongDescription");
+    document.getElementById(
+        "courseLongDescription"
+    );
+
 
 const courseObjectives =
-    document.getElementById("courseObjectives");
+    document.getElementById(
+        "courseObjectives"
+    );
 
-const courseInfoLevel =
-    document.getElementById("courseInfoLevel");
-
-const courseInfoModules =
-    document.getElementById("courseInfoModules");
-
-const courseInfoDuration =
-    document.getElementById("courseInfoDuration");
-
-const courseInfoLabs =
-    document.getElementById("courseInfoLabs");
-
-const courseInfoAssessments =
-    document.getElementById("courseInfoAssessments");
-
-const courseModules =
-    document.getElementById("courseModules");
-
-const courseProgressPercent =
-    document.getElementById("courseProgressPercent");
-
-const courseProgressFill =
-    document.getElementById("courseProgressFill");
-
-const courseProgressText =
-    document.getElementById("courseProgressText");
-
-const startCourseBtn =
-    document.getElementById("startCourseBtn");
 
 const courseHeroIcon =
-    document.getElementById("courseHeroIcon");
+    document.getElementById(
+        "courseHeroIcon"
+    );
+
+
+const startCourseBtn =
+    document.getElementById(
+        "startCourseBtn"
+    );
+
+
+const courseInfoLevel =
+    document.getElementById(
+        "courseInfoLevel"
+    );
+
+
+const courseInfoModules =
+    document.getElementById(
+        "courseInfoModules"
+    );
+
+
+const courseInfoDuration =
+    document.getElementById(
+        "courseInfoDuration"
+    );
+
+
+const courseInfoLabs =
+    document.getElementById(
+        "courseInfoLabs"
+    );
+
+
+const courseInfoAssessments =
+    document.getElementById(
+        "courseInfoAssessments"
+    );
+
+
+const courseProgressPercent =
+    document.getElementById(
+        "courseProgressPercent"
+    );
+
+
+const courseProgressFill =
+    document.getElementById(
+        "courseProgressFill"
+    );
+
+
+const courseProgressText =
+    document.getElementById(
+        "courseProgressText"
+    );
+
+
+const courseModules =
+    document.getElementById(
+        "courseModules"
+    );
 
 
 /* =========================================================
@@ -664,22 +224,578 @@ let currentUser = null;
 
 let currentCourse = null;
 
+let currentProgress = null;
+
 
 /* =========================================================
-   GET COURSE ID
+   COURSE DATA
 ========================================================= */
 
-function getCourseId() {
+/*
+ * This is our initial course catalogue.
+ *
+ * We can eventually move this data into Firestore,
+ * but keeping the curriculum here makes it easy to
+ * build and test the first version of the academy.
+ */
+
+const courses = {
+
+    "cybersecurity-fundamentals": {
+
+        id:
+            "cybersecurity-fundamentals",
+
+        title:
+            "Cybersecurity Fundamentals",
+
+        category:
+            "CWS ACADEMY • CYBERSECURITY",
+
+        level:
+            "Beginner",
+
+        levelKey:
+            "beginner",
+
+        status:
+            "available",
+
+        icon:
+            "fa-solid fa-shield-halved",
+
+        description:
+            "Build a strong foundation in cybersecurity concepts, threats, vulnerabilities, security controls and ethical security practices.",
+
+        longDescription:
+            "Cybersecurity Fundamentals introduces the core concepts students need before moving into networking, Linux, ethical hacking and practical penetration testing. You will learn how modern systems are protected, how attacks occur, how vulnerabilities are understood and how security professionals approach risk.",
+
+        duration:
+            "20–25 hours",
+
+        labs:
+            5,
+
+        assessments:
+            10,
+
+        objectives: [
+
+            "Understand the core principles of cybersecurity.",
+
+            "Explain confidentiality, integrity and availability.",
+
+            "Identify common cybersecurity threats and attack types.",
+
+            "Understand vulnerabilities, exploits and security risk.",
+
+            "Recognize common security controls and defensive measures.",
+
+            "Understand authentication, authorization and access control.",
+
+            "Explain basic network and system security concepts.",
+
+            "Understand the role of security policies and procedures.",
+
+            "Apply basic cybersecurity concepts to practical scenarios.",
+
+            "Develop an ethical and responsible security mindset."
+
+        ],
+
+        modules: [
+
+            {
+                id: "module-01",
+                number: 1,
+                title: "Introduction to Cybersecurity",
+                description:
+                    "Understand what cybersecurity is, why it matters and how security professionals protect digital systems.",
+                lessons: 4,
+                labs: 0,
+                assessments: 1
+            },
+
+            {
+                id: "module-02",
+                number: 2,
+                title: "The CIA Triad",
+                description:
+                    "Learn confidentiality, integrity and availability and how these principles influence security decisions.",
+                lessons: 4,
+                labs: 0,
+                assessments: 1
+            },
+
+            {
+                id: "module-03",
+                number: 3,
+                title: "Threats and Attack Types",
+                description:
+                    "Explore common cyber threats including phishing, malware, social engineering and denial-of-service attacks.",
+                lessons: 5,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-04",
+                number: 4,
+                title: "Vulnerabilities and Risk",
+                description:
+                    "Learn how vulnerabilities are identified, evaluated and connected to cybersecurity risk.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-05",
+                number: 5,
+                title: "Security Controls",
+                description:
+                    "Understand administrative, technical and physical security controls.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-06",
+                number: 6,
+                title: "Authentication and Access Control",
+                description:
+                    "Learn authentication factors, authorization, least privilege and access management.",
+                lessons: 5,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-07",
+                number: 7,
+                title: "Network Security Fundamentals",
+                description:
+                    "Understand basic network security concepts and how network traffic can be protected.",
+                lessons: 5,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-08",
+                number: 8,
+                title: "Endpoint and System Security",
+                description:
+                    "Explore operating-system security, patching, endpoint protection and system hardening.",
+                lessons: 4,
+                labs: 0,
+                assessments: 1
+            },
+
+            {
+                id: "module-09",
+                number: 9,
+                title: "Security Policies and Ethics",
+                description:
+                    "Understand security policies, acceptable use, responsible disclosure and ethical security practice.",
+                lessons: 4,
+                labs: 0,
+                assessments: 1
+            },
+
+            {
+                id: "module-10",
+                number: 10,
+                title: "Cybersecurity Foundations Review",
+                description:
+                    "Bring the concepts together through a comprehensive review and final assessment.",
+                lessons: 5,
+                labs: 0,
+                assessments: 1
+            }
+
+        ]
+
+    },
+
+
+    "networking-fundamentals": {
+
+        id:
+            "networking-fundamentals",
+
+        title:
+            "Networking Fundamentals",
+
+        category:
+            "CWS ACADEMY • NETWORK SECURITY",
+
+        level:
+            "Beginner",
+
+        levelKey:
+            "beginner",
+
+        status:
+            "available",
+
+        icon:
+            "fa-solid fa-network-wired",
+
+        description:
+            "Learn IP addressing, CIDR, ARP, TCP, UDP, ICMP, routing, DNS, HTTP and HTTPS from a cybersecurity perspective.",
+
+        longDescription:
+            "Networking Fundamentals teaches the networking concepts required for cybersecurity. Students learn how devices communicate, how addresses and protocols work and how network traffic can be observed and protected.",
+
+        duration:
+            "20–25 hours",
+
+        labs:
+            6,
+
+        assessments:
+            10,
+
+        objectives: [
+
+            "Understand basic computer networking.",
+
+            "Explain IPv4 addressing and subnetting.",
+
+            "Understand CIDR notation.",
+
+            "Explain TCP and UDP.",
+
+            "Understand common network protocols.",
+
+            "Understand DNS and HTTP/HTTPS.",
+
+            "Explain ARP and ICMP.",
+
+            "Understand basic routing concepts.",
+
+            "Identify common network security risks.",
+
+            "Use basic network troubleshooting tools."
+
+        ],
+
+        modules: [
+
+            {
+                id: "module-01",
+                number: 1,
+                title: "Introduction to Networking",
+                description:
+                    "Learn how computers and devices communicate across networks.",
+                lessons: 4,
+                labs: 0,
+                assessments: 1
+            },
+
+            {
+                id: "module-02",
+                number: 2,
+                title: "IP Addressing",
+                description:
+                    "Understand IPv4 addresses, private addresses and network identification.",
+                lessons: 5,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-03",
+                number: 3,
+                title: "CIDR and Subnetting",
+                description:
+                    "Learn subnet masks, CIDR notation and basic subnet calculations.",
+                lessons: 5,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-04",
+                number: 4,
+                title: "TCP and UDP",
+                description:
+                    "Understand transport-layer communication and port-based services.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-05",
+                number: 5,
+                title: "ARP and ICMP",
+                description:
+                    "Explore local network discovery and diagnostic protocols.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-06",
+                number: 6,
+                title: "DNS",
+                description:
+                    "Understand domain-name resolution and its security implications.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-07",
+                number: 7,
+                title: "HTTP and HTTPS",
+                description:
+                    "Learn how browsers and web servers communicate.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-08",
+                number: 8,
+                title: "Routing",
+                description:
+                    "Understand how packets move between networks.",
+                lessons: 4,
+                labs: 0,
+                assessments: 1
+            },
+
+            {
+                id: "module-09",
+                number: 9,
+                title: "Network Security",
+                description:
+                    "Explore firewalls, segmentation and basic defensive networking.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-10",
+                number: 10,
+                title: "Networking Review",
+                description:
+                    "Review the networking concepts required for further cybersecurity study.",
+                lessons: 5,
+                labs: 0,
+                assessments: 1
+            }
+
+        ]
+
+    },
+
+
+    "linux-fundamentals": {
+
+        id:
+            "linux-fundamentals",
+
+        title:
+            "Linux Fundamentals",
+
+        category:
+            "CWS ACADEMY • LINUX SECURITY",
+
+        level:
+            "Beginner",
+
+        levelKey:
+            "beginner",
+
+        status:
+            "available",
+
+        icon:
+            "fa-brands fa-linux",
+
+        description:
+            "Learn the Linux command line, filesystem, permissions, processes, networking utilities and security fundamentals.",
+
+        longDescription:
+            "Linux Fundamentals introduces students to the Linux operating system and command line. The course focuses on practical skills used by cybersecurity professionals when investigating, administering and securing systems.",
+
+        duration:
+            "20–25 hours",
+
+        labs:
+            6,
+
+        assessments:
+            10,
+
+        objectives: [
+
+            "Navigate the Linux filesystem.",
+
+            "Use essential Linux command-line tools.",
+
+            "Create, modify and manage files.",
+
+            "Understand Linux users and groups.",
+
+            "Understand file and directory permissions.",
+
+            "Manage running processes.",
+
+            "Use basic networking commands.",
+
+            "Understand Linux services.",
+
+            "Apply basic system-hardening concepts.",
+
+            "Develop practical Linux administration skills."
+
+        ],
+
+        modules: [
+
+            {
+                id: "module-01",
+                number: 1,
+                title: "Introduction to Linux",
+                description:
+                    "Understand Linux distributions, the shell and the role of Linux in cybersecurity.",
+                lessons: 4,
+                labs: 0,
+                assessments: 1
+            },
+
+            {
+                id: "module-02",
+                number: 2,
+                title: "Linux Filesystem",
+                description:
+                    "Learn the Linux directory structure and filesystem navigation.",
+                lessons: 5,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-03",
+                number: 3,
+                title: "Essential Commands",
+                description:
+                    "Practice common command-line utilities used in everyday Linux administration.",
+                lessons: 5,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-04",
+                number: 4,
+                title: "Users and Groups",
+                description:
+                    "Understand Linux accounts, groups and identity management.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-05",
+                number: 5,
+                title: "File Permissions",
+                description:
+                    "Learn ownership, permissions and access control.",
+                lessons: 5,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-06",
+                number: 6,
+                title: "Processes",
+                description:
+                    "Understand processes, process monitoring and basic management.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-07",
+                number: 7,
+                title: "Linux Networking",
+                description:
+                    "Use basic Linux networking tools and understand network configuration.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-08",
+                number: 8,
+                title: "Services and Logs",
+                description:
+                    "Understand services, logs and basic system investigation.",
+                lessons: 4,
+                labs: 0,
+                assessments: 1
+            },
+
+            {
+                id: "module-09",
+                number: 9,
+                title: "Linux Security",
+                description:
+                    "Explore system hardening and basic Linux security practices.",
+                lessons: 4,
+                labs: 1,
+                assessments: 1
+            },
+
+            {
+                id: "module-10",
+                number: 10,
+                title: "Linux Foundations Review",
+                description:
+                    "Review the core Linux skills needed for cybersecurity.",
+                lessons: 5,
+                labs: 0,
+                assessments: 1
+            }
+
+        ]
+
+    }
+
+};
+
+
+/* =========================================================
+   URL COURSE ID
+========================================================= */
+
+function getCourseIdFromUrl() {
 
     const params =
         new URLSearchParams(
             window.location.search
         );
 
+
     return (
         params.get("course") ||
         ""
-    ).trim();
+    ).trim().toLowerCase();
 
 }
 
@@ -754,14 +870,45 @@ function getUserName(user) {
 
 function displayStudent(user) {
 
-    const name =
+    if (!studentName) {
+
+        return;
+
+    }
+
+
+    studentName.textContent =
         getUserName(user);
 
+}
 
-    if (studentName) {
 
-        studentName.textContent =
-            name;
+/* =========================================================
+   SHOW LOADING
+========================================================= */
+
+function showLoading() {
+
+    if (courseLoading) {
+
+        courseLoading.hidden =
+            false;
+
+    }
+
+
+    if (courseNotFound) {
+
+        courseNotFound.hidden =
+            true;
+
+    }
+
+
+    if (courseContent) {
+
+        courseContent.hidden =
+            true;
 
     }
 
@@ -769,136 +916,259 @@ function displayStudent(user) {
 
 
 /* =========================================================
-   COUNT COURSE CONTENT
+   SHOW NOT FOUND
 ========================================================= */
 
-function getCourseStats(course) {
+function showCourseNotFound() {
 
-    let lessons = 0;
+    if (courseLoading) {
 
-    let labs = 0;
+        courseLoading.hidden =
+            true;
 
-    let assessments = 0;
-
-
-    course.modules.forEach(
-        module => {
-
-            module.lessons.forEach(
-                item => {
-
-                    if (
-                        item.type === "lesson"
-                    ) {
-
-                        lessons++;
-
-                    }
+    }
 
 
-                    if (
-                        item.type === "lab"
-                    ) {
+    if (courseContent) {
 
-                        labs++;
+        courseContent.hidden =
+            true;
 
-                    }
-
-                }
-            );
+    }
 
 
-            if (module.assessment) {
+    if (courseNotFound) {
 
-                assessments++;
+        courseNotFound.hidden =
+            false;
 
-            }
-
-        }
-    );
-
-
-    return {
-        modules: course.modules.length,
-        lessons,
-        labs,
-        assessments
-    };
+    }
 
 }
 
 
 /* =========================================================
-   RENDER COURSE HEADER
+   SHOW COURSE
 ========================================================= */
 
-function renderCourseHeader(course) {
+function showCourseContent() {
 
-    breadcrumbCourse.textContent =
-        course.title;
+    if (courseLoading) {
+
+        courseLoading.hidden =
+            true;
+
+    }
 
 
-    courseStatus.textContent =
+    if (courseNotFound) {
+
+        courseNotFound.hidden =
+            true;
+
+    }
+
+
+    if (courseContent) {
+
+        courseContent.hidden =
+            false;
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE TEXT
+========================================================= */
+
+function setText(
+    element,
+    value
+) {
+
+    if (!element) {
+
+        return;
+
+    }
+
+
+    element.textContent =
+        value ?? "";
+
+}
+
+
+/* =========================================================
+   LOAD COURSE INFORMATION
+========================================================= */
+
+function renderCourse(course) {
+
+    setText(
+        breadcrumbCourse,
+        course.title
+    );
+
+
+    setText(
+        courseStatus,
         course.status === "available"
             ? "AVAILABLE"
-            : "PLANNED";
+            : "PLANNED"
+    );
 
 
-    courseStatus.className =
-        `course-status ${course.status}`;
+    setText(
+        courseLevel,
+        course.level.toUpperCase()
+    );
 
 
-    courseLevel.textContent =
-        course.level.toUpperCase();
+    setText(
+        courseCategory,
+        course.category
+    );
 
 
-    courseCategory.textContent =
-        course.category;
+    setText(
+        courseTitle,
+        course.title
+    );
 
 
-    courseTitle.textContent =
-        course.title;
+    setText(
+        courseDescription,
+        course.description
+    );
 
 
-    courseDescription.textContent =
-        course.shortDescription;
+    setText(
+        courseLongDescription,
+        course.longDescription
+    );
 
 
-    courseLongDescription.textContent =
-        course.longDescription;
+    setText(
+        courseInfoLevel,
+        course.level
+    );
 
 
-    courseInfoLevel.textContent =
-        course.level;
+    setText(
+        courseInfoModules,
+        `${course.modules.length} Modules`
+    );
 
 
-    courseInfoDuration.textContent =
-        course.duration;
+    setText(
+        courseInfoDuration,
+        course.duration
+    );
 
 
-    courseHeroIcon.innerHTML =
-        `<i class="fa-solid ${course.icon}"></i>`;
+    setText(
+        courseInfoLabs,
+        `${course.labs} Labs`
+    );
+
+
+    setText(
+        courseInfoAssessments,
+        `${course.assessments} Assessments`
+    );
 
 
     /*
-     * Learning objectives
+     * Hero icon
      */
 
-    courseObjectives.innerHTML = "";
+    if (courseHeroIcon) {
+
+        courseHeroIcon.innerHTML = "";
+
+        const icon =
+            document.createElement("i");
+
+        icon.className =
+            course.icon;
+
+        courseHeroIcon.appendChild(
+            icon
+        );
+
+    }
 
 
-    course.objectives.forEach(
-        objective => {
+    /*
+     * Objectives
+     */
+
+    renderObjectives(
+        course.objectives
+    );
+
+
+    /*
+     * Modules
+     */
+
+    renderModules(
+        course.modules
+    );
+
+}
+
+
+/* =========================================================
+   RENDER OBJECTIVES
+========================================================= */
+
+function renderObjectives(
+    objectives
+) {
+
+    if (!courseObjectives) {
+
+        return;
+
+    }
+
+
+    courseObjectives.innerHTML =
+        "";
+
+
+    objectives.forEach(
+        (objective) => {
 
             const li =
                 document.createElement("li");
 
 
-            li.innerHTML =
-                `
-                    <i class="fa-solid fa-circle-check"></i>
-                    <span>${objective}</span>
-                `;
+            const icon =
+                document.createElement("i");
+
+            icon.className =
+                "fa-solid fa-check";
+
+
+            const text =
+                document.createElement("span");
+
+            text.textContent =
+                objective;
+
+
+            li.appendChild(
+                icon
+            );
+
+            li.appendChild(
+                text
+            );
 
 
             courseObjectives.appendChild(
@@ -908,154 +1178,6 @@ function renderCourseHeader(course) {
         }
     );
 
-
-    /*
-     * Course statistics
-     */
-
-    const stats =
-        getCourseStats(course);
-
-
-    courseInfoModules.textContent =
-        `${stats.modules} Modules`;
-
-
-    courseInfoLabs.textContent =
-        `${stats.labs} Labs`;
-
-
-    courseInfoAssessments.textContent =
-        `${stats.assessments} Assessments`;
-
-}
-
-
-/* =========================================================
-   CREATE CONTENT ITEM
-========================================================= */
-
-function createContentItem(
-    item,
-    moduleLocked
-) {
-
-    const element =
-        document.createElement("div");
-
-
-    const isLocked =
-        moduleLocked ||
-        item.status === "locked";
-
-
-    element.className =
-        "module-content-item";
-
-
-    if (isLocked) {
-
-        element.classList.add(
-            "locked"
-        );
-
-    }
-
-
-    let icon =
-        "fa-book-open";
-
-
-    let typeLabel =
-        "LESSON";
-
-
-    if (
-        item.type === "lab"
-    ) {
-
-        icon =
-            "fa-flask";
-
-        typeLabel =
-            "LAB";
-
-    }
-
-
-    if (
-        item.type === "assessment"
-    ) {
-
-        icon =
-            "fa-clipboard-check";
-
-        typeLabel =
-            "ASSESSMENT";
-
-    }
-
-
-    const action =
-        isLocked
-            ? `<span class="content-locked">
-                   <i class="fa-solid fa-lock"></i>
-                   Locked
-               </span>`
-            : `<a
-                   href="lesson.html?lesson=${encodeURIComponent(item.id)}"
-                   class="module-content-action"
-               >
-                   Start
-                   <i class="fa-solid fa-arrow-right"></i>
-               </a>`;
-
-
-    element.innerHTML =
-        `
-            <div class="module-content-icon">
-
-                <i class="fa-solid ${icon}"></i>
-
-            </div>
-
-
-            <div class="module-content-info">
-
-                <span class="module-content-type">
-                    ${typeLabel}
-                </span>
-
-
-                <h4>
-                    ${item.title}
-                </h4>
-
-
-                ${
-                    item.duration
-                        ? `
-                            <span class="module-content-duration">
-                                <i class="fa-regular fa-clock"></i>
-                                ${item.duration}
-                            </span>
-                        `
-                        : ""
-                }
-
-            </div>
-
-
-            <div class="module-content-right">
-
-                ${action}
-
-            </div>
-        `;
-
-
-    return element;
-
 }
 
 
@@ -1063,106 +1185,73 @@ function createContentItem(
    RENDER MODULES
 ========================================================= */
 
-function renderModules(course) {
+function renderModules(
+    modules
+) {
 
-    courseModules.innerHTML = "";
+    if (!courseModules) {
 
+        return;
 
-    course.modules.forEach(
-        (module, index) => {
-
-            const locked =
-                module.status === "locked";
-
-
-            const moduleElement =
-                document.createElement("article");
+    }
 
 
-            moduleElement.className =
-                "course-module";
+    courseModules.innerHTML =
+        "";
 
 
-            if (locked) {
+    modules.forEach(
+        (module) => {
 
-                moduleElement.classList.add(
-                    "locked"
+            const article =
+                document.createElement(
+                    "article"
                 );
 
-            }
+
+            article.className =
+                "course-module-card";
+
+
+            article.dataset.moduleId =
+                module.id;
 
 
             /*
-             * Module header
+             * Header
              */
 
-            const moduleHeader =
-                document.createElement("div");
+            const header =
+                document.createElement(
+                    "div"
+                );
 
 
-            moduleHeader.className =
+            header.className =
                 "course-module-header";
 
 
-            moduleHeader.innerHTML =
-                `
-                    <div class="module-number">
+            /*
+             * Module number
+             */
 
-                        ${
-                            locked
-                                ? `<i class="fa-solid fa-lock"></i>`
-                                : module.number
-                        }
-
-                    </div>
+            const number =
+                document.createElement(
+                    "div"
+                );
 
 
-                    <div class="module-heading">
-
-                        <span>
-                            MODULE ${String(
-                                module.number
-                            ).padStart(2, "0")}
-                        </span>
+            number.className =
+                "course-module-number";
 
 
-                        <h3>
-                            ${module.title}
-                        </h3>
-
-
-                        <p>
-                            ${module.description}
-                        </p>
-
-                    </div>
-
-
-                    <div class="module-status">
-
-                        ${
-                            locked
-                                ? `
-                                    <span class="module-locked-label">
-                                        <i class="fa-solid fa-lock"></i>
-                                        Locked
-                                    </span>
-                                `
-                                : `
-                                    <span class="module-available-label">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                        Available
-                                    </span>
-                                `
-                        }
-
-                    </div>
-                `;
-
-
-            moduleElement.appendChild(
-                moduleHeader
-            );
+            number.textContent =
+                String(
+                    module.number
+                ).padStart(
+                    2,
+                    "0"
+                );
 
 
             /*
@@ -1170,83 +1259,138 @@ function renderModules(course) {
              */
 
             const content =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
 
             content.className =
-                "module-content";
+                "course-module-content";
 
 
-            module.lessons.forEach(
-                item => {
+            const title =
+                document.createElement(
+                    "h3"
+                );
 
-                    content.appendChild(
-                        createContentItem(
-                            item,
-                            locked
-                        )
-                    );
 
-                }
+            title.textContent =
+                module.title;
+
+
+            const description =
+                document.createElement(
+                    "p"
+                );
+
+
+            description.textContent =
+                module.description;
+
+
+            /*
+             * Metadata
+             */
+
+            const meta =
+                document.createElement(
+                    "div"
+                );
+
+
+            meta.className =
+                "course-module-meta";
+
+
+            meta.appendChild(
+                createMetaItem(
+                    "fa-solid fa-book-open",
+                    `${module.lessons} Lessons`
+                )
+            );
+
+
+            meta.appendChild(
+                createMetaItem(
+                    "fa-solid fa-flask",
+                    `${module.labs} Labs`
+                )
+            );
+
+
+            meta.appendChild(
+                createMetaItem(
+                    "fa-solid fa-clipboard-check",
+                    `${module.assessments} Assessment${module.assessments === 1 ? "" : "s"}`
+                )
+            );
+
+
+            content.appendChild(
+                title
+            );
+
+            content.appendChild(
+                description
+            );
+
+            content.appendChild(
+                meta
             );
 
 
             /*
-             * Assessment
+             * Module action
              */
 
-            if (module.assessment) {
-
-                content.appendChild(
-                    createContentItem(
-                        module.assessment,
-                        locked
-                    )
+            const action =
+                document.createElement(
+                    "a"
                 );
 
-            }
+
+            action.className =
+                "course-module-action";
 
 
-            moduleElement.appendChild(
+            action.href =
+                `lesson.html?course=${encodeURIComponent(
+                    currentCourse.id
+                )}&module=${encodeURIComponent(
+                    module.id
+                )}`;
+
+
+            action.innerHTML = `
+                View Module
+                <i class="fa-solid fa-arrow-right"></i>
+            `;
+
+
+            /*
+             * Assemble header
+             */
+
+            header.appendChild(
+                number
+            );
+
+            header.appendChild(
                 content
             );
 
+            header.appendChild(
+                action
+            );
 
-            /*
-             * Module click behavior
-             */
 
-            if (!locked) {
-
-                moduleHeader.addEventListener(
-                    "click",
-                    () => {
-
-                        moduleElement.classList.toggle(
-                            "expanded"
-                        );
-
-                    }
-                );
-
-                /*
-                 * Open the first available
-                 * module automatically.
-                 */
-
-                if (index === 0) {
-
-                    moduleElement.classList.add(
-                        "expanded"
-                    );
-
-                }
-
-            }
+            article.appendChild(
+                header
+            );
 
 
             courseModules.appendChild(
-                moduleElement
+                article
             );
 
         }
@@ -1256,10 +1400,450 @@ function renderModules(course) {
 
 
 /* =========================================================
+   CREATE META ITEM
+========================================================= */
+
+function createMetaItem(
+    iconClass,
+    text
+) {
+
+    const item =
+        document.createElement(
+            "span"
+        );
+
+
+    const icon =
+        document.createElement(
+            "i"
+        );
+
+
+    icon.className =
+        iconClass;
+
+
+    item.appendChild(
+        icon
+    );
+
+
+    item.appendChild(
+        document.createTextNode(
+            ` ${text}`
+        )
+    );
+
+
+    return item;
+
+}
+
+
+/* =========================================================
+   GET TOTAL LESSONS
+========================================================= */
+
+function getTotalLessons(
+    course
+) {
+
+    return course.modules.reduce(
+        (
+            total,
+            module
+        ) => {
+
+            return total +
+                module.lessons;
+
+        },
+        0
+    );
+
+}
+
+
+/* =========================================================
+   FIRESTORE PROGRESS REFERENCE
+========================================================= */
+
+/*
+ * Structure:
+ *
+ * users/{uid}/courseProgress/{courseId}
+ *
+ * Example:
+ *
+ * users
+ *   └── UID
+ *       └── courseProgress
+ *           └── cybersecurity-fundamentals
+ */
+
+function getProgressRef() {
+
+    if (!db || !currentUser || !currentCourse) {
+
+        return null;
+
+    }
+
+
+    return doc(
+        db,
+        "users",
+        currentUser.uid,
+        "courseProgress",
+        currentCourse.id
+    );
+
+}
+
+
+/* =========================================================
+   DEFAULT PROGRESS
+========================================================= */
+
+function getDefaultProgress() {
+
+    return {
+
+        courseId:
+            currentCourse.id,
+
+        completedLessons:
+            [],
+
+        completedLabs:
+            [],
+
+        completedAssessments:
+            [],
+
+        currentModule:
+            "module-01",
+
+        currentLesson:
+            null,
+
+        progressPercent:
+            0,
+
+        started:
+            false,
+
+        completed:
+            false
+
+    };
+
+}
+
+
+/* =========================================================
+   LOAD PROGRESS
+========================================================= */
+
+async function loadProgress() {
+
+    if (!currentUser || !currentCourse) {
+
+        return;
+
+    }
+
+
+    if (!db) {
+
+        warn(
+            "Firestore is unavailable. Using local progress."
+        );
+
+
+        currentProgress =
+            getDefaultProgress();
+
+
+        updateProgressUI();
+
+        return;
+
+    }
+
+
+    try {
+
+        const progressRef =
+            getProgressRef();
+
+
+        const snapshot =
+            await getDoc(
+                progressRef
+            );
+
+
+        if (snapshot.exists()) {
+
+            currentProgress =
+                {
+                    ...getDefaultProgress(),
+                    ...snapshot.data()
+                };
+
+
+            log(
+                "Course progress loaded:",
+                currentProgress
+            );
+
+        } else {
+
+            currentProgress =
+                getDefaultProgress();
+
+
+            log(
+                "No existing course progress."
+            );
+
+        }
+
+
+        updateProgressUI();
+
+    } catch (err) {
+
+        error(
+            "Unable to load course progress:",
+            err
+        );
+
+
+        currentProgress =
+            getDefaultProgress();
+
+
+        updateProgressUI();
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE PROGRESS
+========================================================= */
+
+async function saveProgress() {
+
+    if (
+        !currentUser ||
+        !currentCourse ||
+        !currentProgress
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * If Firestore is unavailable, keep the progress
+     * in memory so the page still works.
+     */
+
+    if (!db) {
+
+        warn(
+            "Firestore unavailable. Progress not persisted."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const progressRef =
+            getProgressRef();
+
+
+        await setDoc(
+            progressRef,
+            {
+                ...currentProgress,
+                updatedAt:
+                    serverTimestamp()
+            },
+            {
+                merge: true
+            }
+        );
+
+
+        log(
+            "Course progress saved."
+        );
+
+    } catch (err) {
+
+        error(
+            "Unable to save course progress:",
+            err
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CALCULATE PROGRESS
+========================================================= */
+
+function calculateProgress() {
+
+    if (
+        !currentCourse ||
+        !currentProgress
+    ) {
+
+        return 0;
+
+    }
+
+
+    const totalLessons =
+        getTotalLessons(
+            currentCourse
+        );
+
+
+    if (!totalLessons) {
+
+        return 0;
+
+    }
+
+
+    const completedLessons =
+        Array.isArray(
+            currentProgress.completedLessons
+        )
+            ? currentProgress.completedLessons.length
+            : 0;
+
+
+    return Math.min(
+        100,
+        Math.round(
+            (
+                completedLessons /
+                totalLessons
+            ) * 100
+        )
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE PROGRESS UI
+========================================================= */
+
+function updateProgressUI() {
+
+    if (!currentProgress) {
+
+        return;
+
+    }
+
+
+    const percent =
+        calculateProgress();
+
+
+    currentProgress.progressPercent =
+        percent;
+
+
+    if (courseProgressPercent) {
+
+        courseProgressPercent.textContent =
+            `${percent}%`;
+
+    }
+
+
+    if (courseProgressFill) {
+
+        courseProgressFill.style.width =
+            `${percent}%`;
+
+    }
+
+
+    const progressBar =
+        document.querySelector(
+            ".course-progress-bar"
+        );
+
+
+    if (progressBar) {
+
+        progressBar.setAttribute(
+            "aria-valuenow",
+            String(percent)
+        );
+
+    }
+
+
+    if (courseProgressText) {
+
+        if (percent === 0) {
+
+            courseProgressText.textContent =
+                "Start your first lesson to begin making progress.";
+
+        } else if (percent < 100) {
+
+            const completed =
+                currentProgress.completedLessons
+                    ?.length || 0;
+
+
+            const total =
+                getTotalLessons(
+                    currentCourse
+                );
+
+
+            courseProgressText.textContent =
+                `${completed} of ${total} lessons completed. Keep going.`;
+
+        } else {
+
+            courseProgressText.textContent =
+                "Course completed. Congratulations!";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
    START COURSE
 ========================================================= */
 
-function startCourse() {
+async function startCourse() {
 
     if (!currentCourse) {
 
@@ -1268,45 +1852,181 @@ function startCourse() {
     }
 
 
+    if (
+        currentCourse.status !==
+        "available"
+    ) {
+
+        return;
+
+    }
+
+
+    if (!currentProgress) {
+
+        currentProgress =
+            getDefaultProgress();
+
+    }
+
+
+    /*
+     * Mark the course as started.
+     */
+
+    currentProgress.started =
+        true;
+
+
+    /*
+     * If there is no current module,
+     * start at module 1.
+     */
+
+    if (
+        !currentProgress.currentModule
+    ) {
+
+        currentProgress.currentModule =
+            currentCourse.modules[0].id;
+
+    }
+
+
+    await saveProgress();
+
+
+    /*
+     * Go directly to the first module.
+     */
+
     const firstModule =
-        currentCourse.modules.find(
-            module =>
-                module.status === "available"
-        );
-
-
-    if (!firstModule) {
-
-        return;
-
-    }
-
-
-    const firstLesson =
-        firstModule.lessons.find(
-            item =>
-                item.type === "lesson" &&
-                item.status === "available"
-        );
-
-
-    if (!firstLesson) {
-
-        return;
-
-    }
+        currentCourse.modules[0];
 
 
     window.location.href =
-        `lesson.html?lesson=${encodeURIComponent(
-            firstLesson.id
+        `lesson.html?course=${encodeURIComponent(
+            currentCourse.id
+        )}&module=${encodeURIComponent(
+            firstModule.id
         )}`;
 
 }
 
 
 /* =========================================================
-   LOGOUT STATE
+   START BUTTON
+========================================================= */
+
+if (startCourseBtn) {
+
+    startCourseBtn.addEventListener(
+        "click",
+        startCourse
+    );
+
+}
+
+
+/* =========================================================
+   COURSE LOADING
+========================================================= */
+
+async function loadCourse() {
+
+    showLoading();
+
+
+    const courseId =
+        getCourseIdFromUrl();
+
+
+    log(
+        "Requested course:",
+        courseId
+    );
+
+
+    if (!courseId) {
+
+        warn(
+            "No course ID supplied."
+        );
+
+
+        showCourseNotFound();
+
+        return;
+
+    }
+
+
+    const course =
+        courses[courseId];
+
+
+    if (!course) {
+
+        warn(
+            "Course not found:",
+            courseId
+        );
+
+
+        showCourseNotFound();
+
+        return;
+
+    }
+
+
+    /*
+     * Planned courses are intentionally not opened.
+     */
+
+    if (
+        course.status !==
+        "available"
+    ) {
+
+        warn(
+            "Course is not available:",
+            courseId
+        );
+
+
+        showCourseNotFound();
+
+        return;
+
+    }
+
+
+    currentCourse =
+        course;
+
+
+    renderCourse(
+        currentCourse
+    );
+
+
+    await loadProgress();
+
+
+    showCourseContent();
+
+
+    log(
+        "Course loaded successfully:",
+        currentCourse.title
+    );
+
+}
+
+
+/* =========================================================
+   LOGOUT LOADING STATE
 ========================================================= */
 
 function setLogoutLoading(
@@ -1330,6 +2050,21 @@ function setLogoutLoading(
     );
 
 
+    if (isLoading) {
+
+        logoutBtn.setAttribute(
+            "aria-busy",
+            "true"
+        );
+
+    } else {
+
+        logoutBtn.removeAttribute(
+            "aria-busy"
+        );
+
+    }
+
 }
 
 
@@ -1338,6 +2073,17 @@ function setLogoutLoading(
 ========================================================= */
 
 async function logout() {
+
+    if (!auth) {
+
+        error(
+            "Firebase Auth is unavailable."
+        );
+
+        return;
+
+    }
+
 
     try {
 
@@ -1377,104 +2123,15 @@ async function logout() {
 }
 
 
+/* =========================================================
+   LOGOUT EVENT
+========================================================= */
+
 if (logoutBtn) {
 
     logoutBtn.addEventListener(
         "click",
         logout
-    );
-
-}
-
-
-if (startCourseBtn) {
-
-    startCourseBtn.addEventListener(
-        "click",
-        startCourse
-    );
-
-}
-
-
-/* =========================================================
-   LOAD COURSE
-========================================================= */
-
-function loadCourse() {
-
-    const courseId =
-        getCourseId();
-
-
-    if (!courseId) {
-
-        warn(
-            "No course ID supplied."
-        );
-
-
-        courseLoading.hidden =
-            true;
-
-        courseNotFound.hidden =
-            false;
-
-        return;
-
-    }
-
-
-    const course =
-        courses[courseId];
-
-
-    if (!course) {
-
-        warn(
-            "Unknown course:",
-            courseId
-        );
-
-
-        courseLoading.hidden =
-            true;
-
-        courseNotFound.hidden =
-            false;
-
-        return;
-
-    }
-
-
-    currentCourse =
-        course;
-
-
-    renderCourseHeader(
-        course
-    );
-
-
-    renderModules(
-        course
-    );
-
-
-    courseLoading.hidden =
-        true;
-
-    courseNotFound.hidden =
-        true;
-
-    courseContent.hidden =
-        false;
-
-
-    log(
-        "Course loaded:",
-        course.title
     );
 
 }
@@ -1487,7 +2144,7 @@ function loadCourse() {
 if (!auth) {
 
     error(
-        "Firebase Auth unavailable."
+        "Firebase Auth was not initialized."
     );
 
 
@@ -1501,6 +2158,20 @@ if (!auth) {
         auth,
         async (user) => {
 
+            log(
+                "Authentication state:",
+                user
+                    ? "AUTHENTICATED"
+                    : "NOT AUTHENTICATED"
+            );
+
+
+            /*
+             * ------------------------------------------------
+             * NOT AUTHENTICATED
+             * ------------------------------------------------
+             */
+
             if (!user) {
 
                 currentUser =
@@ -1508,7 +2179,9 @@ if (!auth) {
 
 
                 window.location.replace(
-                    "../pages/login.html?redirect=course-details"
+                    `../pages/login.html?redirect=course-details&course=${encodeURIComponent(
+                        getCourseIdFromUrl()
+                    )}`
                 );
 
 
@@ -1517,31 +2190,22 @@ if (!auth) {
             }
 
 
+            /*
+             * ------------------------------------------------
+             * AUTHENTICATED
+             * ------------------------------------------------
+             */
+
             currentUser =
                 user;
 
 
-            try {
-
-                await user.reload();
-
-            } catch (err) {
-
-                warn(
-                    "Unable to refresh Firebase user:",
-                    err
-                );
-
-            }
-
-
             displayStudent(
-                auth.currentUser ||
                 user
             );
 
 
-            loadCourse();
+            await loadCourse();
 
         }
     );
