@@ -12,10 +12,12 @@
 
     <meta
         name="description"
-        content="CWS Academy cybersecurity course details and learning modules."
+        content="CWS Academy Cybersecurity Fundamentals course, modules, lessons, practical labs and assessments."
     >
 
-    <title>Course | CWS Academy</title>
+    <title>
+        Cybersecurity Fundamentals | CWS Academy
+    </title>
 
 
     <!-- =====================================================
@@ -39,7 +41,7 @@
 
 
     <!-- =====================================================
-         DASHBOARD CSS
+         STUDENT DASHBOARD CSS
     ====================================================== -->
 
     <link
@@ -64,7 +66,7 @@
 
 
 <!-- =========================================================
-     NAVIGATION
+     STUDENT NAVIGATION
 ========================================================= -->
 
 <header class="student-header">
@@ -72,11 +74,14 @@
     <nav class="student-nav">
 
 
-        <!-- LOGO -->
+        <!-- =================================================
+             LOGO
+        ================================================== -->
 
         <a
             href="dashboard.html"
             class="academy-logo"
+            aria-label="CWS Academy Dashboard"
         >
 
             <span class="logo-cws">
@@ -90,7 +95,9 @@
         </a>
 
 
-        <!-- NAVIGATION -->
+        <!-- =================================================
+             NAVIGATION LINKS
+        ================================================== -->
 
         <div class="student-nav-links">
 
@@ -98,7 +105,9 @@
 
                 <i class="fa-solid fa-house"></i>
 
-                Dashboard
+                <span>
+                    Dashboard
+                </span>
 
             </a>
 
@@ -111,7 +120,9 @@
 
                 <i class="fa-solid fa-book"></i>
 
-                Courses
+                <span>
+                    Courses
+                </span>
 
             </a>
 
@@ -120,7 +131,9 @@
 
                 <i class="fa-solid fa-flask"></i>
 
-                Labs
+                <span>
+                    Labs
+                </span>
 
             </a>
 
@@ -129,7 +142,9 @@
 
                 <i class="fa-solid fa-clipboard-check"></i>
 
-                Assessments
+                <span>
+                    Assessments
+                </span>
 
             </a>
 
@@ -138,7 +153,9 @@
 
                 <i class="fa-solid fa-chart-line"></i>
 
-                Progress
+                <span>
+                    Progress
+                </span>
 
             </a>
 
@@ -147,14 +164,18 @@
 
                 <i class="fa-solid fa-certificate"></i>
 
-                Certificates
+                <span>
+                    Certificates
+                </span>
 
             </a>
 
         </div>
 
 
-        <!-- ACCOUNT -->
+        <!-- =================================================
+             ACCOUNT
+        ================================================== -->
 
         <div class="student-nav-account">
 
@@ -174,7 +195,9 @@
 
                 <i class="fa-solid fa-right-from-bracket"></i>
 
-                Logout
+                <span>
+                    Logout
+                </span>
 
             </button>
 
@@ -200,10 +223,16 @@
     <section
         id="courseLoading"
         class="course-loading"
+        aria-live="polite"
     >
 
         <div class="loading-spinner">
-            <i class="fa-solid fa-circle-notch fa-spin"></i>
+
+            <i
+                class="fa-solid fa-circle-notch fa-spin"
+                aria-hidden="true"
+            ></i>
+
         </div>
 
         <p>
@@ -226,7 +255,10 @@
 
         <div class="course-not-found-icon">
 
-            <i class="fa-solid fa-triangle-exclamation"></i>
+            <i
+                class="fa-solid fa-triangle-exclamation"
+                aria-hidden="true"
+            ></i>
 
         </div>
 
@@ -242,8 +274,8 @@
 
 
         <p>
-            The course you're looking for does not exist
-            or is not currently available.
+            The course you're looking for does not exist,
+            is unavailable, or has not yet been released.
         </p>
 
 
@@ -290,11 +322,14 @@
             </a>
 
 
-            <i class="fa-solid fa-chevron-right"></i>
+            <i
+                class="fa-solid fa-chevron-right"
+                aria-hidden="true"
+            ></i>
 
 
             <span id="breadcrumbCourse">
-                Course
+                Cybersecurity Fundamentals
             </span>
 
         </nav>
@@ -309,6 +344,9 @@
 
 
             <div class="course-details-hero-content">
+
+
+                <!-- COURSE BADGES -->
 
                 <div class="course-hero-badges">
 
@@ -330,6 +368,8 @@
                 </div>
 
 
+                <!-- CATEGORY -->
+
                 <span
                     id="courseCategory"
                     class="dashboard-label"
@@ -338,17 +378,26 @@
                 </span>
 
 
+                <!-- TITLE -->
+
                 <h1 id="courseTitle">
                     Cybersecurity Fundamentals
                 </h1>
 
 
+                <!-- DESCRIPTION -->
+
                 <p id="courseDescription">
+
                     Build a strong foundation in cybersecurity
-                    concepts, threats, vulnerabilities, security
-                    controls and ethical security practices.
+                    concepts, threats, vulnerabilities, risk,
+                    security controls and ethical security
+                    practices.
+
                 </p>
 
+
+                <!-- HERO ACTIONS -->
 
                 <div class="course-hero-actions">
 
@@ -381,9 +430,12 @@
             </div>
 
 
+            <!-- HERO ICON -->
+
             <div
                 id="courseHeroIcon"
                 class="course-details-hero-icon"
+                aria-hidden="true"
             >
 
                 <i class="fa-solid fa-shield-halved"></i>
@@ -401,6 +453,10 @@
         <section class="course-overview-section">
 
 
+            <!-- =================================================
+                 OVERVIEW CONTENT
+            ================================================== -->
+
             <div class="course-overview-main">
 
                 <span class="dashboard-label">
@@ -414,14 +470,33 @@
 
 
                 <p id="courseLongDescription">
-                    This course introduces the fundamental
-                    principles of cybersecurity and provides
-                    the foundation required for more advanced
-                    security studies.
+
+                    Cybersecurity Fundamentals introduces the
+                    core principles used to protect information,
+                    systems, networks and users.
+
+                    <br><br>
+
+                    You'll learn how security professionals
+                    identify assets, understand threats,
+                    evaluate vulnerabilities, manage risk and
+                    apply appropriate security controls.
+
+                    <br><br>
+
+                    The course combines structured lessons,
+                    practical exercises, knowledge checks and
+                    assessments to help you develop a strong
+                    foundation before progressing into
+                    networking, Linux, ethical hacking and
+                    application security.
+
                 </p>
 
 
-                <!-- LEARNING OBJECTIVES -->
+                <!-- =================================================
+                     LEARNING OBJECTIVES
+                ================================================== -->
 
                 <div class="course-objectives">
 
@@ -431,6 +506,57 @@
 
 
                     <ul id="courseObjectives">
+
+                        <li>
+                            Understand the purpose and principles
+                            of cybersecurity.
+                        </li>
+
+                        <li>
+                            Explain the CIA triad and fundamental
+                            security objectives.
+                        </li>
+
+                        <li>
+                            Identify common cyber threats and
+                            threat actors.
+                        </li>
+
+                        <li>
+                            Understand vulnerabilities, exploits
+                            and security risks.
+                        </li>
+
+                        <li>
+                            Explain common cybersecurity controls
+                            and defensive strategies.
+                        </li>
+
+                        <li>
+                            Understand authentication,
+                            authorization and access control.
+                        </li>
+
+                        <li>
+                            Recognize common attack techniques
+                            and their defensive implications.
+                        </li>
+
+                        <li>
+                            Understand basic security monitoring
+                            and incident response concepts.
+                        </li>
+
+                        <li>
+                            Apply cybersecurity concepts to
+                            practical scenarios.
+                        </li>
+
+                        <li>
+                            Develop a foundation for further
+                            cybersecurity study.
+                        </li>
+
                     </ul>
 
                 </div>
@@ -438,7 +564,10 @@
             </div>
 
 
-            <!-- COURSE INFORMATION -->
+
+            <!-- =================================================
+                 COURSE INFORMATION
+            ================================================== -->
 
             <aside class="course-overview-sidebar">
 
@@ -448,6 +577,8 @@
                         Course Information
                     </h3>
 
+
+                    <!-- LEVEL -->
 
                     <div class="course-info-item">
 
@@ -468,6 +599,8 @@
                     </div>
 
 
+                    <!-- MODULES -->
+
                     <div class="course-info-item">
 
                         <i class="fa-solid fa-book"></i>
@@ -487,6 +620,29 @@
                     </div>
 
 
+                    <!-- LESSONS -->
+
+                    <div class="course-info-item">
+
+                        <i class="fa-solid fa-graduation-cap"></i>
+
+                        <div>
+
+                            <span>
+                                Lessons
+                            </span>
+
+                            <strong id="courseInfoLessons">
+                                30 Lessons
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DURATION -->
+
                     <div class="course-info-item">
 
                         <i class="fa-solid fa-clock"></i>
@@ -498,13 +654,15 @@
                             </span>
 
                             <strong id="courseInfoDuration">
-                                —
+                                10–15 Hours
                             </strong>
 
                         </div>
 
                     </div>
 
+
+                    <!-- LABS -->
 
                     <div class="course-info-item">
 
@@ -517,13 +675,15 @@
                             </span>
 
                             <strong id="courseInfoLabs">
-                                —
+                                10 Labs
                             </strong>
 
                         </div>
 
                     </div>
 
+
+                    <!-- ASSESSMENTS -->
 
                     <div class="course-info-item">
 
@@ -536,7 +696,7 @@
                             </span>
 
                             <strong id="courseInfoAssessments">
-                                —
+                                10 Assessments
                             </strong>
 
                         </div>
@@ -599,7 +759,10 @@
 
 
             <p id="courseProgressText">
-                Start your first lesson to begin making progress.
+
+                Start your first lesson to begin making
+                progress through Cybersecurity Fundamentals.
+
             </p>
 
         </section>
@@ -628,10 +791,12 @@
 
 
                     <p>
-                        Work through each module in order.
+
+                        Work through the modules in order.
                         Complete the lessons, practical labs
-                        and assessments to progress through
-                        the course.
+                        and assessments to build your
+                        cybersecurity foundation.
+
                     </p>
 
                 </div>
@@ -639,11 +804,71 @@
             </div>
 
 
+            <!-- MODULES GENERATED BY JAVASCRIPT -->
+
             <div
                 id="courseModules"
                 class="course-modules"
             >
+
+                <!--
+                    course-details.js will generate
+                    the module curriculum here.
+                -->
+
             </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             COURSE COMPLETION
+        ================================================== -->
+
+        <section
+            id="courseCompletionSection"
+            class="course-completion-section"
+            hidden
+        >
+
+            <div class="course-completion-icon">
+
+                <i class="fa-solid fa-certificate"></i>
+
+            </div>
+
+
+            <span class="dashboard-label">
+                COURSE COMPLETED
+            </span>
+
+
+            <h2>
+                Congratulations!
+            </h2>
+
+
+            <p>
+
+                You have completed Cybersecurity Fundamentals.
+                Your course completion and assessment results
+                can now contribute toward your CWS Academy
+                certificate.
+
+            </p>
+
+
+            <a
+                href="certificates.html"
+                class="course-primary-btn"
+            >
+
+                <i class="fa-solid fa-certificate"></i>
+
+                View Certificates
+
+            </a>
 
         </section>
 
@@ -677,6 +902,7 @@
     type="module"
     src="../js/course-details.js"
 ></script>
+
 
 </body>
 </html>
