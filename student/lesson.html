@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CWS Academy cybersecurity lesson."
+    >
+
+    <title>Lesson | CWS Academy</title>
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+
+    <!-- =====================================================
+         DASHBOARD CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/dashboard.css"
+    >
+
+
+    <!-- =====================================================
+         LESSON CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/lesson.css"
+    >
+
+</head>
+
+
+<body class="student-dashboard lesson-page-body">
+
+
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
+
+<header class="student-header">
+
+    <nav class="student-nav">
+
+        <a
+            href="dashboard.html"
+            class="academy-logo"
+        >
+
+            <span class="logo-cws">
+                CWS
+            </span>
+
+            <span class="logo-text">
+                Academy
+            </span>
+
+        </a>
+
+
+        <div class="student-nav-links">
+
+            <a href="dashboard.html">
+
+                <i class="fa-solid fa-house"></i>
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                href="student-courses.html"
+                class="active"
+            >
+
+                <i class="fa-solid fa-book"></i>
+
+                Courses
+
+            </a>
+
+
+            <a href="labs.html">
+
+                <i class="fa-solid fa-flask"></i>
+
+                Labs
+
+            </a>
+
+
+            <a href="assessments.html">
+
+                <i class="fa-solid fa-clipboard-check"></i>
+
+                Assessments
+
+            </a>
+
+
+            <a href="progress.html">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                Progress
+
+            </a>
+
+
+            <a href="certificates.html">
+
+                <i class="fa-solid fa-certificate"></i>
+
+                Certificates
+
+            </a>
+
+        </div>
+
+
+        <div class="student-nav-account">
+
+            <span
+                id="studentName"
+                class="student-nav-name"
+            >
+                Student
+            </span>
+
+
+            <button
+                type="button"
+                id="logoutBtn"
+                class="dashboard-logout-btn"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="dashboard-main lesson-main">
+
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    <section
+        id="lessonLoading"
+        class="lesson-loading"
+    >
+
+        <i class="fa-solid fa-circle-notch fa-spin"></i>
+
+        <p>
+            Loading lesson...
+        </p>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         NOT FOUND
+    ====================================================== -->
+
+    <section
+        id="lessonNotFound"
+        class="lesson-not-found"
+        hidden
+    >
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+
+        <span class="dashboard-label">
+            LESSON UNAVAILABLE
+        </span>
+
+        <h1>
+            Lesson Not Found
+        </h1>
+
+        <p>
+            The requested lesson could not be found.
+        </p>
+
+        <a
+            href="student-courses.html"
+            class="lesson-primary-btn"
+        >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to Courses
+
+        </a>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         LESSON CONTENT
+    ====================================================== -->
+
+    <div
+        id="lessonContent"
+        class="lesson-layout"
+        hidden
+    >
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside class="lesson-sidebar">
+
+
+            <a
+                id="backToCourse"
+                href="#"
+                class="lesson-back-link"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Back to Course
+
+            </a>
+
+
+            <div class="lesson-sidebar-course">
+
+                <span class="dashboard-label">
+                    COURSE
+                </span>
+
+
+                <h2 id="sidebarCourseTitle">
+                    Cybersecurity Fundamentals
+                </h2>
+
+            </div>
+
+
+            <div class="lesson-sidebar-module">
+
+                <span id="sidebarModuleNumber">
+                    MODULE 01
+                </span>
+
+
+                <h3 id="sidebarModuleTitle">
+                    Introduction to Cybersecurity
+                </h3>
+
+            </div>
+
+
+            <nav
+                id="lessonNavigation"
+                class="lesson-navigation"
+                aria-label="Lesson navigation"
+            >
+            </nav>
+
+        </aside>
+
+
+
+        <!-- =================================================
+             MAIN LESSON
+        ================================================== -->
+
+        <article class="lesson-article">
+
+
+            <!-- LESSON HEADER -->
+
+            <header class="lesson-header">
+
+                <div class="lesson-breadcrumb">
+
+                    <span id="lessonCourseBreadcrumb">
+                        Cybersecurity Fundamentals
+                    </span>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+
+                    <span id="lessonModuleBreadcrumb">
+                        Module 1
+                    </span>
+
+                </div>
+
+
+                <span class="dashboard-label">
+                    LESSON
+                </span>
+
+
+                <h1 id="lessonTitle">
+                    What Is Cybersecurity?
+                </h1>
+
+
+                <div class="lesson-meta">
+
+                    <span>
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        <span id="lessonDuration">
+                            20 min
+                        </span>
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-signal"></i>
+
+                        Beginner
+
+                    </span>
+
+                </div>
+
+            </header>
+
+
+
+            <!-- =================================================
+                 LEARNING OBJECTIVES
+            ================================================== -->
+
+            <section class="lesson-objectives">
+
+                <div class="lesson-section-icon">
+
+                    <i class="fa-solid fa-bullseye"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span class="dashboard-label">
+                        LEARNING OBJECTIVES
+                    </span>
+
+
+                    <h2>
+                        By the end of this lesson, you should be able to:
+                    </h2>
+
+
+                    <ul id="lessonObjectives">
+                    </ul>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 LESSON BODY
+            ================================================== -->
+
+            <div
+                id="lessonBody"
+                class="lesson-body"
+            >
+            </div>
+
+
+
+            <!-- =================================================
+                 KEY TAKEAWAYS
+            ================================================== -->
+
+            <section class="lesson-takeaways">
+
+                <div class="lesson-section-icon">
+
+                    <i class="fa-solid fa-lightbulb"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span class="dashboard-label">
+                        KEY TAKEAWAYS
+                    </span>
+
+
+                    <h2>
+                        Remember These Points
+                    </h2>
+
+
+                    <ul id="lessonTakeaways">
+                    </ul>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 KNOWLEDGE CHECK
+            ================================================== -->
+
+            <section
+                id="knowledgeCheck"
+                class="knowledge-check"
+            >
+
+                <div class="knowledge-check-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            KNOWLEDGE CHECK
+                        </span>
+
+
+                        <h2>
+                            Test Your Understanding
+                        </h2>
+
+                    </div>
+
+
+                    <span
+                        id="knowledgeCheckStatus"
+                        class="knowledge-check-status"
+                    >
+                        Not completed
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="knowledgeQuestions"
+                    class="knowledge-questions"
+                >
+                </div>
+
+
+                <button
+                    type="button"
+                    id="submitKnowledgeCheck"
+                    class="lesson-primary-btn"
+                >
+
+                    Check Answers
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+
+                <div
+                    id="knowledgeResult"
+                    class="knowledge-result"
+                    hidden
+                >
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 LESSON COMPLETION
+            ================================================== -->
+
+            <section class="lesson-completion">
+
+                <div>
+
+                    <span class="dashboard-label">
+                        LESSON PROGRESS
+                    </span>
+
+
+                    <h2>
+                        Ready to continue?
+                    </h2>
+
+
+                    <p id="completionMessage">
+                        Complete the knowledge check before
+                        marking this lesson complete.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="completeLessonBtn"
+                    class="lesson-primary-btn"
+                    disabled
+                >
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    Mark Lesson Complete
+
+                </button>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 PREVIOUS / NEXT
+            ================================================== -->
+
+            <nav
+                class="lesson-pagination"
+                aria-label="Lesson pagination"
+            >
+
+                <a
+                    id="previousLessonBtn"
+                    href="#"
+                    class="lesson-pagination-btn previous"
+                >
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    <span>
+
+                        <small>
+                            Previous
+                        </small>
+
+                        <strong>
+                            Previous Lesson
+                        </strong>
+
+                    </span>
+
+                </a>
+
+
+                <a
+                    id="nextLessonBtn"
+                    href="#"
+                    class="lesson-pagination-btn next"
+                >
+
+                    <span>
+
+                        <small>
+                            Next
+                        </small>
+
+                        <strong>
+                            Next Lesson
+                        </strong>
+
+                    </span>
+
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </nav>
+
+        </article>
+
+    </div>
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="student-footer">
+
+    <p>
+        © 2026 CWS Academy.
+        Part of the CyberWithSandiso ecosystem.
+    </p>
+
+</footer>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script
+    type="module"
+    src="../js/lesson.js"
+></script>
+
+</body>
+</html>
