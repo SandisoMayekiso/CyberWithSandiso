@@ -1,7 +1,14 @@
 /* =========================================================
    CWS ACADEMY
    LESSON SYSTEM
-   Firebase Authentication + Lesson Progress
+   Firebase Authentication + Firestore Progress
+
+   URL FORMAT:
+
+   lesson.html
+       ?course=cybersecurity-fundamentals
+       &module=module-01
+       &lesson=lesson-01
 ========================================================= */
 
 import {
@@ -10,7 +17,15 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
-    auth
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+    auth,
+    db
 } from "./firebase-config.js";
 
 
@@ -49,6 +64,16 @@ function warn(...messages) {
 }
 
 
+function error(...messages) {
+
+    console.error(
+        "[CWS Lesson]",
+        ...messages
+    );
+
+}
+
+
 /* =========================================================
    ELEMENTS
 ========================================================= */
@@ -83,21 +108,51 @@ const logoutBtn =
     );
 
 
-const completeLessonBtn =
+const breadcrumbCourse =
     document.getElementById(
-        "completeLessonBtn"
+        "breadcrumbCourse"
     );
 
 
-const nextLessonBtn =
+const breadcrumbModule =
     document.getElementById(
-        "nextLessonBtn"
+        "breadcrumbModule"
     );
 
 
-const lessonProgressFill =
+const lessonModuleNumber =
     document.getElementById(
-        "lessonProgressFill"
+        "lessonModuleNumber"
+    );
+
+
+const lessonNumber =
+    document.getElementById(
+        "lessonNumber"
+    );
+
+
+const lessonTitle =
+    document.getElementById(
+        "lessonTitle"
+    );
+
+
+const lessonDescription =
+    document.getElementById(
+        "lessonDescription"
+    );
+
+
+const lessonObjectives =
+    document.getElementById(
+        "lessonObjectives"
+    );
+
+
+const lessonBody =
+    document.getElementById(
+        "lessonBody"
     );
 
 
@@ -107,9 +162,39 @@ const lessonProgressPercent =
     );
 
 
+const lessonProgressFill =
+    document.getElementById(
+        "lessonProgressFill"
+    );
+
+
 const lessonProgressText =
     document.getElementById(
         "lessonProgressText"
+    );
+
+
+const markCompleteBtn =
+    document.getElementById(
+        "markCompleteBtn"
+    );
+
+
+const previousLessonBtn =
+    document.getElementById(
+        "previousLessonBtn"
+    );
+
+
+const nextLessonBtn =
+    document.getElementById(
+        "nextLessonBtn"
+    );
+
+
+const lessonModuleList =
+    document.getElementById(
+        "lessonModuleList"
     );
 
 
@@ -125,116 +210,424 @@ let currentModule = null;
 
 let currentLesson = null;
 
+let currentProgress = null;
+
 
 /* =========================================================
-   COURSE DATA
+   COURSE CONTENT
 ========================================================= */
 
 const courses = {
 
     "cybersecurity-fundamentals": {
 
-        id: "cybersecurity-fundamentals",
+        id:
+            "cybersecurity-fundamentals",
 
-        title: "Cybersecurity Fundamentals",
+        title:
+            "Cybersecurity Fundamentals",
 
-        totalLessons: 50,
+        status:
+            "available",
 
-        modules: {
+        modules: [
 
-            1: {
+            {
+                id:
+                    "module-01",
+
+                number:
+                    1,
 
                 title:
                     "Introduction to Cybersecurity",
 
-                lessons: {
+                description:
+                    "Understand what cybersecurity is, why it matters and how security professionals protect digital systems.",
 
-                    1: {
+                lessons: [
+
+                    {
+                        id:
+                            "lesson-01",
+
+                        number:
+                            1,
 
                         title:
                             "What Is Cybersecurity?",
 
-                        subtitle:
-                            "Understanding the purpose of cybersecurity and why it matters.",
+                        description:
+                            "Learn what cybersecurity means and what security professionals are responsible for protecting.",
 
-                        duration:
-                            "15 minutes"
+                        objectives: [
+
+                            "Define cybersecurity.",
+
+                            "Identify the systems and information cybersecurity protects.",
+
+                            "Understand why cybersecurity is important.",
+
+                            "Recognize the role of cybersecurity professionals."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type:
+                                    "heading",
+
+                                text:
+                                    "Understanding Cybersecurity"
+                            },
+
+                            {
+                                type:
+                                    "paragraph",
+
+                                text:
+                                    "Cybersecurity is the practice of protecting computers, networks, applications, devices and information from unauthorized access, misuse, disruption, modification or destruction."
+                            },
+
+                            {
+                                type:
+                                    "paragraph",
+
+                                text:
+                                    "Modern organizations depend heavily on digital systems. Businesses store customer information, financial records, employee information and operational data on computers and networked systems. Protecting these resources is therefore an important part of operating a modern organization."
+                            },
+
+                            {
+                                type:
+                                    "heading",
+
+                                text:
+                                    "What Does Cybersecurity Protect?"
+                            },
+
+                            {
+                                type:
+                                    "paragraph",
+
+                                text:
+                                    "Cybersecurity protects more than just computers. Security teams may be responsible for protecting networks, servers, cloud services, websites, applications, databases, mobile devices and the information stored on those systems."
+                            },
+
+                            {
+                                type:
+                                    "list",
+
+                                items: [
+
+                                    "Computer systems",
+
+                                    "Networks",
+
+                                    "Web applications",
+
+                                    "Cloud infrastructure",
+
+                                    "Databases",
+
+                                    "User accounts",
+
+                                    "Business information",
+
+                                    "Personal information"
+
+                                ]
+                            },
+
+                            {
+                                type:
+                                    "heading",
+
+                                text:
+                                    "Why Cybersecurity Matters"
+                            },
+
+                            {
+                                type:
+                                    "paragraph",
+
+                                text:
+                                    "A security incident can have serious consequences. Attackers may steal information, disrupt services, compromise accounts or damage systems. Cybersecurity helps organizations reduce these risks and respond when security incidents occur."
+                            },
+
+                            {
+                                type:
+                                    "callout",
+
+                                title:
+                                    "Key Idea",
+
+                                text:
+                                    "Cybersecurity is not simply about installing antivirus software or building firewalls. It is a broader discipline involving people, processes and technology."
+                            }
+
+                        ]
 
                     },
 
-                    2: {
+
+                    {
+                        id:
+                            "lesson-02",
+
+                        number:
+                            2,
 
                         title:
-                            "The CIA Triad",
+                            "Why Cybersecurity Matters",
 
-                        subtitle:
-                            "Understanding confidentiality, integrity and availability.",
+                        description:
+                            "Explore the importance of cybersecurity and the consequences of security failures.",
 
-                        duration:
-                            "20 minutes"
+                        objectives: [
+
+                            "Understand the impact of cyber attacks.",
+
+                            "Identify common security consequences.",
+
+                            "Understand why organizations invest in security.",
+
+                            "Recognize the importance of protecting information."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type:
+                                    "heading",
+
+                                text:
+                                    "The Importance of Security"
+                            },
+
+                            {
+                                type:
+                                    "paragraph",
+
+                                text:
+                                    "Cybersecurity is important because digital systems have become essential to everyday life. Organizations rely on technology to communicate, process payments, store information and provide services."
+                            },
+
+                            {
+                                type:
+                                    "heading",
+
+                                text:
+                                    "Consequences of Security Incidents"
+                            },
+
+                            {
+                                type:
+                                    "list",
+
+                                items: [
+
+                                    "Loss of sensitive information",
+
+                                    "Financial losses",
+
+                                    "Service disruption",
+
+                                    "Reputational damage",
+
+                                    "Legal and regulatory consequences",
+
+                                    "Loss of customer trust"
+
+                                ]
+                            },
+
+                            {
+                                type:
+                                    "callout",
+
+                                title:
+                                    "Security Principle",
+
+                                text:
+                                    "Good cybersecurity reduces the likelihood and impact of security incidents."
+
+                            }
+
+                        ]
 
                     },
 
-                    3: {
+
+                    {
+                        id:
+                            "lesson-03",
+
+                        number:
+                            3,
 
                         title:
-                            "Assets, Threats and Vulnerabilities",
+                            "The Cybersecurity Landscape",
 
-                        subtitle:
-                            "Learn the fundamental building blocks of cybersecurity risk.",
+                        description:
+                            "Understand the people, technologies and threats that make up the modern cybersecurity environment.",
 
-                        duration:
-                            "20 minutes"
+                        objectives: [
+
+                            "Identify major areas of cybersecurity.",
+
+                            "Understand the relationship between attackers and defenders.",
+
+                            "Recognize the changing nature of cyber threats."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type:
+                                    "heading",
+
+                                text:
+                                    "A Changing Environment"
+                            },
+
+                            {
+                                type:
+                                    "paragraph",
+
+                                text:
+                                    "Cybersecurity is constantly changing. New technologies create new opportunities, but they can also introduce new security risks."
+                            },
+
+                            {
+                                type:
+                                    "paragraph",
+
+                                text:
+                                    "Security professionals therefore need to continuously learn about operating systems, networks, applications, cloud environments, vulnerabilities and emerging threats."
+                            },
+
+                            {
+                                type:
+                                    "heading",
+
+                                text:
+                                    "Attackers and Defenders"
+                            },
+
+                            {
+                                type:
+                                    "paragraph",
+
+                                text:
+                                    "Cybersecurity involves understanding how systems can be attacked and how those systems can be defended. Security professionals use this knowledge to identify weaknesses, reduce risk and improve defenses."
+                            }
+
+                        ]
 
                     },
 
-                    4: {
+
+                    {
+                        id:
+                            "lesson-04",
+
+                        number:
+                            4,
 
                         title:
-                            "Security Controls",
+                            "The Security Mindset",
 
-                        subtitle:
-                            "Explore the different controls used to reduce security risk.",
+                        description:
+                            "Develop the analytical and responsible mindset required for cybersecurity work.",
 
-                        duration:
-                            "20 minutes"
+                        objectives: [
 
-                    },
+                            "Understand the importance of critical thinking.",
 
-                    5: {
+                            "Recognize the value of questioning assumptions.",
 
-                        title:
-                            "Cybersecurity Roles and Responsibilities",
+                            "Understand responsible security behavior.",
 
-                        subtitle:
-                            "Understand the people and responsibilities involved in security.",
+                            "Develop a defensive security mindset."
 
-                        duration:
-                            "20 minutes"
+                        ],
 
-                    },
+                        content: [
 
-                    6: {
+                            {
+                                type:
+                                    "heading",
 
-                        title:
-                            "Module 1 Knowledge Check",
+                                text:
+                                    "Thinking Like a Security Professional"
+                            },
 
-                        subtitle:
-                            "Test your understanding of the concepts introduced in Module 1.",
+                            {
+                                type:
+                                    "paragraph",
 
-                        duration:
-                            "15 minutes",
+                                text:
+                                    "Cybersecurity professionals need to think critically about how systems work and how those systems could fail. They ask questions about trust, access, configuration and potential weaknesses."
+                            },
 
-                        type:
-                            "assessment"
+                            {
+                                type:
+                                    "list",
+
+                                items: [
+
+                                    "What could go wrong?",
+
+                                    "Who has access?",
+
+                                    "What happens if this control fails?",
+
+                                    "What information needs protection?",
+
+                                    "How could the system be abused?"
+
+                                ]
+                            },
+
+                            {
+                                type:
+                                    "heading",
+
+                                text:
+                                    "Ethical Responsibility"
+                            },
+
+                            {
+                                type:
+                                    "paragraph",
+
+                                text:
+                                    "Security knowledge must be used responsibly. Testing systems without authorization can cause damage and may be illegal. Professional cybersecurity work requires permission, clearly defined scope and responsible handling of information."
+                            },
+
+                            {
+                                type:
+                                    "callout",
+
+                                title:
+                                    "Remember",
+
+                                text:
+                                    "Authorization comes before security testing."
+                            }
+
+                        ]
 
                     }
 
-                }
+                ]
 
             }
 
-        }
+        ]
 
     }
 
@@ -242,10 +635,10 @@ const courses = {
 
 
 /* =========================================================
-   GET URL PARAMETERS
+   URL PARAMETERS
 ========================================================= */
 
-function getLessonParameters() {
+function getUrlParameters() {
 
     const params =
         new URLSearchParams(
@@ -255,18 +648,29 @@ function getLessonParameters() {
 
     return {
 
-        course:
-            params.get("course"),
-
-        module:
-            Number(
-                params.get("module")
-            ),
-
-        lesson:
-            Number(
-                params.get("lesson")
+        courseId:
+            (
+                params.get("course") ||
+                ""
             )
+                .trim()
+                .toLowerCase(),
+
+        moduleId:
+            (
+                params.get("module") ||
+                ""
+            )
+                .trim()
+                .toLowerCase(),
+
+        lessonId:
+            (
+                params.get("lesson") ||
+                ""
+            )
+                .trim()
+                .toLowerCase()
 
     };
 
@@ -274,100 +678,60 @@ function getLessonParameters() {
 
 
 /* =========================================================
-   FIND LESSON
+   USER NAME
 ========================================================= */
 
-function loadLesson() {
+function getUserName(user) {
 
-    const {
-        course,
-        module,
-        lesson
-    } = getLessonParameters();
+    if (!user) {
+
+        return "Student";
+
+    }
 
 
     if (
-        !course ||
-        !module ||
-        !lesson
+        typeof user.displayName === "string" &&
+        user.displayName.trim()
     ) {
 
-        warn(
-            "Missing lesson parameters."
-        );
-
-        return false;
+        return user.displayName.trim();
 
     }
 
 
-    const courseData =
-        courses[course];
+    if (
+        typeof user.email === "string" &&
+        user.email.includes("@")
+    ) {
+
+        const name =
+            user.email
+                .split("@")[0]
+                .replace(
+                    /[._-]+/g,
+                    " "
+                )
+                .trim();
 
 
-    if (!courseData) {
+        if (name) {
 
-        warn(
-            "Course not found:",
-            course
-        );
+            return name
+                .split(" ")
+                .map(
+                    word =>
+                        word.charAt(0).toUpperCase() +
+                        word.slice(1)
+                )
+                .join(" ");
 
-        return false;
-
-    }
-
-
-    const moduleData =
-        courseData.modules[module];
-
-
-    if (!moduleData) {
-
-        warn(
-            "Module not found:",
-            module
-        );
-
-        return false;
-
-    }
-
-
-    const lessonData =
-        moduleData.lessons[lesson];
-
-
-    if (!lessonData) {
-
-        warn(
-            "Lesson not found:",
-            lesson
-        );
-
-        return false;
+        }
 
     }
 
 
-    currentCourse = {
-        ...courseData,
-        id: course
-    };
-
-
-    currentModule = {
-        ...moduleData,
-        id: module
-    };
-
-
-    currentLesson = {
-        ...lessonData,
-        id: lesson
-    };
-
-
-    return true;
+    return "Student";
 
 }
 
@@ -385,321 +749,37 @@ function displayStudent(user) {
     }
 
 
-    let name = "Student";
-
-
-    if (
-        user.displayName &&
-        user.displayName.trim()
-    ) {
-
-        name =
-            user.displayName.trim();
-
-    } else if (
-        user.email &&
-        user.email.includes("@")
-    ) {
-
-        name =
-            user.email
-                .split("@")[0]
-                .replace(/[._-]+/g, " ")
-                .replace(/\s+/g, " ")
-                .trim()
-                .split(" ")
-                .map(
-                    word =>
-                        word.charAt(0).toUpperCase() +
-                        word.slice(1)
-                )
-                .join(" ");
-
-    }
-
-
     studentName.textContent =
-        name;
+        getUserName(user);
 
 }
 
 
 /* =========================================================
-   DISPLAY LESSON
+   PAGE STATES
 ========================================================= */
 
-function displayLesson() {
+function showLoading() {
 
-    document.title =
-        `${currentLesson.title} | CWS Academy`;
+    if (lessonLoading) {
 
-
-    const title =
-        document.getElementById(
-            "lessonTitle"
-        );
-
-
-    const subtitle =
-        document.getElementById(
-            "lessonSubtitle"
-        );
-
-
-    const duration =
-        document.getElementById(
-            "lessonDuration"
-        );
-
-
-    const lessonNumber =
-        document.getElementById(
-            "lessonNumber"
-        );
-
-
-    const moduleBadge =
-        document.getElementById(
-            "lessonModuleBadge"
-        );
-
-
-    const breadcrumbTitle =
-        document.getElementById(
-            "lessonBreadcrumbTitle"
-        );
-
-
-    if (title) {
-
-        title.textContent =
-            currentLesson.title;
+        lessonLoading.hidden =
+            false;
 
     }
 
 
-    if (subtitle) {
+    if (lessonNotFound) {
 
-        subtitle.textContent =
-            currentLesson.subtitle;
-
-    }
-
-
-    if (duration) {
-
-        duration.textContent =
-            currentLesson.duration;
+        lessonNotFound.hidden =
+            true;
 
     }
 
 
-    if (lessonNumber) {
+    if (lessonContent) {
 
-        lessonNumber.textContent =
-            currentLesson.id;
-
-    }
-
-
-    if (moduleBadge) {
-
-        moduleBadge.textContent =
-            `MODULE ${currentModule.id}`;
-
-    }
-
-
-    if (breadcrumbTitle) {
-
-        breadcrumbTitle.textContent =
-            currentLesson.title;
-
-    }
-
-
-    const courseLink =
-        document.getElementById(
-            "lessonCourseLink"
-        );
-
-
-    if (courseLink) {
-
-        courseLink.textContent =
-            currentCourse.title;
-
-        courseLink.href =
-            `course-details.html?course=${currentCourse.id}`;
-
-    }
-
-
-    updateProgress();
-
-
-    lessonLoading.hidden =
-        true;
-
-
-    lessonContent.hidden =
-        false;
-
-}
-
-
-/* =========================================================
-   PROGRESS
-========================================================= */
-
-function getCompletedLessons() {
-
-    if (!currentUser) {
-
-        return [];
-
-    }
-
-
-    const key =
-        `cws_progress_${currentUser.uid}_${currentCourse.id}`;
-
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem(key)
-        ) || [];
-
-    } catch {
-
-        return [];
-
-    }
-
-}
-
-
-function saveCompletedLessons(
-    lessons
-) {
-
-    if (!currentUser) {
-
-        return;
-
-    }
-
-
-    const key =
-        `cws_progress_${currentUser.uid}_${currentCourse.id}`;
-
-
-    localStorage.setItem(
-        key,
-        JSON.stringify(lessons)
-    );
-
-}
-
-
-function getLessonKey() {
-
-    return `${currentModule.id}-${currentLesson.id}`;
-
-}
-
-
-function isLessonComplete() {
-
-    const completedLessons =
-        getCompletedLessons();
-
-
-    return completedLessons.includes(
-        getLessonKey()
-    );
-
-}
-
-
-function updateProgress() {
-
-    const completedLessons =
-        getCompletedLessons();
-
-
-    const totalLessons =
-        currentCourse.totalLessons;
-
-
-    const completedCount =
-        completedLessons.length;
-
-
-    const percentage =
-        Math.round(
-            (completedCount / totalLessons) * 100
-        );
-
-
-    if (lessonProgressFill) {
-
-        lessonProgressFill.style.width =
-            `${percentage}%`;
-
-    }
-
-
-    if (lessonProgressPercent) {
-
-        lessonProgressPercent.textContent =
-            `${percentage}%`;
-
-    }
-
-
-    if (lessonProgressText) {
-
-        lessonProgressText.textContent =
-            `${completedCount} of ${totalLessons} lessons completed`;
-
-    }
-
-
-    updateCompletionButton();
-
-}
-
-
-/* =========================================================
-   COMPLETION BUTTON
-========================================================= */
-
-function updateCompletionButton() {
-
-    if (!completeLessonBtn) {
-
-        return;
-
-    }
-
-
-    if (isLessonComplete()) {
-
-        completeLessonBtn.classList.add(
-            "completed"
-        );
-
-
-        completeLessonBtn.innerHTML =
-            `
-                <i class="fa-solid fa-check-double"></i>
-                Lesson Completed
-            `;
-
-
-        completeLessonBtn.disabled =
+        lessonContent.hidden =
             true;
 
     }
@@ -707,97 +787,1225 @@ function updateCompletionButton() {
 }
 
 
+function showLessonNotFound() {
+
+    if (lessonLoading) {
+
+        lessonLoading.hidden =
+            true;
+
+    }
+
+
+    if (lessonContent) {
+
+        lessonContent.hidden =
+            true;
+
+    }
+
+
+    if (lessonNotFound) {
+
+        lessonNotFound.hidden =
+            false;
+
+    }
+
+}
+
+
+function showLessonContent() {
+
+    if (lessonLoading) {
+
+        lessonLoading.hidden =
+            true;
+
+    }
+
+
+    if (lessonNotFound) {
+
+        lessonNotFound.hidden =
+            true;
+
+    }
+
+
+    if (lessonContent) {
+
+        lessonContent.hidden =
+            false;
+
+    }
+
+}
+
+
 /* =========================================================
-   COMPLETE LESSON
+   FIND COURSE
 ========================================================= */
 
-function completeLesson() {
+function findCourse(courseId) {
 
-    if (!currentUser) {
+    return courses[courseId] || null;
 
-        return;
-
-    }
+}
 
 
-    const completedLessons =
-        getCompletedLessons();
+/* =========================================================
+   FIND MODULE
+========================================================= */
 
+function findModule(
+    course,
+    moduleId
+) {
 
-    const lessonKey =
-        getLessonKey();
+    if (!course) {
 
-
-    if (
-        !completedLessons.includes(
-            lessonKey
-        )
-    ) {
-
-        completedLessons.push(
-            lessonKey
-        );
+        return null;
 
     }
 
 
-    saveCompletedLessons(
-        completedLessons
-    );
+    return course.modules.find(
+        module =>
+            module.id === moduleId
+    ) || null;
+
+}
 
 
-    updateProgress();
+/* =========================================================
+   FIND LESSON
+========================================================= */
+
+function findLesson(
+    module,
+    lessonId
+) {
+
+    if (!module) {
+
+        return null;
+
+    }
 
 
-    log(
-        "Lesson completed:",
-        lessonKey
+    return module.lessons.find(
+        lesson =>
+            lesson.id === lessonId
+    ) || null;
+
+}
+
+
+/* =========================================================
+   TOTAL LESSONS
+========================================================= */
+
+function getTotalLessons(course) {
+
+    if (!course) {
+
+        return 0;
+
+    }
+
+
+    return course.modules.reduce(
+        (
+            total,
+            module
+        ) => {
+
+            return total +
+                module.lessons.length;
+
+        },
+        0
     );
 
 }
 
 
 /* =========================================================
-   NEXT LESSON
+   FLATTEN LESSONS
 ========================================================= */
 
-function goToNextLesson() {
+function getAllLessons(course) {
 
-    const nextLesson =
-        currentLesson.id + 1;
+    if (!course) {
+
+        return [];
+
+    }
 
 
-    const nextModule =
-        currentModule.id;
+    const lessons = [];
 
 
-    const moduleLessons =
-        currentCourse.modules[
-            nextModule
-        ]?.lessons;
+    course.modules.forEach(
+        module => {
 
+            module.lessons.forEach(
+                lesson => {
+
+                    lessons.push({
+
+                        moduleId:
+                            module.id,
+
+                        moduleNumber:
+                            module.number,
+
+                        moduleTitle:
+                            module.title,
+
+                        lessonId:
+                            lesson.id,
+
+                        lessonNumber:
+                            lesson.number,
+
+                        lessonTitle:
+                            lesson.title
+
+                    });
+
+                }
+            );
+
+        }
+    );
+
+
+    return lessons;
+
+}
+
+
+/* =========================================================
+   DEFAULT PROGRESS
+========================================================= */
+
+function getDefaultProgress() {
+
+    return {
+
+        courseId:
+            currentCourse.id,
+
+        completedLessons:
+            [],
+
+        currentModule:
+            currentModule.id,
+
+        currentLesson:
+            currentLesson.id,
+
+        started:
+            true,
+
+        completed:
+            false,
+
+        progressPercent:
+            0
+
+    };
+
+}
+
+
+/* =========================================================
+   FIRESTORE PROGRESS REFERENCE
+========================================================= */
+
+function getProgressRef() {
 
     if (
-        moduleLessons &&
-        moduleLessons[nextLesson]
+        !db ||
+        !currentUser ||
+        !currentCourse
     ) {
 
-        window.location.href =
-            `lesson.html?course=${currentCourse.id}&module=${nextModule}&lesson=${nextLesson}`;
+        return null;
+
+    }
+
+
+    return doc(
+        db,
+        "users",
+        currentUser.uid,
+        "courseProgress",
+        currentCourse.id
+    );
+
+}
+
+
+/* =========================================================
+   LOAD PROGRESS
+========================================================= */
+
+async function loadProgress() {
+
+    currentProgress =
+        getDefaultProgress();
+
+
+    if (!db) {
+
+        warn(
+            "Firestore unavailable. Using local progress."
+        );
 
         return;
 
     }
 
 
-    /*
-     * No more lessons in the
-     * current module.
-     */
+    try {
 
-    alert(
-        "You have reached the end of this module."
+        const progressRef =
+            getProgressRef();
+
+
+        const snapshot =
+            await getDoc(
+                progressRef
+            );
+
+
+        if (snapshot.exists()) {
+
+            currentProgress = {
+
+                ...getDefaultProgress(),
+
+                ...snapshot.data()
+
+            };
+
+        }
+
+
+        if (
+            !Array.isArray(
+                currentProgress.completedLessons
+            )
+        ) {
+
+            currentProgress.completedLessons =
+                [];
+
+        }
+
+
+        log(
+            "Progress loaded:",
+            currentProgress
+        );
+
+    } catch (err) {
+
+        error(
+            "Unable to load progress:",
+            err
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE PROGRESS
+========================================================= */
+
+async function saveProgress() {
+
+    if (
+        !db ||
+        !currentUser ||
+        !currentCourse ||
+        !currentProgress
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const progressRef =
+            getProgressRef();
+
+
+        await setDoc(
+            progressRef,
+            {
+
+                ...currentProgress,
+
+                updatedAt:
+                    serverTimestamp()
+
+            },
+            {
+                merge: true
+            }
+        );
+
+
+        log(
+            "Progress saved."
+        );
+
+    } catch (err) {
+
+        error(
+            "Unable to save progress:",
+            err
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CALCULATE COURSE PROGRESS
+========================================================= */
+
+function calculateProgress() {
+
+    const total =
+        getTotalLessons(
+            currentCourse
+        );
+
+
+    const completed =
+        currentProgress
+            ?.completedLessons
+            ?.length || 0;
+
+
+    if (!total) {
+
+        return 0;
+
+    }
+
+
+    return Math.min(
+        100,
+        Math.round(
+            (
+                completed /
+                total
+            ) * 100
+        )
     );
+
+}
+
+
+/* =========================================================
+   UPDATE PROGRESS UI
+========================================================= */
+
+function updateProgressUI() {
+
+    const percent =
+        calculateProgress();
+
+
+    if (lessonProgressPercent) {
+
+        lessonProgressPercent.textContent =
+            `${percent}%`;
+
+    }
+
+
+    if (lessonProgressFill) {
+
+        lessonProgressFill.style.width =
+            `${percent}%`;
+
+    }
+
+
+    if (lessonProgressText) {
+
+        const completed =
+            currentProgress
+                ?.completedLessons
+                ?.length || 0;
+
+
+        const total =
+            getTotalLessons(
+                currentCourse
+            );
+
+
+        lessonProgressText.textContent =
+            `${completed} of ${total} lessons completed`;
+
+    }
+
+
+    const progressBar =
+        document.querySelector(
+            ".lesson-progress-bar"
+        );
+
+
+    if (progressBar) {
+
+        progressBar.setAttribute(
+            "aria-valuenow",
+            String(percent)
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER OBJECTIVES
+========================================================= */
+
+function renderObjectives(
+    objectives = []
+) {
+
+    if (!lessonObjectives) {
+
+        return;
+
+    }
+
+
+    lessonObjectives.innerHTML =
+        "";
+
+
+    objectives.forEach(
+        objective => {
+
+            const li =
+                document.createElement(
+                    "li"
+                );
+
+
+            const icon =
+                document.createElement(
+                    "i"
+                );
+
+
+            icon.className =
+                "fa-solid fa-check";
+
+
+            const span =
+                document.createElement(
+                    "span"
+                );
+
+
+            span.textContent =
+                objective;
+
+
+            li.appendChild(
+                icon
+            );
+
+            li.appendChild(
+                span
+            );
+
+
+            lessonObjectives.appendChild(
+                li
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   RENDER LESSON CONTENT
+========================================================= */
+
+function renderLessonBody(
+    content = []
+) {
+
+    if (!lessonBody) {
+
+        return;
+
+    }
+
+
+    lessonBody.innerHTML =
+        "";
+
+
+    content.forEach(
+        block => {
+
+            let element;
+
+
+            switch (block.type) {
+
+                case "heading":
+
+                    element =
+                        document.createElement(
+                            "h2"
+                        );
+
+                    element.textContent =
+                        block.text;
+
+                    break;
+
+
+                case "paragraph":
+
+                    element =
+                        document.createElement(
+                            "p"
+                        );
+
+                    element.textContent =
+                        block.text;
+
+                    break;
+
+
+                case "list":
+
+                    element =
+                        document.createElement(
+                            "ul"
+                        );
+
+
+                    (block.items || [])
+                        .forEach(
+                            item => {
+
+                                const li =
+                                    document.createElement(
+                                        "li"
+                                    );
+
+
+                                li.textContent =
+                                    item;
+
+
+                                element.appendChild(
+                                    li
+                                );
+
+                            }
+                        );
+
+                    break;
+
+
+                case "callout":
+
+                    element =
+                        document.createElement(
+                            "aside"
+                        );
+
+
+                    element.className =
+                        "lesson-callout";
+
+
+                    const title =
+                        document.createElement(
+                            "strong"
+                        );
+
+
+                    title.textContent =
+                        block.title ||
+                        "Important";
+
+
+                    const text =
+                        document.createElement(
+                            "p"
+                        );
+
+
+                    text.textContent =
+                        block.text;
+
+
+                    element.appendChild(
+                        title
+                    );
+
+                    element.appendChild(
+                        text
+                    );
+
+                    break;
+
+
+                default:
+
+                    element =
+                        document.createElement(
+                            "p"
+                        );
+
+                    element.textContent =
+                        block.text || "";
+
+            }
+
+
+            if (element) {
+
+                lessonBody.appendChild(
+                    element
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   RENDER MODULE SIDEBAR
+========================================================= */
+
+function renderModuleList() {
+
+    if (!lessonModuleList) {
+
+        return;
+
+    }
+
+
+    lessonModuleList.innerHTML =
+        "";
+
+
+    currentModule.lessons.forEach(
+        lesson => {
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.className =
+                "lesson-module-item";
+
+
+            if (
+                lesson.id ===
+                currentLesson.id
+            ) {
+
+                link.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            const completed =
+                currentProgress
+                    ?.completedLessons
+                    ?.includes(
+                        lesson.id
+                    );
+
+
+            if (completed) {
+
+                link.classList.add(
+                    "completed"
+                );
+
+            }
+
+
+            link.href =
+                `lesson.html?course=${encodeURIComponent(
+                    currentCourse.id
+                )}&module=${encodeURIComponent(
+                    currentModule.id
+                )}&lesson=${encodeURIComponent(
+                    lesson.id
+                )}`;
+
+
+            link.innerHTML = `
+
+                <span class="lesson-module-item-number">
+                    ${String(
+                        lesson.number
+                    ).padStart(
+                        2,
+                        "0"
+                    )}
+                </span>
+
+                <span class="lesson-module-item-title">
+                    ${lesson.title}
+                </span>
+
+                ${
+                    completed
+                        ? `
+                            <i class="fa-solid fa-check"></i>
+                          `
+                        : ""
+                }
+
+            `;
+
+
+            lessonModuleList.appendChild(
+                link
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   RENDER LESSON
+========================================================= */
+
+function renderLesson() {
+
+    if (!currentLesson) {
+
+        return;
+
+    }
+
+
+    if (breadcrumbCourse) {
+
+        breadcrumbCourse.textContent =
+            currentCourse.title;
+
+    }
+
+
+    if (breadcrumbModule) {
+
+        breadcrumbModule.textContent =
+            currentModule.title;
+
+    }
+
+
+    if (lessonModuleNumber) {
+
+        lessonModuleNumber.textContent =
+            `MODULE ${String(
+                currentModule.number
+            ).padStart(
+                2,
+                "0"
+            )}`;
+
+    }
+
+
+    if (lessonNumber) {
+
+        lessonNumber.textContent =
+            `LESSON ${String(
+                currentLesson.number
+            ).padStart(
+                2,
+                "0"
+            )}`;
+
+    }
+
+
+    if (lessonTitle) {
+
+        lessonTitle.textContent =
+            currentLesson.title;
+
+    }
+
+
+    if (lessonDescription) {
+
+        lessonDescription.textContent =
+            currentLesson.description;
+
+    }
+
+
+    renderObjectives(
+        currentLesson.objectives
+    );
+
+
+    renderLessonBody(
+        currentLesson.content
+    );
+
+
+    updateProgressUI();
+
+
+    renderModuleList();
+
+
+    updateNavigation();
+
+
+    updateCompleteButton();
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function updateNavigation() {
+
+    const lessons =
+        getAllLessons(
+            currentCourse
+        );
+
+
+    const currentIndex =
+        lessons.findIndex(
+            lesson =>
+                lesson.moduleId ===
+                    currentModule.id &&
+                lesson.lessonId ===
+                    currentLesson.id
+        );
+
+
+    const previous =
+        currentIndex > 0
+            ? lessons[currentIndex - 1]
+            : null;
+
+
+    const next =
+        currentIndex <
+            lessons.length - 1
+            ? lessons[currentIndex + 1]
+            : null;
+
+
+    if (previousLessonBtn) {
+
+        if (previous) {
+
+            previousLessonBtn.hidden =
+                false;
+
+            previousLessonBtn.href =
+                `lesson.html?course=${encodeURIComponent(
+                    currentCourse.id
+                )}&module=${encodeURIComponent(
+                    previous.moduleId
+                )}&lesson=${encodeURIComponent(
+                    previous.lessonId
+                )}`;
+
+        } else {
+
+            previousLessonBtn.hidden =
+                true;
+
+        }
+
+    }
+
+
+    if (nextLessonBtn) {
+
+        if (next) {
+
+            nextLessonBtn.hidden =
+                false;
+
+            nextLessonBtn.href =
+                `lesson.html?course=${encodeURIComponent(
+                    currentCourse.id
+                )}&module=${encodeURIComponent(
+                    next.moduleId
+                )}&lesson=${encodeURIComponent(
+                    next.lessonId
+                )}`;
+
+        } else {
+
+            nextLessonBtn.hidden =
+                true;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   COMPLETE BUTTON
+========================================================= */
+
+function updateCompleteButton() {
+
+    if (!markCompleteBtn) {
+
+        return;
+
+    }
+
+
+    const completed =
+        currentProgress
+            ?.completedLessons
+            ?.includes(
+                currentLesson.id
+            );
+
+
+    if (completed) {
+
+        markCompleteBtn.classList.add(
+            "completed"
+        );
+
+
+        markCompleteBtn.innerHTML = `
+            <i class="fa-solid fa-check"></i>
+            Lesson Completed
+        `;
+
+    } else {
+
+        markCompleteBtn.classList.remove(
+            "completed"
+        );
+
+
+        markCompleteBtn.innerHTML = `
+            <i class="fa-solid fa-check"></i>
+            Mark Lesson Complete
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   MARK LESSON COMPLETE
+========================================================= */
+
+async function markLessonComplete() {
+
+    if (
+        !currentLesson ||
+        !currentProgress
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        !Array.isArray(
+            currentProgress.completedLessons
+        )
+    ) {
+
+        currentProgress.completedLessons =
+            [];
+
+    }
+
+
+    const completed =
+        currentProgress.completedLessons
+            .includes(
+                currentLesson.id
+            );
+
+
+    if (!completed) {
+
+        currentProgress.completedLessons
+            .push(
+                currentLesson.id
+            );
+
+    }
+
+
+    currentProgress.currentModule =
+        currentModule.id;
+
+
+    currentProgress.currentLesson =
+        currentLesson.id;
+
+
+    currentProgress.started =
+        true;
+
+
+    const percent =
+        calculateProgress();
+
+
+    currentProgress.progressPercent =
+        percent;
+
+
+    if (
+        percent >= 100
+    ) {
+
+        currentProgress.completed =
+            true;
+
+    }
+
+
+    updateProgressUI();
+
+    updateCompleteButton();
+
+    renderModuleList();
+
+
+    await saveProgress();
+
+
+    log(
+        "Lesson completed:",
+        currentLesson.id
+    );
+
+}
+
+
+/* =========================================================
+   REMEMBER CURRENT LESSON
+========================================================= */
+
+async function rememberCurrentLesson() {
+
+    if (!currentProgress) {
+
+        return;
+
+    }
+
+
+    currentProgress.currentModule =
+        currentModule.id;
+
+
+    currentProgress.currentLesson =
+        currentLesson.id;
+
+
+    currentProgress.started =
+        true;
+
+
+    await saveProgress();
+
+}
+
+
+/* =========================================================
+   LOGOUT LOADING
+========================================================= */
+
+function setLogoutLoading(
+    isLoading
+) {
+
+    if (!logoutBtn) {
+
+        return;
+
+    }
+
+
+    logoutBtn.disabled =
+        isLoading;
+
+
+    logoutBtn.classList.toggle(
+        "is-loading",
+        isLoading
+    );
+
+
+    if (isLoading) {
+
+        logoutBtn.setAttribute(
+            "aria-busy",
+            "true"
+        );
+
+    } else {
+
+        logoutBtn.removeAttribute(
+            "aria-busy"
+        );
+
+    }
 
 }
 
@@ -808,7 +2016,23 @@ function goToNextLesson() {
 
 async function logout() {
 
+    if (!auth) {
+
+        error(
+            "Firebase Auth unavailable."
+        );
+
+        return;
+
+    }
+
+
     try {
+
+        setLogoutLoading(
+            true
+        );
+
 
         await signOut(
             auth
@@ -819,11 +2043,16 @@ async function logout() {
             "../pages/login.html"
         );
 
-    } catch (error) {
+    } catch (err) {
 
-        console.error(
-            "[CWS Lesson] Logout failed:",
-            error
+        error(
+            "Logout failed:",
+            err
+        );
+
+
+        setLogoutLoading(
+            false
         );
 
 
@@ -837,28 +2066,8 @@ async function logout() {
 
 
 /* =========================================================
-   EVENTS
+   LOGOUT EVENT
 ========================================================= */
-
-if (completeLessonBtn) {
-
-    completeLessonBtn.addEventListener(
-        "click",
-        completeLesson
-    );
-
-}
-
-
-if (nextLessonBtn) {
-
-    nextLessonBtn.addEventListener(
-        "click",
-        goToNextLesson
-    );
-
-}
-
 
 if (logoutBtn) {
 
@@ -871,10 +2080,221 @@ if (logoutBtn) {
 
 
 /* =========================================================
+   COMPLETE EVENT
+========================================================= */
+
+if (markCompleteBtn) {
+
+    markCompleteBtn.addEventListener(
+        "click",
+        markLessonComplete
+    );
+
+}
+
+
+/* =========================================================
+   LOAD LESSON
+========================================================= */
+
+async function loadLesson() {
+
+    showLoading();
+
+
+    const {
+        courseId,
+        moduleId,
+        lessonId
+    } =
+        getUrlParameters();
+
+
+    log(
+        "Requested:",
+        {
+            courseId,
+            moduleId,
+            lessonId
+        }
+    );
+
+
+    /*
+     * Course
+     */
+
+    if (!courseId) {
+
+        warn(
+            "No course ID supplied."
+        );
+
+
+        showLessonNotFound();
+
+        return;
+
+    }
+
+
+    const course =
+        findCourse(
+            courseId
+        );
+
+
+    if (!course) {
+
+        warn(
+            "Course not found:",
+            courseId
+        );
+
+
+        showLessonNotFound();
+
+        return;
+
+    }
+
+
+    /*
+     * Module
+     */
+
+    if (!moduleId) {
+
+        warn(
+            "No module ID supplied."
+        );
+
+
+        showLessonNotFound();
+
+        return;
+
+    }
+
+
+    const module =
+        findModule(
+            course,
+            moduleId
+        );
+
+
+    if (!module) {
+
+        warn(
+            "Module not found:",
+            moduleId
+        );
+
+
+        showLessonNotFound();
+
+        return;
+
+    }
+
+
+    /*
+     * Lesson
+     */
+
+    if (!lessonId) {
+
+        warn(
+            "No lesson ID supplied."
+        );
+
+
+        showLessonNotFound();
+
+        return;
+
+    }
+
+
+    const lesson =
+        findLesson(
+            module,
+            lessonId
+        );
+
+
+    if (!lesson) {
+
+        warn(
+            "Lesson not found:",
+            lessonId
+        );
+
+
+        showLessonNotFound();
+
+        return;
+
+    }
+
+
+    /*
+     * Set current state.
+     */
+
+    currentCourse =
+        course;
+
+    currentModule =
+        module;
+
+    currentLesson =
+        lesson;
+
+
+    /*
+     * Load Firestore progress.
+     */
+
+    await loadProgress();
+
+
+    /*
+     * Remember where the student is.
+     */
+
+    await rememberCurrentLesson();
+
+
+    /*
+     * Render everything.
+     */
+
+    renderLesson();
+
+
+    showLessonContent();
+
+
+    log(
+        "Lesson loaded successfully:",
+        currentLesson.title
+    );
+
+}
+
+
+/* =========================================================
    AUTHENTICATION
 ========================================================= */
 
 if (!auth) {
+
+    error(
+        "Firebase Auth was not initialized."
+    );
+
 
     window.location.replace(
         "../pages/login.html"
@@ -884,13 +2304,40 @@ if (!auth) {
 
     onAuthStateChanged(
         auth,
-        async (user) => {
+        async user => {
+
+            log(
+                "Authentication:",
+                user
+                    ? "AUTHENTICATED"
+                    : "NOT AUTHENTICATED"
+            );
+
 
             if (!user) {
 
+                currentUser =
+                    null;
+
+
+                const {
+                    courseId,
+                    moduleId,
+                    lessonId
+                } =
+                    getUrlParameters();
+
+
                 window.location.replace(
-                    "../pages/login.html?redirect=lesson"
+                    `../pages/login.html?redirect=lesson&course=${encodeURIComponent(
+                        courseId
+                    )}&module=${encodeURIComponent(
+                        moduleId
+                    )}&lesson=${encodeURIComponent(
+                        lessonId
+                    )}`
                 );
+
 
                 return;
 
@@ -901,62 +2348,12 @@ if (!auth) {
                 user;
 
 
-            try {
-
-                await user.reload();
-
-            } catch (error) {
-
-                warn(
-                    "Unable to refresh user:",
-                    error
-                );
-
-            }
-
-
             displayStudent(
-                auth.currentUser || user
+                user
             );
 
 
-            /*
-             * Load lesson from URL.
-             */
-
-            const loaded =
-                loadLesson();
-
-
-            if (!loaded) {
-
-                lessonLoading.hidden =
-                    true;
-
-                lessonNotFound.hidden =
-                    false;
-
-                return;
-
-            }
-
-
-            displayLesson();
-
-
-            log(
-                "Lesson initialized successfully.",
-                {
-                    course:
-                        currentCourse.id,
-
-                    module:
-                        currentModule.id,
-
-                    lesson:
-                        currentLesson.id
-                }
-            );
+            await loadLesson();
 
         }
     );
