@@ -2,26 +2,35 @@
    CWS ACADEMY
    LESSON SYSTEM
    ---------------------------------------------------------
-   Firebase Authentication + Firestore Progress
+   student/lesson.html
+   student/lesson.js
 
-   SUPPORTED URL FORMATS:
+   URL FORMATS
 
-   1. Start module:
-      lesson.html
-      ?course=cybersecurity-fundamentals
-      &module=module-01
+   Start module:
+   lesson.html?course=cybersecurity-fundamentals&module=module-01
 
-      Automatically opens lesson-01.
+   Specific lesson:
+   lesson.html?course=cybersecurity-fundamentals
+              &module=module-01
+              &lesson=lesson-02
 
-   2. Specific lesson:
-      lesson.html
-      ?course=cybersecurity-fundamentals
-      &module=module-01
-      &lesson=lesson-02
+   NAVIGATION
 
-   IMPORTANT:
-   The lesson itself does NOT depend on Firestore.
-   Firestore progress is loaded/saved in the background.
+   Previous Lesson
+   Next Lesson
+   Module Lesson List
+   Browser Back / Forward
+   Course Details
+   Module Start
+   Course Start
+
+   FIRESTORE
+
+   users/{uid}/courseProgress/{courseId}
+
+   Firestore is NEVER required before the lesson
+   can render.
 ========================================================= */
 
 
@@ -48,40 +57,51 @@ import {
 
 
 /* =========================================================
-   DEBUG
+   CONFIGURATION
 ========================================================= */
 
 const DEBUG = true;
 
 const FIRESTORE_TIMEOUT = 8000;
 
-const LOGIN_PATH = "../pages/login.html";
+const LOGIN_PATH =
+    "../pages/login.html";
 
+const COURSE_DETAILS_PATH =
+    "course-details.html";
+
+const LESSON_PATH =
+    "lesson.html";
+
+
+/* =========================================================
+   DEBUG HELPERS
+========================================================= */
 
 function log(...messages) {
 
-    if (DEBUG) {
-
-        console.log(
-            "[CWS Lesson]",
-            ...messages
-        );
-
+    if (!DEBUG) {
+        return;
     }
+
+    console.log(
+        "[CWS Lesson]",
+        ...messages
+    );
 
 }
 
 
 function warn(...messages) {
 
-    if (DEBUG) {
-
-        console.warn(
-            "[CWS Lesson]",
-            ...messages
-        );
-
+    if (!DEBUG) {
+        return;
     }
+
+    console.warn(
+        "[CWS Lesson]",
+        ...messages
+    );
 
 }
 
@@ -177,7 +197,9 @@ let currentProgress = null;
 
 let authResolved = false;
 
-let lessonInitialized = false;
+let navigationToken = 0;
+
+let progressLoadPromise = null;
 
 
 /* =========================================================
@@ -196,12 +218,18 @@ const courses = {
 
         modules: [
 
+            /* =================================================
+               MODULE 01
+            ================================================== */
+
             {
+
                 id: "module-01",
 
                 number: 1,
 
-                title: "Introduction to Cybersecurity",
+                title:
+                    "Introduction to Cybersecurity",
 
                 description:
                     "Understand what cybersecurity is, why it matters and how security professionals protect digital systems.",
@@ -209,11 +237,13 @@ const courses = {
                 lessons: [
 
                     {
+
                         id: "lesson-01",
 
                         number: 1,
 
-                        title: "What Is Cybersecurity?",
+                        title:
+                            "What Is Cybersecurity?",
 
                         description:
                             "Learn what cybersecurity means and what security professionals are responsible for protecting.",
@@ -233,39 +263,52 @@ const courses = {
                         content: [
 
                             {
+
                                 type: "heading",
 
-                                text: "Understanding Cybersecurity"
+                                text:
+                                    "Understanding Cybersecurity"
+
                             },
 
                             {
+
                                 type: "paragraph",
 
                                 text:
                                     "Cybersecurity is the practice of protecting computers, networks, applications, devices and information from unauthorized access, misuse, disruption, modification or destruction."
+
                             },
 
                             {
+
                                 type: "paragraph",
 
                                 text:
                                     "Modern organizations depend heavily on digital systems. Businesses store customer information, financial records, employee information and operational data on computers and networked systems. Protecting these resources is therefore an important part of operating a modern organization."
+
                             },
 
                             {
+
                                 type: "heading",
 
-                                text: "What Does Cybersecurity Protect?"
+                                text:
+                                    "What Does Cybersecurity Protect?"
+
                             },
 
                             {
+
                                 type: "paragraph",
 
                                 text:
                                     "Cybersecurity protects more than just computers. Security teams may be responsible for protecting networks, servers, cloud services, websites, applications, databases, mobile devices and the information stored on those systems."
+
                             },
 
                             {
+
                                 type: "list",
 
                                 items: [
@@ -287,28 +330,37 @@ const courses = {
                                     "Personal information"
 
                                 ]
+
                             },
 
                             {
+
                                 type: "heading",
 
-                                text: "Why Cybersecurity Matters"
+                                text:
+                                    "Why Cybersecurity Matters"
+
                             },
 
                             {
+
                                 type: "paragraph",
 
                                 text:
                                     "A security incident can have serious consequences. Attackers may steal information, disrupt services, compromise accounts or damage systems. Cybersecurity helps organizations reduce these risks and respond when security incidents occur."
+
                             },
 
                             {
+
                                 type: "callout",
 
-                                title: "Key Idea",
+                                title:
+                                    "Key Idea",
 
                                 text:
                                     "Cybersecurity is not simply about installing antivirus software or building firewalls. It is a broader discipline involving people, processes and technology."
+
                             }
 
                         ]
@@ -317,11 +369,13 @@ const courses = {
 
 
                     {
+
                         id: "lesson-02",
 
                         number: 2,
 
-                        title: "Why Cybersecurity Matters",
+                        title:
+                            "Why Cybersecurity Matters",
 
                         description:
                             "Explore the importance of cybersecurity and the consequences of security failures.",
@@ -341,25 +395,34 @@ const courses = {
                         content: [
 
                             {
+
                                 type: "heading",
 
-                                text: "The Importance of Security"
+                                text:
+                                    "The Importance of Security"
+
                             },
 
                             {
+
                                 type: "paragraph",
 
                                 text:
                                     "Cybersecurity is important because digital systems have become essential to everyday life. Organizations rely on technology to communicate, process payments, store information and provide services."
+
                             },
 
                             {
+
                                 type: "heading",
 
-                                text: "Consequences of Security Incidents"
+                                text:
+                                    "Consequences of Security Incidents"
+
                             },
 
                             {
+
                                 type: "list",
 
                                 items: [
@@ -377,15 +440,19 @@ const courses = {
                                     "Loss of customer trust"
 
                                 ]
+
                             },
 
                             {
+
                                 type: "callout",
 
-                                title: "Security Principle",
+                                title:
+                                    "Security Principle",
 
                                 text:
                                     "Good cybersecurity reduces the likelihood and impact of security incidents."
+
                             }
 
                         ]
@@ -394,11 +461,13 @@ const courses = {
 
 
                     {
+
                         id: "lesson-03",
 
                         number: 3,
 
-                        title: "The Cybersecurity Landscape",
+                        title:
+                            "The Cybersecurity Landscape",
 
                         description:
                             "Understand the people, technologies and threats that make up the modern cybersecurity environment.",
@@ -416,36 +485,48 @@ const courses = {
                         content: [
 
                             {
+
                                 type: "heading",
 
-                                text: "A Changing Environment"
+                                text:
+                                    "A Changing Environment"
+
                             },
 
                             {
+
                                 type: "paragraph",
 
                                 text:
                                     "Cybersecurity is constantly changing. New technologies create new opportunities, but they can also introduce new security risks."
+
                             },
 
                             {
+
                                 type: "paragraph",
 
                                 text:
                                     "Security professionals therefore need to continuously learn about operating systems, networks, applications, cloud environments, vulnerabilities and emerging threats."
+
                             },
 
                             {
+
                                 type: "heading",
 
-                                text: "Attackers and Defenders"
+                                text:
+                                    "Attackers and Defenders"
+
                             },
 
                             {
+
                                 type: "paragraph",
 
                                 text:
                                     "Cybersecurity involves understanding how systems can be attacked and how those systems can be defended. Security professionals use this knowledge to identify weaknesses, reduce risk and improve defenses."
+
                             }
 
                         ]
@@ -454,11 +535,13 @@ const courses = {
 
 
                     {
+
                         id: "lesson-04",
 
                         number: 4,
 
-                        title: "The Security Mindset",
+                        title:
+                            "The Security Mindset",
 
                         description:
                             "Develop the analytical and responsible mindset required for cybersecurity work.",
@@ -478,19 +561,25 @@ const courses = {
                         content: [
 
                             {
+
                                 type: "heading",
 
-                                text: "Thinking Like a Security Professional"
+                                text:
+                                    "Thinking Like a Security Professional"
+
                             },
 
                             {
+
                                 type: "paragraph",
 
                                 text:
                                     "Cybersecurity professionals need to think critically about how systems work and how those systems could fail. They ask questions about trust, access, configuration and potential weaknesses."
+
                             },
 
                             {
+
                                 type: "list",
 
                                 items: [
@@ -506,28 +595,37 @@ const courses = {
                                     "How could the system be abused?"
 
                                 ]
+
                             },
 
                             {
+
                                 type: "heading",
 
-                                text: "Ethical Responsibility"
+                                text:
+                                    "Ethical Responsibility"
+
                             },
 
                             {
+
                                 type: "paragraph",
 
                                 text:
                                     "Security knowledge must be used responsibly. Testing systems without authorization can cause damage and may be illegal. Professional cybersecurity work requires permission, clearly defined scope and responsible handling of information."
+
                             },
 
                             {
+
                                 type: "callout",
 
-                                title: "Remember",
+                                title:
+                                    "Remember",
 
                                 text:
                                     "Authorization comes before security testing."
+
                             }
 
                         ]
@@ -535,6 +633,197 @@ const courses = {
                     }
 
                 ]
+
+            },
+
+
+            /* =================================================
+               MODULE 02
+               -------------------------------------------------
+               Add lesson content here when ready.
+            ================================================== */
+
+            {
+
+                id: "module-02",
+
+                number: 2,
+
+                title:
+                    "The CIA Triad",
+
+                description:
+                    "Learn confidentiality, integrity and availability and how these principles influence security decisions.",
+
+                lessons: []
+
+            },
+
+
+            /* =================================================
+               MODULE 03
+            ================================================== */
+
+            {
+
+                id: "module-03",
+
+                number: 3,
+
+                title:
+                    "Threats and Attack Types",
+
+                description:
+                    "Explore common cyber threats including phishing, malware, social engineering and denial-of-service attacks.",
+
+                lessons: []
+
+            },
+
+
+            /* =================================================
+               MODULE 04
+            ================================================== */
+
+            {
+
+                id: "module-04",
+
+                number: 4,
+
+                title:
+                    "Vulnerabilities and Risk",
+
+                description:
+                    "Learn how vulnerabilities are identified, evaluated and connected to cybersecurity risk.",
+
+                lessons: []
+
+            },
+
+
+            /* =================================================
+               MODULE 05
+            ================================================== */
+
+            {
+
+                id: "module-05",
+
+                number: 5,
+
+                title:
+                    "Security Controls",
+
+                description:
+                    "Understand administrative, technical and physical security controls.",
+
+                lessons: []
+
+            },
+
+
+            /* =================================================
+               MODULE 06
+            ================================================== */
+
+            {
+
+                id: "module-06",
+
+                number: 6,
+
+                title:
+                    "Authentication and Access Control",
+
+                description:
+                    "Learn authentication factors, authorization, least privilege and access management.",
+
+                lessons: []
+
+            },
+
+
+            /* =================================================
+               MODULE 07
+            ================================================== */
+
+            {
+
+                id: "module-07",
+
+                number: 7,
+
+                title:
+                    "Network Security Fundamentals",
+
+                description:
+                    "Understand basic network security concepts and how network traffic can be protected.",
+
+                lessons: []
+
+            },
+
+
+            /* =================================================
+               MODULE 08
+            ================================================== */
+
+            {
+
+                id: "module-08",
+
+                number: 8,
+
+                title:
+                    "Endpoint and System Security",
+
+                description:
+                    "Explore operating-system security, patching, endpoint protection and system hardening.",
+
+                lessons: []
+
+            },
+
+
+            /* =================================================
+               MODULE 09
+            ================================================== */
+
+            {
+
+                id: "module-09",
+
+                number: 9,
+
+                title:
+                    "Security Policies and Ethics",
+
+                description:
+                    "Understand security policies, acceptable use, responsible disclosure and ethical security practice.",
+
+                lessons: []
+
+            },
+
+
+            /* =================================================
+               MODULE 10
+            ================================================== */
+
+            {
+
+                id: "module-10",
+
+                number: 10,
+
+                title:
+                    "Cybersecurity Foundations Review",
+
+                description:
+                    "Bring the concepts together through a comprehensive review and final assessment.",
+
+                lessons: []
 
             }
 
@@ -546,7 +835,7 @@ const courses = {
 
 
 /* =========================================================
-   URL PARAMETERS
+   URL HELPERS
 ========================================================= */
 
 function getUrlParameters() {
@@ -556,33 +845,203 @@ function getUrlParameters() {
             window.location.search
         );
 
+
     return {
 
         courseId:
-            (
-                params.get("course") ||
-                ""
-            )
-                .trim()
-                .toLowerCase(),
+            normalizeId(
+                params.get("course")
+            ),
 
         moduleId:
-            (
-                params.get("module") ||
-                ""
-            )
-                .trim()
-                .toLowerCase(),
+            normalizeId(
+                params.get("module")
+            ),
 
         lessonId:
-            (
-                params.get("lesson") ||
-                ""
+            normalizeId(
+                params.get("lesson")
             )
-                .trim()
-                .toLowerCase()
 
     };
+
+}
+
+
+function normalizeId(value) {
+
+    return (
+        typeof value === "string"
+            ? value
+            : ""
+    )
+        .trim()
+        .toLowerCase();
+
+}
+
+
+/* =========================================================
+   URL BUILDERS
+========================================================= */
+
+function buildLessonUrl(
+    courseId,
+    moduleId,
+    lessonId
+) {
+
+    const params =
+        new URLSearchParams();
+
+
+    params.set(
+        "course",
+        courseId
+    );
+
+
+    params.set(
+        "module",
+        moduleId
+    );
+
+
+    if (lessonId) {
+
+        params.set(
+            "lesson",
+            lessonId
+        );
+
+    }
+
+
+    return (
+        `${LESSON_PATH}?${params.toString()}`
+    );
+
+}
+
+
+function buildCourseDetailsUrl(
+    courseId
+) {
+
+    const params =
+        new URLSearchParams();
+
+
+    params.set(
+        "course",
+        courseId
+    );
+
+
+    return (
+        `${COURSE_DETAILS_PATH}?${params.toString()}`
+    );
+
+}
+
+
+function buildLoginUrl(
+    courseId,
+    moduleId,
+    lessonId
+) {
+
+    const params =
+        new URLSearchParams();
+
+
+    params.set(
+        "redirect",
+        "lesson"
+    );
+
+
+    if (courseId) {
+
+        params.set(
+            "course",
+            courseId
+        );
+
+    }
+
+
+    if (moduleId) {
+
+        params.set(
+            "module",
+            moduleId
+        );
+
+    }
+
+
+    if (lessonId) {
+
+        params.set(
+            "lesson",
+            lessonId
+        );
+
+    }
+
+
+    return (
+        `${LOGIN_PATH}?${params.toString()}`
+    );
+
+}
+
+
+/* =========================================================
+   BROWSER URL
+========================================================= */
+
+function updateBrowserUrl(
+    courseId,
+    moduleId,
+    lessonId,
+    replace = true
+) {
+
+    const url =
+        buildLessonUrl(
+            courseId,
+            moduleId,
+            lessonId
+        );
+
+
+    if (replace) {
+
+        window.history.replaceState(
+            {
+                courseId,
+                moduleId,
+                lessonId
+            },
+            "",
+            url
+        );
+
+    } else {
+
+        window.history.pushState(
+            {
+                courseId,
+                moduleId,
+                lessonId
+            },
+            "",
+            url
+        );
+
+    }
 
 }
 
@@ -599,6 +1058,7 @@ function getUserName(user) {
 
     }
 
+
     if (
         typeof user.displayName === "string" &&
         user.displayName.trim()
@@ -607,6 +1067,7 @@ function getUserName(user) {
         return user.displayName.trim();
 
     }
+
 
     if (
         typeof user.email === "string" &&
@@ -620,7 +1081,12 @@ function getUserName(user) {
                     /[._-]+/g,
                     " "
                 )
+                .replace(
+                    /\s+/g,
+                    " "
+                )
                 .trim();
+
 
         if (name) {
 
@@ -636,6 +1102,7 @@ function getUserName(user) {
         }
 
     }
+
 
     return "Student";
 
@@ -654,6 +1121,7 @@ function displayStudent(user) {
 
     }
 
+
     studentName.textContent =
         getUserName(user);
 
@@ -668,19 +1136,24 @@ function showLoading() {
 
     if (lessonLoading) {
 
-        lessonLoading.hidden = false;
+        lessonLoading.hidden =
+            false;
 
     }
+
 
     if (lessonNotFound) {
 
-        lessonNotFound.hidden = true;
+        lessonNotFound.hidden =
+            true;
 
     }
 
+
     if (lessonContent) {
 
-        lessonContent.hidden = true;
+        lessonContent.hidden =
+            true;
 
     }
 
@@ -691,19 +1164,24 @@ function showLessonNotFound() {
 
     if (lessonLoading) {
 
-        lessonLoading.hidden = true;
+        lessonLoading.hidden =
+            true;
 
     }
+
 
     if (lessonContent) {
 
-        lessonContent.hidden = true;
+        lessonContent.hidden =
+            true;
 
     }
 
+
     if (lessonNotFound) {
 
-        lessonNotFound.hidden = false;
+        lessonNotFound.hidden =
+            false;
 
     }
 
@@ -714,19 +1192,24 @@ function showLessonContent() {
 
     if (lessonLoading) {
 
-        lessonLoading.hidden = true;
+        lessonLoading.hidden =
+            true;
 
     }
+
 
     if (lessonNotFound) {
 
-        lessonNotFound.hidden = true;
+        lessonNotFound.hidden =
+            true;
 
     }
 
+
     if (lessonContent) {
 
-        lessonContent.hidden = false;
+        lessonContent.hidden =
+            false;
 
     }
 
@@ -737,9 +1220,14 @@ function showLessonContent() {
    FIND COURSE
 ========================================================= */
 
-function findCourse(courseId) {
+function findCourse(
+    courseId
+) {
 
-    return courses[courseId] || null;
+    return (
+        courses[courseId] ||
+        null
+    );
 
 }
 
@@ -759,11 +1247,13 @@ function findModule(
 
     }
 
+
     return (
         course.modules.find(
             module =>
                 module.id === moduleId
-        ) || null
+        ) ||
+        null
     );
 
 }
@@ -778,17 +1268,22 @@ function findLesson(
     lessonId
 ) {
 
-    if (!module) {
+    if (
+        !module ||
+        !Array.isArray(module.lessons)
+    ) {
 
         return null;
 
     }
 
+
     return (
         module.lessons.find(
             lesson =>
                 lesson.id === lessonId
-        ) || null
+        ) ||
+        null
     );
 
 }
@@ -798,13 +1293,16 @@ function findLesson(
    TOTAL LESSONS
 ========================================================= */
 
-function getTotalLessons(course) {
+function getTotalLessons(
+    course
+) {
 
     if (!course) {
 
         return 0;
 
     }
+
 
     return course.modules.reduce(
         (
@@ -829,10 +1327,24 @@ function getTotalLessons(course) {
 
 
 /* =========================================================
-   ALL LESSONS
+   FLATTEN COURSE LESSONS
+   ---------------------------------------------------------
+   This is the key navigation system.
+
+   Example:
+
+   Module 1 / Lesson 1
+   Module 1 / Lesson 2
+   Module 1 / Lesson 3
+   Module 1 / Lesson 4
+   Module 2 / Lesson 1
+   Module 2 / Lesson 2
+   ...
 ========================================================= */
 
-function getAllLessons(course) {
+function getAllLessons(
+    course
+) {
 
     if (!course) {
 
@@ -840,7 +1352,9 @@ function getAllLessons(course) {
 
     }
 
+
     const lessons = [];
+
 
     course.modules.forEach(
         module => {
@@ -855,10 +1369,14 @@ function getAllLessons(course) {
 
             }
 
+
             module.lessons.forEach(
                 lesson => {
 
                     lessons.push({
+
+                        courseId:
+                            course.id,
 
                         moduleId:
                             module.id,
@@ -886,7 +1404,96 @@ function getAllLessons(course) {
         }
     );
 
+
     return lessons;
+
+}
+
+
+/* =========================================================
+   GET CURRENT LESSON INDEX
+========================================================= */
+
+function getCurrentLessonIndex() {
+
+    const lessons =
+        getAllLessons(
+            currentCourse
+        );
+
+
+    return lessons.findIndex(
+        item =>
+            item.moduleId ===
+                currentModule?.id &&
+            item.lessonId ===
+                currentLesson?.id
+    );
+
+}
+
+
+/* =========================================================
+   GET PREVIOUS LESSON
+========================================================= */
+
+function getPreviousLesson() {
+
+    const lessons =
+        getAllLessons(
+            currentCourse
+        );
+
+
+    const index =
+        getCurrentLessonIndex();
+
+
+    if (index <= 0) {
+
+        return null;
+
+    }
+
+
+    return (
+        lessons[index - 1] ||
+        null
+    );
+
+}
+
+
+/* =========================================================
+   GET NEXT LESSON
+========================================================= */
+
+function getNextLesson() {
+
+    const lessons =
+        getAllLessons(
+            currentCourse
+        );
+
+
+    const index =
+        getCurrentLessonIndex();
+
+
+    if (
+        index < 0 ||
+        index >= lessons.length - 1
+    ) {
+
+        return null;
+
+    }
+
+
+    return (
+        lessons[index + 1] ||
+        null
+    );
 
 }
 
@@ -923,16 +1530,74 @@ function getDefaultProgress() {
                 ? currentLesson.id
                 : null,
 
+        progressPercent:
+            0,
+
         started:
             true,
 
         completed:
-            false,
-
-        progressPercent:
-            0
+            false
 
     };
+
+}
+
+
+/* =========================================================
+   NORMALIZE PROGRESS
+========================================================= */
+
+function normalizeProgress(
+    progress
+) {
+
+    const normalized = {
+
+        ...getDefaultProgress(),
+
+        ...(progress || {})
+
+    };
+
+
+    if (
+        !Array.isArray(
+            normalized.completedLessons
+        )
+    ) {
+
+        normalized.completedLessons =
+            [];
+
+    }
+
+
+    if (
+        !Array.isArray(
+            normalized.completedLabs
+        )
+    ) {
+
+        normalized.completedLabs =
+            [];
+
+    }
+
+
+    if (
+        !Array.isArray(
+            normalized.completedAssessments
+        )
+    ) {
+
+        normalized.completedAssessments =
+            [];
+
+    }
+
+
+    return normalized;
 
 }
 
@@ -953,6 +1618,7 @@ function getProgressRef() {
 
     }
 
+
     return doc(
         db,
         "users",
@@ -965,7 +1631,7 @@ function getProgressRef() {
 
 
 /* =========================================================
-   TIMEOUT WRAPPER
+   TIMEOUT
 ========================================================= */
 
 function withTimeout(
@@ -980,18 +1646,27 @@ function withTimeout(
         new Promise(
             (_, reject) => {
 
-                setTimeout(
-                    () => {
+                const timer =
+                    setTimeout(
+                        () => {
 
-                        reject(
-                            new Error(
-                                "Firestore request timed out."
-                            )
-                        );
+                            reject(
+                                new Error(
+                                    "Firestore request timed out."
+                                )
+                            );
 
-                    },
-                    timeout
-                );
+                        },
+                        timeout
+                    );
+
+
+                /*
+                   Prevent unhandled timer references
+                   from becoming significant.
+                */
+
+                void timer;
 
             }
         )
@@ -1003,33 +1678,36 @@ function withTimeout(
 
 /* =========================================================
    LOAD PROGRESS
-   ---------------------------------------------------------
-   IMPORTANT:
-   Failure here MUST NOT prevent the lesson from rendering.
 ========================================================= */
 
 async function loadProgress() {
 
-    currentProgress =
-        getDefaultProgress();
+    if (
+        progressLoadPromise
+    ) {
 
-
-    if (!db) {
-
-        warn(
-            "Firestore unavailable. Using default progress."
-        );
-
-        return;
+        return progressLoadPromise;
 
     }
 
 
-    if (!currentUser) {
-
-        warn(
-            "No authenticated user. Using default progress."
+    currentProgress =
+        normalizeProgress(
+            currentProgress
         );
+
+
+    if (
+        !db ||
+        !currentUser ||
+        !currentCourse
+    ) {
+
+        updateProgressUI();
+
+        updateCompleteButton();
+
+        renderModuleList();
 
         return;
 
@@ -1042,108 +1720,98 @@ async function loadProgress() {
 
     if (!progressRef) {
 
-        warn(
-            "Progress reference unavailable."
-        );
-
         return;
 
     }
 
 
+    progressLoadPromise =
+        (async () => {
+
+            try {
+
+                const snapshot =
+                    await withTimeout(
+                        getDoc(
+                            progressRef
+                        )
+                    );
+
+
+                if (snapshot.exists()) {
+
+                    currentProgress =
+                        normalizeProgress(
+                            snapshot.data()
+                        );
+
+                }
+
+
+                /*
+                   Preserve the actual lesson the user
+                   is currently viewing.
+                */
+
+                currentProgress.currentModule =
+                    currentModule.id;
+
+                currentProgress.currentLesson =
+                    currentLesson.id;
+
+
+                currentProgress.started =
+                    true;
+
+
+                currentProgress.progressPercent =
+                    calculateProgress();
+
+
+                updateProgressUI();
+
+                updateCompleteButton();
+
+                renderModuleList();
+
+
+                log(
+                    "Progress loaded."
+                );
+
+            } catch (err) {
+
+                error(
+                    "Progress load failed:",
+                    err
+                );
+
+
+                currentProgress =
+                    normalizeProgress(
+                        currentProgress
+                    );
+
+
+                updateProgressUI();
+
+                updateCompleteButton();
+
+                renderModuleList();
+
+            }
+
+        })();
+
+
     try {
 
-        const snapshot =
-            await withTimeout(
-                getDoc(
-                    progressRef
-                )
-            );
+        await progressLoadPromise;
 
+    } finally {
 
-        if (snapshot.exists()) {
-
-            currentProgress = {
-
-                ...getDefaultProgress(),
-
-                ...snapshot.data()
-
-            };
-
-        }
-
-
-        if (
-            !Array.isArray(
-                currentProgress.completedLessons
-            )
-        ) {
-
-            currentProgress.completedLessons =
-                [];
-
-        }
-
-
-        if (
-            !Array.isArray(
-                currentProgress.completedLabs
-            )
-        ) {
-
-            currentProgress.completedLabs =
-                [];
-
-        }
-
-
-        if (
-            !Array.isArray(
-                currentProgress.completedAssessments
-            )
-        ) {
-
-            currentProgress.completedAssessments =
-                [];
-
-        }
-
-
-        log(
-            "Progress loaded successfully."
-        );
-
-
-        updateProgressUI();
-
-        updateCompleteButton();
-
-        renderModuleList();
-
-
-    } catch (err) {
-
-        error(
-            "Progress could not be loaded:",
-            err
-        );
-
-
-        /*
-           CRITICAL:
-           Keep the lesson functional.
-        */
-
-        currentProgress =
-            getDefaultProgress();
-
-
-        updateProgressUI();
-
-        updateCompleteButton();
-
-        renderModuleList();
+        progressLoadPromise =
+            null;
 
     }
 
@@ -1197,16 +1865,18 @@ async function saveProgress() {
                         serverTimestamp()
 
                 },
+
                 {
                     merge: true
                 }
+
             )
 
         );
 
 
         log(
-            "Progress saved successfully."
+            "Progress saved."
         );
 
 
@@ -1215,7 +1885,7 @@ async function saveProgress() {
     } catch (err) {
 
         error(
-            "Unable to save progress:",
+            "Progress save failed:",
             err
         );
 
@@ -1239,15 +1909,11 @@ function calculateProgress() {
 
     }
 
+
     const total =
         getTotalLessons(
             currentCourse
         );
-
-    const completed =
-        currentProgress
-            ?.completedLessons
-            ?.length || 0;
 
 
     if (!total) {
@@ -1255,6 +1921,15 @@ function calculateProgress() {
         return 0;
 
     }
+
+
+    const completed =
+        Array.isArray(
+            currentProgress?.completedLessons
+        )
+            ? currentProgress.completedLessons.length
+            : 0;
+
 
     return Math.min(
         100,
@@ -1295,25 +1970,6 @@ function updateProgressUI() {
     }
 
 
-    if (lessonProgressText) {
-
-        const completed =
-            currentProgress
-                ?.completedLessons
-                ?.length || 0;
-
-        const total =
-            getTotalLessons(
-                currentCourse
-            );
-
-
-        lessonProgressText.textContent =
-            `${completed} of ${total} lessons completed`;
-
-    }
-
-
     const progressBar =
         document.querySelector(
             ".lesson-progress-bar"
@@ -1326,6 +1982,37 @@ function updateProgressUI() {
             "aria-valuenow",
             String(percent)
         );
+
+    }
+
+
+    if (lessonProgressText) {
+
+        const completed =
+            Array.isArray(
+                currentProgress?.completedLessons
+            )
+                ? currentProgress.completedLessons.length
+                : 0;
+
+
+        const total =
+            getTotalLessons(
+                currentCourse
+            );
+
+
+        if (!total) {
+
+            lessonProgressText.textContent =
+                "No lessons available yet.";
+
+        } else {
+
+            lessonProgressText.textContent =
+                `${completed} of ${total} lessons completed`;
+
+        }
 
     }
 
@@ -1349,6 +2036,17 @@ function renderObjectives(
 
     lessonObjectives.innerHTML =
         "";
+
+
+    if (
+        !Array.isArray(
+            objectives
+        )
+    ) {
+
+        return;
+
+    }
 
 
     objectives.forEach(
@@ -1419,13 +2117,33 @@ function renderLessonBody(
         "";
 
 
+    if (
+        !Array.isArray(
+            content
+        )
+    ) {
+
+        return;
+
+    }
+
+
     content.forEach(
         block => {
+
+            if (!block) {
+
+                return;
+
+            }
+
 
             let element = null;
 
 
-            switch (block.type) {
+            switch (
+                block.type
+            ) {
 
                 case "heading":
 
@@ -1434,8 +2152,11 @@ function renderLessonBody(
                             "h2"
                         );
 
+
                     element.textContent =
-                        block.text;
+                        block.text ||
+                        "";
+
 
                     break;
 
@@ -1447,8 +2168,11 @@ function renderLessonBody(
                             "p"
                         );
 
+
                     element.textContent =
-                        block.text;
+                        block.text ||
+                        "";
+
 
                     break;
 
@@ -1461,33 +2185,39 @@ function renderLessonBody(
                         );
 
 
-                    (
-                        block.items ||
-                        []
-                    ).forEach(
-                        item => {
+                    if (
+                        Array.isArray(
+                            block.items
+                        )
+                    ) {
 
-                            const li =
-                                document.createElement(
-                                    "li"
+                        block.items.forEach(
+                            item => {
+
+                                const li =
+                                    document.createElement(
+                                        "li"
+                                    );
+
+
+                                li.textContent =
+                                    item;
+
+
+                                element.appendChild(
+                                    li
                                 );
 
+                            }
+                        );
 
-                            li.textContent =
-                                item;
+                    }
 
-
-                            element.appendChild(
-                                li
-                            );
-
-                        }
-                    );
 
                     break;
 
 
-                case "callout":
+                case "callout": {
 
                     element =
                         document.createElement(
@@ -1499,37 +2229,41 @@ function renderLessonBody(
                         "lesson-callout";
 
 
-                    const calloutTitle =
+                    const title =
                         document.createElement(
                             "strong"
                         );
 
 
-                    calloutTitle.textContent =
+                    title.textContent =
                         block.title ||
                         "Important";
 
 
-                    const calloutText =
+                    const text =
                         document.createElement(
                             "p"
                         );
 
 
-                    calloutText.textContent =
-                        block.text;
+                    text.textContent =
+                        block.text ||
+                        "";
 
 
                     element.appendChild(
-                        calloutTitle
+                        title
                     );
 
 
                     element.appendChild(
-                        calloutText
+                        text
                     );
+
 
                     break;
+
+                }
 
 
                 default:
@@ -1562,66 +2296,6 @@ function renderLessonBody(
 
 
 /* =========================================================
-   BUILD LESSON URL
-========================================================= */
-
-function buildLessonUrl(
-    courseId,
-    moduleId,
-    lessonId
-) {
-
-    return (
-        `lesson.html?course=${encodeURIComponent(
-            courseId
-        )}` +
-        `&module=${encodeURIComponent(
-            moduleId
-        )}` +
-        `&lesson=${encodeURIComponent(
-            lessonId
-        )}`
-    );
-
-}
-
-
-/* =========================================================
-   UPDATE BROWSER URL
-========================================================= */
-
-function updateBrowserUrl(
-    courseId,
-    moduleId,
-    lessonId
-) {
-
-    const newUrl =
-        buildLessonUrl(
-            courseId,
-            moduleId,
-            lessonId
-        );
-
-
-    if (
-        window.location.pathname.endsWith(
-            "lesson.html"
-        )
-    ) {
-
-        window.history.replaceState(
-            {},
-            "",
-            newUrl
-        );
-
-    }
-
-}
-
-
-/* =========================================================
    RENDER MODULE LIST
 ========================================================= */
 
@@ -1638,12 +2312,22 @@ function renderModuleList() {
         "";
 
 
+    if (!currentCourse) {
+
+        return;
+
+    }
+
+
+    /*
+       Display the lessons of the CURRENT MODULE.
+    */
+
     if (
         !currentModule ||
         !Array.isArray(
             currentModule.lessons
-        ) ||
-        !currentLesson
+        )
     ) {
 
         return;
@@ -1664,9 +2348,18 @@ function renderModuleList() {
                 "lesson-module-item";
 
 
+            link.href =
+                buildLessonUrl(
+                    currentCourse.id,
+                    currentModule.id,
+                    lesson.id
+                );
+
+
             if (
+                currentLesson &&
                 lesson.id ===
-                currentLesson.id
+                    currentLesson.id
             ) {
 
                 link.classList.add(
@@ -1677,11 +2370,12 @@ function renderModuleList() {
 
 
             const completed =
-                currentProgress
-                    ?.completedLessons
-                    ?.includes(
-                        lesson.id
-                    );
+                Array.isArray(
+                    currentProgress?.completedLessons
+                ) &&
+                currentProgress.completedLessons.includes(
+                    lesson.id
+                );
 
 
             if (completed) {
@@ -1691,14 +2385,6 @@ function renderModuleList() {
                 );
 
             }
-
-
-            link.href =
-                buildLessonUrl(
-                    currentCourse.id,
-                    currentModule.id,
-                    lesson.id
-                );
 
 
             const number =
@@ -1860,61 +2546,43 @@ function renderLesson() {
 
     updateProgressUI();
 
+    updateCompleteButton();
+
     renderModuleList();
 
     updateNavigation();
-
-    updateCompleteButton();
 
 }
 
 
 /* =========================================================
-   NAVIGATION
+   UPDATE NAVIGATION
 ========================================================= */
 
 function updateNavigation() {
 
-    if (!currentCourse || !currentModule || !currentLesson) {
+    if (
+        !currentCourse ||
+        !currentModule ||
+        !currentLesson
+    ) {
 
         return;
 
     }
 
 
-    const lessons =
-        getAllLessons(
-            currentCourse
-        );
-
-
-    const currentIndex =
-        lessons.findIndex(
-            lesson =>
-                lesson.moduleId ===
-                    currentModule.id &&
-                lesson.lessonId ===
-                    currentLesson.id
-        );
-
-
     const previous =
-        currentIndex > 0
-            ? lessons[
-                currentIndex - 1
-            ]
-            : null;
+        getPreviousLesson();
 
 
     const next =
-        currentIndex >= 0 &&
-        currentIndex <
-            lessons.length - 1
-            ? lessons[
-                currentIndex + 1
-            ]
-            : null;
+        getNextLesson();
 
+
+    /* =====================================================
+       PREVIOUS
+    ====================================================== */
 
     if (previousLessonBtn) {
 
@@ -1931,6 +2599,11 @@ function updateNavigation() {
                     previous.lessonId
                 );
 
+
+            previousLessonBtn.removeAttribute(
+                "aria-disabled"
+            );
+
         } else {
 
             previousLessonBtn.hidden =
@@ -1940,6 +2613,10 @@ function updateNavigation() {
 
     }
 
+
+    /* =====================================================
+       NEXT
+    ====================================================== */
 
     if (nextLessonBtn) {
 
@@ -1956,14 +2633,68 @@ function updateNavigation() {
                     next.lessonId
                 );
 
+
+            nextLessonBtn.removeAttribute(
+                "aria-disabled"
+            );
+
         } else {
 
+            /*
+               No next lesson means this is currently
+               the final available lesson.
+            */
+
             nextLessonBtn.hidden =
-                true;
+                false;
+
+
+            nextLessonBtn.href =
+                buildCourseDetailsUrl(
+                    currentCourse.id
+                );
+
+
+            nextLessonBtn.innerHTML = `
+                Finish Course
+                <i class="fa-solid fa-arrow-right"></i>
+            `;
+
+
+            nextLessonBtn.setAttribute(
+                "aria-label",
+                "Return to course details"
+            );
 
         }
 
     }
+
+}
+
+
+/* =========================================================
+   RESET NEXT BUTTON
+========================================================= */
+
+function resetNextButton() {
+
+    if (!nextLessonBtn) {
+
+        return;
+
+    }
+
+
+    nextLessonBtn.innerHTML = `
+        Next Lesson
+        <i class="fa-solid fa-arrow-right"></i>
+    `;
+
+
+    nextLessonBtn.removeAttribute(
+        "aria-label"
+    );
 
 }
 
@@ -1974,7 +2705,10 @@ function updateNavigation() {
 
 function updateCompleteButton() {
 
-    if (!markCompleteBtn || !currentLesson) {
+    if (
+        !markCompleteBtn ||
+        !currentLesson
+    ) {
 
         return;
 
@@ -1982,11 +2716,12 @@ function updateCompleteButton() {
 
 
     const completed =
-        currentProgress
-            ?.completedLessons
-            ?.includes(
-                currentLesson.id
-            );
+        Array.isArray(
+            currentProgress?.completedLessons
+        ) &&
+        currentProgress.completedLessons.includes(
+            currentLesson.id
+        );
 
 
     if (completed) {
@@ -2039,10 +2774,18 @@ async function markLessonComplete() {
     if (
         !currentLesson ||
         !currentModule ||
-        !currentProgress
+        !currentCourse
     ) {
 
         return;
+
+    }
+
+
+    if (!currentProgress) {
+
+        currentProgress =
+            getDefaultProgress();
 
     }
 
@@ -2088,15 +2831,9 @@ async function markLessonComplete() {
         calculateProgress();
 
 
-    if (
+    currentProgress.completed =
         currentProgress.progressPercent >=
-        100
-    ) {
-
-        currentProgress.completed =
-            true;
-
-    }
+        100;
 
 
     updateProgressUI();
@@ -2107,28 +2844,10 @@ async function markLessonComplete() {
 
 
     /*
-       Save in background.
-       The UI is already updated.
+       Save AFTER UI update.
     */
 
-    const saveResult =
-        await saveProgress();
-
-
-    if (saveResult) {
-
-        log(
-            "Lesson completed and progress saved:",
-            currentLesson.id
-        );
-
-    } else {
-
-        warn(
-            "Lesson marked complete locally, but Firestore save failed."
-        );
-
-    }
+    await saveProgress();
 
 }
 
@@ -2140,12 +2859,20 @@ async function markLessonComplete() {
 async function rememberCurrentLesson() {
 
     if (
-        !currentProgress ||
+        !currentCourse ||
         !currentModule ||
         !currentLesson
     ) {
 
         return;
+
+    }
+
+
+    if (!currentProgress) {
+
+        currentProgress =
+            getDefaultProgress();
 
     }
 
@@ -2162,10 +2889,9 @@ async function rememberCurrentLesson() {
         true;
 
 
-    /*
-       IMPORTANT:
-       This runs after the lesson is displayed.
-    */
+    currentProgress.progressPercent =
+        calculateProgress();
+
 
     await saveProgress();
 
@@ -2173,7 +2899,7 @@ async function rememberCurrentLesson() {
 
 
 /* =========================================================
-   LOGOUT BUTTON STATE
+   LOGOUT STATE
 ========================================================= */
 
 function setLogoutLoading(
@@ -2227,9 +2953,11 @@ async function logout() {
             "Firebase Auth unavailable."
         );
 
+
         window.location.replace(
             LOGIN_PATH
         );
+
 
         return;
 
@@ -2303,23 +3031,314 @@ if (markCompleteBtn) {
 
 
 /* =========================================================
-   LOAD LESSON
+   INTERNAL NAVIGATION
+   ---------------------------------------------------------
+   This makes navigation instant and prevents the browser
+   from unnecessarily reloading the entire page.
 ========================================================= */
 
-async function loadLesson() {
+function navigateToLesson(
+    moduleId,
+    lessonId
+) {
 
-    if (lessonInitialized) {
-
-        log(
-            "Lesson already initialized. Skipping duplicate load."
-        );
+    if (!currentCourse) {
 
         return;
 
     }
 
 
-    showLoading();
+    const module =
+        findModule(
+            currentCourse,
+            moduleId
+        );
+
+
+    if (!module) {
+
+        warn(
+            "Navigation module not found:",
+            moduleId
+        );
+
+
+        return;
+
+    }
+
+
+    const lesson =
+        findLesson(
+            module,
+            lessonId
+        );
+
+
+    if (!lesson) {
+
+        warn(
+            "Navigation lesson not found:",
+            lessonId
+        );
+
+
+        return;
+
+    }
+
+
+    navigationToken++;
+
+
+    currentModule =
+        module;
+
+
+    currentLesson =
+        lesson;
+
+
+    if (!currentProgress) {
+
+        currentProgress =
+            getDefaultProgress();
+
+    }
+
+
+    currentProgress.currentModule =
+        module.id;
+
+
+    currentProgress.currentLesson =
+        lesson.id;
+
+
+    currentProgress.started =
+        true;
+
+
+    resetNextButton();
+
+
+    renderLesson();
+
+
+    showLessonContent();
+
+
+    updateBrowserUrl(
+        currentCourse.id,
+        module.id,
+        lesson.id,
+        false
+    );
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+
+    /*
+       Save in background.
+    */
+
+    rememberCurrentLesson()
+        .catch(
+            err => {
+
+                error(
+                    "Navigation progress save failed:",
+                    err
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   INTERCEPT LESSON LINKS
+   ---------------------------------------------------------
+   Allows module list links to navigate without a full reload.
+========================================================= */
+
+if (lessonModuleList) {
+
+    lessonModuleList.addEventListener(
+        "click",
+        event => {
+
+            const link =
+                event.target.closest(
+                    "a.lesson-module-item"
+                );
+
+
+            if (!link) {
+
+                return;
+
+            }
+
+
+            const url =
+                new URL(
+                    link.href,
+                    window.location.href
+                );
+
+
+            const courseId =
+                normalizeId(
+                    url.searchParams.get(
+                        "course"
+                    )
+                );
+
+
+            const moduleId =
+                normalizeId(
+                    url.searchParams.get(
+                        "module"
+                    )
+                );
+
+
+            const lessonId =
+                normalizeId(
+                    url.searchParams.get(
+                        "lesson"
+                    )
+                );
+
+
+            if (
+                courseId !==
+                currentCourse?.id
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                !moduleId ||
+                !lessonId
+            ) {
+
+                return;
+
+            }
+
+
+            event.preventDefault();
+
+
+            navigateToLesson(
+                moduleId,
+                lessonId
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PREVIOUS BUTTON
+========================================================= */
+
+if (previousLessonBtn) {
+
+    previousLessonBtn.addEventListener(
+        "click",
+        event => {
+
+            const previous =
+                getPreviousLesson();
+
+
+            if (!previous) {
+
+                event.preventDefault();
+
+                return;
+
+            }
+
+
+            event.preventDefault();
+
+
+            navigateToLesson(
+                previous.moduleId,
+                previous.lessonId
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   NEXT BUTTON
+========================================================= */
+
+if (nextLessonBtn) {
+
+    nextLessonBtn.addEventListener(
+        "click",
+        event => {
+
+            const next =
+                getNextLesson();
+
+
+            if (!next) {
+
+                /*
+                   Final lesson -> course details.
+                */
+
+                return;
+
+            }
+
+
+            event.preventDefault();
+
+
+            navigateToLesson(
+                next.moduleId,
+                next.lessonId
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   LOAD LESSON FROM URL
+========================================================= */
+
+async function loadLessonFromUrl(
+    options = {}
+) {
+
+    const {
+        pushHistory = false
+    } = options;
 
 
     const {
@@ -2331,7 +3350,7 @@ async function loadLesson() {
 
 
     log(
-        "Requested URL parameters:",
+        "Loading URL:",
         {
             courseId,
             moduleId,
@@ -2341,13 +3360,13 @@ async function loadLesson() {
 
 
     /* =====================================================
-       VALIDATE COURSE
+       COURSE
     ====================================================== */
 
     if (!courseId) {
 
         warn(
-            "No course ID supplied."
+            "Missing course ID."
         );
 
 
@@ -2379,18 +3398,46 @@ async function loadLesson() {
     }
 
 
+    if (
+        course.status !==
+        "available"
+    ) {
+
+        warn(
+            "Course unavailable:",
+            courseId
+        );
+
+
+        showLessonNotFound();
+
+        return;
+
+    }
+
+
     /* =====================================================
-       VALIDATE MODULE
+       MODULE
     ====================================================== */
 
     if (!moduleId) {
 
         warn(
-            "No module ID supplied."
+            "Missing module ID."
         );
 
 
-        showLessonNotFound();
+        /*
+           If there is no module at all, return to
+           course details instead of hanging.
+        */
+
+        window.location.replace(
+            buildCourseDetailsUrl(
+                course.id
+            )
+        );
+
 
         return;
 
@@ -2420,6 +3467,30 @@ async function loadLesson() {
 
 
     /* =====================================================
+       MODULE MUST HAVE LESSONS
+    ====================================================== */
+
+    if (
+        !Array.isArray(
+            module.lessons
+        ) ||
+        module.lessons.length === 0
+    ) {
+
+        warn(
+            "This module has no lessons yet:",
+            module.id
+        );
+
+
+        showLessonNotFound();
+
+        return;
+
+    }
+
+
+    /* =====================================================
        SELECT LESSON
     ====================================================== */
 
@@ -2427,45 +3498,18 @@ async function loadLesson() {
         lessonId;
 
 
+    /*
+       No lesson parameter means:
+       automatically open lesson 01.
+    */
+
     if (!selectedLessonId) {
 
-        if (
-            Array.isArray(
-                module.lessons
-            ) &&
-            module.lessons.length > 0
-        ) {
-
-            selectedLessonId =
-                module.lessons[0].id;
-
-
-            log(
-                "No lesson supplied.",
-                "Automatically starting:",
-                selectedLessonId
-            );
-
-        } else {
-
-            warn(
-                "Module contains no lessons:",
-                module.id
-            );
-
-
-            showLessonNotFound();
-
-            return;
-
-        }
+        selectedLessonId =
+            module.lessons[0].id;
 
     }
 
-
-    /* =====================================================
-       FIND LESSON
-    ====================================================== */
 
     const lesson =
         findLesson(
@@ -2490,7 +3534,7 @@ async function loadLesson() {
 
 
     /* =====================================================
-       SET CURRENT STATE
+       SET STATE
     ====================================================== */
 
     currentCourse =
@@ -2503,41 +3547,35 @@ async function loadLesson() {
         lesson;
 
 
-    currentProgress =
-        getDefaultProgress();
+    if (!currentProgress) {
+
+        currentProgress =
+            getDefaultProgress();
+
+    }
 
 
-    log(
-        "Current lesson:",
-        {
-            course:
-                currentCourse.id,
+    currentProgress.currentModule =
+        module.id;
 
-            module:
-                currentModule.id,
 
-            lesson:
-                currentLesson.id
-        }
-    );
+    currentProgress.currentLesson =
+        lesson.id;
+
+
+    currentProgress.started =
+        true;
 
 
     /* =====================================================
        RENDER IMMEDIATELY
-       -----------------------------------------------------
-       THIS IS THE CRITICAL FIX.
-       
-       The student sees the lesson before Firestore
-       operations occur.
     ====================================================== */
+
+    resetNextButton();
 
     renderLesson();
 
     showLessonContent();
-
-
-    lessonInitialized =
-        true;
 
 
     /* =====================================================
@@ -2547,48 +3585,40 @@ async function loadLesson() {
     if (!lessonId) {
 
         updateBrowserUrl(
-            currentCourse.id,
-            currentModule.id,
-            currentLesson.id
+            course.id,
+            module.id,
+            lesson.id,
+            true
+        );
+
+    } else if (pushHistory) {
+
+        updateBrowserUrl(
+            course.id,
+            module.id,
+            lesson.id,
+            false
         );
 
     }
 
 
     log(
-        "Lesson displayed successfully:",
-        currentLesson.title
+        "Lesson rendered:",
+        lesson.title
     );
 
 
     /* =====================================================
-       FIRESTORE IN BACKGROUND
-       -----------------------------------------------------
-       Neither operation can block the lesson UI.
+       BACKGROUND PROGRESS
     ====================================================== */
 
     loadProgress()
-        .then(
-            () => {
-
-                /*
-                   Progress loaded after lesson display.
-                   Refresh only progress-related UI.
-                */
-
-                updateProgressUI();
-
-                updateCompleteButton();
-
-                renderModuleList();
-
-            }
-        )
         .catch(
             err => {
 
                 error(
-                    "Background progress loading failed:",
+                    "Background progress load failed:",
                     err
                 );
 
@@ -2596,16 +3626,12 @@ async function loadLesson() {
         );
 
 
-    /*
-       Remember the lesson in the background.
-    */
-
     rememberCurrentLesson()
         .catch(
             err => {
 
                 error(
-                    "Background lesson tracking failed:",
+                    "Background lesson save failed:",
                     err
                 );
 
@@ -2613,6 +3639,25 @@ async function loadLesson() {
         );
 
 }
+
+
+/* =========================================================
+   BROWSER BACK / FORWARD
+========================================================= */
+
+window.addEventListener(
+    "popstate",
+    () => {
+
+        log(
+            "Browser Back/Forward detected."
+        );
+
+
+        loadLessonFromUrl();
+
+    }
+);
 
 
 /* =========================================================
@@ -2633,7 +3678,6 @@ if (!auth) {
         LOGIN_PATH
     );
 
-
 } else {
 
     onAuthStateChanged(
@@ -2641,7 +3685,7 @@ if (!auth) {
         async user => {
 
             log(
-                "Authentication:",
+                "Authentication state:",
                 user
                     ? "AUTHENTICATED"
                     : "NOT AUTHENTICATED"
@@ -2653,7 +3697,7 @@ if (!auth) {
 
 
             /* =================================================
-               USER NOT AUTHENTICATED
+               NOT AUTHENTICATED
             ================================================== */
 
             if (!user) {
@@ -2670,21 +3714,12 @@ if (!auth) {
                     getUrlParameters();
 
 
-                const redirectUrl =
-                    `${LOGIN_PATH}?redirect=lesson` +
-                    `&course=${encodeURIComponent(
-                        courseId
-                    )}` +
-                    `&module=${encodeURIComponent(
-                        moduleId
-                    )}` +
-                    `&lesson=${encodeURIComponent(
-                        lessonId
-                    )}`;
-
-
                 window.location.replace(
-                    redirectUrl
+                    buildLoginUrl(
+                        courseId,
+                        moduleId,
+                        lessonId
+                    )
                 );
 
 
@@ -2694,7 +3729,7 @@ if (!auth) {
 
 
             /* =================================================
-               USER AUTHENTICATED
+               AUTHENTICATED
             ================================================== */
 
             currentUser =
@@ -2706,7 +3741,10 @@ if (!auth) {
             );
 
 
-            await loadLesson();
+            showLoading();
+
+
+            await loadLessonFromUrl();
 
         }
     );
@@ -2716,9 +3754,6 @@ if (!auth) {
 
 /* =========================================================
    AUTH SAFETY TIMEOUT
-   ---------------------------------------------------------
-   Prevents a blank endless loading screen if Firebase Auth
-   fails to resolve for some unexpected reason.
 ========================================================= */
 
 setTimeout(
@@ -2731,13 +3766,9 @@ setTimeout(
         ) {
 
             error(
-                "Firebase Authentication did not resolve within the expected time."
+                "Firebase Authentication did not resolve."
             );
 
-
-            /*
-               Don't leave the student staring at a spinner.
-            */
 
             showLessonNotFound();
 
@@ -2749,30 +3780,7 @@ setTimeout(
 
 
 /* =========================================================
-   BROWSER BACK/FORWARD
-========================================================= */
-
-window.addEventListener(
-    "popstate",
-    () => {
-
-        log(
-            "Browser navigation detected."
-        );
-
-
-        lessonInitialized =
-            false;
-
-
-        loadLesson();
-
-    }
-);
-
-
-/* =========================================================
-   INITIAL LOAD
+   INITIAL LOG
 ========================================================= */
 
 log(
