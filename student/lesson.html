@@ -25,6 +25,23 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
+    <!-- Optional: Orbitron font used by the CSS -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
     <!-- Lesson CSS -->
     <link
         rel="stylesheet"
@@ -36,56 +53,64 @@
 
 <body>
 
-<div class="lesson-app">
+<div class="lesson-page">
 
 
     <!-- =====================================================
-         TOP NAVIGATION
+         TOP HEADER
     ====================================================== -->
 
-    <header class="lesson-header">
+    <header class="lesson-topbar">
 
-        <div class="header-left">
+        <!-- Brand -->
 
-            <a
-                href="./dashboard.html"
-                class="brand"
-            >
+        <a
+            href="./dashboard.html"
+            class="lesson-brand"
+        >
 
-                <span class="brand-logo">
-                    CWS
-                </span>
+            <span class="lesson-brand-logo">
+                CWS
+            </span>
 
-                <span class="brand-text">
+
+            <span class="lesson-brand-text">
+
+                <span class="lesson-brand-title">
                     CyberWithSandiso
                 </span>
 
-            </a>
+                <span class="lesson-brand-subtitle">
+                    Academy
+                </span>
 
-        </div>
-
-
-        <div class="header-center">
-
-            <span class="academy-label">
-                CWS ACADEMY
             </span>
 
-            <span
-                id="studentName"
-                class="student-name"
-            >
-                Student
-            </span>
-
-        </div>
+        </a>
 
 
-        <div class="header-right">
+        <!-- Right Side -->
+
+        <div class="lesson-topbar-right">
+
+            <div class="lesson-student">
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+                    Welcome,
+                </span>
+
+                <span id="studentName">
+                    Student
+                </span>
+
+            </div>
+
 
             <a
                 href="./dashboard.html"
-                class="header-btn"
+                class="lesson-nav-btn"
             >
 
                 <i class="fa-solid fa-gauge-high"></i>
@@ -98,12 +123,13 @@
             <button
                 type="button"
                 id="logoutBtn"
-                class="header-btn logout-btn"
             >
 
                 <i class="fa-solid fa-right-from-bracket"></i>
 
-                Logout
+                <span>
+                    Logout
+                </span>
 
             </button>
 
@@ -126,122 +152,127 @@
 
         <aside class="lesson-sidebar">
 
+            <div class="lesson-sidebar-card">
 
-            <div class="sidebar-heading">
 
-                <div>
+                <!-- Sidebar Header -->
 
-                    <span class="sidebar-eyebrow">
-                        COURSE
-                    </span>
+                <div class="lesson-sidebar-header">
 
-                    <h2>
+                    <div class="lesson-sidebar-label">
+                        Course
+                    </div>
+
+                    <h2 class="lesson-sidebar-title">
                         Cybersecurity Fundamentals
                     </h2>
 
                 </div>
 
-            </div>
 
 
-            <!-- Overall Progress -->
+                <!-- Course Progress -->
 
-            <div class="sidebar-progress">
+                <div class="lesson-progress-card">
 
-                <div class="progress-header">
+                    <div class="lesson-progress-header">
 
-                    <span>
-                        Course Progress
-                    </span>
+                        <span>
+                            Course Progress
+                        </span>
 
-                    <strong id="lessonProgressPercent">
-                        0%
-                    </strong>
+                        <span id="lessonProgressPercent">
+                            0%
+                        </span>
 
-                </div>
+                    </div>
 
-
-                <div
-                    class="lesson-progress-bar"
-                    role="progressbar"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    aria-valuenow="0"
-                >
 
                     <div
-                        id="lessonProgressFill"
-                        class="lesson-progress-fill"
-                    ></div>
+                        class="lesson-progress-bar"
+                        role="progressbar"
+                        aria-label="Course progress"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-valuenow="0"
+                    >
+
+                        <div
+                            id="lessonProgressFill"
+                        ></div>
+
+                    </div>
+
+
+                    <span id="lessonProgressText">
+                        0 of 24 lessons completed
+                    </span>
 
                 </div>
 
 
-                <p id="lessonProgressText">
-                    0 of 24 lessons completed
-                </p>
+
+                <!-- Module List -->
+
+                <nav
+                    id="lessonModuleList"
+                    aria-label="Course lessons"
+                >
+
+                    <!-- Generated by lesson.js -->
+
+                </nav>
+
 
             </div>
-
-
-            <!-- Module List -->
-
-            <nav
-                id="lessonModuleList"
-                class="lesson-module-list"
-                aria-label="Course lessons"
-            >
-
-                <!-- Generated by JavaScript -->
-
-            </nav>
-
 
         </aside>
 
 
 
         <!-- =================================================
-             LESSON CONTENT
+             LESSON MAIN
         ================================================== -->
 
         <section class="lesson-main">
 
 
-            <!-- Loading -->
+            <!-- =================================================
+                 LOADING
+            ================================================== -->
 
             <div
                 id="lessonLoading"
-                class="lesson-loading"
             >
 
-                <div class="loading-spinner"></div>
+                <div class="lesson-loading-inner">
 
-                <h2>
-                    Loading lesson...
-                </h2>
+                    <div class="lesson-loading-spinner"></div>
 
-                <p>
-                    Preparing your CWS Academy lesson.
-                </p>
+                    <h2>
+                        Loading lesson...
+                    </h2>
+
+                    <p>
+                        Preparing your CWS Academy lesson.
+                    </p>
+
+                </div>
 
             </div>
 
 
 
-            <!-- Not Found -->
+            <!-- =================================================
+                 NOT FOUND
+            ================================================== -->
 
             <div
                 id="lessonNotFound"
-                class="lesson-not-found"
                 hidden
             >
 
-                <div class="not-found-icon">
-
-                    <i class="fa-solid fa-book-open"></i>
-
-                </div>
+                <i class="fa-solid fa-book-open"></i>
 
                 <h2>
                     Lesson Not Found
@@ -251,9 +282,11 @@
                     We couldn't find the lesson requested.
                 </p>
 
+                <br>
+
                 <a
                     href="./student-courses.html"
-                    class="primary-btn"
+                    class="lesson-nav-btn"
                 >
 
                     <i class="fa-solid fa-arrow-left"></i>
@@ -272,14 +305,15 @@
 
             <article
                 id="lessonContent"
-                class="lesson-content"
                 hidden
             >
 
 
-                <!-- Breadcrumb -->
+                <!-- =================================================
+                     BREADCRUMBS
+                ================================================== -->
 
-                <div class="lesson-breadcrumb">
+                <div class="lesson-breadcrumbs">
 
                     <a href="./student-courses.html">
                         Courses
@@ -301,83 +335,103 @@
 
 
 
-                <!-- Lesson Hero -->
+                <!-- =================================================
+                     HERO
+                ================================================== -->
 
                 <section class="lesson-hero">
 
-                    <div class="lesson-meta">
+                    <div class="lesson-hero-content">
 
-                        <span id="lessonModuleNumber">
-                            MODULE 01
-                        </span>
 
-                        <span class="meta-divider">
-                            /
-                        </span>
+                        <!-- Labels -->
 
-                        <span id="lessonNumber">
-                            LESSON 01
-                        </span>
+                        <div class="lesson-labels">
+
+                            <span id="lessonModuleNumber"
+                                  class="lesson-module-number">
+                                MODULE 01
+                            </span>
+
+                            <span id="lessonNumber"
+                                  class="lesson-number">
+                                LESSON 01
+                            </span>
+
+                        </div>
+
+
+
+                        <!-- Title -->
+
+                        <h1 id="lessonTitle">
+                            Lesson Title
+                        </h1>
+
+
+
+                        <!-- Description -->
+
+                        <p id="lessonDescription">
+                            Lesson description
+                        </p>
 
                     </div>
-
-
-                    <h1 id="lessonTitle">
-                        Lesson Title
-                    </h1>
-
-
-                    <p id="lessonDescription">
-                        Lesson description
-                    </p>
 
                 </section>
 
 
 
-                <!-- Objectives -->
+                <!-- =================================================
+                     OBJECTIVES
+                ================================================== -->
 
-                <section class="objectives-card">
+                <section class="lesson-objectives-card">
 
-                    <div class="section-label">
+                    <div class="lesson-section-title">
 
                         <i class="fa-solid fa-bullseye"></i>
 
-                        Learning Objectives
+                        <span>
+                            Learning Objectives
+                        </span>
 
                     </div>
 
 
-                    <ul
-                        id="lessonObjectives"
-                        class="objectives-list"
-                    ></ul>
+                    <ul id="lessonObjectives">
+
+                        <!-- Generated by lesson.js -->
+
+                    </ul>
 
                 </section>
 
 
 
-                <!-- Body -->
+                <!-- =================================================
+                     LESSON BODY
+                ================================================== -->
 
                 <section
                     id="lessonBody"
                     class="lesson-body"
-                ></section>
+                >
+
+                    <!-- Lesson content generated by lesson.js -->
+
+                </section>
 
 
 
-                <!-- Completion -->
+                <!-- =================================================
+                     COMPLETION
+                ================================================== -->
 
-                <section class="completion-card">
-
-                    <div class="completion-icon">
-
-                        <i class="fa-solid fa-circle-check"></i>
-
-                    </div>
+                <section class="lesson-complete-area">
 
 
-                    <div class="completion-copy">
+                    <div class="lesson-complete-info">
 
                         <h3>
                             Finish this lesson
@@ -393,12 +447,13 @@
                     <button
                         type="button"
                         id="markCompleteBtn"
-                        class="complete-btn"
                     >
 
                         <i class="fa-solid fa-check"></i>
 
-                        Mark Lesson Complete
+                        <span>
+                            Mark Lesson Complete
+                        </span>
 
                     </button>
 
@@ -406,16 +461,21 @@
 
 
 
-                <!-- Navigation -->
+                <!-- =================================================
+                     NAVIGATION
+                ================================================== -->
 
                 <nav
                     class="lesson-navigation"
                     aria-label="Lesson navigation"
                 >
 
+
+                    <!-- Previous -->
+
                     <a
                         id="previousLessonBtn"
-                        class="lesson-nav-btn previous"
+                        class="lesson-nav-btn"
                         href="#"
                         hidden
                     >
@@ -437,9 +497,12 @@
                     </a>
 
 
+
+                    <!-- Next -->
+
                     <a
                         id="nextLessonBtn"
-                        class="lesson-nav-btn next"
+                        class="lesson-nav-btn lesson-nav-next"
                         href="#"
                         hidden
                     >
@@ -469,7 +532,23 @@
 
     </main>
 
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="lesson-footer">
+
+        <p>
+            &copy; 2026 CyberWithSandiso Academy.
+            All rights reserved.
+        </p>
+
+    </footer>
+
 </div>
+
 
 
 <!-- =========================================================
