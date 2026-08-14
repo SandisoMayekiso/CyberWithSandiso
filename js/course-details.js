@@ -3,11 +3,15 @@
    COURSE DETAILS
    Firebase Authentication + Firestore Progress
 
-   Page:
-   student/course-details.html
+   IMPORTANT URL FORMAT
 
-   Lessons:
-   student/lesson.html
+   course-details.html
+       ?course=cybersecurity-fundamentals
+
+   lesson.html
+       ?course=cybersecurity-fundamentals
+       &module=module-01
+       &lesson=lesson-01
 ========================================================= */
 
 import {
@@ -34,42 +38,20 @@ import {
 
 const DEBUG = true;
 
-
-function log(...messages) {
-
+function log(...args) {
     if (DEBUG) {
-
-        console.log(
-            "[CWS Course Details]",
-            ...messages
-        );
-
+        console.log("[CWS Course Details]", ...args);
     }
-
 }
 
-
-function warn(...messages) {
-
+function warn(...args) {
     if (DEBUG) {
-
-        console.warn(
-            "[CWS Course Details]",
-            ...messages
-        );
-
+        console.warn("[CWS Course Details]", ...args);
     }
-
 }
 
-
-function error(...messages) {
-
-    console.error(
-        "[CWS Course Details]",
-        ...messages
-    );
-
+function error(...args) {
+    console.error("[CWS Course Details]", ...args);
 }
 
 
@@ -155,15 +137,31 @@ const courseModules =
 ========================================================= */
 
 let currentUser = null;
-
 let currentCourse = null;
-
 let currentProgress = null;
 
 
 /* =========================================================
    COURSE DATA
 ========================================================= */
+
+/*
+   KEEP YOUR EXISTING `courses` OBJECT HERE.
+
+   It should contain:
+
+   cybersecurity-fundamentals
+   networking-fundamentals
+   linux-fundamentals
+
+   Do not change the course IDs.
+*/
+
+
+/*
+   IMPORTANT:
+   Paste your existing courses object here.
+*/
 
 const courses = {
 
@@ -196,27 +194,16 @@ const courses = {
         assessments: 10,
 
         objectives: [
-
             "Understand the core principles of cybersecurity.",
-
             "Explain confidentiality, integrity and availability.",
-
             "Identify common cybersecurity threats and attack types.",
-
             "Understand vulnerabilities, exploits and security risk.",
-
             "Recognize common security controls and defensive measures.",
-
             "Understand authentication, authorization and access control.",
-
             "Explain basic network and system security concepts.",
-
             "Understand the role of security policies and procedures.",
-
             "Apply basic cybersecurity concepts to practical scenarios.",
-
             "Develop an ethical and responsible security mindset."
-
         ],
 
         modules: [
@@ -333,351 +320,13 @@ const courses = {
 
         ]
 
-    },
-
-
-    "networking-fundamentals": {
-
-        id: "networking-fundamentals",
-
-        title: "Networking Fundamentals",
-
-        category: "CWS ACADEMY • NETWORK SECURITY",
-
-        level: "Beginner",
-
-        levelKey: "beginner",
-
-        status: "available",
-
-        icon: "fa-solid fa-network-wired",
-
-        description:
-            "Learn IP addressing, CIDR, ARP, TCP, UDP, ICMP, routing, DNS, HTTP and HTTPS from a cybersecurity perspective.",
-
-        longDescription:
-            "Networking Fundamentals teaches the networking concepts required for cybersecurity. Students learn how devices communicate, how addresses and protocols work and how network traffic can be observed and protected.",
-
-        duration: "20–25 hours",
-
-        labs: 6,
-
-        assessments: 10,
-
-        objectives: [
-
-            "Understand basic computer networking.",
-
-            "Explain IPv4 addressing and subnetting.",
-
-            "Understand CIDR notation.",
-
-            "Explain TCP and UDP.",
-
-            "Understand common network protocols.",
-
-            "Understand DNS and HTTP/HTTPS.",
-
-            "Explain ARP and ICMP.",
-
-            "Understand basic routing concepts.",
-
-            "Identify common network security risks.",
-
-            "Use basic network troubleshooting tools."
-
-        ],
-
-        modules: [
-
-            {
-                id: "module-01",
-                number: 1,
-                title: "Introduction to Networking",
-                description:
-                    "Learn how computers and devices communicate across networks.",
-                lessons: 4,
-                labs: 0,
-                assessments: 1
-            },
-
-            {
-                id: "module-02",
-                number: 2,
-                title: "IP Addressing",
-                description:
-                    "Understand IPv4 addresses, private addresses and network identification.",
-                lessons: 5,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-03",
-                number: 3,
-                title: "CIDR and Subnetting",
-                description:
-                    "Learn subnet masks, CIDR notation and basic subnet calculations.",
-                lessons: 5,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-04",
-                number: 4,
-                title: "TCP and UDP",
-                description:
-                    "Understand transport-layer communication and port-based services.",
-                lessons: 4,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-05",
-                number: 5,
-                title: "ARP and ICMP",
-                description:
-                    "Explore local network discovery and diagnostic protocols.",
-                lessons: 4,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-06",
-                number: 6,
-                title: "DNS",
-                description:
-                    "Understand domain-name resolution and its security implications.",
-                lessons: 4,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-07",
-                number: 7,
-                title: "HTTP and HTTPS",
-                description:
-                    "Learn how browsers and web servers communicate.",
-                lessons: 4,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-08",
-                number: 8,
-                title: "Routing",
-                description:
-                    "Understand how packets move between networks.",
-                lessons: 4,
-                labs: 0,
-                assessments: 1
-            },
-
-            {
-                id: "module-09",
-                number: 9,
-                title: "Network Security",
-                description:
-                    "Explore firewalls, segmentation and basic defensive networking.",
-                lessons: 4,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-10",
-                number: 10,
-                title: "Networking Review",
-                description:
-                    "Review the networking concepts required for further cybersecurity study.",
-                lessons: 5,
-                labs: 0,
-                assessments: 1
-            }
-
-        ]
-
-    },
-
-
-    "linux-fundamentals": {
-
-        id: "linux-fundamentals",
-
-        title: "Linux Fundamentals",
-
-        category: "CWS ACADEMY • LINUX SECURITY",
-
-        level: "Beginner",
-
-        levelKey: "beginner",
-
-        status: "available",
-
-        icon: "fa-brands fa-linux",
-
-        description:
-            "Learn the Linux command line, filesystem, permissions, processes, networking utilities and security fundamentals.",
-
-        longDescription:
-            "Linux Fundamentals introduces students to the Linux operating system and command line. The course focuses on practical skills used by cybersecurity professionals when investigating, administering and securing systems.",
-
-        duration: "20–25 hours",
-
-        labs: 6,
-
-        assessments: 10,
-
-        objectives: [
-
-            "Navigate the Linux filesystem.",
-
-            "Use essential Linux command-line tools.",
-
-            "Create, modify and manage files.",
-
-            "Understand Linux users and groups.",
-
-            "Understand file and directory permissions.",
-
-            "Manage running processes.",
-
-            "Use basic networking commands.",
-
-            "Understand Linux services.",
-
-            "Apply basic system-hardening concepts.",
-
-            "Develop practical Linux administration skills."
-
-        ],
-
-        modules: [
-
-            {
-                id: "module-01",
-                number: 1,
-                title: "Introduction to Linux",
-                description:
-                    "Understand Linux distributions, the shell and the role of Linux in cybersecurity.",
-                lessons: 4,
-                labs: 0,
-                assessments: 1
-            },
-
-            {
-                id: "module-02",
-                number: 2,
-                title: "Linux Filesystem",
-                description:
-                    "Learn the Linux directory structure and filesystem navigation.",
-                lessons: 5,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-03",
-                number: 3,
-                title: "Essential Commands",
-                description:
-                    "Practice common command-line utilities used in everyday Linux administration.",
-                lessons: 5,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-04",
-                number: 4,
-                title: "Users and Groups",
-                description:
-                    "Understand Linux accounts, groups and identity management.",
-                lessons: 4,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-05",
-                number: 5,
-                title: "File Permissions",
-                description:
-                    "Learn ownership, permissions and access control.",
-                lessons: 5,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-06",
-                number: 6,
-                title: "Processes",
-                description:
-                    "Understand processes, process monitoring and basic management.",
-                lessons: 4,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-07",
-                number: 7,
-                title: "Linux Networking",
-                description:
-                    "Use basic Linux networking tools and understand network configuration.",
-                lessons: 4,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-08",
-                number: 8,
-                title: "Services and Logs",
-                description:
-                    "Understand services, logs and basic system investigation.",
-                lessons: 4,
-                labs: 0,
-                assessments: 1
-            },
-
-            {
-                id: "module-09",
-                number: 9,
-                title: "Linux Security",
-                description:
-                    "Explore system hardening and basic Linux security practices.",
-                lessons: 4,
-                labs: 1,
-                assessments: 1
-            },
-
-            {
-                id: "module-10",
-                number: 10,
-                title: "Linux Foundations Review",
-                description:
-                    "Review the core Linux skills needed for cybersecurity.",
-                lessons: 5,
-                labs: 0,
-                assessments: 1
-            }
-
-        ]
-
     }
 
 };
 
 
 /* =========================================================
-   URL COURSE ID
+   URL
 ========================================================= */
 
 function getCourseIdFromUrl() {
@@ -688,8 +337,7 @@ function getCourseIdFromUrl() {
         );
 
     return (
-        params.get("course") ||
-        ""
+        params.get("course") || ""
     )
         .trim()
         .toLowerCase();
@@ -698,51 +346,36 @@ function getCourseIdFromUrl() {
 
 
 /* =========================================================
-   GET USER NAME
+   USER NAME
 ========================================================= */
 
 function getUserName(user) {
 
     if (!user) {
-
         return "Student";
-
     }
-
 
     if (
         typeof user.displayName === "string" &&
         user.displayName.trim()
     ) {
-
         return user.displayName.trim();
-
     }
-
 
     if (
         typeof user.email === "string" &&
         user.email.includes("@")
     ) {
 
-        const emailName =
+        const name =
             user.email
                 .split("@")[0]
+                .replace(/[._-]+/g, " ")
                 .trim();
 
+        if (name) {
 
-        if (emailName) {
-
-            return emailName
-                .replace(
-                    /[._-]+/g,
-                    " "
-                )
-                .replace(
-                    /\s+/g,
-                    " "
-                )
-                .trim()
+            return name
                 .split(" ")
                 .map(
                     word =>
@@ -755,7 +388,6 @@ function getUserName(user) {
 
     }
 
-
     return "Student";
 
 }
@@ -767,125 +399,734 @@ function getUserName(user) {
 
 function displayStudent(user) {
 
-    if (!studentName) {
-
-        return;
-
+    if (studentName) {
+        studentName.textContent =
+            getUserName(user);
     }
-
-    studentName.textContent =
-        getUserName(user);
 
 }
 
 
 /* =========================================================
-   SHOW LOADING
+   PAGE STATES
 ========================================================= */
 
 function showLoading() {
 
     if (courseLoading) {
-
-        courseLoading.hidden =
-            false;
-
+        courseLoading.hidden = false;
     }
 
     if (courseNotFound) {
-
-        courseNotFound.hidden =
-            true;
-
+        courseNotFound.hidden = true;
     }
 
     if (courseContent) {
-
-        courseContent.hidden =
-            true;
-
+        courseContent.hidden = true;
     }
 
 }
 
-
-/* =========================================================
-   SHOW NOT FOUND
-========================================================= */
 
 function showCourseNotFound() {
 
     if (courseLoading) {
-
-        courseLoading.hidden =
-            true;
-
+        courseLoading.hidden = true;
     }
 
     if (courseContent) {
-
-        courseContent.hidden =
-            true;
-
+        courseContent.hidden = true;
     }
 
     if (courseNotFound) {
-
-        courseNotFound.hidden =
-            false;
-
+        courseNotFound.hidden = false;
     }
 
 }
 
-
-/* =========================================================
-   SHOW COURSE
-========================================================= */
 
 function showCourseContent() {
 
     if (courseLoading) {
-
-        courseLoading.hidden =
-            true;
-
+        courseLoading.hidden = true;
     }
 
     if (courseNotFound) {
-
-        courseNotFound.hidden =
-            true;
-
+        courseNotFound.hidden = true;
     }
 
     if (courseContent) {
-
-        courseContent.hidden =
-            false;
-
+        courseContent.hidden = false;
     }
 
 }
 
 
 /* =========================================================
-   SET TEXT
+   TEXT HELPER
 ========================================================= */
 
-function setText(
-    element,
-    value
-) {
+function setText(element, value) {
 
     if (!element) {
+        return;
+    }
+
+    element.textContent =
+        value ?? "";
+
+}
+
+
+/* =========================================================
+   DEFAULT PROGRESS
+========================================================= */
+
+function getDefaultProgress() {
+
+    return {
+
+        courseId:
+            currentCourse.id,
+
+        completedLessons:
+            [],
+
+        completedLabs:
+            [],
+
+        completedAssessments:
+            [],
+
+        currentModule:
+            "module-01",
+
+        currentLesson:
+            "lesson-01",
+
+        progressPercent:
+            0,
+
+        started:
+            false,
+
+        completed:
+            false
+
+    };
+
+}
+
+
+/* =========================================================
+   PROGRESS REFERENCE
+========================================================= */
+
+function getProgressRef() {
+
+    if (
+        !db ||
+        !currentUser ||
+        !currentCourse
+    ) {
+        return null;
+    }
+
+    return doc(
+        db,
+        "users",
+        currentUser.uid,
+        "courseProgress",
+        currentCourse.id
+    );
+
+}
+
+
+/* =========================================================
+   LOAD PROGRESS
+========================================================= */
+
+async function loadProgress() {
+
+    currentProgress =
+        getDefaultProgress();
+
+    if (!db) {
+
+        warn(
+            "Firestore unavailable."
+        );
+
+        updateProgressUI();
 
         return;
 
     }
 
-    element.textContent =
-        value ?? "";
+    try {
+
+        const progressRef =
+            getProgressRef();
+
+        const snapshot =
+            await getDoc(
+                progressRef
+            );
+
+        if (snapshot.exists()) {
+
+            currentProgress = {
+
+                ...getDefaultProgress(),
+
+                ...snapshot.data()
+
+            };
+
+        }
+
+        /*
+         * Safety checks.
+         */
+
+        if (
+            !Array.isArray(
+                currentProgress.completedLessons
+            )
+        ) {
+            currentProgress.completedLessons = [];
+        }
+
+        if (
+            !currentProgress.currentModule
+        ) {
+            currentProgress.currentModule =
+                "module-01";
+        }
+
+        if (
+            !currentProgress.currentLesson
+        ) {
+            currentProgress.currentLesson =
+                "lesson-01";
+        }
+
+        log(
+            "Progress:",
+            currentProgress
+        );
+
+    } catch (err) {
+
+        error(
+            "Progress load failed:",
+            err
+        );
+
+        /*
+         * Do NOT break the course page
+         * because Firestore failed.
+         */
+
+        currentProgress =
+            getDefaultProgress();
+
+    }
+
+    updateProgressUI();
+
+}
+
+
+/* =========================================================
+   SAVE PROGRESS
+========================================================= */
+
+async function saveProgress() {
+
+    if (
+        !db ||
+        !currentUser ||
+        !currentCourse ||
+        !currentProgress
+    ) {
+
+        return;
+
+    }
+
+    try {
+
+        const progressRef =
+            getProgressRef();
+
+        await setDoc(
+            progressRef,
+            {
+                ...currentProgress,
+
+                updatedAt:
+                    serverTimestamp()
+            },
+            {
+                merge: true
+            }
+        );
+
+        log(
+            "Progress saved."
+        );
+
+    } catch (err) {
+
+        /*
+         * Saving progress must NEVER
+         * prevent navigation.
+         */
+
+        error(
+            "Progress save failed:",
+            err
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TOTAL LESSONS
+========================================================= */
+
+function getTotalLessons(course) {
+
+    if (!course) {
+        return 0;
+    }
+
+    return course.modules.reduce(
+        (
+            total,
+            module
+        ) => {
+
+            return total +
+                Number(
+                    module.lessons || 0
+                );
+
+        },
+        0
+    );
+
+}
+
+
+/* =========================================================
+   CALCULATE PROGRESS
+========================================================= */
+
+function calculateProgress() {
+
+    if (
+        !currentCourse ||
+        !currentProgress
+    ) {
+        return 0;
+    }
+
+    const total =
+        getTotalLessons(
+            currentCourse
+        );
+
+    if (!total) {
+        return 0;
+    }
+
+    const completed =
+        Array.isArray(
+            currentProgress.completedLessons
+        )
+            ? currentProgress.completedLessons.length
+            : 0;
+
+    return Math.min(
+        100,
+        Math.round(
+            (
+                completed /
+                total
+            ) * 100
+        )
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE PROGRESS UI
+========================================================= */
+
+function updateProgressUI() {
+
+    if (!currentProgress) {
+        return;
+    }
+
+    const percent =
+        calculateProgress();
+
+    currentProgress.progressPercent =
+        percent;
+
+    if (courseProgressPercent) {
+
+        courseProgressPercent.textContent =
+            `${percent}%`;
+
+    }
+
+    if (courseProgressFill) {
+
+        courseProgressFill.style.width =
+            `${percent}%`;
+
+    }
+
+    const progressBar =
+        document.querySelector(
+            ".course-progress-bar"
+        );
+
+    if (progressBar) {
+
+        progressBar.setAttribute(
+            "aria-valuenow",
+            String(percent)
+        );
+
+    }
+
+    if (!courseProgressText) {
+        return;
+    }
+
+    const completed =
+        Array.isArray(
+            currentProgress.completedLessons
+        )
+            ? currentProgress.completedLessons.length
+            : 0;
+
+    const total =
+        getTotalLessons(
+            currentCourse
+        );
+
+    if (percent === 0) {
+
+        courseProgressText.textContent =
+            "Start your first lesson to begin making progress.";
+
+    } else if (percent < 100) {
+
+        courseProgressText.textContent =
+            `${completed} of ${total} lessons completed. Keep going.`;
+
+    } else {
+
+        courseProgressText.textContent =
+            "Course completed. Congratulations!";
+
+    }
+
+}
+
+
+/* =========================================================
+   OBJECTIVES
+========================================================= */
+
+function renderObjectives(
+    objectives = []
+) {
+
+    if (!courseObjectives) {
+        return;
+    }
+
+    courseObjectives.innerHTML = "";
+
+    objectives.forEach(
+        objective => {
+
+            const li =
+                document.createElement("li");
+
+            const icon =
+                document.createElement("i");
+
+            icon.className =
+                "fa-solid fa-check";
+
+            const text =
+                document.createElement("span");
+
+            text.textContent =
+                objective;
+
+            li.appendChild(icon);
+            li.appendChild(text);
+
+            courseObjectives.appendChild(li);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   META ITEM
+========================================================= */
+
+function createMetaItem(
+    iconClass,
+    text
+) {
+
+    const item =
+        document.createElement("span");
+
+    const icon =
+        document.createElement("i");
+
+    icon.className =
+        iconClass;
+
+    item.appendChild(icon);
+
+    item.appendChild(
+        document.createTextNode(
+            ` ${text}`
+        )
+    );
+
+    return item;
+
+}
+
+
+/* =========================================================
+   BUILD LESSON URL
+========================================================= */
+
+/*
+   THIS IS THE IMPORTANT FIX.
+
+   lesson.js requires:
+
+   course
+   module
+   lesson
+
+   Therefore this function ALWAYS
+   includes all three.
+*/
+
+function buildLessonUrl(
+    courseId,
+    moduleId,
+    lessonId = "lesson-01"
+) {
+
+    const params =
+        new URLSearchParams();
+
+    params.set(
+        "course",
+        courseId
+    );
+
+    params.set(
+        "module",
+        moduleId
+    );
+
+    params.set(
+        "lesson",
+        lessonId
+    );
+
+    const url =
+        `lesson.html?${params.toString()}`;
+
+    log(
+        "Built lesson URL:",
+        url
+    );
+
+    return url;
+
+}
+
+
+/* =========================================================
+   RENDER MODULES
+========================================================= */
+
+function renderModules(
+    modules = []
+) {
+
+    if (!courseModules) {
+        return;
+    }
+
+    courseModules.innerHTML = "";
+
+    modules.forEach(
+        module => {
+
+            const article =
+                document.createElement("article");
+
+            article.className =
+                "course-module-card";
+
+            article.dataset.moduleId =
+                module.id;
+
+
+            /* HEADER */
+
+            const header =
+                document.createElement("div");
+
+            header.className =
+                "course-module-header";
+
+
+            /* NUMBER */
+
+            const number =
+                document.createElement("div");
+
+            number.className =
+                "course-module-number";
+
+            number.textContent =
+                String(
+                    module.number
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+
+            /* CONTENT */
+
+            const content =
+                document.createElement("div");
+
+            content.className =
+                "course-module-content";
+
+
+            const title =
+                document.createElement("h3");
+
+            title.textContent =
+                module.title;
+
+
+            const description =
+                document.createElement("p");
+
+            description.textContent =
+                module.description;
+
+
+            const meta =
+                document.createElement("div");
+
+            meta.className =
+                "course-module-meta";
+
+
+            meta.appendChild(
+                createMetaItem(
+                    "fa-solid fa-book-open",
+                    `${module.lessons} Lessons`
+                )
+            );
+
+            meta.appendChild(
+                createMetaItem(
+                    "fa-solid fa-flask",
+                    `${module.labs} Labs`
+                )
+            );
+
+            meta.appendChild(
+                createMetaItem(
+                    "fa-solid fa-clipboard-check",
+                    `${module.assessments} Assessment${
+                        module.assessments === 1
+                            ? ""
+                            : "s"
+                    }`
+                )
+            );
+
+
+            content.appendChild(title);
+            content.appendChild(description);
+            content.appendChild(meta);
+
+
+            /* MODULE BUTTON */
+
+            const action =
+                document.createElement("a");
+
+            action.className =
+                "course-module-action";
+
+
+            /*
+             * Every module starts at lesson-01.
+             *
+             * Later we can make this smarter
+             * using the actual lesson data.
+             */
+
+            action.href =
+                buildLessonUrl(
+                    currentCourse.id,
+                    module.id,
+                    "lesson-01"
+                );
+
+
+            action.innerHTML = `
+                Start Module
+                <i class="fa-solid fa-arrow-right"></i>
+            `;
+
+
+            header.appendChild(number);
+            header.appendChild(content);
+            header.appendChild(action);
+
+            article.appendChild(header);
+
+            courseModules.appendChild(article);
+
+        }
+    );
 
 }
 
@@ -901,7 +1142,6 @@ function renderCourse(course) {
         course.title
     );
 
-
     setText(
         courseStatus,
         course.status === "available"
@@ -909,60 +1149,50 @@ function renderCourse(course) {
             : "PLANNED"
     );
 
-
     setText(
         courseLevel,
         course.level.toUpperCase()
     );
-
 
     setText(
         courseCategory,
         course.category
     );
 
-
     setText(
         courseTitle,
         course.title
     );
-
 
     setText(
         courseDescription,
         course.description
     );
 
-
     setText(
         courseLongDescription,
         course.longDescription
     );
-
 
     setText(
         courseInfoLevel,
         course.level
     );
 
-
     setText(
         courseInfoModules,
         `${course.modules.length} Modules`
     );
-
 
     setText(
         courseInfoDuration,
         course.duration
     );
 
-
     setText(
         courseInfoLabs,
         `${course.labs} Labs`
     );
-
 
     setText(
         courseInfoAssessments,
@@ -993,7 +1223,6 @@ function renderCourse(course) {
         course.objectives
     );
 
-
     renderModules(
         course.modules
     );
@@ -1002,751 +1231,32 @@ function renderCourse(course) {
 
 
 /* =========================================================
-   RENDER OBJECTIVES
-========================================================= */
-
-function renderObjectives(
-    objectives
-) {
-
-    if (!courseObjectives) {
-
-        return;
-
-    }
-
-    courseObjectives.innerHTML =
-        "";
-
-
-    objectives.forEach(
-        objective => {
-
-            const li =
-                document.createElement("li");
-
-
-            const icon =
-                document.createElement("i");
-
-            icon.className =
-                "fa-solid fa-check";
-
-
-            const text =
-                document.createElement("span");
-
-            text.textContent =
-                objective;
-
-
-            li.appendChild(
-                icon
-            );
-
-            li.appendChild(
-                text
-            );
-
-
-            courseObjectives.appendChild(
-                li
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   RENDER MODULES
-========================================================= */
-
-function renderModules(
-    modules
-) {
-
-    if (!courseModules) {
-
-        return;
-
-    }
-
-    courseModules.innerHTML =
-        "";
-
-
-    modules.forEach(
-        module => {
-
-            const article =
-                document.createElement("article");
-
-
-            article.className =
-                "course-module-card";
-
-
-            article.dataset.moduleId =
-                module.id;
-
-
-            /* ---------------------------------------------
-               MODULE HEADER
-            --------------------------------------------- */
-
-            const header =
-                document.createElement("div");
-
-
-            header.className =
-                "course-module-header";
-
-
-            /* MODULE NUMBER */
-
-            const number =
-                document.createElement("div");
-
-
-            number.className =
-                "course-module-number";
-
-
-            number.textContent =
-                String(
-                    module.number
-                ).padStart(
-                    2,
-                    "0"
-                );
-
-
-            /* MODULE CONTENT */
-
-            const content =
-                document.createElement("div");
-
-
-            content.className =
-                "course-module-content";
-
-
-            const title =
-                document.createElement("h3");
-
-
-            title.textContent =
-                module.title;
-
-
-            const description =
-                document.createElement("p");
-
-
-            description.textContent =
-                module.description;
-
-
-            /* MODULE META */
-
-            const meta =
-                document.createElement("div");
-
-
-            meta.className =
-                "course-module-meta";
-
-
-            meta.appendChild(
-                createMetaItem(
-                    "fa-solid fa-book-open",
-                    `${module.lessons} Lessons`
-                )
-            );
-
-
-            meta.appendChild(
-                createMetaItem(
-                    "fa-solid fa-flask",
-                    `${module.labs} Labs`
-                )
-            );
-
-
-            meta.appendChild(
-                createMetaItem(
-                    "fa-solid fa-clipboard-check",
-                    `${module.assessments} Assessment${module.assessments === 1 ? "" : "s"}`
-                )
-            );
-
-
-            content.appendChild(
-                title
-            );
-
-            content.appendChild(
-                description
-            );
-
-            content.appendChild(
-                meta
-            );
-
-
-            /* ---------------------------------------------
-               MODULE BUTTON
-
-               IMPORTANT:
-               lesson.html lives in the SAME student folder
-               as course-details.html.
-            --------------------------------------------- */
-
-            const action =
-                document.createElement("a");
-
-
-            action.className =
-                "course-module-action";
-
-
-            action.href =
-                buildLessonUrl(
-                    currentCourse.id,
-                    module.id
-                );
-
-
-            action.innerHTML = `
-                Start Module
-                <i class="fa-solid fa-arrow-right"></i>
-            `;
-
-
-            header.appendChild(
-                number
-            );
-
-            header.appendChild(
-                content
-            );
-
-            header.appendChild(
-                action
-            );
-
-
-            article.appendChild(
-                header
-            );
-
-
-            courseModules.appendChild(
-                article
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   BUILD LESSON URL
-========================================================= */
-
-/*
- * course-details.html and lesson.html are both inside
- * the student directory.
- *
- * Therefore we DO NOT use ../pages/lesson.html.
- *
- * Example:
- *
- * lesson.html?course=cybersecurity-fundamentals&module=module-01
- */
-
-function buildLessonUrl(
-    courseId,
-    moduleId
-) {
-
-    const params =
-        new URLSearchParams();
-
-
-    params.set(
-        "course",
-        courseId
-    );
-
-
-    params.set(
-        "module",
-        moduleId
-    );
-
-
-    return `lesson.html?${params.toString()}`;
-
-}
-
-
-/* =========================================================
-   CREATE META ITEM
-========================================================= */
-
-function createMetaItem(
-    iconClass,
-    text
-) {
-
-    const item =
-        document.createElement("span");
-
-
-    const icon =
-        document.createElement("i");
-
-
-    icon.className =
-        iconClass;
-
-
-    item.appendChild(
-        icon
-    );
-
-
-    item.appendChild(
-        document.createTextNode(
-            ` ${text}`
-        )
-    );
-
-
-    return item;
-
-}
-
-
-/* =========================================================
-   TOTAL LESSONS
-========================================================= */
-
-function getTotalLessons(course) {
-
-    return course.modules.reduce(
-        (
-            total,
-            module
-        ) => {
-
-            return total +
-                module.lessons;
-
-        },
-        0
-    );
-
-}
-
-
-/* =========================================================
-   FIRESTORE PROGRESS REFERENCE
-========================================================= */
-
-function getProgressRef() {
-
-    if (
-        !db ||
-        !currentUser ||
-        !currentCourse
-    ) {
-
-        return null;
-
-    }
-
-
-    return doc(
-        db,
-        "users",
-        currentUser.uid,
-        "courseProgress",
-        currentCourse.id
-    );
-
-}
-
-
-/* =========================================================
-   DEFAULT PROGRESS
-========================================================= */
-
-function getDefaultProgress() {
-
-    return {
-
-        courseId:
-            currentCourse.id,
-
-        completedLessons:
-            [],
-
-        completedLabs:
-            [],
-
-        completedAssessments:
-            [],
-
-        currentModule:
-            "module-01",
-
-        currentLesson:
-            null,
-
-        progressPercent:
-            0,
-
-        started:
-            false,
-
-        completed:
-            false
-
-    };
-
-}
-
-
-/* =========================================================
-   LOAD PROGRESS
-========================================================= */
-
-async function loadProgress() {
-
-    if (
-        !currentUser ||
-        !currentCourse
-    ) {
-
-        return;
-
-    }
-
-
-    if (!db) {
-
-        warn(
-            "Firestore unavailable. Using default progress."
-        );
-
-
-        currentProgress =
-            getDefaultProgress();
-
-
-        updateProgressUI();
-
-        return;
-
-    }
-
-
-    try {
-
-        const progressRef =
-            getProgressRef();
-
-
-        const snapshot =
-            await getDoc(
-                progressRef
-            );
-
-
-        if (snapshot.exists()) {
-
-            currentProgress = {
-
-                ...getDefaultProgress(),
-
-                ...snapshot.data()
-
-            };
-
-
-            log(
-                "Existing progress loaded.",
-                currentProgress
-            );
-
-        } else {
-
-            currentProgress =
-                getDefaultProgress();
-
-
-            log(
-                "No existing progress."
-            );
-
-        }
-
-
-        updateProgressUI();
-
-    } catch (err) {
-
-        error(
-            "Unable to load progress:",
-            err
-        );
-
-
-        currentProgress =
-            getDefaultProgress();
-
-
-        updateProgressUI();
-
-    }
-
-}
-
-
-/* =========================================================
-   SAVE PROGRESS
-========================================================= */
-
-async function saveProgress() {
-
-    if (
-        !currentUser ||
-        !currentCourse ||
-        !currentProgress
-    ) {
-
-        return;
-
-    }
-
-
-    if (!db) {
-
-        warn(
-            "Firestore unavailable. Progress not persisted."
-        );
-
-        return;
-
-    }
-
-
-    try {
-
-        const progressRef =
-            getProgressRef();
-
-
-        await setDoc(
-            progressRef,
-            {
-                ...currentProgress,
-
-                updatedAt:
-                    serverTimestamp()
-            },
-            {
-                merge: true
-            }
-        );
-
-
-        log(
-            "Progress saved."
-        );
-
-    } catch (err) {
-
-        error(
-            "Unable to save progress:",
-            err
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   CALCULATE PROGRESS
-========================================================= */
-
-function calculateProgress() {
-
-    if (
-        !currentCourse ||
-        !currentProgress
-    ) {
-
-        return 0;
-
-    }
-
-
-    const totalLessons =
-        getTotalLessons(
-            currentCourse
-        );
-
-
-    if (!totalLessons) {
-
-        return 0;
-
-    }
-
-
-    const completedLessons =
-        Array.isArray(
-            currentProgress.completedLessons
-        )
-            ? currentProgress.completedLessons.length
-            : 0;
-
-
-    return Math.min(
-        100,
-        Math.round(
-            (
-                completedLessons /
-                totalLessons
-            ) * 100
-        )
-    );
-
-}
-
-
-/* =========================================================
-   UPDATE PROGRESS UI
-========================================================= */
-
-function updateProgressUI() {
-
-    if (!currentProgress) {
-
-        return;
-
-    }
-
-
-    const percent =
-        calculateProgress();
-
-
-    currentProgress.progressPercent =
-        percent;
-
-
-    if (courseProgressPercent) {
-
-        courseProgressPercent.textContent =
-            `${percent}%`;
-
-    }
-
-
-    if (courseProgressFill) {
-
-        courseProgressFill.style.width =
-            `${percent}%`;
-
-    }
-
-
-    const progressBar =
-        document.querySelector(
-            ".course-progress-bar"
-        );
-
-
-    if (progressBar) {
-
-        progressBar.setAttribute(
-            "aria-valuenow",
-            String(percent)
-        );
-
-    }
-
-
-    if (!courseProgressText) {
-
-        return;
-
-    }
-
-
-    if (percent === 0) {
-
-        courseProgressText.textContent =
-            "Start your first lesson to begin making progress.";
-
-        return;
-
-    }
-
-
-    if (percent < 100) {
-
-        const completed =
-            Array.isArray(
-                currentProgress.completedLessons
-            )
-                ? currentProgress.completedLessons.length
-                : 0;
-
-
-        const total =
-            getTotalLessons(
-                currentCourse
-            );
-
-
-        courseProgressText.textContent =
-            `${completed} of ${total} lessons completed. Keep going.`;
-
-        return;
-
-    }
-
-
-    courseProgressText.textContent =
-        "Course completed. Congratulations!";
-
-}
-
-
-/* =========================================================
    START COURSE
 ========================================================= */
 
-async function startCourse() {
+async function startCourse(event) {
+
+    /*
+     * Prevent default form/button behavior.
+     */
+
+    if (event) {
+        event.preventDefault();
+    }
 
     log(
-        "Start Course clicked."
+        "START COURSE CLICKED"
     );
 
 
+    /* ---------------------------------------------
+       CHECK COURSE
+    --------------------------------------------- */
+
     if (!currentCourse) {
 
-        warn(
-            "No current course."
+        error(
+            "Cannot start course: currentCourse is null."
         );
 
         return;
@@ -1768,6 +1278,69 @@ async function startCourse() {
     }
 
 
+    /* ---------------------------------------------
+       DETERMINE MODULE
+    --------------------------------------------- */
+
+    let moduleId =
+        currentProgress?.currentModule ||
+        "module-01";
+
+
+    const moduleExists =
+        currentCourse.modules.some(
+            module =>
+                module.id === moduleId
+        );
+
+
+    if (!moduleExists) {
+
+        moduleId =
+            currentCourse.modules[0]?.id ||
+            "module-01";
+
+    }
+
+
+    /* ---------------------------------------------
+       DETERMINE LESSON
+    --------------------------------------------- */
+
+    /*
+     * THIS IS THE OTHER IMPORTANT FIX.
+     *
+     * Your lesson.js requires a lesson ID.
+     */
+
+    let lessonId =
+        currentProgress?.currentLesson ||
+        "lesson-01";
+
+
+    /*
+     * At the moment your lesson.js
+     * has lesson-01 through lesson-04
+     * for module-01.
+     *
+     * Make sure the stored lesson is valid.
+     */
+
+    if (
+        typeof lessonId !== "string" ||
+        !lessonId.startsWith("lesson-")
+    ) {
+
+        lessonId =
+            "lesson-01";
+
+    }
+
+
+    /* ---------------------------------------------
+       UPDATE LOCAL PROGRESS
+    --------------------------------------------- */
+
     if (!currentProgress) {
 
         currentProgress =
@@ -1776,69 +1349,58 @@ async function startCourse() {
     }
 
 
-    /* ---------------------------------------------
-       Mark course as started
-    --------------------------------------------- */
-
     currentProgress.started =
         true;
 
+    currentProgress.currentModule =
+        moduleId;
 
-    /* ---------------------------------------------
-       Determine module
-    --------------------------------------------- */
-
-    let moduleId =
-        currentProgress.currentModule;
-
-
-    /*
-     * Make sure the stored module actually
-     * exists in the current course.
-     */
-
-    const validModule =
-        currentCourse.modules.find(
-            module =>
-                module.id === moduleId
-        );
-
-
-    if (!validModule) {
-
-        moduleId =
-            currentCourse.modules[0].id;
-
-
-        currentProgress.currentModule =
-            moduleId;
-
-    }
-
-
-    await saveProgress();
+    currentProgress.currentLesson =
+        lessonId;
 
 
     /* ---------------------------------------------
-       Redirect to actual lessons
+       BUILD URL FIRST
     --------------------------------------------- */
 
     const lessonUrl =
         buildLessonUrl(
             currentCourse.id,
-            moduleId
+            moduleId,
+            lessonId
         );
 
 
     log(
-        "Redirecting to lesson:",
+        "FINAL LESSON URL:",
         lessonUrl
     );
 
 
-    window.location.assign(
-        lessonUrl
-    );
+    /* ---------------------------------------------
+       SAVE IN BACKGROUND
+       DO NOT WAIT FOR FIRESTORE
+    --------------------------------------------- */
+
+    saveProgress()
+        .catch(
+            err => {
+
+                error(
+                    "Background progress save failed:",
+                    err
+                );
+
+            }
+        );
+
+
+    /* ---------------------------------------------
+       REDIRECT IMMEDIATELY
+    --------------------------------------------- */
+
+    window.location.href =
+        lessonUrl;
 
 }
 
@@ -1847,23 +1409,97 @@ async function startCourse() {
    START BUTTON
 ========================================================= */
 
-if (startCourseBtn) {
+function attachStartButton() {
 
-    startCourseBtn.addEventListener(
-        "click",
-        startCourse
-    );
+    if (!startCourseBtn) {
+
+        error(
+            "CRITICAL: #startCourseBtn was NOT found."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Prevent duplicate listeners.
+     */
+
+    startCourseBtn.onclick =
+        startCourse;
+
+
+    startCourseBtn.disabled =
+        false;
 
 
     log(
-        "Start Course button listener attached."
+        "Start Course button ready."
     );
 
-} else {
+}
 
-    warn(
-        "Start Course button not found."
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function setLogoutLoading(
+    loading
+) {
+
+    if (!logoutBtn) {
+        return;
+    }
+
+    logoutBtn.disabled =
+        loading;
+
+    logoutBtn.classList.toggle(
+        "is-loading",
+        loading
     );
+
+}
+
+
+async function logout() {
+
+    if (!auth) {
+
+        error(
+            "Firebase Auth unavailable."
+        );
+
+        return;
+
+    }
+
+    try {
+
+        setLogoutLoading(true);
+
+        await signOut(auth);
+
+        window.location.replace(
+            "../pages/login.html"
+        );
+
+    } catch (err) {
+
+        error(
+            "Logout failed:",
+            err
+        );
+
+        setLogoutLoading(false);
+
+        alert(
+            "Unable to sign out. Please try again."
+        );
+
+    }
 
 }
 
@@ -1882,17 +1518,16 @@ async function loadCourse() {
 
 
     log(
-        "Requested course:",
+        "Course ID:",
         courseId
     );
 
 
     if (!courseId) {
 
-        warn(
-            "No course ID supplied."
+        error(
+            "No course ID in URL."
         );
-
 
         showCourseNotFound();
 
@@ -1907,11 +1542,10 @@ async function loadCourse() {
 
     if (!course) {
 
-        warn(
-            "Course not found:",
+        error(
+            "Course does not exist:",
             courseId
         );
-
 
         showCourseNotFound();
 
@@ -1925,11 +1559,10 @@ async function loadCourse() {
         "available"
     ) {
 
-        warn(
-            "Course is not available:",
+        error(
+            "Course is unavailable:",
             courseId
         );
-
 
         showCourseNotFound();
 
@@ -1942,132 +1575,46 @@ async function loadCourse() {
         course;
 
 
+    log(
+        "Current course set:",
+        currentCourse.id
+    );
+
+
+    /*
+     * Render immediately.
+     *
+     * Do not make the user wait for
+     * Firestore before seeing the page.
+     */
+
     renderCourse(
         currentCourse
     );
 
-
-    await loadProgress();
-
+    attachStartButton();
 
     showCourseContent();
 
 
+    /*
+     * Load progress afterwards.
+     */
+
+    await loadProgress();
+
+
+    /*
+     * Re-render the button after progress
+     * is loaded in case the student has
+     * previously started the course.
+     */
+
+    attachStartButton();
+
+
     log(
-        "Course loaded:",
-        currentCourse.title
-    );
-
-}
-
-
-/* =========================================================
-   LOGOUT LOADING STATE
-========================================================= */
-
-function setLogoutLoading(
-    isLoading
-) {
-
-    if (!logoutBtn) {
-
-        return;
-
-    }
-
-
-    logoutBtn.disabled =
-        isLoading;
-
-
-    logoutBtn.classList.toggle(
-        "is-loading",
-        isLoading
-    );
-
-
-    if (isLoading) {
-
-        logoutBtn.setAttribute(
-            "aria-busy",
-            "true"
-        );
-
-    } else {
-
-        logoutBtn.removeAttribute(
-            "aria-busy"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function logout() {
-
-    if (!auth) {
-
-        error(
-            "Firebase Auth unavailable."
-        );
-
-        return;
-
-    }
-
-
-    try {
-
-        setLogoutLoading(
-            true
-        );
-
-
-        await signOut(
-            auth
-        );
-
-
-        window.location.replace(
-            "../pages/login.html"
-        );
-
-    } catch (err) {
-
-        error(
-            "Logout failed:",
-            err
-        );
-
-
-        setLogoutLoading(
-            false
-        );
-
-
-        alert(
-            "Unable to sign out. Please try again."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   LOGOUT EVENT
-========================================================= */
-
-if (logoutBtn) {
-
-    logoutBtn.addEventListener(
-        "click",
-        logout
+        "Course loaded successfully."
     );
 
 }
@@ -2083,7 +1630,6 @@ if (!auth) {
         "Firebase Auth was not initialized."
     );
 
-
     window.location.replace(
         "../pages/login.html"
     );
@@ -2095,20 +1641,17 @@ if (!auth) {
         async user => {
 
             log(
-                "Authentication state:",
+                "Auth state:",
                 user
                     ? "AUTHENTICATED"
                     : "NOT AUTHENTICATED"
             );
 
 
-            /* NOT AUTHENTICATED */
-
             if (!user) {
 
                 currentUser =
                     null;
-
 
                 const courseId =
                     getCourseIdFromUrl();
@@ -2120,13 +1663,10 @@ if (!auth) {
                     )}`
                 );
 
-
                 return;
 
             }
 
-
-            /* AUTHENTICATED */
 
             currentUser =
                 user;
@@ -2146,7 +1686,21 @@ if (!auth) {
 
 
 /* =========================================================
-   INITIAL LOAD
+   LOGOUT EVENT
+========================================================= */
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener(
+        "click",
+        logout
+    );
+
+}
+
+
+/* =========================================================
+   INITIAL LOG
 ========================================================= */
 
 log(
