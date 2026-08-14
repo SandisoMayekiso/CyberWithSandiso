@@ -1,17 +1,64 @@
 /* =========================================================
    CWS ACADEMY
    STUDENT COURSES
-   Firebase Authentication + Course Filters
+
+   Dynamic Course Catalogue
+   Firebase Authentication
+   Firestore Course Progress
+   Filtering + Search
+========================================================= */
+
+
+/* =========================================================
+   FIREBASE AUTH
 ========================================================= */
 
 import {
+
     onAuthStateChanged,
+
     signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+} from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+/* =========================================================
+   FIRESTORE
+========================================================= */
 
 import {
-    auth
+
+    collection,
+
+    getDocs
+
+} from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
+
+import {
+
+    auth,
+
+    db
+
 } from "./firebase-config.js";
+
+
+/* =========================================================
+   COURSE REGISTRY
+========================================================= */
+
+import {
+
+    courses
+
+} from "../data/courses.js";
 
 
 /* =========================================================
@@ -21,13 +68,13 @@ import {
 const DEBUG = true;
 
 
-function log(...messages) {
+function log(...args) {
 
     if (DEBUG) {
 
         console.log(
-            "[CWS Courses]",
-            ...messages
+            "[CWS Student Courses]",
+            ...args
         );
 
     }
@@ -35,13 +82,13 @@ function log(...messages) {
 }
 
 
-function warn(...messages) {
+function warn(...args) {
 
     if (DEBUG) {
 
         console.warn(
-            "[CWS Courses]",
-            ...messages
+            "[CWS Student Courses]",
+            ...args
         );
 
     }
@@ -49,11 +96,11 @@ function warn(...messages) {
 }
 
 
-function error(...messages) {
+function error(...args) {
 
     console.error(
-        "[CWS Courses]",
-        ...messages
+        "[CWS Student Courses]",
+        ...args
     );
 
 }
@@ -62,24 +109,6 @@ function error(...messages) {
 /* =========================================================
    ELEMENTS
 ========================================================= */
-
-const filterButtons =
-    document.querySelectorAll(
-        ".course-filter"
-    );
-
-
-const courseCards =
-    document.querySelectorAll(
-        ".student-course-card"
-    );
-
-
-const noCoursesMessage =
-    document.getElementById(
-        "noCoursesMessage"
-    );
-
 
 const studentName =
     document.getElementById(
@@ -93,17 +122,86 @@ const logoutBtn =
     );
 
 
+const studentCourseGrid =
+    document.getElementById(
+        "studentCourseGrid"
+    );
+
+
+const studentCoursesLoading =
+    document.getElementById(
+        "studentCoursesLoading"
+    );
+
+
+const noCoursesMessage =
+    document.getElementById(
+        "noCoursesMessage"
+    );
+
+
+const noCoursesText =
+    document.getElementById(
+        "noCoursesText"
+    );
+
+
+const courseCatalogEmpty =
+    document.getElementById(
+        "courseCatalogEmpty"
+    );
+
+
+const courseSearchInput =
+    document.getElementById(
+        "courseSearchInput"
+    );
+
+
+const availableCourseCount =
+    document.getElementById(
+        "availableCourseCount"
+    );
+
+
+const plannedCourseCount =
+    document.getElementById(
+        "plannedCourseCount"
+    );
+
+
+const courseFilterButtons =
+    Array.from(
+        document.querySelectorAll(
+            ".course-filter"
+        )
+    );
+
+
 /* =========================================================
    STATE
 ========================================================= */
 
 let currentUser = null;
 
-let coursesInitialized = false;
+let currentFilter =
+    "all";
+
+let currentSearch =
+    "";
+
+let courseProgressMap =
+    new Map();
+
+let courseCatalog =
+    [];
+
+let pageInitialized =
+    false;
 
 
 /* =========================================================
-   GET USER DISPLAY NAME
+   USER NAME
 ========================================================= */
 
 function getUserName(user) {
@@ -115,13 +213,13 @@ function getUserName(user) {
     }
 
 
-    /*
-     * Firebase displayName
-     */
-
     if (
-        typeof user.displayName === "string" &&
+
+        typeof user.displayName ===
+            "string" &&
+
         user.displayName.trim()
+
     ) {
 
         return user.displayName.trim();
@@ -129,39 +227,49 @@ function getUserName(user) {
     }
 
 
-    /*
-     * Email fallback.
-     */
-
     if (
-        typeof user.email === "string" &&
+
+        typeof user.email ===
+            "string" &&
+
         user.email.includes("@")
+
     ) {
 
-        const emailName =
+        const rawName =
+
             user.email
+
                 .split("@")[0]
-                .trim();
 
-
-        if (emailName) {
-
-            return emailName
                 .replace(
                     /[._-]+/g,
                     " "
                 )
+
                 .replace(
                     /\s+/g,
                     " "
                 )
-                .trim()
+
+                .trim();
+
+
+        if (rawName) {
+
+            return rawName
+
                 .split(" ")
+
                 .map(
                     word =>
-                        word.charAt(0).toUpperCase() +
+
+                        word.charAt(0)
+                            .toUpperCase() +
+
                         word.slice(1)
                 )
+
                 .join(" ");
 
         }
@@ -180,105 +288,1425 @@ function getUserName(user) {
 
 function displayStudent(user) {
 
-    const name =
-        getUserName(user);
+    if (!studentName) {
 
-
-    if (studentName) {
-
-        studentName.textContent =
-            name;
+        return;
 
     }
 
 
-    log(
-        "Student:",
-        {
-            uid: user.uid,
-            email: user.email,
-            name
-        }
+    studentName.textContent =
+        getUserName(user);
+
+}
+
+
+/* =========================================================
+   GET COURSE LIST
+========================================================= */
+
+function getCourseList() {
+
+    if (!courses) {
+
+        return [];
+
+    }
+
+
+    return Object.values(
+        courses
     );
 
 }
 
 
 /* =========================================================
-   FILTER COURSES
+   TOTAL LESSONS
 ========================================================= */
 
-function filterCourses(
-    selectedFilter
+function getTotalLessons(course) {
+
+    if (
+
+        !course ||
+
+        !Array.isArray(
+            course.modules
+        )
+
+    ) {
+
+        return 0;
+
+    }
+
+
+    return course.modules.reduce(
+
+        (
+            total,
+            module
+        ) => {
+
+            const lessonCount =
+
+                Array.isArray(
+                    module.lessons
+                )
+                    ? module.lessons.length
+                    : 0;
+
+
+            return (
+                total +
+                lessonCount
+            );
+
+        },
+
+        0
+
+    );
+
+}
+
+
+/* =========================================================
+   TOTAL LABS
+========================================================= */
+
+function getTotalLabs(course) {
+
+    if (
+
+        !course ||
+
+        !Array.isArray(
+            course.modules
+        )
+
+    ) {
+
+        return 0;
+
+    }
+
+
+    return course.modules.reduce(
+
+        (
+            total,
+            module
+        ) => {
+
+            return (
+
+                total +
+
+                Number(
+                    module.labs || 0
+                )
+
+            );
+
+        },
+
+        0
+
+    );
+
+}
+
+
+/* =========================================================
+   TOTAL ASSESSMENTS
+========================================================= */
+
+function getTotalAssessments(
+    course
 ) {
 
-    let visibleCourses = 0;
+    if (
+
+        !course ||
+
+        !Array.isArray(
+            course.modules
+        )
+
+    ) {
+
+        return 0;
+
+    }
 
 
-    courseCards.forEach(
-        (card) => {
+    return course.modules.reduce(
 
-            const courseLevel =
-                card.dataset.level;
+        (
+            total,
+            module
+        ) => {
+
+            return (
+
+                total +
+
+                Number(
+                    module.assessments ||
+                    0
+                )
+
+            );
+
+        },
+
+        0
+
+    );
+
+}
 
 
-            const shouldShow =
-                selectedFilter === "all" ||
-                courseLevel === selectedFilter;
+/* =========================================================
+   COURSE URL
+========================================================= */
+
+function buildCourseUrl(
+    courseId
+) {
+
+    const params =
+        new URLSearchParams();
 
 
-            if (shouldShow) {
+    params.set(
+        "course",
+        courseId
+    );
 
-                card.hidden = false;
 
-                visibleCourses++;
+    return (
+        `course-details.html?${params.toString()}`
+    );
 
-            } else {
+}
 
-                card.hidden = true;
+
+/* =========================================================
+   NORMALIZE PROGRESS
+========================================================= */
+
+function normalizeProgress(
+    courseId,
+    data = {}
+) {
+
+    return {
+
+        courseId,
+
+        completedLessons:
+
+            Array.isArray(
+                data.completedLessons
+            )
+                ? data.completedLessons
+                : [],
+
+        completedLabs:
+
+            Array.isArray(
+                data.completedLabs
+            )
+                ? data.completedLabs
+                : [],
+
+        completedAssessments:
+
+            Array.isArray(
+                data.completedAssessments
+            )
+                ? data.completedAssessments
+                : [],
+
+        currentModule:
+
+            typeof data.currentModule ===
+                "string"
+                ? data.currentModule
+                : "",
+
+        currentLesson:
+
+            typeof data.currentLesson ===
+                "string"
+                ? data.currentLesson
+                : "",
+
+        progressPercent:
+
+            Number(
+                data.progressPercent || 0
+            ),
+
+        started:
+
+            Boolean(
+                data.started
+            ),
+
+        completed:
+
+            Boolean(
+                data.completed
+            )
+
+    };
+
+}
+
+
+/* =========================================================
+   LOAD PROGRESS
+========================================================= */
+
+async function loadCourseProgress(
+    user
+) {
+
+    courseProgressMap =
+        new Map();
+
+
+    if (
+
+        !db ||
+
+        !user
+
+    ) {
+
+        warn(
+            "Firestore unavailable."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const progressCollection =
+
+            collection(
+
+                db,
+
+                "users",
+
+                user.uid,
+
+                "courseProgress"
+
+            );
+
+
+        const snapshot =
+
+            await getDocs(
+                progressCollection
+            );
+
+
+        snapshot.forEach(
+            documentSnapshot => {
+
+                const courseId =
+                    documentSnapshot.id;
+
+
+                courseProgressMap.set(
+
+                    courseId,
+
+                    normalizeProgress(
+
+                        courseId,
+
+                        documentSnapshot.data()
+
+                    )
+
+                );
+
+            }
+        );
+
+
+        log(
+            "Progress loaded:",
+            courseProgressMap
+        );
+
+
+    } catch (err) {
+
+        error(
+            "Unable to load course progress:",
+            err
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   GET COURSE PROGRESS
+========================================================= */
+
+function getCourseProgress(
+    courseId
+) {
+
+    return (
+        courseProgressMap.get(
+            courseId
+        ) || null
+    );
+
+}
+
+
+/* =========================================================
+   COURSE PROGRESS %
+========================================================= */
+
+function calculateCourseProgress(
+    course,
+    progress
+) {
+
+    if (
+        !course ||
+        !progress
+    ) {
+
+        return 0;
+
+    }
+
+
+    const total =
+        getTotalLessons(
+            course
+        );
+
+
+    if (!total) {
+
+        return 0;
+
+    }
+
+
+    const completed =
+
+        progress
+            .completedLessons
+            ?.length || 0;
+
+
+    return Math.min(
+
+        100,
+
+        Math.round(
+
+            (
+                completed /
+                total
+            ) * 100
+
+        )
+
+    );
+
+}
+
+
+/* =========================================================
+   COURSE SORTING
+========================================================= */
+
+function sortCourses(
+    courseList
+) {
+
+    return [...courseList]
+        .sort(
+            (
+                courseA,
+                courseB
+            ) => {
+
+
+                /*
+                   Available courses first.
+                */
+
+                const statusA =
+
+                    courseA.status ===
+                        "available"
+                        ? 0
+                        : 1;
+
+
+                const statusB =
+
+                    courseB.status ===
+                        "available"
+                        ? 0
+                        : 1;
+
+
+                if (
+                    statusA !==
+                    statusB
+                ) {
+
+                    return (
+                        statusA -
+                        statusB
+                    );
+
+                }
+
+
+                /*
+                   Optional order property.
+                */
+
+                const orderA =
+                    Number(
+                        courseA.order ??
+                        999
+                    );
+
+
+                const orderB =
+                    Number(
+                        courseB.order ??
+                        999
+                    );
+
+
+                if (
+                    orderA !==
+                    orderB
+                ) {
+
+                    return (
+                        orderA -
+                        orderB
+                    );
+
+                }
+
+
+                /*
+                   Fallback alphabetical.
+                */
+
+                return String(
+                    courseA.title || ""
+                )
+                    .localeCompare(
+                        String(
+                            courseB.title ||
+                            ""
+                        )
+                    );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   CATALOG SUMMARY
+========================================================= */
+
+function updateCourseCatalogSummary() {
+
+    const available =
+        courseCatalog.filter(
+
+            course =>
+                course.status ===
+                "available"
+
+        ).length;
+
+
+    const planned =
+        courseCatalog.filter(
+
+            course =>
+                course.status ===
+                "planned"
+
+        ).length;
+
+
+    if (
+        availableCourseCount
+    ) {
+
+        availableCourseCount.textContent =
+
+            `${available} Available`;
+
+    }
+
+
+    if (
+        plannedCourseCount
+    ) {
+
+        plannedCourseCount.textContent =
+
+            `${planned} Planned`;
+
+    }
+
+}
+
+
+/* =========================================================
+   META ITEM
+========================================================= */
+
+function createMetaItem(
+    iconClass,
+    text
+) {
+
+    const span =
+        document.createElement(
+            "span"
+        );
+
+
+    const icon =
+        document.createElement(
+            "i"
+        );
+
+
+    icon.className =
+        iconClass;
+
+
+    span.appendChild(
+        icon
+    );
+
+
+    span.appendChild(
+
+        document.createTextNode(
+            text
+        )
+
+    );
+
+
+    return span;
+
+}
+
+
+/* =========================================================
+   CREATE COURSE CARD
+========================================================= */
+
+function createCourseCard(
+    course
+) {
+
+    const progress =
+        getCourseProgress(
+            course.id
+        );
+
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    card.className =
+        "student-course-card";
+
+
+    card.dataset.courseId =
+        course.id;
+
+
+    card.dataset.level =
+        course.levelKey ||
+        String(
+            course.level || ""
+        )
+            .toLowerCase();
+
+
+    card.dataset.status =
+        course.status ||
+        "planned";
+
+
+    if (
+        course.status !==
+        "available"
+    ) {
+
+        card.classList.add(
+            "planned"
+        );
+
+    }
+
+
+    /* =====================================================
+       TOP
+    ====================================================== */
+
+    const top =
+        document.createElement(
+            "div"
+        );
+
+
+    top.className =
+        "course-card-top";
+
+
+    const status =
+        document.createElement(
+            "span"
+        );
+
+
+    status.className =
+        `course-status ${
+            course.status === "available"
+                ? "available"
+                : "planned"
+        }`;
+
+
+    status.textContent =
+
+        course.status === "available"
+            ? "AVAILABLE"
+            : "PLANNED";
+
+
+    const level =
+        document.createElement(
+            "span"
+        );
+
+
+    level.className =
+        "course-level";
+
+
+    level.textContent =
+        String(
+            course.level ||
+            "Course"
+        )
+            .toUpperCase();
+
+
+    top.appendChild(
+        status
+    );
+
+
+    top.appendChild(
+        level
+    );
+
+
+    /* =====================================================
+       ICON
+    ====================================================== */
+
+    const iconContainer =
+        document.createElement(
+            "div"
+        );
+
+
+    iconContainer.className =
+        "course-icon";
+
+
+    const icon =
+        document.createElement(
+            "i"
+        );
+
+
+    icon.className =
+        course.icon ||
+        "fa-solid fa-graduation-cap";
+
+
+    iconContainer.appendChild(
+        icon
+    );
+
+
+    /* =====================================================
+       TITLE
+    ====================================================== */
+
+    const title =
+        document.createElement(
+            "h3"
+        );
+
+
+    title.textContent =
+        course.title ||
+        "CWS Academy Course";
+
+
+    /* =====================================================
+       DESCRIPTION
+    ====================================================== */
+
+    const description =
+        document.createElement(
+            "p"
+        );
+
+
+    description.textContent =
+        course.description ||
+        "Course details coming soon.";
+
+
+    /* =====================================================
+       META
+    ====================================================== */
+
+    const meta =
+        document.createElement(
+            "div"
+        );
+
+
+    meta.className =
+        "course-meta";
+
+
+    if (
+        course.status ===
+        "available"
+    ) {
+
+        const moduleCount =
+
+            Array.isArray(
+                course.modules
+            )
+                ? course.modules.length
+                : 0;
+
+
+        meta.appendChild(
+
+            createMetaItem(
+
+                "fa-solid fa-book",
+
+                `${moduleCount} Module${
+                    moduleCount === 1
+                        ? ""
+                        : "s"
+                }`
+
+            )
+
+        );
+
+
+        const labs =
+            getTotalLabs(
+                course
+            );
+
+
+        if (labs > 0) {
+
+            meta.appendChild(
+
+                createMetaItem(
+
+                    "fa-solid fa-flask",
+
+                    `${labs} Lab${
+                        labs === 1
+                            ? ""
+                            : "s"
+                    }`
+
+                )
+
+            );
+
+        }
+
+
+        const assessments =
+            getTotalAssessments(
+                course
+            );
+
+
+        if (
+            assessments > 0
+        ) {
+
+            meta.appendChild(
+
+                createMetaItem(
+
+                    "fa-solid fa-bullseye",
+
+                    `${assessments} Assessment${
+                        assessments === 1
+                            ? ""
+                            : "s"
+                    }`
+
+                )
+
+            );
+
+        }
+
+    } else {
+
+        meta.appendChild(
+
+            createMetaItem(
+
+                "fa-solid fa-clock",
+
+                "Planned"
+
+            )
+
+        );
+
+    }
+
+
+    /* =====================================================
+       PROGRESS
+    ====================================================== */
+
+    if (
+        course.status ===
+        "available" &&
+        progress &&
+        (
+            progress.started ||
+            progress.completedLessons
+                ?.length > 0
+        )
+    ) {
+
+        const percentage =
+            calculateCourseProgress(
+                course,
+                progress
+            );
+
+
+        const progressWrapper =
+            document.createElement(
+                "div"
+            );
+
+
+        progressWrapper.className =
+            "student-course-progress";
+
+
+        progressWrapper.innerHTML = `
+
+            <div class="student-course-progress-header">
+
+                <span>
+                    ${
+                        progress.completed
+                            ? "Completed"
+                            : "Your Progress"
+                    }
+                </span>
+
+                <strong>
+                    ${percentage}%
+                </strong>
+
+            </div>
+
+
+            <div
+                class="student-course-progress-bar"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="${percentage}"
+            >
+
+                <div
+                    class="student-course-progress-fill"
+                    style="width: ${percentage}%"
+                ></div>
+
+            </div>
+
+        `;
+
+
+        meta.insertAdjacentElement(
+            "afterend",
+            progressWrapper
+        );
+
+
+        /*
+           We need this later when assembling.
+        */
+
+        card._progressElement =
+            progressWrapper;
+
+    }
+
+
+    /* =====================================================
+       ACTION
+    ====================================================== */
+
+    let action;
+
+
+    if (
+        course.status ===
+        "available"
+    ) {
+
+        action =
+            document.createElement(
+                "a"
+            );
+
+
+        action.className =
+            "course-action";
+
+
+        action.href =
+            buildCourseUrl(
+                course.id
+            );
+
+
+        if (
+            progress?.completed
+        ) {
+
+            action.innerHTML = `
+
+                Review Course
+
+                <i class="fa-solid fa-rotate-right"></i>
+
+            `;
+
+        }
+
+        else if (
+            progress?.started ||
+            progress
+                ?.completedLessons
+                ?.length > 0
+        ) {
+
+            action.innerHTML = `
+
+                Continue Course
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            `;
+
+        }
+
+        else {
+
+            action.innerHTML = `
+
+                View Course
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            `;
+
+        }
+
+    } else {
+
+        action =
+            document.createElement(
+                "button"
+            );
+
+
+        action.type =
+            "button";
+
+
+        action.className =
+            "course-action disabled";
+
+
+        action.disabled =
+            true;
+
+
+        action.textContent =
+            "Coming Soon";
+
+    }
+
+
+    /* =====================================================
+       ASSEMBLE
+    ====================================================== */
+
+    card.appendChild(
+        top
+    );
+
+
+    card.appendChild(
+        iconContainer
+    );
+
+
+    card.appendChild(
+        title
+    );
+
+
+    card.appendChild(
+        description
+    );
+
+
+    card.appendChild(
+        meta
+    );
+
+
+    if (
+        card._progressElement
+    ) {
+
+        card.appendChild(
+            card._progressElement
+        );
+
+
+        delete card._progressElement;
+
+    }
+
+
+    card.appendChild(
+        action
+    );
+
+
+    return card;
+
+}
+
+
+/* =========================================================
+   FILTER MATCH
+========================================================= */
+
+function matchesFilter(
+    course
+) {
+
+    if (
+        currentFilter ===
+        "all"
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        currentFilter ===
+        "available"
+    ) {
+
+        return (
+            course.status ===
+            "available"
+        );
+
+    }
+
+
+    if (
+        currentFilter ===
+        "planned"
+    ) {
+
+        return (
+            course.status ===
+            "planned"
+        );
+
+    }
+
+
+    const level =
+
+        course.levelKey ||
+
+        String(
+            course.level || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    return (
+        level ===
+        currentFilter
+    );
+
+}
+
+
+/* =========================================================
+   SEARCH MATCH
+========================================================= */
+
+function matchesSearch(
+    course
+) {
+
+    if (!currentSearch) {
+
+        return true;
+
+    }
+
+
+    const searchableText = [
+
+        course.title,
+
+        course.description,
+
+        course.category,
+
+        course.level,
+
+        course.id
+
+    ]
+        .filter(Boolean)
+
+        .join(" ")
+
+        .toLowerCase();
+
+
+    return searchableText.includes(
+        currentSearch
+    );
+
+}
+
+
+/* =========================================================
+   FILTERED COURSES
+========================================================= */
+
+function getFilteredCourses() {
+
+    return courseCatalog.filter(
+        course =>
+
+            matchesFilter(
+                course
+            ) &&
+
+            matchesSearch(
+                course
+            )
+    );
+
+}
+
+
+/* =========================================================
+   RENDER COURSE CATALOG
+========================================================= */
+
+function renderCourseCatalog() {
+
+    if (
+        !studentCourseGrid
+    ) {
+
+        return;
+
+    }
+
+
+    studentCourseGrid.innerHTML =
+        "";
+
+
+    const filteredCourses =
+        getFilteredCourses();
+
+
+    if (
+        !filteredCourses.length
+    ) {
+
+        studentCourseGrid.hidden =
+            true;
+
+
+        if (
+            noCoursesMessage
+        ) {
+
+            noCoursesMessage.hidden =
+                false;
+
+        }
+
+
+        if (
+            noCoursesText
+        ) {
+
+            if (
+                currentSearch
+            ) {
+
+                noCoursesText.textContent =
+
+                    `No courses match "${currentSearch}".`;
+
+            }
+
+            else {
+
+                noCoursesText.textContent =
+
+                    "No courses match the selected filters.";
 
             }
 
         }
-    );
 
 
-    /*
-     * Empty state.
-     */
-
-    if (noCoursesMessage) {
-
-        noCoursesMessage.hidden =
-            visibleCourses > 0;
+        return;
 
     }
 
 
-    log(
-        "Course filter:",
-        selectedFilter,
-        "Visible:",
-        visibleCourses
+    if (
+        noCoursesMessage
+    ) {
+
+        noCoursesMessage.hidden =
+            true;
+
+    }
+
+
+    filteredCourses.forEach(
+        course => {
+
+            studentCourseGrid.appendChild(
+
+                createCourseCard(
+                    course
+                )
+
+            );
+
+        }
     );
+
+
+    studentCourseGrid.hidden =
+        false;
 
 }
 
 
 /* =========================================================
-   SET ACTIVE FILTER
+   FILTER BUTTONS
 ========================================================= */
 
 function setActiveFilter(
-    selectedFilter
+    filterValue
 ) {
 
-    filterButtons.forEach(
-        (button) => {
+    currentFilter =
+        filterValue;
+
+
+    courseFilterButtons.forEach(
+        button => {
 
             const isActive =
+
                 button.dataset.filter ===
-                selectedFilter;
+                filterValue;
 
 
             button.classList.toggle(
@@ -295,32 +1723,31 @@ function setActiveFilter(
         }
     );
 
+
+    renderCourseCatalog();
+
 }
 
 
 /* =========================================================
-   FILTER BUTTON EVENTS
+   FILTER EVENTS
 ========================================================= */
 
-filterButtons.forEach(
-    (button) => {
+courseFilterButtons.forEach(
+    button => {
 
         button.addEventListener(
             "click",
             () => {
 
-                const selectedFilter =
+                const filter =
+
                     button.dataset.filter ||
                     "all";
 
 
                 setActiveFilter(
-                    selectedFilter
-                );
-
-
-                filterCourses(
-                    selectedFilter
+                    filter
                 );
 
             }
@@ -331,11 +1758,120 @@ filterButtons.forEach(
 
 
 /* =========================================================
-   LOGOUT BUTTON STATE
+   SEARCH
+========================================================= */
+
+if (
+    courseSearchInput
+) {
+
+    courseSearchInput.addEventListener(
+        "input",
+        event => {
+
+            currentSearch =
+
+                String(
+                    event.target.value ||
+                    ""
+                )
+                    .trim()
+                    .toLowerCase();
+
+
+            renderCourseCatalog();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SHOW CATALOG
+========================================================= */
+
+function showCourseCatalog() {
+
+    if (
+        studentCoursesLoading
+    ) {
+
+        studentCoursesLoading.hidden =
+            true;
+
+    }
+
+
+    if (
+        courseCatalogEmpty
+    ) {
+
+        courseCatalogEmpty.hidden =
+            true;
+
+    }
+
+
+    renderCourseCatalog();
+
+}
+
+
+/* =========================================================
+   EMPTY CATALOG
+========================================================= */
+
+function showCatalogEmpty() {
+
+    if (
+        studentCoursesLoading
+    ) {
+
+        studentCoursesLoading.hidden =
+            true;
+
+    }
+
+
+    if (
+        studentCourseGrid
+    ) {
+
+        studentCourseGrid.hidden =
+            true;
+
+    }
+
+
+    if (
+        noCoursesMessage
+    ) {
+
+        noCoursesMessage.hidden =
+            true;
+
+    }
+
+
+    if (
+        courseCatalogEmpty
+    ) {
+
+        courseCatalogEmpty.hidden =
+            false;
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGOUT STATE
 ========================================================= */
 
 function setLogoutLoading(
-    isLoading
+    loading
 ) {
 
     if (!logoutBtn) {
@@ -346,16 +1882,16 @@ function setLogoutLoading(
 
 
     logoutBtn.disabled =
-        isLoading;
+        loading;
 
 
     logoutBtn.classList.toggle(
         "is-loading",
-        isLoading
+        loading
     );
 
 
-    if (isLoading) {
+    if (loading) {
 
         logoutBtn.setAttribute(
             "aria-busy",
@@ -382,7 +1918,7 @@ async function logout() {
     if (!auth) {
 
         error(
-            "Firebase Auth is unavailable."
+            "Firebase Authentication unavailable."
         );
 
         return;
@@ -392,32 +1928,20 @@ async function logout() {
 
     try {
 
-        log(
-            "Signing out..."
-        );
-
-
         setLogoutLoading(
             true
         );
 
 
-        await signOut(auth);
-
-
-        log(
-            "Logout successful."
+        await signOut(
+            auth
         );
 
-
-        /*
-         * Same destination used
-         * by the dashboard.
-         */
 
         window.location.replace(
             "../pages/login.html"
         );
+
 
     } catch (err) {
 
@@ -445,11 +1969,79 @@ async function logout() {
    LOGOUT EVENT
 ========================================================= */
 
-if (logoutBtn) {
+if (
+    logoutBtn
+) {
 
     logoutBtn.addEventListener(
         "click",
         logout
+    );
+
+}
+
+
+/* =========================================================
+   INITIALIZE CATALOG
+========================================================= */
+
+async function initializeCoursesPage(
+    user
+) {
+
+    displayStudent(
+        user
+    );
+
+
+    /*
+       Load course definitions.
+    */
+
+    courseCatalog =
+        sortCourses(
+            getCourseList()
+        );
+
+
+    if (
+        !courseCatalog.length
+    ) {
+
+        warn(
+            "Course registry is empty."
+        );
+
+
+        showCatalogEmpty();
+
+        return;
+
+    }
+
+
+    updateCourseCatalogSummary();
+
+
+    /*
+       Load Firestore student progress.
+    */
+
+    await loadCourseProgress(
+        user
+    );
+
+
+    /*
+       Render after progress is loaded
+       so buttons/progress are correct.
+    */
+
+    showCourseCatalog();
+
+
+    log(
+        "Student courses page initialized."
     );
 
 }
@@ -462,7 +2054,7 @@ if (logoutBtn) {
 if (!auth) {
 
     error(
-        "Firebase Auth was not initialized."
+        "Firebase Authentication was not initialized."
     );
 
 
@@ -470,37 +2062,38 @@ if (!auth) {
         "../pages/login.html"
     );
 
-} else {
+}
+
+else {
 
     onAuthStateChanged(
+
         auth,
-        async (user) => {
+
+        async user => {
+
 
             log(
+
                 "Authentication state:",
+
                 user
                     ? "AUTHENTICATED"
                     : "NOT AUTHENTICATED"
+
             );
 
 
-            /*
-             * ------------------------------------------------
-             * NOT AUTHENTICATED
-             * ------------------------------------------------
-             */
-
             if (!user) {
 
-                currentUser = null;
-
-                warn(
-                    "No authenticated user. Redirecting."
-                );
+                currentUser =
+                    null;
 
 
                 window.location.replace(
-                    "../pages/login.html?redirect=courses"
+
+                    "../pages/login.html?redirect=student-courses"
+
                 );
 
 
@@ -508,91 +2101,51 @@ if (!auth) {
 
             }
 
-
-            /*
-             * ------------------------------------------------
-             * AUTHENTICATED
-             * ------------------------------------------------
-             */
 
             currentUser =
                 user;
 
 
-            /*
-             * Refresh Firebase user.
-             */
-
-            try {
-
-                await user.reload();
-
-            } catch (err) {
-
-                warn(
-                    "Unable to refresh Firebase user:",
-                    err
-                );
-
-            }
-
-
-            /*
-             * Use refreshed user object.
-             */
-
-            const refreshedUser =
-                auth.currentUser ||
-                user;
-
-
-            displayStudent(
-                refreshedUser
-            );
-
-
-            /*
-             * Prevent duplicate
-             * initialization.
-             */
-
-            if (coursesInitialized) {
+            if (
+                pageInitialized
+            ) {
 
                 return;
 
             }
 
 
-            coursesInitialized =
+            pageInitialized =
                 true;
 
 
-            /*
-             * Initial filter.
-             */
+            try {
 
-            setActiveFilter(
-                "all"
-            );
+                await initializeCoursesPage(
+                    user
+                );
+
+            } catch (err) {
+
+                error(
+                    "Courses page initialization failed:",
+                    err
+                );
 
 
-            filterCourses(
-                "all"
-            );
+                showCatalogEmpty();
 
-
-            log(
-                "Student courses initialized successfully."
-            );
+            }
 
         }
+
     );
 
 }
 
 
 /* =========================================================
-   INITIAL LOAD
+   INITIAL LOG
 ========================================================= */
 
 log(
