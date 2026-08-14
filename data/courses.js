@@ -1,6 +1,6 @@
 /* =========================================================
    CWS ACADEMY
-   COURSE REGISTRY
+   CENTRAL COURSE REGISTRY
 ========================================================= */
 
 import {
@@ -11,13 +11,9 @@ import {
     networkingFundamentals
 } from "./networking-fundamentals.js";
 
-import {
-    linuxFundamentals
-} from "./linux-fundamentals.js";
-
 
 /* =========================================================
-   COURSES
+   COURSE REGISTRY
 ========================================================= */
 
 export const courses = {
@@ -26,10 +22,7 @@ export const courses = {
         cybersecurityFundamentals,
 
     [networkingFundamentals.id]:
-        networkingFundamentals,
-
-    [linuxFundamentals.id]:
-        linuxFundamentals
+        networkingFundamentals
 
 };
 
@@ -44,13 +37,12 @@ export function getCourse(courseId) {
         return null;
     }
 
-    return (
-        courses[
-            String(courseId)
-                .trim()
-                .toLowerCase()
-        ] || null
-    );
+    const normalizedId =
+        String(courseId)
+            .trim()
+            .toLowerCase();
+
+    return courses[normalizedId] || null;
 
 }
 
@@ -67,7 +59,7 @@ export function getModule(
     const course =
         getCourse(courseId);
 
-    if (!course) {
+    if (!course || !moduleId) {
         return null;
     }
 
@@ -97,7 +89,10 @@ export function getLesson(
             moduleId
         );
 
-    if (!module) {
+    if (
+        !module ||
+        !Array.isArray(module.lessons)
+    ) {
         return null;
     }
 
