@@ -1,111 +1,47 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta
         name="description"
         content="CyberWithSandiso Academy - Cybersecurity Fundamentals Lesson"
     >
 
-    <title>
-        CWS Academy | Lesson
-    </title>
+    <title>CWS Academy | Lesson</title>
 
-    <!-- Font Awesome -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
-    <!-- Optional: Orbitron font used by the CSS -->
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;600;700;800&display=swap"
         rel="stylesheet"
     >
 
-    <!-- Lesson CSS -->
-    <link
-        rel="stylesheet"
-        href="./lesson.css"
-    >
-
-    <!-- =====================================================
-         MAIN CSS
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="../css/style.css"
-    >
-
-
-    <!-- =====================================================
-         STUDENT DASHBOARD CSS
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="../css/dashboard.css"
-    >
-
-
-    <!-- =====================================================
-         COURSE DETAILS CSS
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="../css/course-details.css"
-    >
-
-
+    <link rel="stylesheet" href="./lesson.css">
 </head>
-
 
 <body>
 
 <div class="lesson-page">
 
-
-    <!-- =====================================================
-         TOP HEADER
-    ====================================================== -->
+    <!-- =========================
+         TOP BAR
+    ========================== -->
 
     <header class="lesson-topbar">
 
-        <!-- Brand -->
-
-        <a
-            href="./dashboard.html"
-            class="lesson-brand"
-        >
-
-            <span class="lesson-brand-logo">
-                CWS
-            </span>
-
+        <a href="./dashboard.html" class="lesson-brand">
+            <span class="lesson-brand-logo">CWS</span>
 
             <span class="lesson-brand-text">
-
                 <span class="lesson-brand-title">
                     CyberWithSandiso
                 </span>
@@ -113,54 +49,33 @@
                 <span class="lesson-brand-subtitle">
                     Academy
                 </span>
-
             </span>
-
         </a>
-
-
-        <!-- Right Side -->
 
         <div class="lesson-topbar-right">
 
             <div class="lesson-student">
-
-                <i class="fa-solid fa-user"></i>
-
-                <span>
-                    Welcome,
-                </span>
-
-                <span id="studentName">
-                    Student
-                </span>
-
+                <i class="fa-solid fa-circle-user"></i>
+                <span>Welcome,</span>
+                <strong id="studentName">Student</strong>
             </div>
-
 
             <a
                 href="./dashboard.html"
-                class="lesson-nav-btn"
+                class="lesson-topbar-btn"
+                aria-label="Dashboard"
             >
-
                 <i class="fa-solid fa-gauge-high"></i>
-
-                Dashboard
-
+                <span>Dashboard</span>
             </a>
-
 
             <button
                 type="button"
                 id="logoutBtn"
+                class="lesson-topbar-btn logout-btn"
             >
-
                 <i class="fa-solid fa-right-from-bracket"></i>
-
-                <span>
-                    Logout
-                </span>
-
+                <span>Logout</span>
             </button>
 
         </div>
@@ -168,55 +83,41 @@
     </header>
 
 
-
-    <!-- =====================================================
-         MAIN LAYOUT
-    ====================================================== -->
+    <!-- =========================
+         MAIN
+    ========================== -->
 
     <main class="lesson-layout">
 
-
-        <!-- =================================================
+        <!-- =========================
              SIDEBAR
-        ================================================== -->
+        ========================== -->
 
         <aside class="lesson-sidebar">
 
             <div class="lesson-sidebar-card">
 
-
-                <!-- Sidebar Header -->
-
                 <div class="lesson-sidebar-header">
 
-                    <div class="lesson-sidebar-label">
-                        Course
-                    </div>
+                    <span class="lesson-sidebar-label">
+                        Current Course
+                    </span>
 
-                    <h2 class="lesson-sidebar-title">
+                    <h2>
                         Cybersecurity Fundamentals
                     </h2>
 
                 </div>
 
 
-
-                <!-- Course Progress -->
+                <!-- Progress -->
 
                 <div class="lesson-progress-card">
 
                     <div class="lesson-progress-header">
-
-                        <span>
-                            Course Progress
-                        </span>
-
-                        <span id="lessonProgressPercent">
-                            0%
-                        </span>
-
+                        <span>Course Progress</span>
+                        <strong id="lessonProgressPercent">0%</strong>
                     </div>
-
 
                     <div
                         class="lesson-progress-bar"
@@ -226,13 +127,8 @@
                         aria-valuemax="100"
                         aria-valuenow="0"
                     >
-
-                        <div
-                            id="lessonProgressFill"
-                        ></div>
-
+                        <div id="lessonProgressFill"></div>
                     </div>
-
 
                     <span id="lessonProgressText">
                         0 of 24 lessons completed
@@ -241,47 +137,33 @@
                 </div>
 
 
-
                 <!-- Module List -->
 
                 <nav
                     id="lessonModuleList"
                     aria-label="Course lessons"
-                >
-
-                    <!-- Generated by lesson.js -->
-
-                </nav>
-
+                ></nav>
 
             </div>
 
         </aside>
 
 
-
-        <!-- =================================================
-             LESSON MAIN
-        ================================================== -->
+        <!-- =========================
+             LESSON CONTENT
+        ========================== -->
 
         <section class="lesson-main">
 
+            <!-- Loading -->
 
-            <!-- =================================================
-                 LOADING
-            ================================================== -->
-
-            <div
-                id="lessonLoading"
-            >
+            <div id="lessonLoading">
 
                 <div class="lesson-loading-inner">
 
                     <div class="lesson-loading-spinner"></div>
 
-                    <h2>
-                        Loading lesson...
-                    </h2>
+                    <h2>Loading lesson...</h2>
 
                     <p>
                         Preparing your CWS Academy lesson.
@@ -292,56 +174,36 @@
             </div>
 
 
+            <!-- Not Found -->
 
-            <!-- =================================================
-                 NOT FOUND
-            ================================================== -->
+            <div id="lessonNotFound" hidden>
 
-            <div
-                id="lessonNotFound"
-                hidden
-            >
+                <div class="not-found-icon">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
 
-                <i class="fa-solid fa-book-open"></i>
-
-                <h2>
-                    Lesson Not Found
-                </h2>
+                <h2>Lesson Not Found</h2>
 
                 <p>
                     We couldn't find the lesson requested.
                 </p>
 
-                <br>
-
                 <a
                     href="./student-courses.html"
-                    class="lesson-nav-btn"
+                    class="lesson-action-btn"
                 >
-
                     <i class="fa-solid fa-arrow-left"></i>
-
                     Back to Courses
-
                 </a>
 
             </div>
 
 
+            <!-- Actual Lesson -->
 
-            <!-- =================================================
-                 ACTUAL LESSON
-            ================================================== -->
+            <article id="lessonContent" hidden>
 
-            <article
-                id="lessonContent"
-                hidden
-            >
-
-
-                <!-- =================================================
-                     BREADCRUMBS
-                ================================================== -->
+                <!-- Breadcrumbs -->
 
                 <div class="lesson-breadcrumbs">
 
@@ -364,43 +226,35 @@
                 </div>
 
 
-
-                <!-- =================================================
-                     HERO
-                ================================================== -->
+                <!-- Hero -->
 
                 <section class="lesson-hero">
 
+                    <div class="lesson-hero-glow"></div>
+
                     <div class="lesson-hero-content">
-
-
-                        <!-- Labels -->
 
                         <div class="lesson-labels">
 
-                            <span id="lessonModuleNumber"
-                                  class="lesson-module-number">
+                            <span
+                                id="lessonModuleNumber"
+                                class="module-badge"
+                            >
                                 MODULE 01
                             </span>
 
-                            <span id="lessonNumber"
-                                  class="lesson-number">
+                            <span
+                                id="lessonNumber"
+                                class="lesson-badge"
+                            >
                                 LESSON 01
                             </span>
 
                         </div>
 
-
-
-                        <!-- Title -->
-
                         <h1 id="lessonTitle">
                             Lesson Title
                         </h1>
-
-
-
-                        <!-- Description -->
 
                         <p id="lessonDescription">
                             Lesson description
@@ -411,150 +265,100 @@
                 </section>
 
 
-
-                <!-- =================================================
-                     OBJECTIVES
-                ================================================== -->
+                <!-- Objectives -->
 
                 <section class="lesson-objectives-card">
 
                     <div class="lesson-section-title">
-
-                        <i class="fa-solid fa-bullseye"></i>
-
-                        <span>
-                            Learning Objectives
+                        <span class="section-icon">
+                            <i class="fa-solid fa-bullseye"></i>
                         </span>
 
+                        <span>Learning Objectives</span>
                     </div>
 
-
-                    <ul id="lessonObjectives">
-
-                        <!-- Generated by lesson.js -->
-
-                    </ul>
+                    <ul id="lessonObjectives"></ul>
 
                 </section>
 
 
-
-                <!-- =================================================
-                     LESSON BODY
-                ================================================== -->
+                <!-- Lesson Body -->
 
                 <section
                     id="lessonBody"
                     class="lesson-body"
-                >
-
-                    <!-- Lesson content generated by lesson.js -->
-
-                </section>
+                ></section>
 
 
-
-                <!-- =================================================
-                     COMPLETION
-                ================================================== -->
+                <!-- Completion -->
 
                 <section class="lesson-complete-area">
 
-
                     <div class="lesson-complete-info">
+
+                        <span class="completion-label">
+                            LESSON PROGRESS
+                        </span>
 
                         <h3>
                             Finish this lesson
                         </h3>
 
                         <p>
-                            Mark the lesson complete when you have finished studying the material.
+                            Mark the lesson complete after you have
+                            finished studying the material.
                         </p>
 
                     </div>
-
 
                     <button
                         type="button"
                         id="markCompleteBtn"
                     >
-
                         <i class="fa-solid fa-check"></i>
-
-                        <span>
-                            Mark Lesson Complete
-                        </span>
-
+                        <span>Mark Lesson Complete</span>
                     </button>
 
                 </section>
 
 
-
-                <!-- =================================================
-                     NAVIGATION
-                ================================================== -->
+                <!-- Navigation -->
 
                 <nav
                     class="lesson-navigation"
                     aria-label="Lesson navigation"
                 >
 
-
-                    <!-- Previous -->
-
                     <a
                         id="previousLessonBtn"
-                        class="lesson-nav-btn"
+                        class="lesson-navigation-btn previous"
                         href="#"
                         hidden
                     >
-
                         <i class="fa-solid fa-arrow-left"></i>
 
                         <span>
-
-                            <small>
-                                Previous
-                            </small>
-
-                            <strong>
-                                Previous Lesson
-                            </strong>
-
+                            <small>Previous</small>
+                            <strong>Previous Lesson</strong>
                         </span>
-
                     </a>
 
-
-
-                    <!-- Next -->
 
                     <a
                         id="nextLessonBtn"
-                        class="lesson-nav-btn lesson-nav-next"
+                        class="lesson-navigation-btn next"
                         href="#"
                         hidden
                     >
-
                         <span>
-
-                            <small>
-                                Next
-                            </small>
-
-                            <strong>
-                                Next Lesson
-                            </strong>
-
+                            <small>Next</small>
+                            <strong>Next Lesson</strong>
                         </span>
 
                         <i class="fa-solid fa-arrow-right"></i>
-
                     </a>
 
                 </nav>
-
 
             </article>
 
@@ -563,10 +367,9 @@
     </main>
 
 
-
-    <!-- =====================================================
+    <!-- =========================
          FOOTER
-    ====================================================== -->
+    ========================== -->
 
     <footer class="lesson-footer">
 
@@ -580,16 +383,11 @@
 </div>
 
 
-
-<!-- =========================================================
-     LESSON JS
-========================================================== -->
-
 <script
     type="module"
     src="./lesson.js"
 ></script>
 
 </body>
-
 </html>
+```
