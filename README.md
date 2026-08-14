@@ -2,9 +2,9 @@
 
 ### Cybersecurity • Penetration Testing • Security Engineering • IT
 
-# Welcome to **CyberWithSandiso (CWS)** — a cybersecurity-focused portfolio, learning platform, laboratory environment, and knowledge hub built by **Sandiso Mayekiso**.
+Welcome to **CyberWithSandiso (CWS)** — a cybersecurity-focused portfolio, learning platform, laboratory environment, and knowledge hub built by **Sandiso Mayekiso**.
 
-# The project brings together practical cybersecurity learning, penetration-testing research, security labs, technical projects, documentation, and the **CWS Academy** into one platform.
+The project brings together practical cybersecurity learning, penetration-testing research, security labs, technical projects, documentation, and the **CWS Academy** into one platform.
 
 ---
 
@@ -18,7 +18,7 @@ https://sandisomayekiso.github.io/CyberWithSandiso/
 
 ## 🎯 Project Vision
 
-# CyberWithSandiso was created to document and demonstrate practical cybersecurity knowledge while building a structured environment for continuous learning.
+CyberWithSandiso was created to document and demonstrate practical cybersecurity knowledge while building a structured environment for continuous learning.
 
 The project combines:
 
