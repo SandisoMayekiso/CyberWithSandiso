@@ -14,46 +14,132 @@
 
 /* =========================================================
    02. ROOT VARIABLES
+   CWS CYBER COMMAND CENTER THEME
 ========================================================= */
 
 :root {
 
-    --bg-primary: #050b12;
-    --bg-secondary: #08131d;
-    --bg-tertiary: #0c1b27;
+    /* =====================================================
+       CORE BACKGROUNDS
+    ====================================================== */
 
-    --card-bg: rgba(10, 25, 37, 0.82);
-    --card-border: rgba(0, 220, 255, 0.16);
+    --bg-primary: #030712;
+    --bg-secondary: #07111f;
+    --bg-tertiary: #0a1726;
 
-    --accent: #00d9ff;
-    --accent-dark: #009fc2;
-    --accent-soft: rgba(0, 217, 255, 0.10);
+    --bg-elevated: #0d1b2a;
+    --bg-terminal: #02060c;
 
-    --text-primary: #f2f8fb;
-    --text-secondary: #a9bac4;
-    --text-muted: #70838e;
 
-    --success: #28e7a5;
-    --warning: #ffc857;
-    --danger: #ff5c7a;
+    /* =====================================================
+       CARDS / PANELS
+    ====================================================== */
 
-    --border: rgba(255, 255, 255, 0.08);
+    --card-bg: rgba(8, 23, 38, 0.88);
+    --card-bg-hover: rgba(11, 31, 49, 0.95);
+
+    --card-border: rgba(0, 229, 255, 0.14);
+    --card-border-hover: rgba(0, 229, 255, 0.35);
+
+
+    /* =====================================================
+       CWS CYBER ACCENT
+    ====================================================== */
+
+    --accent: #00e5ff;
+    --accent-bright: #43edff;
+    --accent-dark: #0097b2;
+
+    --accent-soft: rgba(0, 229, 255, 0.08);
+    --accent-medium: rgba(0, 229, 255, 0.16);
+    --accent-border: rgba(0, 229, 255, 0.25);
+
+
+    /* =====================================================
+       SECONDARY CYBER COLOURS
+    ====================================================== */
+
+    --cyber-blue: #168fff;
+    --cyber-green: #36f5a2;
+    --cyber-purple: #9b7cff;
+
+
+    /* =====================================================
+       TEXT
+    ====================================================== */
+
+    --text-primary: #f4f9fc;
+    --text-secondary: #a6b6c8;
+    --text-muted: #66798e;
+    --text-accent: #00e5ff;
+
+
+    /* =====================================================
+       STATUS COLOURS
+    ====================================================== */
+
+    --success: #36f5a2;
+    --warning: #ffbd4a;
+    --danger: #ff4d6d;
+    --info: #168fff;
+
+
+    /* =====================================================
+       BORDERS
+    ====================================================== */
+
+    --border: rgba(255, 255, 255, 0.07);
+    --border-light: rgba(255, 255, 255, 0.11);
+    --border-cyber: rgba(0, 229, 255, 0.18);
+
+
+    /* =====================================================
+       SHADOWS
+    ====================================================== */
 
     --shadow:
-        0 15px 40px rgba(0, 0, 0, 0.35);
+        0 18px 45px rgba(0, 0, 0, 0.38);
+
+    --shadow-deep:
+        0 25px 70px rgba(0, 0, 0, 0.48);
+
+
+    /* =====================================================
+       CYBER GLOW
+    ====================================================== */
 
     --glow:
-        0 0 25px rgba(0, 217, 255, 0.15);
+        0 0 25px rgba(0, 229, 255, 0.14);
+
+    --glow-strong:
+        0 0 35px rgba(0, 229, 255, 0.25);
+
+    --glow-green:
+        0 0 25px rgba(54, 245, 162, 0.18);
+
+
+    /* =====================================================
+       RADIUS
+    ====================================================== */
 
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 22px;
 
+
+    /* =====================================================
+       LAYOUT
+    ====================================================== */
+
     --max-width: 1200px;
+
+
+    /* =====================================================
+       ANIMATION
+    ====================================================== */
 
     --transition: 0.25s ease;
 }
-
 
 /* =========================================================
    03. RESET
@@ -74,16 +160,21 @@ body {
 
     background:
         radial-gradient(
-            circle at 15% 10%,
-            rgba(0, 217, 255, 0.06),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 85% 20%,
-            rgba(0, 150, 190, 0.05),
+            circle at 12% 8%,
+            rgba(0, 229, 255, 0.055),
             transparent 28%
         ),
-        var(--bg-primary);
+        radial-gradient(
+            circle at 88% 18%,
+            rgba(22, 143, 255, 0.045),
+            transparent 30%
+        ),
+        linear-gradient(
+            180deg,
+            #030712 0%,
+            #050b16 45%,
+            #030712 100%
+        );
 
     color: var(--text-primary);
 
@@ -156,7 +247,7 @@ ul {
     z-index: 1000;
 
     background:
-        rgba(5, 11, 18, 0.88);
+        rgba(3, 7, 18, 0.90);
 
     border-bottom:
         1px solid var(--border);
@@ -206,15 +297,15 @@ ul {
     height: 42px;
 
     border:
-        1px solid rgba(0, 217, 255, 0.45);
+        1px solid rgba(0, 229, 255, 0.45);
 
     border-radius: 9px;
 
     background:
         linear-gradient(
             135deg,
-            rgba(0, 217, 255, 0.15),
-            rgba(0, 217, 255, 0.03)
+            rgba(0, 229, 255, 0.15),
+            rgba(0, 229, 255, 0.03)
         );
 
     color: var(--accent);
@@ -224,7 +315,7 @@ ul {
     font-weight: 800;
 
     box-shadow:
-        0 0 20px rgba(0, 217, 255, 0.08);
+        0 0 20px rgba(0, 229, 255, 0.08);
 }
 
 .logo-text {
@@ -282,7 +373,7 @@ ul {
     background: var(--accent);
 
     box-shadow:
-        0 0 10px rgba(0, 217, 255, 0.5);
+        0 0 10px rgba(0, 229, 255, 0.50);
 
     transition:
         width var(--transition);
@@ -352,22 +443,27 @@ ul {
 
 .btn-primary {
 
-    background: var(--accent);
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            #2ed8ff
+        );
 
-    color: #031017;
+    color: #020a10;
 
     box-shadow:
-        0 8px 25px rgba(0, 217, 255, 0.14);
+        0 8px 25px rgba(0, 229, 255, 0.14);
 }
 
 .btn-primary:hover {
 
     transform: translateY(-2px);
 
-    background: #34e1ff;
+    background: var(--accent-bright);
 
     box-shadow:
-        0 12px 30px rgba(0, 217, 255, 0.24);
+        0 12px 30px rgba(0, 229, 255, 0.24);
 }
 
 
@@ -377,7 +473,7 @@ ul {
         1px solid var(--card-border);
 
     background:
-        rgba(0, 217, 255, 0.05);
+        rgba(0, 229, 255, 0.05);
 
     color: var(--text-primary);
 }
@@ -387,10 +483,10 @@ ul {
     transform: translateY(-2px);
 
     border-color:
-        rgba(0, 217, 255, 0.45);
+        rgba(0, 229, 255, 0.45);
 
     background:
-        rgba(0, 217, 255, 0.09);
+        rgba(0, 229, 255, 0.09);
 }
 
 
@@ -410,7 +506,7 @@ ul {
         var(--accent-soft);
 
     border:
-        1px solid rgba(0, 217, 255, 0.25);
+        1px solid rgba(0, 229, 255, 0.25);
 
     color: var(--accent);
 }
@@ -418,10 +514,10 @@ ul {
 .btn-register:hover {
 
     background:
-        rgba(0, 217, 255, 0.15);
+        rgba(0, 229, 255, 0.15);
 
     border-color:
-        rgba(0, 217, 255, 0.45);
+        rgba(0, 229, 255, 0.45);
 }
 
 
@@ -485,9 +581,14 @@ ul {
     border-radius: 50%;
 
     background:
-        rgba(0, 217, 255, 0.07);
+        radial-gradient(
+            circle,
+            rgba(0, 229, 255, 0.10),
+            rgba(22, 143, 255, 0.045) 45%,
+            transparent 72%
+        );
 
-    filter: blur(80px);
+    filter: blur(70px);
 
     pointer-events: none;
 }
@@ -555,12 +656,12 @@ ul {
     margin-bottom: 22px;
 
     border:
-        1px solid rgba(0, 217, 255, 0.22);
+        1px solid rgba(0, 229, 255, 0.22);
 
     border-radius: 50px;
 
     background:
-        rgba(0, 217, 255, 0.06);
+        rgba(0, 229, 255, 0.06);
 
     color: var(--accent);
 
@@ -603,7 +704,7 @@ ul {
     color: var(--accent);
 
     text-shadow:
-        0 0 25px rgba(0, 217, 255, 0.18);
+        0 0 25px rgba(0, 229, 255, 0.18);
 }
 
 
@@ -727,8 +828,8 @@ ul {
     background:
         linear-gradient(
             145deg,
-            rgba(13, 31, 45, 0.85),
-            rgba(7, 17, 26, 0.85)
+            rgba(10, 29, 47, 0.90),
+            rgba(4, 14, 26, 0.92)
         );
 
     box-shadow:
@@ -746,7 +847,7 @@ ul {
         translateY(-5px);
 
     border-color:
-        rgba(0, 217, 255, 0.35);
+        var(--card-border-hover);
 
     box-shadow:
         var(--shadow),
@@ -807,7 +908,7 @@ ul {
         linear-gradient(
             180deg,
             transparent,
-            rgba(0, 217, 255, 0.025),
+            rgba(0, 229, 255, 0.025),
             transparent
         );
 }
@@ -855,7 +956,7 @@ ul {
         translateY(-6px);
 
     border-color:
-        rgba(0, 217, 255, 0.35);
+        var(--card-border-hover);
 }
 
 
@@ -886,7 +987,7 @@ ul {
     background:
         linear-gradient(
             to top,
-            rgba(5, 11, 18, 0.75),
+            rgba(3, 7, 18, 0.78),
             transparent 60%
         );
 }
@@ -1008,10 +1109,15 @@ ul {
         1px solid var(--border);
 
     background:
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(0, 229, 255, 0.07),
+            transparent 28%
+        ),
         linear-gradient(
             120deg,
-            #07131d,
-            #081923
+            #050d18,
+            #071827
         );
 }
 
@@ -1030,7 +1136,7 @@ ul {
     border-radius: 50%;
 
     background:
-        rgba(0, 217, 255, 0.06);
+        rgba(0, 229, 255, 0.06);
 
     filter: blur(60px);
 }
@@ -1110,8 +1216,8 @@ ul {
     background:
         radial-gradient(
             circle at center,
-            rgba(0, 217, 255, 0.08),
-            rgba(8, 19, 29, 0.8) 60%
+            rgba(0, 229, 255, 0.08),
+            rgba(7, 20, 34, 0.88) 60%
         );
 
     box-shadow:
@@ -1148,7 +1254,7 @@ ul {
         1px solid var(--border);
 
     background:
-        #03080d;
+        #02050a;
 }
 
 .footer-container {
@@ -1267,7 +1373,7 @@ button:focus-visible {
         var(--accent);
 
     color:
-        #031017;
+        #020a10;
 }
 
 
@@ -1287,7 +1393,14 @@ button:focus-visible {
 ::-webkit-scrollbar-thumb {
 
     background:
-        #17313e;
+        linear-gradient(
+            180deg,
+            #153248,
+            #0d2638
+        );
+
+    border:
+        2px solid var(--bg-primary);
 
     border-radius:
         20px;
