@@ -1,773 +1,1794 @@
 /* =========================================================
    CWS ACADEMY
-   CYBERSECURITY FUNDAMENTALS
-   LESSON PAGE JAVASCRIPT
-   Matched to lesson.html + lesson.css
+   LESSON SYSTEM
+
+   URL:
+
+   lesson.html
+       ?course=cybersecurity-fundamentals
+       &module=module-01
+       &lesson=lesson-01
 ========================================================= */
 
-"use strict";
 
-/* =========================================================
-   CONFIGURATION
-========================================================= */
-
-const COURSE_ID = "cybersecurity-fundamentals";
-const COURSE_TITLE = "Cybersecurity Fundamentals";
-const TOTAL_LESSONS = 24;
-
-const STORAGE_KEYS = {
-    student: "cws_student",
-    completed: "cws_completed_lessons"
-};
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
-/* =========================================================
-   LESSON DATA
-   Replace / expand the content below with your real lessons.
-========================================================= */
+import {
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const lessons = [
-    {
-        id: 1,
-        module: 1,
-        moduleTitle: "Cybersecurity Foundations",
-        title: "Introduction to Cybersecurity",
-        description:
-            "Learn what cybersecurity is, why it matters, and how security professionals protect digital systems and information.",
-        objectives: [
-            "Define cybersecurity and information security.",
-            "Explain why cybersecurity is important.",
-            "Identify common cybersecurity responsibilities.",
-            "Understand the cybersecurity threat landscape."
-        ],
-        content: `
-            <h2>What Is Cybersecurity?</h2>
 
-            <p>
-                Cybersecurity is the practice of protecting computers, networks,
-                applications, systems, and data from unauthorized access,
-                disruption, alteration, destruction, or theft.
-            </p>
-
-            <p>
-                Modern organizations depend heavily on technology. This makes
-                cybersecurity an essential part of almost every business,
-                government organization, and individual digital experience.
-            </p>
-
-            <div class="lesson-callout">
-                <strong>Key Concept</strong>
-                <p>
-                    Cybersecurity is not only about preventing hackers from
-                    accessing systems. It is about protecting the confidentiality,
-                    integrity, and availability of information.
-                </p>
-            </div>
-
-            <h2>The CIA Triad</h2>
-
-            <p>
-                The three fundamental objectives of information security are
-                commonly represented by the CIA triad.
-            </p>
-
-            <div class="lesson-info-grid">
-
-                <div class="lesson-info-card">
-                    <h3>Confidentiality</h3>
-                    <p>
-                        Ensuring that information is accessible only to
-                        authorized individuals and systems.
-                    </p>
-                </div>
-
-                <div class="lesson-info-card">
-                    <h3>Integrity</h3>
-                    <p>
-                        Ensuring that information remains accurate,
-                        complete, and protected from unauthorized modification.
-                    </p>
-                </div>
-
-                <div class="lesson-info-card">
-                    <h3>Availability</h3>
-                    <p>
-                        Ensuring that systems and information remain available
-                        when authorized users need them.
-                    </p>
-                </div>
-
-            </div>
-
-            <h2>Why Cybersecurity Matters</h2>
-
-            <p>
-                A successful cyberattack can result in financial losses,
-                operational disruption, reputational damage, privacy violations,
-                and the exposure of sensitive information.
-            </p>
-
-            <ul>
-                <li>Protect sensitive information.</li>
-                <li>Prevent unauthorized access.</li>
-                <li>Maintain reliable business operations.</li>
-                <li>Reduce the impact of cyber threats.</li>
-                <li>Support regulatory and security requirements.</li>
-            </ul>
-
-            <h3>Think Like a Security Professional</h3>
-
-            <p>
-                Good cybersecurity begins with understanding what needs to be
-                protected, identifying possible threats, evaluating weaknesses,
-                and implementing appropriate security controls.
-            </p>
-        `
-    },
-
-    {
-        id: 2,
-        module: 1,
-        moduleTitle: "Cybersecurity Foundations",
-        title: "Threats, Vulnerabilities and Risks",
-        description:
-            "Understand the relationship between threats, vulnerabilities, risks, and security controls.",
-        objectives: [
-            "Define threat, vulnerability, and risk.",
-            "Explain how vulnerabilities can be exploited.",
-            "Identify common sources of cyber risk.",
-            "Understand the purpose of security controls."
-        ],
-        content: `
-            <h2>Threats</h2>
-
-            <p>
-                A threat is anything capable of causing harm to an information
-                system, organization, or user.
-            </p>
-
-            <h2>Vulnerabilities</h2>
-
-            <p>
-                A vulnerability is a weakness that could potentially be
-                exploited by a threat.
-            </p>
-
-            <h2>Risk</h2>
-
-            <p>
-                Cybersecurity risk exists when a threat can exploit a
-                vulnerability and cause an undesirable impact.
-            </p>
-
-            <div class="lesson-callout">
-                <strong>Remember</strong>
-                <p>
-                    A vulnerability does not automatically mean that an attack
-                    will happen. Risk depends on factors such as likelihood
-                    and potential impact.
-                </p>
-            </div>
-
-            <h2>Security Controls</h2>
-
-            <p>
-                Security controls are safeguards designed to reduce security
-                risks. Examples include access controls, firewalls, encryption,
-                backups, monitoring, and security awareness training.
-            </p>
-        `
-    },
-
-    {
-        id: 3,
-        module: 1,
-        moduleTitle: "Cybersecurity Foundations",
-        title: "Authentication and Access Control",
-        description:
-            "Learn how organizations verify identities and control access to resources.",
-        objectives: [
-            "Explain authentication.",
-            "Explain authorization.",
-            "Understand multi-factor authentication.",
-            "Identify common access-control principles."
-        ],
-        content: `
-            <h2>Authentication</h2>
-
-            <p>
-                Authentication is the process of verifying who a user,
-                device, or service claims to be.
-            </p>
-
-            <h2>Authorization</h2>
-
-            <p>
-                Authorization determines what an authenticated identity is
-                allowed to access or perform.
-            </p>
-
-            <h2>Multi-Factor Authentication</h2>
-
-            <p>
-                Multi-factor authentication uses two or more different
-                authentication factors to strengthen account security.
-            </p>
-
-            <ul>
-                <li>Something you know.</li>
-                <li>Something you have.</li>
-                <li>Something you are.</li>
-            </ul>
-        `
-    }
-];
+import {
+    auth,
+    db
+} from "./firebase-config.js";
 
 
 /* =========================================================
-   AUTOMATICALLY GENERATE REMAINING LESSONS
-   This keeps the course at 24 lessons while allowing you
-   to replace them with your real lesson content later.
+   DEBUG
 ========================================================= */
 
-const moduleDefinitions = [
-    {
-        module: 1,
-        title: "Cybersecurity Foundations"
-    },
-    {
-        module: 2,
-        title: "Networking Fundamentals"
-    },
-    {
-        module: 3,
-        title: "Operating Systems"
-    },
-    {
-        module: 4,
-        title: "Security Operations"
-    },
-    {
-        module: 5,
-        title: "Web and Application Security"
-    },
-    {
-        module: 6,
-        title: "Incident Response"
-    }
-];
+const DEBUG = true;
 
-const defaultLessonTitles = [
-    "Security Principles",
-    "Threats, Vulnerabilities and Risks",
-    "Authentication and Access Control",
-    "Security Policies and Procedures",
-    "Networking Fundamentals",
-    "IP Addresses and Networking",
-    "Ports and Protocols",
-    "Firewalls and Network Security",
-    "Operating System Security",
-    "Linux Security Fundamentals",
-    "Windows Security Fundamentals",
-    "File Permissions and Access",
-    "Malware and Malicious Software",
-    "Phishing and Social Engineering",
-    "Endpoint Security",
-    "Logging and Monitoring",
-    "Web Security Fundamentals",
-    "Application Security",
-    "Data Protection and Encryption",
-    "Incident Response",
-    "Digital Forensics Fundamentals",
-    "Security Testing",
-    "Security Awareness",
-    "Cybersecurity Career Fundamentals"
-];
 
-const existingLessonIds = new Set(
-    lessons.map((lesson) => lesson.id)
-);
+function log(...args) {
 
-for (let id = 1; id <= TOTAL_LESSONS; id++) {
-
-    if (existingLessonIds.has(id)) {
-        continue;
+    if (DEBUG) {
+        console.log(
+            "[CWS Lesson]",
+            ...args
+        );
     }
 
-    const moduleIndex = Math.min(
-        Math.floor((id - 1) / 4),
-        moduleDefinitions.length - 1
-    );
-
-    const moduleData = moduleDefinitions[moduleIndex];
-
-    lessons.push({
-        id,
-        module: moduleData.module,
-        moduleTitle: moduleData.title,
-        title: defaultLessonTitles[id - 1] || `Lesson ${id}`,
-        description:
-            `Learn the fundamental concepts, terminology, and security practices covered in ${defaultLessonTitles[id - 1] || `Lesson ${id}`}.`,
-        objectives: [
-            `Understand the fundamentals of ${defaultLessonTitles[id - 1] || `Lesson ${id}`}.`,
-            "Identify important cybersecurity concepts.",
-            "Explain why the topic matters to security professionals.",
-            "Apply the concepts to practical security situations."
-        ],
-        content: `
-            <h2>${defaultLessonTitles[id - 1] || `Lesson ${id}`}</h2>
-
-            <p>
-                This lesson introduces the core concepts associated with
-                <strong>${defaultLessonTitles[id - 1] || `Lesson ${id}`}</strong>.
-            </p>
-
-            <div class="lesson-callout">
-                <strong>Lesson Note</strong>
-                <p>
-                    Replace this section with the full lesson material for
-                    this module.
-                </p>
-            </div>
-
-            <h2>Key Concepts</h2>
-
-            <ul>
-                <li>Understand the terminology used in this area.</li>
-                <li>Identify common security considerations.</li>
-                <li>Understand how the topic relates to cybersecurity.</li>
-                <li>Apply the knowledge to practical scenarios.</li>
-            </ul>
-
-            <h3>Security Perspective</h3>
-
-            <p>
-                Security professionals should understand both the technical
-                and operational implications of this topic.
-            </p>
-        `
-    });
 }
 
-lessons.sort((a, b) => a.id - b.id);
+
+function warn(...args) {
+
+    if (DEBUG) {
+        console.warn(
+            "[CWS Lesson]",
+            ...args
+        );
+    }
+
+}
+
+
+function error(...args) {
+
+    console.error(
+        "[CWS Lesson]",
+        ...args
+    );
+
+}
 
 
 /* =========================================================
-   DOM ELEMENTS
+   ELEMENTS
 ========================================================= */
 
-const elements = {
-    studentName: document.getElementById("studentName"),
+const lessonLoading =
+    document.getElementById(
+        "lessonLoading"
+    );
 
-    logoutBtn: document.getElementById("logoutBtn"),
 
-    moduleList: document.getElementById("lessonModuleList"),
+const lessonNotFound =
+    document.getElementById(
+        "lessonNotFound"
+    );
 
-    progressPercent:
-        document.getElementById("lessonProgressPercent"),
 
-    progressFill:
-        document.getElementById("lessonProgressFill"),
+const lessonNotFoundMessage =
+    document.getElementById(
+        "lessonNotFoundMessage"
+    );
 
-    progressText:
-        document.getElementById("lessonProgressText"),
 
-    loading:
-        document.getElementById("lessonLoading"),
+const lessonContent =
+    document.getElementById(
+        "lessonContent"
+    );
 
-    notFound:
-        document.getElementById("lessonNotFound"),
 
-    content:
-        document.getElementById("lessonContent"),
+const studentName =
+    document.getElementById(
+        "studentName"
+    );
 
-    breadcrumbCourse:
-        document.getElementById("breadcrumbCourse"),
 
-    breadcrumbModule:
-        document.getElementById("breadcrumbModule"),
+const logoutBtn =
+    document.getElementById(
+        "logoutBtn"
+    );
 
-    moduleNumber:
-        document.getElementById("lessonModuleNumber"),
 
-    lessonNumber:
-        document.getElementById("lessonNumber"),
+const headerCourseTitle =
+    document.getElementById(
+        "headerCourseTitle"
+    );
 
-    title:
-        document.getElementById("lessonTitle"),
 
-    description:
-        document.getElementById("lessonDescription"),
+const headerCourseCategory =
+    document.getElementById(
+        "headerCourseCategory"
+    );
 
-    objectives:
-        document.getElementById("lessonObjectives"),
 
-    body:
-        document.getElementById("lessonBody"),
+const courseBreadcrumbLink =
+    document.getElementById(
+        "courseBreadcrumbLink"
+    );
 
-    completeBtn:
-        document.getElementById("markCompleteBtn"),
 
-    previousBtn:
-        document.getElementById("previousLessonBtn"),
+const moduleBreadcrumb =
+    document.getElementById(
+        "moduleBreadcrumb"
+    );
 
-    nextBtn:
-        document.getElementById("nextLessonBtn")
-};
+
+const lessonBreadcrumb =
+    document.getElementById(
+        "lessonBreadcrumb"
+    );
+
+
+const lessonModuleBadge =
+    document.getElementById(
+        "lessonModuleBadge"
+    );
+
+
+const lessonTypeBadge =
+    document.getElementById(
+        "lessonTypeBadge"
+    );
+
+
+const lessonCategory =
+    document.getElementById(
+        "lessonCategory"
+    );
+
+
+const lessonTitle =
+    document.getElementById(
+        "lessonTitle"
+    );
+
+
+const lessonSubtitle =
+    document.getElementById(
+        "lessonSubtitle"
+    );
+
+
+const lessonDuration =
+    document.getElementById(
+        "lessonDuration"
+    );
+
+
+const lessonDifficulty =
+    document.getElementById(
+        "lessonDifficulty"
+    );
+
+
+const lessonProgressMeta =
+    document.getElementById(
+        "lessonProgressMeta"
+    );
+
+
+const lessonHeroIcon =
+    document.getElementById(
+        "lessonHeroIcon"
+    );
+
+
+const courseProgressTitle =
+    document.getElementById(
+        "courseProgressTitle"
+    );
+
+
+const courseProgressPercent =
+    document.getElementById(
+        "courseProgressPercent"
+    );
+
+
+const courseProgressFill =
+    document.getElementById(
+        "courseProgressFill"
+    );
+
+
+const courseProgressText =
+    document.getElementById(
+        "courseProgressText"
+    );
+
+
+const sidebarModuleTitle =
+    document.getElementById(
+        "sidebarModuleTitle"
+    );
+
+
+const lessonSidebarList =
+    document.getElementById(
+        "lessonSidebarList"
+    );
+
+
+const lessonIntroduction =
+    document.getElementById(
+        "lessonIntroduction"
+    );
+
+
+const lessonObjectives =
+    document.getElementById(
+        "lessonObjectives"
+    );
+
+
+const lessonBody =
+    document.getElementById(
+        "lessonBody"
+    );
+
+
+const lessonKeyConcepts =
+    document.getElementById(
+        "lessonKeyConcepts"
+    );
+
+
+const lessonKeyConceptsSection =
+    document.getElementById(
+        "lessonKeyConceptsSection"
+    );
+
+
+const knowledgeCheck =
+    document.getElementById(
+        "knowledgeCheck"
+    );
+
+
+const knowledgeCheckForm =
+    document.getElementById(
+        "knowledgeCheckForm"
+    );
+
+
+const quizQuestions =
+    document.getElementById(
+        "quizQuestions"
+    );
+
+
+const quizResult =
+    document.getElementById(
+        "quizResult"
+    );
+
+
+const completeLessonBtn =
+    document.getElementById(
+        "completeLessonBtn"
+    );
+
+
+const lessonCompletion =
+    document.getElementById(
+        "lessonCompletion"
+    );
+
+
+const previousLessonBtn =
+    document.getElementById(
+        "previousLessonBtn"
+    );
+
+
+const nextLessonBtn =
+    document.getElementById(
+        "nextLessonBtn"
+    );
 
 
 /* =========================================================
-   CURRENT LESSON
+   STATE
 ========================================================= */
+
+let currentUser = null;
+
+let currentCourse = null;
+
+let currentModule = null;
 
 let currentLesson = null;
 
-
-/* =========================================================
-   STORAGE HELPERS
-========================================================= */
-
-function getCompletedLessons() {
-
-    try {
-
-        const stored = localStorage.getItem(
-            STORAGE_KEYS.completed
-        );
-
-        if (!stored) {
-            return [];
-        }
-
-        const parsed = JSON.parse(stored);
-
-        return Array.isArray(parsed)
-            ? parsed.map(Number).filter(Boolean)
-            : [];
-
-    } catch (error) {
-
-        console.error(
-            "Unable to read completed lessons:",
-            error
-        );
-
-        return [];
-    }
-}
-
-
-function saveCompletedLessons(completed) {
-
-    try {
-
-        localStorage.setItem(
-            STORAGE_KEYS.completed,
-            JSON.stringify(
-                [...new Set(completed)]
-            )
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Unable to save lesson progress:",
-            error
-        );
-    }
-}
+let currentProgress = null;
 
 
 /* =========================================================
-   STUDENT
+   COURSE DATA
 ========================================================= */
 
-function getStudentName() {
+const courses = {
 
-    try {
+    "cybersecurity-fundamentals": {
 
-        const stored =
-            localStorage.getItem(
-                STORAGE_KEYS.student
-            );
+        id:
+            "cybersecurity-fundamentals",
 
-        if (!stored) {
-            return "Student";
-        }
+        title:
+            "Cybersecurity Fundamentals",
 
-        /*
-         * Supports:
-         * "Sandiso"
-         * {"name":"Sandiso"}
-         * {"fullName":"Sandiso"}
-         */
+        category:
+            "CWS ACADEMY • CYBERSECURITY",
 
-        try {
+        level:
+            "Beginner",
 
-            const parsed = JSON.parse(stored);
+        icon:
+            "fa-solid fa-shield-halved",
 
-            if (typeof parsed === "string") {
-                return parsed;
+        modules: [
+
+            {
+                id: "module-01",
+
+                number: 1,
+
+                title:
+                    "Prerequisites & IT Foundations",
+
+                lessons: [
+
+                    {
+                        id: "lesson-01",
+
+                        title:
+                            "Computer Networking Foundations",
+
+                        subtitle:
+                            "Understand the networking concepts every cybersecurity professional needs.",
+
+                        duration:
+                            "25 minutes",
+
+                        type:
+                            "Lesson",
+
+                        icon:
+                            "fa-solid fa-network-wired",
+
+                        introduction:
+                            `
+                            <h2>Why Networking Matters in Cybersecurity</h2>
+
+                            <p>
+                                Cybersecurity professionals need to understand how
+                                computers communicate before they can effectively
+                                protect or test those systems.
+                            </p>
+
+                            <p>
+                                Networks allow devices, applications and services
+                                to communicate with one another. Security controls
+                                such as firewalls, IDS/IPS systems and network
+                                monitoring tools all depend on an understanding of
+                                network traffic.
+                            </p>
+
+                            <div class="lesson-callout">
+
+                                <div class="lesson-callout-icon">
+                                    <i class="fa-solid fa-lightbulb"></i>
+                                </div>
+
+                                <div>
+                                    <strong>CWS Academy Tip</strong>
+
+                                    <p>
+                                        A strong networking foundation will make
+                                        later topics such as penetration testing,
+                                        SOC analysis and network defense much easier.
+                                    </p>
+                                </div>
+
+                            </div>
+                            `,
+
+                        objectives: [
+
+                            "Understand the purpose of computer networks.",
+
+                            "Explain the OSI and TCP/IP models.",
+
+                            "Understand basic routing and switching concepts.",
+
+                            "Explain DNS and DHCP.",
+
+                            "Understand common network ports and services."
+
+                        ],
+
+                        body:
+                            `
+                            <h2>Computer Networks</h2>
+
+                            <p>
+                                A computer network is a collection of connected
+                                devices that communicate and exchange information.
+                                These devices can include computers, servers,
+                                smartphones, routers, switches and security
+                                appliances.
+                            </p>
+
+                            <h3>The OSI Model</h3>
+
+                            <p>
+                                The Open Systems Interconnection model divides
+                                network communication into seven conceptual layers.
+                            </p>
+
+                            <ol>
+
+                                <li>Physical</li>
+
+                                <li>Data Link</li>
+
+                                <li>Network</li>
+
+                                <li>Transport</li>
+
+                                <li>Session</li>
+
+                                <li>Presentation</li>
+
+                                <li>Application</li>
+
+                            </ol>
+
+
+                            <h3>The TCP/IP Model</h3>
+
+                            <p>
+                                The TCP/IP model provides a practical framework for
+                                understanding how devices communicate across modern
+                                networks.
+                            </p>
+
+
+                            <h3>Routing</h3>
+
+                            <p>
+                                Routing determines how packets move from one network
+                                to another. Routers use routing information to
+                                determine where traffic should be forwarded.
+                            </p>
+
+
+                            <h3>Switching</h3>
+
+                            <p>
+                                Switches primarily connect devices within a local
+                                network and forward frames to the appropriate
+                                destination.
+                            </p>
+
+
+                            <h3>DNS</h3>
+
+                            <p>
+                                The Domain Name System translates human-readable
+                                domain names into IP addresses.
+                            </p>
+
+
+                            <h3>DHCP</h3>
+
+                            <p>
+                                Dynamic Host Configuration Protocol allows devices
+                                to automatically obtain network configuration such
+                                as IP addresses.
+                            </p>
+
+
+                            <h3>Ports</h3>
+
+                            <p>
+                                Network ports help identify services running on
+                                systems. Examples include HTTP, HTTPS, SSH and DNS.
+                            </p>
+
+
+                            <pre class="lesson-code-block">
+nmap 192.168.1.1
+                            </pre>
+
+                            <p>
+                                Tools such as Nmap can later be used in controlled
+                                environments to discover hosts and services.
+                            </p>
+                            `,
+
+                        keyConcepts: [
+
+                            {
+                                title:
+                                    "OSI Model",
+
+                                description:
+                                    "Seven-layer conceptual model used to understand network communication."
+                            },
+
+                            {
+                                title:
+                                    "TCP/IP",
+
+                                description:
+                                    "Practical networking model used by modern Internet communications."
+                            },
+
+                            {
+                                title:
+                                    "DNS",
+
+                                description:
+                                    "Translates domain names into IP addresses."
+                            },
+
+                            {
+                                title:
+                                    "DHCP",
+
+                                description:
+                                    "Automatically provides network configuration to devices."
+                            }
+
+                        ],
+
+                        quiz: [
+
+                            {
+                                question:
+                                    "Which protocol translates domain names into IP addresses?",
+
+                                options: [
+                                    "DHCP",
+                                    "DNS",
+                                    "SSH",
+                                    "FTP"
+                                ],
+
+                                answer:
+                                    1
+                            },
+
+                            {
+                                question:
+                                    "Which device primarily forwards traffic between different networks?",
+
+                                options: [
+                                    "Switch",
+                                    "Keyboard",
+                                    "Router",
+                                    "Monitor"
+                                ],
+
+                                answer:
+                                    2
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+                        id: "lesson-02",
+
+                        title:
+                            "System Administration Foundations",
+
+                        subtitle:
+                            "Learn the Windows, Linux and command-line concepts used by security professionals.",
+
+                        duration:
+                            "25 minutes",
+
+                        type:
+                            "Lesson",
+
+                        icon:
+                            "fa-solid fa-server",
+
+                        introduction:
+                            `
+                            <h2>Security Starts With System Knowledge</h2>
+
+                            <p>
+                                Security professionals interact with operating
+                                systems every day. Understanding how systems are
+                                configured, administered and monitored is therefore
+                                an important foundation.
+                            </p>
+                            `,
+
+                        objectives: [
+
+                            "Understand basic Windows administration.",
+
+                            "Understand basic Linux administration.",
+
+                            "Use command-line interfaces.",
+
+                            "Understand file permissions.",
+
+                            "Understand basic Bash scripting."
+
+                        ],
+
+                        body:
+                            `
+                            <h2>Windows Administration</h2>
+
+                            <p>
+                                Windows environments commonly involve users,
+                                groups, services, processes, permissions and
+                                centralized administration.
+                            </p>
+
+
+                            <h2>Linux Administration</h2>
+
+                            <p>
+                                Linux is widely used in servers, cloud environments
+                                and cybersecurity laboratories.
+                            </p>
+
+
+                            <h3>Command Line</h3>
+
+                            <pre class="lesson-code-block">
+whoami
+pwd
+ls
+cd /var/log
+                            </pre>
+
+
+                            <h3>File Permissions</h3>
+
+                            <p>
+                                Linux permissions determine who can read, write or
+                                execute a file.
+                            </p>
+
+
+                            <h3>Bash</h3>
+
+                            <p>
+                                Bash can automate repetitive administration and
+                                security tasks.
+                            </p>
+                            `,
+
+                        keyConcepts: [
+
+                            {
+                                title:
+                                    "CLI",
+
+                                description:
+                                    "Command-line interface used to interact with operating systems."
+                            },
+
+                            {
+                                title:
+                                    "Linux",
+
+                                description:
+                                    "Widely used operating system in servers and security environments."
+                            },
+
+                            {
+                                title:
+                                    "Permissions",
+
+                                description:
+                                    "Controls who can access or modify system resources."
+                            }
+
+                        ],
+
+                        quiz: [
+
+                            {
+                                question:
+                                    "Which command displays the current Linux user?",
+
+                                options: [
+                                    "whoami",
+                                    "mkdir",
+                                    "clear",
+                                    "touch"
+                                ],
+
+                                answer:
+                                    0
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+                        id: "lesson-03",
+
+                        title:
+                            "Programming for Security",
+
+                        subtitle:
+                            "Learn how basic programming and automation can support cybersecurity work.",
+
+                        duration:
+                            "30 minutes",
+
+                        type:
+                            "Lesson",
+
+                        icon:
+                            "fa-solid fa-code",
+
+                        introduction:
+                            `
+                            <h2>Programming and Cybersecurity</h2>
+
+                            <p>
+                                Security professionals often automate repetitive
+                                tasks using programming and scripting languages.
+                            </p>
+
+                            <p>
+                                Python is particularly useful because it provides
+                                a large ecosystem of libraries for networking,
+                                automation, data processing and security research.
+                            </p>
+                            `,
+
+                        objectives: [
+
+                            "Understand why programming is useful in cybersecurity.",
+
+                            "Recognize common security scripting languages.",
+
+                            "Understand basic Python syntax.",
+
+                            "Understand basic automation concepts."
+
+                        ],
+
+                        body:
+                            `
+                            <h2>Python for Security</h2>
+
+                            <p>
+                                Python can be used to automate repetitive tasks,
+                                process security data and interact with systems
+                                and APIs.
+                            </p>
+
+                            <pre class="lesson-code-block">
+target = "192.168.1.10"
+
+print("Checking target:", target)
+                            </pre>
+
+                            <p>
+                                The goal at this stage is not to become a
+                                professional programmer. The objective is to
+                                develop enough programming knowledge to automate
+                                security-related tasks.
+                            </p>
+
+                            <h3>Automation</h3>
+
+                            <p>
+                                Automation can reduce repetitive manual work and
+                                allow security teams to respond more efficiently.
+                            </p>
+                            `,
+
+                        keyConcepts: [
+
+                            {
+                                title:
+                                    "Python",
+
+                                description:
+                                    "A popular programming language for automation and security tooling."
+                            },
+
+                            {
+                                title:
+                                    "Automation",
+
+                                description:
+                                    "Using scripts or software to perform repetitive tasks."
+                            }
+
+                        ],
+
+                        quiz: [
+
+                            {
+                                question:
+                                    "Which language is widely used for cybersecurity automation?",
+
+                                options: [
+                                    "Python",
+                                    "HTML",
+                                    "CSS",
+                                    "SQL only"
+                                ],
+
+                                answer:
+                                    0
+                            }
+
+                        ]
+
+                    }
+
+                ]
+
+            },
+
+
+            {
+                id: "module-02",
+
+                number: 2,
+
+                title:
+                    "Core Cybersecurity Fundamentals",
+
+                lessons: [
+
+                    {
+                        id: "lesson-01",
+
+                        title:
+                            "The CIA Triad",
+
+                        subtitle:
+                            "Understand confidentiality, integrity and availability.",
+
+                        duration:
+                            "20 minutes",
+
+                        type:
+                            "Lesson",
+
+                        icon:
+                            "fa-solid fa-lock",
+
+                        introduction:
+                            `
+                            <h2>The CIA Triad</h2>
+
+                            <p>
+                                The CIA Triad is one of the fundamental models
+                                used to understand information security.
+                            </p>
+                            `,
+
+                        objectives: [
+
+                            "Explain confidentiality.",
+
+                            "Explain integrity.",
+
+                            "Explain availability.",
+
+                            "Apply the CIA Triad to security scenarios."
+
+                        ],
+
+                        body:
+                            `
+                            <h2>Confidentiality</h2>
+
+                            <p>
+                                Confidentiality ensures that information is only
+                                accessible to authorized individuals or systems.
+                            </p>
+
+
+                            <h2>Integrity</h2>
+
+                            <p>
+                                Integrity ensures that information remains accurate
+                                and has not been improperly altered.
+                            </p>
+
+
+                            <h2>Availability</h2>
+
+                            <p>
+                                Availability ensures that authorized users can
+                                access systems and information when needed.
+                            </p>
+
+
+                            <div class="lesson-callout">
+
+                                <div class="lesson-callout-icon">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Think Like a Security Professional</strong>
+
+                                    <p>
+                                        When analyzing a security incident, ask:
+                                        Was confidentiality, integrity,
+                                        availability, or a combination of them
+                                        affected?
+                                    </p>
+                                </div>
+
+                            </div>
+                            `,
+
+                        keyConcepts: [
+
+                            {
+                                title:
+                                    "Confidentiality",
+
+                                description:
+                                    "Preventing unauthorized disclosure of information."
+                            },
+
+                            {
+                                title:
+                                    "Integrity",
+
+                                description:
+                                    "Protecting information from unauthorized modification."
+                            },
+
+                            {
+                                title:
+                                    "Availability",
+
+                                description:
+                                    "Ensuring systems and information remain accessible."
+                            }
+
+                        ],
+
+                        quiz: [
+
+                            {
+                                question:
+                                    "Which CIA principle protects information from unauthorized disclosure?",
+
+                                options: [
+                                    "Availability",
+                                    "Integrity",
+                                    "Confidentiality",
+                                    "Accounting"
+                                ],
+
+                                answer:
+                                    2
+                            }
+
+                        ]
+
+                    }
+
+                ]
+
             }
 
-            if (parsed?.name) {
-                return parsed.name;
-            }
+        ]
 
-            if (parsed?.fullName) {
-                return parsed.fullName;
-            }
-
-            if (parsed?.firstName) {
-                return parsed.firstName;
-            }
-
-        } catch {
-            return stored;
-        }
-
-        return "Student";
-
-    } catch {
-
-        return "Student";
     }
-}
 
-
-function renderStudentName() {
-
-    if (elements.studentName) {
-        elements.studentName.textContent =
-            getStudentName();
-    }
-}
+};
 
 
 /* =========================================================
-   URL / LESSON ID
+   URL PARAMETERS
 ========================================================= */
 
-function getLessonIdFromURL() {
+function getUrlParameters() {
 
     const params =
         new URLSearchParams(
             window.location.search
         );
 
-    /*
-     * Supports:
-     * lesson=1
-     * id=1
-     * lessonId=1
-     */
 
-    const value =
-        params.get("lesson") ||
-        params.get("lessonId") ||
-        params.get("id");
+    return {
 
-    const id = Number(value);
+        courseId:
+            (
+                params.get("course") || ""
+            )
+                .trim()
+                .toLowerCase(),
 
-    if (
-        Number.isInteger(id) &&
-        id > 0
-    ) {
-        return id;
-    }
+        moduleId:
+            (
+                params.get("module") || ""
+            )
+                .trim()
+                .toLowerCase(),
 
-    return 1;
+        lessonId:
+            (
+                params.get("lesson") || ""
+            )
+                .trim()
+                .toLowerCase()
+
+    };
+
 }
 
 
 /* =========================================================
-   MODULE GROUPING
+   USER NAME
 ========================================================= */
 
-function groupLessonsByModule() {
+function getUserName(user) {
 
-    const groups = new Map();
+    if (!user) {
+        return "Student";
+    }
 
-    lessons.forEach((lesson) => {
 
-        if (!groups.has(lesson.module)) {
+    if (
+        typeof user.displayName === "string" &&
+        user.displayName.trim()
+    ) {
 
-            groups.set(
-                lesson.module,
-                {
-                    module: lesson.module,
-                    title: lesson.moduleTitle,
-                    lessons: []
-                }
-            );
+        return user.displayName.trim();
+
+    }
+
+
+    if (
+        typeof user.email === "string" &&
+        user.email.includes("@")
+    ) {
+
+        const name =
+            user.email
+                .split("@")[0]
+                .replace(/[._-]+/g, " ")
+                .trim();
+
+
+        if (name) {
+
+            return name
+                .split(" ")
+                .map(
+                    word =>
+                        word.charAt(0).toUpperCase() +
+                        word.slice(1)
+                )
+                .join(" ");
 
         }
 
-        groups
-            .get(lesson.module)
-            .lessons
-            .push(lesson);
-    });
+    }
 
-    return [...groups.values()];
+
+    return "Student";
+
 }
 
 
 /* =========================================================
-   SIDEBAR
+   TEXT
 ========================================================= */
 
-function renderModuleList() {
+function setText(element, value) {
 
-    if (!elements.moduleList) {
+    if (!element) {
         return;
     }
 
-    const completed =
-        new Set(getCompletedLessons());
+    element.textContent =
+        value ?? "";
 
-    const groups =
-        groupLessonsByModule();
-
-    elements.moduleList.innerHTML = "";
-
-    groups.forEach((group) => {
-
-        const section =
-            document.createElement("div");
-
-        section.className =
-            "module-section";
-
-        const heading =
-            document.createElement("div");
-
-        heading.className =
-            "module-section-title";
-
-        heading.textContent =
-            `Module ${String(group.module).padStart(2, "0")} — ${group.title}`;
-
-        section.appendChild(heading);
-
-        group.lessons.forEach((lesson) => {
-
-            const link =
-                document.createElement("a");
-
-            link.href =
-                `./lesson.html?lesson=${lesson.id}`;
-
-            link.className =
-                "lesson-module-item";
-
-            if (
-                currentLesson &&
-                lesson.id === currentLesson.id
-            ) {
-                link.classList.add("active");
-            }
-
-            if (completed.has(lesson.id)) {
-                link.classList.add("completed");
-            }
-
-            const number =
-                document.createElement("span");
-
-            number.className =
-                "lesson-module-item-number";
-
-            number.textContent =
-                String(lesson.id).padStart(2, "0");
-
-
-            const title =
-                document.createElement("span");
-
-            title.className =
-                "lesson-module-item-title";
-
-            title.textContent =
-                lesson.title;
-
-
-            const icon =
-                document.createElement("i");
-
-            icon.className =
-                completed.has(lesson.id)
-                    ? "fa-solid fa-check"
-                    : "fa-solid fa-chevron-right";
-
-            link.append(
-                number,
-                title,
-                icon
-            );
-
-            section.appendChild(link);
-        });
-
-        elements.moduleList.appendChild(section);
-    });
 }
 
 
 /* =========================================================
-   PROGRESS
+   PAGE STATES
 ========================================================= */
 
-function renderProgress() {
+function showLoading() {
+
+    if (lessonLoading) {
+        lessonLoading.hidden = false;
+    }
+
+    if (lessonNotFound) {
+        lessonNotFound.hidden = true;
+    }
+
+    if (lessonContent) {
+        lessonContent.hidden = true;
+    }
+
+}
+
+
+function showNotFound(message) {
+
+    if (lessonLoading) {
+        lessonLoading.hidden = true;
+    }
+
+    if (lessonContent) {
+        lessonContent.hidden = true;
+    }
+
+    if (lessonNotFoundMessage) {
+
+        lessonNotFoundMessage.textContent =
+            message;
+
+    }
+
+    if (lessonNotFound) {
+        lessonNotFound.hidden = false;
+    }
+
+}
+
+
+function showContent() {
+
+    if (lessonLoading) {
+        lessonLoading.hidden = true;
+    }
+
+    if (lessonNotFound) {
+        lessonNotFound.hidden = true;
+    }
+
+    if (lessonContent) {
+        lessonContent.hidden = false;
+    }
+
+}
+
+
+/* =========================================================
+   FIND COURSE
+========================================================= */
+
+function findCourse(courseId) {
+
+    return courses[courseId] || null;
+
+}
+
+
+/* =========================================================
+   FIND MODULE
+========================================================= */
+
+function findModule(course, moduleId) {
+
+    if (!course) {
+        return null;
+    }
+
+    return (
+        course.modules.find(
+            module =>
+                module.id === moduleId
+        ) || null
+    );
+
+}
+
+
+/* =========================================================
+   FIND LESSON
+========================================================= */
+
+function findLesson(module, lessonId) {
+
+    if (!module) {
+        return null;
+    }
+
+    return (
+        module.lessons.find(
+            lesson =>
+                lesson.id === lessonId
+        ) || null
+    );
+
+}
+
+
+/* =========================================================
+   PROGRESS DEFAULT
+========================================================= */
+
+function getDefaultProgress() {
+
+    return {
+
+        courseId:
+            currentCourse.id,
+
+        completedLessons:
+            [],
+
+        completedLabs:
+            [],
+
+        completedAssessments:
+            [],
+
+        currentModule:
+            currentModule.id,
+
+        currentLesson:
+            currentLesson.id,
+
+        progressPercent:
+            0,
+
+        started:
+            true,
+
+        completed:
+            false
+
+    };
+
+}
+
+
+/* =========================================================
+   PROGRESS REF
+========================================================= */
+
+function getProgressRef() {
+
+    if (
+        !db ||
+        !currentUser ||
+        !currentCourse
+    ) {
+
+        return null;
+
+    }
+
+
+    return doc(
+
+        db,
+
+        "users",
+
+        currentUser.uid,
+
+        "courseProgress",
+
+        currentCourse.id
+
+    );
+
+}
+
+
+/* =========================================================
+   LOAD PROGRESS
+========================================================= */
+
+async function loadProgress() {
+
+    currentProgress =
+        getDefaultProgress();
+
+
+    if (!db) {
+
+        warn(
+            "Firestore unavailable."
+        );
+
+        updateCourseProgressUI();
+
+        return;
+
+    }
+
+
+    try {
+
+        const progressRef =
+            getProgressRef();
+
+
+        const snapshot =
+            await getDoc(
+                progressRef
+            );
+
+
+        if (snapshot.exists()) {
+
+            currentProgress = {
+
+                ...getDefaultProgress(),
+
+                ...snapshot.data()
+
+            };
+
+        }
+
+
+        if (
+            !Array.isArray(
+                currentProgress.completedLessons
+            )
+        ) {
+
+            currentProgress.completedLessons =
+                [];
+
+        }
+
+
+        updateCourseProgressUI();
+
+
+    } catch (err) {
+
+        error(
+            "Progress load failed:",
+            err
+        );
+
+
+        currentProgress =
+            getDefaultProgress();
+
+
+        updateCourseProgressUI();
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE PROGRESS
+========================================================= */
+
+async function saveProgress() {
+
+    if (
+        !db ||
+        !currentUser ||
+        !currentCourse ||
+        !currentProgress
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const progressRef =
+            getProgressRef();
+
+
+        await setDoc(
+
+            progressRef,
+
+            {
+
+                ...currentProgress,
+
+                updatedAt:
+                    serverTimestamp()
+
+            },
+
+            {
+                merge: true
+            }
+
+        );
+
+
+        log(
+            "Progress saved."
+        );
+
+
+    } catch (err) {
+
+        error(
+            "Progress save failed:",
+            err
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TOTAL LESSONS
+========================================================= */
+
+function getTotalLessons() {
+
+    let total = 0;
+
+
+    currentCourse.modules.forEach(
+        module => {
+
+            total +=
+                module.lessons.length;
+
+        }
+    );
+
+
+    return total;
+
+}
+
+
+/* =========================================================
+   COURSE PROGRESS
+========================================================= */
+
+function calculateCourseProgress() {
+
+    const total =
+        getTotalLessons();
+
 
     const completed =
-        getCompletedLessons();
+        currentProgress?.completedLessons
+            ?.length || 0;
 
-    const validCompleted =
-        completed.filter((id) =>
-            lessons.some(
-                (lesson) => lesson.id === id
-            )
-        );
 
-    const count =
-        validCompleted.length;
+    if (!total) {
+        return 0;
+    }
 
-    const percentage =
+
+    return Math.min(
+
+        100,
+
         Math.round(
-            (count / TOTAL_LESSONS) * 100
-        );
+            (
+                completed /
+                total
+            ) * 100
+        )
 
-    if (elements.progressPercent) {
+    );
 
-        elements.progressPercent.textContent =
-            `${percentage}%`;
+}
+
+
+/* =========================================================
+   UPDATE COURSE PROGRESS
+========================================================= */
+
+function updateCourseProgressUI() {
+
+    if (!currentProgress) {
+        return;
     }
 
-    if (elements.progressFill) {
 
-        elements.progressFill.style.width =
-            `${percentage}%`;
+    const percent =
+        calculateCourseProgress();
+
+
+    currentProgress.progressPercent =
+        percent;
+
+
+    setText(
+
+        courseProgressPercent,
+
+        `${percent}%`
+
+    );
+
+
+    if (courseProgressFill) {
+
+        courseProgressFill.style.width =
+            `${percent}%`;
+
     }
 
-    if (elements.progressText) {
-
-        elements.progressText.textContent =
-            `${count} of ${TOTAL_LESSONS} lessons completed`;
-    }
 
     const progressBar =
         document.querySelector(
             ".lesson-progress-bar"
         );
 
+
     if (progressBar) {
 
         progressBar.setAttribute(
             "aria-valuenow",
-            String(percentage)
+            String(percent)
         );
+
     }
+
+
+    const completed =
+        currentProgress.completedLessons
+            ?.length || 0;
+
+
+    const total =
+        getTotalLessons();
+
+
+    if (percent === 0) {
+
+        setText(
+
+            courseProgressText,
+
+            "Start your first lesson to begin making progress."
+
+        );
+
+    } else if (percent < 100) {
+
+        setText(
+
+            courseProgressText,
+
+            `${completed} of ${total} lessons completed.`
+
+        );
+
+    } else {
+
+        setText(
+
+            courseProgressText,
+
+            "Course completed. Congratulations!"
+
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER LESSON
+========================================================= */
+
+function renderLesson() {
+
+    setText(
+        headerCourseTitle,
+        currentCourse.title
+    );
+
+
+    setText(
+        headerCourseCategory,
+        currentCourse.category
+    );
+
+
+    setText(
+        studentName,
+        getUserName(currentUser)
+    );
+
+
+    setText(
+        courseProgressTitle,
+        currentCourse.title
+    );
+
+
+    setText(
+        moduleBreadcrumb,
+        currentModule.title
+    );
+
+
+    setText(
+        lessonBreadcrumb,
+        currentLesson.title
+    );
+
+
+    setText(
+        lessonModuleBadge,
+
+        `MODULE ${String(
+            currentModule.number
+        ).padStart(2, "0")}`
+
+    );
+
+
+    setText(
+        lessonTypeBadge,
+
+        currentLesson.type ||
+        "LESSON"
+
+    );
+
+
+    setText(
+        lessonCategory,
+        currentCourse.category
+    );
+
+
+    setText(
+        lessonTitle,
+        currentLesson.title
+    );
+
+
+    setText(
+        lessonSubtitle,
+        currentLesson.subtitle
+    );
+
+
+    if (lessonDuration) {
+
+        lessonDuration.innerHTML = `
+
+            <i class="fa-regular fa-clock"></i>
+
+            ${currentLesson.duration}
+
+        `;
+
+    }
+
+
+    if (lessonDifficulty) {
+
+        lessonDifficulty.innerHTML = `
+
+            <i class="fa-solid fa-signal"></i>
+
+            ${currentCourse.level}
+
+        `;
+
+    }
+
+
+    if (lessonHeroIcon) {
+
+        lessonHeroIcon.className =
+            currentLesson.icon ||
+            currentCourse.icon;
+
+    }
+
+
+    if (courseBreadcrumbLink) {
+
+        courseBreadcrumbLink.href =
+            `course-details.html?course=${encodeURIComponent(
+                currentCourse.id
+            )}`;
+
+    }
+
+
+    setText(
+        sidebarModuleTitle,
+        `Module ${String(
+            currentModule.number
+        ).padStart(2, "0")}: ${currentModule.title}`
+    );
+
+
+    renderIntroduction();
+
+
+    renderObjectives();
+
+
+    renderBody();
+
+
+    renderKeyConcepts();
+
+
+    renderQuiz();
+
+
+    renderSidebar();
+
+
+    renderNavigation();
+
+
+    updateCompletionUI();
+
+}
+
+
+/* =========================================================
+   INTRODUCTION
+========================================================= */
+
+function renderIntroduction() {
+
+    if (!lessonIntroduction) {
+        return;
+    }
+
+
+    lessonIntroduction.innerHTML =
+        currentLesson.introduction ||
+        "";
+
 }
 
 
@@ -775,104 +1796,544 @@ function renderProgress() {
    OBJECTIVES
 ========================================================= */
 
-function renderObjectives(objectives) {
+function renderObjectives() {
 
-    if (!elements.objectives) {
+    if (!lessonObjectives) {
         return;
     }
 
-    elements.objectives.innerHTML = "";
 
-    (objectives || []).forEach((objective) => {
+    lessonObjectives.innerHTML =
+        "";
 
-        const li =
-            document.createElement("li");
 
-        const icon =
-            document.createElement("i");
+    const objectives =
+        currentLesson.objectives || [];
 
-        icon.className =
-            "fa-solid fa-check";
 
-        const text =
-            document.createElement("span");
+    objectives.forEach(
+        objective => {
 
-        text.textContent =
-            objective;
+            const li =
+                document.createElement(
+                    "li"
+                );
 
-        li.append(
-            icon,
-            text
+
+            li.textContent =
+                objective;
+
+
+            lessonObjectives.appendChild(
+                li
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+function renderBody() {
+
+    if (!lessonBody) {
+        return;
+    }
+
+
+    lessonBody.innerHTML =
+        currentLesson.body ||
+        "";
+
+}
+
+
+/* =========================================================
+   KEY CONCEPTS
+========================================================= */
+
+function renderKeyConcepts() {
+
+    if (
+        !lessonKeyConcepts ||
+        !lessonKeyConceptsSection
+    ) {
+
+        return;
+
+    }
+
+
+    const concepts =
+        currentLesson.keyConcepts || [];
+
+
+    lessonKeyConcepts.innerHTML =
+        "";
+
+
+    if (!concepts.length) {
+
+        lessonKeyConceptsSection.hidden =
+            true;
+
+        return;
+
+    }
+
+
+    lessonKeyConceptsSection.hidden =
+        false;
+
+
+    concepts.forEach(
+        concept => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "lesson-concept-card";
+
+
+            const title =
+                document.createElement(
+                    "strong"
+                );
+
+
+            title.textContent =
+                concept.title;
+
+
+            const description =
+                document.createElement(
+                    "p"
+                );
+
+
+            description.textContent =
+                concept.description;
+
+
+            card.appendChild(title);
+
+            card.appendChild(
+                description
+            );
+
+
+            lessonKeyConcepts.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   QUIZ
+========================================================= */
+
+function renderQuiz() {
+
+    if (
+        !quizQuestions ||
+        !knowledgeCheck
+    ) {
+
+        return;
+
+    }
+
+
+    const quiz =
+        currentLesson.quiz || [];
+
+
+    quizQuestions.innerHTML =
+        "";
+
+
+    if (!quiz.length) {
+
+        knowledgeCheck.hidden =
+            true;
+
+        return;
+
+    }
+
+
+    knowledgeCheck.hidden =
+        false;
+
+
+    quiz.forEach(
+        (question, index) => {
+
+            const questionBox =
+                document.createElement(
+                    "div"
+                );
+
+
+            questionBox.className =
+                "quiz-question";
+
+
+            const title =
+                document.createElement(
+                    "h3"
+                );
+
+
+            title.className =
+                "quiz-question-title";
+
+
+            title.textContent =
+                `${index + 1}. ${question.question}`;
+
+
+            const options =
+                document.createElement(
+                    "div"
+                );
+
+
+            options.className =
+                "quiz-options";
+
+
+            question.options.forEach(
+                (option, optionIndex) => {
+
+                    const label =
+                        document.createElement(
+                            "label"
+                        );
+
+
+                    label.className =
+                        "quiz-option";
+
+
+                    const input =
+                        document.createElement(
+                            "input"
+                        );
+
+
+                    input.type =
+                        "radio";
+
+
+                    input.name =
+                        `question-${index}`;
+
+
+                    input.value =
+                        String(
+                            optionIndex
+                        );
+
+
+                    input.required =
+                        true;
+
+
+                    const span =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    span.textContent =
+                        option;
+
+
+                    label.appendChild(
+                        input
+                    );
+
+
+                    label.appendChild(
+                        span
+                    );
+
+
+                    options.appendChild(
+                        label
+                    );
+
+                }
+            );
+
+
+            questionBox.appendChild(
+                title
+            );
+
+
+            questionBox.appendChild(
+                options
+            );
+
+
+            quizQuestions.appendChild(
+                questionBox
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   QUIZ SUBMIT
+========================================================= */
+
+function handleQuizSubmit(event) {
+
+    event.preventDefault();
+
+
+    const quiz =
+        currentLesson.quiz || [];
+
+
+    let score = 0;
+
+
+    quiz.forEach(
+        (question, index) => {
+
+            const selected =
+                document.querySelector(
+                    `input[name="question-${index}"]:checked`
+                );
+
+
+            if (
+                selected &&
+                Number(selected.value) ===
+                    question.answer
+            ) {
+
+                score++;
+
+            }
+
+        }
+    );
+
+
+    const percentage =
+        Math.round(
+            (
+                score /
+                quiz.length
+            ) * 100
         );
 
-        elements.objectives.appendChild(li);
-    });
+
+    if (!quizResult) {
+        return;
+    }
+
+
+    quizResult.hidden =
+        false;
+
+
+    quizResult.className =
+        "quiz-result";
+
+
+    if (percentage >= 70) {
+
+        quizResult.classList.add(
+            "success"
+        );
+
+
+        quizResult.innerHTML = `
+
+            <strong>
+                Excellent work!
+            </strong>
+
+            <p>
+                You scored ${score}/${quiz.length}
+                (${percentage}%).
+            </p>
+
+        `;
+
+    } else {
+
+        quizResult.classList.add(
+            "failed"
+        );
+
+
+        quizResult.innerHTML = `
+
+            <strong>
+                Keep studying.
+            </strong>
+
+            <p>
+                You scored ${score}/${quiz.length}
+                (${percentage}%).
+                Review the lesson and try again.
+            </p>
+
+        `;
+
+    }
+
 }
 
 
 /* =========================================================
-   LESSON HEADER
+   SIDEBAR
 ========================================================= */
 
-function renderLessonHeader() {
+function renderSidebar() {
 
-    if (!currentLesson) {
+    if (!lessonSidebarList) {
         return;
     }
 
-    if (elements.breadcrumbCourse) {
 
-        elements.breadcrumbCourse.textContent =
-            COURSE_TITLE;
-    }
+    lessonSidebarList.innerHTML =
+        "";
 
-    if (elements.breadcrumbModule) {
 
-        elements.breadcrumbModule.textContent =
-            `Module ${String(currentLesson.module).padStart(2, "0")} — ${currentLesson.moduleTitle}`;
-    }
+    currentModule.lessons.forEach(
+        (lesson, index) => {
 
-    if (elements.moduleNumber) {
+            const link =
+                document.createElement(
+                    "a"
+                );
 
-        elements.moduleNumber.textContent =
-            `MODULE ${String(currentLesson.module).padStart(2, "0")}`;
-    }
 
-    if (elements.lessonNumber) {
+            link.className =
+                "lesson-sidebar-item";
 
-        elements.lessonNumber.textContent =
-            `LESSON ${String(currentLesson.id).padStart(2, "0")}`;
-    }
 
-    if (elements.title) {
+            const completed =
+                currentProgress?.completedLessons
+                    ?.includes(
+                        buildLessonKey(
+                            currentModule.id,
+                            lesson.id
+                        )
+                    );
 
-        elements.title.textContent =
-            currentLesson.title;
-    }
 
-    if (elements.description) {
+            if (completed) {
 
-        elements.description.textContent =
-            currentLesson.description;
-    }
+                link.classList.add(
+                    "completed"
+                );
 
-    document.title =
-        `CWS Academy | ${currentLesson.title}`;
+            }
+
+
+            if (
+                lesson.id ===
+                currentLesson.id
+            ) {
+
+                link.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            link.href =
+                buildLessonUrl(
+                    currentCourse.id,
+                    currentModule.id,
+                    lesson.id
+                );
+
+
+            const number =
+                document.createElement(
+                    "span"
+                );
+
+
+            number.className =
+                "lesson-sidebar-number";
+
+
+            number.textContent =
+                String(index + 1)
+                    .padStart(2, "0");
+
+
+            const title =
+                document.createElement(
+                    "span"
+                );
+
+
+            title.className =
+                "lesson-sidebar-title";
+
+
+            title.textContent =
+                lesson.title;
+
+
+            link.appendChild(
+                number
+            );
+
+
+            link.appendChild(
+                title
+            );
+
+
+            lessonSidebarList.appendChild(
+                link
+            );
+
+        }
+    );
+
 }
 
 
 /* =========================================================
-   LESSON BODY
+   LESSON KEY
 ========================================================= */
 
-function renderLessonBody() {
+function buildLessonKey(
+    moduleId,
+    lessonId
+) {
 
-    if (!elements.body || !currentLesson) {
-        return;
-    }
+    return `${moduleId}:${lessonId}`;
 
-    elements.body.innerHTML =
-        currentLesson.content || "";
 }
 
 
@@ -882,362 +2343,343 @@ function renderLessonBody() {
 
 function isLessonCompleted() {
 
-    if (!currentLesson) {
+    if (!currentProgress) {
         return false;
     }
 
-    return getCompletedLessons()
-        .includes(currentLesson.id);
-}
 
-
-function renderCompletionState() {
-
-    if (!elements.completeBtn) {
-        return;
-    }
-
-    const completed =
-        isLessonCompleted();
-
-    elements.completeBtn.classList.toggle(
-        "completed",
-        completed
+    return (
+        currentProgress.completedLessons
+            ?.includes(
+                buildLessonKey(
+                    currentModule.id,
+                    currentLesson.id
+                )
+            ) || false
     );
 
-    const icon =
-        elements.completeBtn.querySelector("i");
-
-    const text =
-        elements.completeBtn.querySelector("span");
-
-    if (icon) {
-
-        icon.className =
-            completed
-                ? "fa-solid fa-check-double"
-                : "fa-solid fa-check";
-    }
-
-    if (text) {
-
-        text.textContent =
-            completed
-                ? "Lesson Completed"
-                : "Mark Lesson Complete";
-    }
-
-    elements.completeBtn.setAttribute(
-        "aria-pressed",
-        String(completed)
-    );
-}
-
-
-function toggleLessonCompletion() {
-
-    if (!currentLesson) {
-        return;
-    }
-
-    let completed =
-        getCompletedLessons();
-
-    const index =
-        completed.indexOf(
-            currentLesson.id
-        );
-
-    if (index === -1) {
-
-        completed.push(
-            currentLesson.id
-        );
-
-    } else {
-
-        completed.splice(index, 1);
-    }
-
-    saveCompletedLessons(completed);
-
-    renderCompletionState();
-    renderProgress();
-    renderModuleList();
 }
 
 
 /* =========================================================
-   LESSON NAVIGATION
+   UPDATE COMPLETION UI
 ========================================================= */
 
-function createNavigationButton(
-    button,
-    lesson,
-    label
-) {
+function updateCompletionUI() {
 
-    if (!button || !lesson) {
+    if (
+        !completeLessonBtn ||
+        !lessonCompletion
+    ) {
+
         return;
+
     }
 
-    button.hidden = false;
 
-    button.href =
-        `./lesson.html?lesson=${lesson.id}`;
+    if (isLessonCompleted()) {
 
-    const small =
-        button.querySelector("small");
+        lessonCompletion.classList.add(
+            "completed"
+        );
 
-    const strong =
-        button.querySelector("strong");
 
-    if (small) {
-        small.textContent = label;
+        completeLessonBtn.innerHTML = `
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            Lesson Completed
+
+        `;
+
+
+        completeLessonBtn.disabled =
+            true;
+
+    } else {
+
+        lessonCompletion.classList.remove(
+            "completed"
+        );
+
+
+        completeLessonBtn.innerHTML = `
+
+            <i class="fa-solid fa-check"></i>
+
+            Mark Lesson Complete
+
+        `;
+
+
+        completeLessonBtn.disabled =
+            false;
+
     }
 
-    if (strong) {
-        strong.textContent = lesson.title;
+}
+
+
+/* =========================================================
+   COMPLETE LESSON
+========================================================= */
+
+async function completeLesson() {
+
+    if (!currentProgress) {
+
+        currentProgress =
+            getDefaultProgress();
+
     }
+
+
+    const lessonKey =
+        buildLessonKey(
+            currentModule.id,
+            currentLesson.id
+        );
+
+
+    if (
+        !currentProgress.completedLessons
+            .includes(
+                lessonKey
+            )
+    ) {
+
+        currentProgress.completedLessons.push(
+            lessonKey
+        );
+
+    }
+
+
+    currentProgress.started =
+        true;
+
+
+    currentProgress.currentModule =
+        currentModule.id;
+
+
+    currentProgress.currentLesson =
+        currentLesson.id;
+
+
+    currentProgress.progressPercent =
+        calculateCourseProgress();
+
+
+    updateCourseProgressUI();
+
+
+    updateCompletionUI();
+
+
+    renderSidebar();
+
+
+    await saveProgress();
+
+
+    log(
+        "Lesson completed:",
+        lessonKey
+    );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function getAllLessons() {
+
+    const lessons = [];
+
+
+    currentCourse.modules.forEach(
+        module => {
+
+            module.lessons.forEach(
+                lesson => {
+
+                    lessons.push({
+
+                        moduleId:
+                            module.id,
+
+                        moduleNumber:
+                            module.number,
+
+                        lessonId:
+                            lesson.id,
+
+                        lesson:
+                            lesson
+
+                    });
+
+                }
+            );
+
+        }
+    );
+
+
+    return lessons;
+
 }
 
 
 function renderNavigation() {
 
-    if (!currentLesson) {
-        return;
-    }
+    const lessons =
+        getAllLessons();
+
 
     const index =
         lessons.findIndex(
-            (lesson) =>
-                lesson.id === currentLesson.id
+            item =>
+                item.moduleId ===
+                    currentModule.id &&
+                item.lessonId ===
+                    currentLesson.id
         );
+
 
     const previous =
         index > 0
             ? lessons[index - 1]
             : null;
 
+
     const next =
-        index < lessons.length - 1
+        index <
+            lessons.length - 1
             ? lessons[index + 1]
             : null;
 
 
-    if (elements.previousBtn) {
-
-        elements.previousBtn.hidden =
-            !previous;
+    if (previousLessonBtn) {
 
         if (previous) {
 
-            createNavigationButton(
-                elements.previousBtn,
-                previous,
-                "Previous"
-            );
+            previousLessonBtn.hidden =
+                false;
+
+
+            previousLessonBtn.href =
+                buildLessonUrl(
+                    currentCourse.id,
+                    previous.moduleId,
+                    previous.lessonId
+                );
+
+
+            previousLessonBtn.querySelector(
+                "span"
+            ).innerHTML = `
+
+                <small>Previous</small>
+
+                ${previous.lesson.title}
+
+            `;
+
+        } else {
+
+            previousLessonBtn.hidden =
+                true;
+
         }
+
     }
 
 
-    if (elements.nextBtn) {
-
-        elements.nextBtn.hidden =
-            !next;
+    if (nextLessonBtn) {
 
         if (next) {
 
-            createNavigationButton(
-                elements.nextBtn,
-                next,
-                "Next"
-            );
+            nextLessonBtn.hidden =
+                false;
+
+
+            nextLessonBtn.href =
+                buildLessonUrl(
+                    currentCourse.id,
+                    next.moduleId,
+                    next.lessonId
+                );
+
+
+            nextLessonBtn.querySelector(
+                "span"
+            ).innerHTML = `
+
+                <small>Next</small>
+
+                ${next.lesson.title}
+
+            `;
+
+        } else {
+
+            nextLessonBtn.hidden =
+                true;
+
         }
-    }
-}
 
-
-/* =========================================================
-   NOT FOUND
-========================================================= */
-
-function showNotFound() {
-
-    if (elements.loading) {
-        elements.loading.hidden = true;
     }
 
-    if (elements.content) {
-        elements.content.hidden = true;
-    }
 
-    if (elements.notFound) {
-        elements.notFound.hidden = false;
-    }
-}
+    setText(
 
+        lessonProgressMeta,
 
-function showLesson() {
+        `Lesson ${index + 1} of ${lessons.length}`
 
-    if (elements.loading) {
-        elements.loading.hidden = true;
-    }
-
-    if (elements.notFound) {
-        elements.notFound.hidden = true;
-    }
-
-    if (elements.content) {
-        elements.content.hidden = false;
-    }
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-function handleLogout() {
-
-    if (!elements.logoutBtn) {
-        return;
-    }
-
-    elements.logoutBtn.classList.add(
-        "is-loading"
     );
 
-    const icon =
-        elements.logoutBtn.querySelector("i");
-
-    const text =
-        elements.logoutBtn.querySelector("span");
-
-    if (icon) {
-        icon.className =
-            "fa-solid fa-spinner fa-spin";
-    }
-
-    if (text) {
-        text.textContent =
-            "Logging out...";
-    }
-
-    /*
-     * Remove only the CWS session/student data.
-     * Course progress is intentionally kept.
-     */
-
-    try {
-        localStorage.removeItem(
-            STORAGE_KEYS.student
-        );
-
-        localStorage.removeItem(
-            "cws_user"
-        );
-
-        localStorage.removeItem(
-            "cws_session"
-        );
-    } catch (error) {
-        console.error(
-            "Logout storage cleanup failed:",
-            error
-        );
-    }
-
-    setTimeout(() => {
-
-        window.location.href =
-            "./index.html";
-
-    }, 350);
 }
 
 
 /* =========================================================
-   EVENT LISTENERS
+   BUILD URL
 ========================================================= */
 
-function bindEvents() {
+function buildLessonUrl(
+    courseId,
+    moduleId,
+    lessonId
+) {
 
-    if (elements.completeBtn) {
-
-        elements.completeBtn.addEventListener(
-            "click",
-            toggleLessonCompletion
-        );
-    }
-
-    if (elements.logoutBtn) {
-
-        elements.logoutBtn.addEventListener(
-            "click",
-            handleLogout
-        );
-    }
+    const params =
+        new URLSearchParams();
 
 
-    /*
-     * Keyboard shortcuts
-     *
-     * ArrowLeft  = previous lesson
-     * ArrowRight = next lesson
-     * C          = mark complete
-     */
-
-    document.addEventListener(
-        "keydown",
-        (event) => {
-
-            const tag =
-                document.activeElement?.tagName;
-
-            if (
-                tag === "INPUT" ||
-                tag === "TEXTAREA" ||
-                tag === "SELECT"
-            ) {
-                return;
-            }
-
-
-            if (
-                event.key === "ArrowLeft" &&
-                elements.previousBtn &&
-                !elements.previousBtn.hidden
-            ) {
-
-                window.location.href =
-                    elements.previousBtn.href;
-
-                return;
-            }
-
-
-            if (
-                event.key === "ArrowRight" &&
-                elements.nextBtn &&
-                !elements.nextBtn.hidden
-            ) {
-
-                window.location.href =
-                    elements.nextBtn.href;
-
-                return;
-            }
-
-
-            if (
-                event.key.toLowerCase() === "c"
-            ) {
-
-                toggleLessonCompletion();
-            }
-        }
+    params.set(
+        "course",
+        courseId
     );
+
+
+    params.set(
+        "module",
+        moduleId
+    );
+
+
+    params.set(
+        "lesson",
+        lessonId
+    );
+
+
+    return `lesson.html?${params.toString()}`;
+
 }
 
 
@@ -1245,77 +2687,266 @@ function bindEvents() {
    LOAD LESSON
 ========================================================= */
 
-function loadLesson() {
+async function loadLesson() {
 
-    const lessonId =
-        getLessonIdFromURL();
+    showLoading();
+
+
+    const {
+        courseId,
+        moduleId,
+        lessonId
+    } =
+        getUrlParameters();
+
+
+    log(
+        "URL parameters:",
+        {
+            courseId,
+            moduleId,
+            lessonId
+        }
+    );
+
+
+    if (
+        !courseId ||
+        !moduleId ||
+        !lessonId
+    ) {
+
+        showNotFound(
+            "The lesson URL is missing the course, module or lesson parameter."
+        );
+
+        return;
+
+    }
+
+
+    currentCourse =
+        findCourse(
+            courseId
+        );
+
+
+    if (!currentCourse) {
+
+        showNotFound(
+            "The requested course does not exist."
+        );
+
+        return;
+
+    }
+
+
+    currentModule =
+        findModule(
+            currentCourse,
+            moduleId
+        );
+
+
+    if (!currentModule) {
+
+        showNotFound(
+            "The requested module does not exist."
+        );
+
+        return;
+
+    }
+
 
     currentLesson =
-        lessons.find(
-            (lesson) =>
-                lesson.id === lessonId
+        findLesson(
+            currentModule,
+            lessonId
         );
 
 
     if (!currentLesson) {
 
-        showNotFound();
+        showNotFound(
+            "The requested lesson does not exist."
+        );
 
-        renderProgress();
-        renderModuleList();
+        return;
 
+    }
+
+
+    await loadProgress();
+
+
+    renderLesson();
+
+
+    showContent();
+
+
+    log(
+        "Lesson loaded:",
+        currentLesson.title
+    );
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout() {
+
+    if (!auth) {
         return;
     }
 
 
-    renderLessonHeader();
+    try {
 
-    renderObjectives(
-        currentLesson.objectives
+        if (logoutBtn) {
+            logoutBtn.disabled = true;
+        }
+
+
+        await signOut(auth);
+
+
+        window.location.replace(
+            "../pages/login.html"
+        );
+
+
+    } catch (err) {
+
+        error(
+            "Logout failed:",
+            err
+        );
+
+
+        if (logoutBtn) {
+            logoutBtn.disabled = false;
+        }
+
+
+        alert(
+            "Unable to sign out. Please try again."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+if (knowledgeCheckForm) {
+
+    knowledgeCheckForm.addEventListener(
+        "submit",
+        handleQuizSubmit
     );
 
-    renderLessonBody();
+}
 
-    renderCompletionState();
 
-    renderNavigation();
+if (completeLessonBtn) {
 
-    renderProgress();
+    completeLessonBtn.addEventListener(
+        "click",
+        completeLesson
+    );
 
-    renderModuleList();
+}
 
-    showLesson();
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener(
+        "click",
+        logout
+    );
+
 }
 
 
 /* =========================================================
-   INITIALIZE
+   AUTHENTICATION
 ========================================================= */
 
-function init() {
+if (!auth) {
 
-    renderStudentName();
-
-    bindEvents();
-
-    loadLesson();
-}
+    error(
+        "Firebase Auth unavailable."
+    );
 
 
-/* =========================================================
-   START
-========================================================= */
-
-if (
-    document.readyState === "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        init
+    window.location.replace(
+        "../pages/login.html"
     );
 
 } else {
 
-    init();
+    onAuthStateChanged(
+        auth,
+        async user => {
+
+            log(
+                "Authentication:",
+                user
+                    ? "AUTHENTICATED"
+                    : "NOT AUTHENTICATED"
+            );
+
+
+            if (!user) {
+
+                const {
+                    courseId,
+                    moduleId,
+                    lessonId
+                } =
+                    getUrlParameters();
+
+
+                window.location.replace(
+
+                    `../pages/login.html?redirect=lesson` +
+                    `&course=${encodeURIComponent(courseId)}` +
+                    `&module=${encodeURIComponent(moduleId)}` +
+                    `&lesson=${encodeURIComponent(lessonId)}`
+
+                );
+
+
+                return;
+
+            }
+
+
+            currentUser =
+                user;
+
+
+            await loadLesson();
+
+        }
+    );
+
 }
+
+
+/* =========================================================
+   INITIAL LOG
+========================================================= */
+
+log(
+    "lesson.js loaded."
+);
