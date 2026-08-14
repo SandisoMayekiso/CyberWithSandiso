@@ -3,13 +3,40 @@
    CENTRAL COURSE REGISTRY
 ========================================================= */
 
+
+/* =========================================================
+   COURSE IMPORTS
+========================================================= */
+
 import {
     cybersecurityFundamentals
 } from "./cybersecurity-fundamentals.js";
 
+
 import {
     networkingFundamentals
 } from "./networking-fundamentals.js";
+
+
+/*
+   Future courses:
+
+   import {
+       linuxFundamentals
+   } from "./linux-fundamentals.js";
+
+   import {
+       ethicalHackingFundamentals
+   } from "./ethical-hacking-fundamentals.js";
+
+   import {
+       webApplicationSecurity
+   } from "./web-application-security.js";
+
+   import {
+       practicalPenetrationTesting
+   } from "./practical-penetration-testing.js";
+*/
 
 
 /* =========================================================
@@ -28,21 +55,67 @@ export const courses = {
 
 
 /* =========================================================
+   NORMALIZE ID
+========================================================= */
+
+function normalizeId(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .trim()
+        .toLowerCase();
+
+}
+
+
+/* =========================================================
+   GET ALL COURSES
+========================================================= */
+
+export function getCourses() {
+
+    return Object.values(
+        courses
+    );
+
+}
+
+
+/* =========================================================
    GET COURSE
 ========================================================= */
 
-export function getCourse(courseId) {
+export function getCourse(
+    courseId
+) {
 
-    if (!courseId) {
+    const normalizedCourseId =
+        normalizeId(
+            courseId
+        );
+
+
+    if (!normalizedCourseId) {
+
         return null;
+
     }
 
-    const normalizedId =
-        String(courseId)
-            .trim()
-            .toLowerCase();
 
-    return courses[normalizedId] || null;
+    return (
+        courses[
+            normalizedCourseId
+        ] || null
+    );
 
 }
 
@@ -57,17 +130,43 @@ export function getModule(
 ) {
 
     const course =
-        getCourse(courseId);
+        getCourse(
+            courseId
+        );
 
-    if (!course || !moduleId) {
+
+    const normalizedModuleId =
+        normalizeId(
+            moduleId
+        );
+
+
+    if (
+        !course ||
+        !normalizedModuleId ||
+        !Array.isArray(
+            course.modules
+        )
+    ) {
+
         return null;
+
     }
 
+
     return (
+
         course.modules.find(
             module =>
-                module.id === moduleId
-        ) || null
+
+                normalizeId(
+                    module?.id
+                ) ===
+                normalizedModuleId
+        ) ||
+
+        null
+
     );
 
 }
@@ -89,18 +188,150 @@ export function getLesson(
             moduleId
         );
 
+
+    const normalizedLessonId =
+        normalizeId(
+            lessonId
+        );
+
+
     if (
         !module ||
-        !Array.isArray(module.lessons)
+        !normalizedLessonId ||
+        !Array.isArray(
+            module.lessons
+        )
     ) {
+
         return null;
+
     }
 
+
     return (
+
         module.lessons.find(
             lesson =>
-                lesson.id === lessonId
-        ) || null
+
+                normalizeId(
+                    lesson?.id
+                ) ===
+                normalizedLessonId
+        ) ||
+
+        null
+
+    );
+
+}
+
+
+/* =========================================================
+   GET FIRST MODULE
+========================================================= */
+
+export function getFirstModule(
+    courseId
+) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    if (
+        !course ||
+        !Array.isArray(
+            course.modules
+        ) ||
+        !course.modules.length
+    ) {
+
+        return null;
+
+    }
+
+
+    return (
+        course.modules[0] ||
+        null
+    );
+
+}
+
+
+/* =========================================================
+   GET FIRST LESSON
+========================================================= */
+
+export function getFirstLesson(
+    courseId,
+    moduleId
+) {
+
+    const module =
+        getModule(
+            courseId,
+            moduleId
+        );
+
+
+    if (
+        !module ||
+        !Array.isArray(
+            module.lessons
+        ) ||
+        !module.lessons.length
+    ) {
+
+        return null;
+
+    }
+
+
+    return (
+        module.lessons[0] ||
+        null
+    );
+
+}
+
+
+/* =========================================================
+   COURSE EXISTS
+========================================================= */
+
+export function courseExists(
+    courseId
+) {
+
+    return Boolean(
+        getCourse(
+            courseId
+        )
+    );
+
+}
+
+
+/* =========================================================
+   COURSE AVAILABLE
+========================================================= */
+
+export function isCourseAvailable(
+    courseId
+) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    return (
+        course?.status ===
+        "available"
     );
 
 }
