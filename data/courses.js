@@ -17,6 +17,9 @@ import {
     networkingFundamentals
 } from "./networking-fundamentals.js";
 
+import {
+    linuxFundamentals
+} from "./linux-fundamentals.js";
 
 /*
    Future courses:
@@ -49,7 +52,10 @@ export const courses = {
         cybersecurityFundamentals,
 
     [networkingFundamentals.id]:
-        networkingFundamentals
+        networkingFundamentals,
+
+    [linuxFundamentals.id]:
+        linuxFundamentals
 
 };
 
