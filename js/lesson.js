@@ -1,47 +1,34 @@
 /* =========================================================
    CWS ACADEMY
-   LESSON SYSTEM
-   ---------------------------------------------------------
-   student/lesson.html
-   student/lesson.js
+   CYBERSECURITY FUNDAMENTALS
+   LESSON ENGINE
 
-   URL FORMATS
+   Version: 2.0
 
-   Start module:
-   lesson.html?course=cybersecurity-fundamentals&module=module-01
+   Supports:
 
-   Specific lesson:
-   lesson.html?course=cybersecurity-fundamentals
-              &module=module-01
-              &lesson=lesson-02
+   lesson.html
+   ?course=cybersecurity-fundamentals
+   &module=module-01
 
-   NAVIGATION
+   OR:
 
-   Previous Lesson
-   Next Lesson
-   Module Lesson List
-   Browser Back / Forward
-   Course Details
-   Module Start
-   Course Start
-
-   FIRESTORE
-
-   users/{uid}/courseProgress/{courseId}
-
-   Firestore is NEVER required before the lesson
-   can render.
+   lesson.html
+   ?course=cybersecurity-fundamentals
+   &module=module-01
+   &lesson=module-01-lesson-01
 ========================================================= */
 
 
 /* =========================================================
-   FIREBASE IMPORTS
+   FIREBASE
 ========================================================= */
 
 import {
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
 
 import {
     doc,
@@ -50,6 +37,7 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
 import {
     auth,
     db
@@ -57,128 +45,172 @@ import {
 
 
 /* =========================================================
-   CONFIGURATION
+   DEBUG
 ========================================================= */
 
 const DEBUG = true;
 
-const FIRESTORE_TIMEOUT = 8000;
 
-const LOGIN_PATH =
-    "../pages/login.html";
+function log(...args) {
 
-const COURSE_DETAILS_PATH =
-    "course-details.html";
+    if (DEBUG) {
 
-const LESSON_PATH =
-    "lesson.html";
+        console.log(
+            "[CWS LESSON]",
+            ...args
+        );
 
-
-/* =========================================================
-   DEBUG HELPERS
-========================================================= */
-
-function log(...messages) {
-
-    if (!DEBUG) {
-        return;
     }
-
-    console.log(
-        "[CWS Lesson]",
-        ...messages
-    );
 
 }
 
 
-function warn(...messages) {
+function warn(...args) {
 
-    if (!DEBUG) {
-        return;
+    if (DEBUG) {
+
+        console.warn(
+            "[CWS LESSON]",
+            ...args
+        );
+
     }
-
-    console.warn(
-        "[CWS Lesson]",
-        ...messages
-    );
 
 }
 
 
-function error(...messages) {
+function error(...args) {
 
     console.error(
-        "[CWS Lesson]",
-        ...messages
+        "[CWS LESSON]",
+        ...args
     );
 
 }
 
 
 /* =========================================================
-   DOM ELEMENTS
+   DOM
 ========================================================= */
 
 const lessonLoading =
-    document.getElementById("lessonLoading");
+    document.getElementById(
+        "lessonLoading"
+    );
+
 
 const lessonNotFound =
-    document.getElementById("lessonNotFound");
+    document.getElementById(
+        "lessonNotFound"
+    );
+
 
 const lessonContent =
-    document.getElementById("lessonContent");
+    document.getElementById(
+        "lessonContent"
+    );
+
 
 const studentName =
-    document.getElementById("studentName");
+    document.getElementById(
+        "studentName"
+    );
+
 
 const logoutBtn =
-    document.getElementById("logoutBtn");
+    document.getElementById(
+        "logoutBtn"
+    );
+
 
 const breadcrumbCourse =
-    document.getElementById("breadcrumbCourse");
+    document.getElementById(
+        "breadcrumbCourse"
+    );
+
 
 const breadcrumbModule =
-    document.getElementById("breadcrumbModule");
+    document.getElementById(
+        "breadcrumbModule"
+    );
+
 
 const lessonModuleNumber =
-    document.getElementById("lessonModuleNumber");
+    document.getElementById(
+        "lessonModuleNumber"
+    );
+
 
 const lessonNumber =
-    document.getElementById("lessonNumber");
+    document.getElementById(
+        "lessonNumber"
+    );
+
 
 const lessonTitle =
-    document.getElementById("lessonTitle");
+    document.getElementById(
+        "lessonTitle"
+    );
+
 
 const lessonDescription =
-    document.getElementById("lessonDescription");
+    document.getElementById(
+        "lessonDescription"
+    );
+
 
 const lessonObjectives =
-    document.getElementById("lessonObjectives");
+    document.getElementById(
+        "lessonObjectives"
+    );
+
 
 const lessonBody =
-    document.getElementById("lessonBody");
+    document.getElementById(
+        "lessonBody"
+    );
+
 
 const lessonProgressPercent =
-    document.getElementById("lessonProgressPercent");
+    document.getElementById(
+        "lessonProgressPercent"
+    );
+
 
 const lessonProgressFill =
-    document.getElementById("lessonProgressFill");
+    document.getElementById(
+        "lessonProgressFill"
+    );
+
 
 const lessonProgressText =
-    document.getElementById("lessonProgressText");
+    document.getElementById(
+        "lessonProgressText"
+    );
+
 
 const markCompleteBtn =
-    document.getElementById("markCompleteBtn");
+    document.getElementById(
+        "markCompleteBtn"
+    );
+
 
 const previousLessonBtn =
-    document.getElementById("previousLessonBtn");
+    document.getElementById(
+        "previousLessonBtn"
+    );
+
 
 const nextLessonBtn =
-    document.getElementById("nextLessonBtn");
+    document.getElementById(
+        "nextLessonBtn"
+    );
+
 
 const lessonModuleList =
-    document.getElementById("lessonModuleList");
+    document.getElementById(
+        "lessonModuleList"
+    );
 
 
 /* =========================================================
@@ -195,172 +227,118 @@ let currentLesson = null;
 
 let currentProgress = null;
 
-let authResolved = false;
-
-let navigationToken = 0;
-
-let progressLoadPromise = null;
-
 
 /* =========================================================
-   COURSE CONTENT
+   COURSE DATA
 ========================================================= */
 
 const courses = {
 
     "cybersecurity-fundamentals": {
 
-        id: "cybersecurity-fundamentals",
+        id:
+            "cybersecurity-fundamentals",
 
-        title: "Cybersecurity Fundamentals",
+        title:
+            "Cybersecurity Fundamentals",
 
-        status: "available",
+        description:
+            "A comprehensive introduction to security architecture, networks, threats, endpoints, governance and incident response.",
 
         modules: [
 
             /* =================================================
                MODULE 01
-            ================================================== */
+            ================================================= */
 
             {
 
-                id: "module-01",
+                id:
+                    "module-01",
 
-                number: 1,
+                number:
+                    1,
 
                 title:
-                    "Introduction to Cybersecurity",
+                    "Security Design & Architecture",
 
                 description:
-                    "Understand what cybersecurity is, why it matters and how security professionals protect digital systems.",
+                    "Core principles used to design secure systems and protect information.",
 
                 lessons: [
 
                     {
 
-                        id: "lesson-01",
+                        id:
+                            "module-01-lesson-01",
 
-                        number: 1,
+                        number:
+                            1,
 
                         title:
-                            "What Is Cybersecurity?",
+                            "The CIA Triad",
 
                         description:
-                            "Learn what cybersecurity means and what security professionals are responsible for protecting.",
+                            "Understand confidentiality, integrity and availability and how they form the foundation of information security.",
 
                         objectives: [
 
-                            "Define cybersecurity.",
+                            "Define confidentiality, integrity and availability.",
 
-                            "Identify the systems and information cybersecurity protects.",
+                            "Explain how the CIA Triad applies to information systems.",
 
-                            "Understand why cybersecurity is important.",
+                            "Identify security controls that support each principle.",
 
-                            "Recognize the role of cybersecurity professionals."
+                            "Understand security trade-offs."
 
                         ],
 
                         content: [
 
                             {
-
                                 type: "heading",
-
-                                text:
-                                    "Understanding Cybersecurity"
-
+                                text: "The CIA Triad"
                             },
 
                             {
-
                                 type: "paragraph",
-
-                                text:
-                                    "Cybersecurity is the practice of protecting computers, networks, applications, devices and information from unauthorized access, misuse, disruption, modification or destruction."
-
+                                text: "The CIA Triad is one of the foundational concepts of cybersecurity. It describes three objectives that security controls should help organizations achieve: confidentiality, integrity and availability."
                             },
 
                             {
-
-                                type: "paragraph",
-
-                                text:
-                                    "Modern organizations depend heavily on digital systems. Businesses store customer information, financial records, employee information and operational data on computers and networked systems. Protecting these resources is therefore an important part of operating a modern organization."
-
-                            },
-
-                            {
-
                                 type: "heading",
-
-                                text:
-                                    "What Does Cybersecurity Protect?"
-
+                                text: "Confidentiality"
                             },
 
                             {
-
                                 type: "paragraph",
-
-                                text:
-                                    "Cybersecurity protects more than just computers. Security teams may be responsible for protecting networks, servers, cloud services, websites, applications, databases, mobile devices and the information stored on those systems."
-
+                                text: "Confidentiality means information should only be accessible to authorized people, systems or processes. Access controls, encryption and authentication are examples of controls that can support confidentiality."
                             },
 
                             {
-
-                                type: "list",
-
-                                items: [
-
-                                    "Computer systems",
-
-                                    "Networks",
-
-                                    "Web applications",
-
-                                    "Cloud infrastructure",
-
-                                    "Databases",
-
-                                    "User accounts",
-
-                                    "Business information",
-
-                                    "Personal information"
-
-                                ]
-
-                            },
-
-                            {
-
                                 type: "heading",
-
-                                text:
-                                    "Why Cybersecurity Matters"
-
+                                text: "Integrity"
                             },
 
                             {
-
                                 type: "paragraph",
-
-                                text:
-                                    "A security incident can have serious consequences. Attackers may steal information, disrupt services, compromise accounts or damage systems. Cybersecurity helps organizations reduce these risks and respond when security incidents occur."
-
+                                text: "Integrity means information remains accurate, complete and trustworthy. Organizations can use access controls, hashes, digital signatures, logging and change management to help protect integrity."
                             },
 
                             {
+                                type: "heading",
+                                text: "Availability"
+                            },
 
+                            {
+                                type: "paragraph",
+                                text: "Availability means authorized users can access systems and information when they need them. Redundancy, backups, monitoring, maintenance and disaster recovery planning can support availability."
+                            },
+
+                            {
                                 type: "callout",
-
-                                title:
-                                    "Key Idea",
-
-                                text:
-                                    "Cybersecurity is not simply about installing antivirus software or building firewalls. It is a broader discipline involving people, processes and technology."
-
+                                title: "Security Principle",
+                                text: "Strong security requires balancing confidentiality, integrity and availability rather than focusing on only one objective."
                             }
 
                         ]
@@ -370,89 +348,76 @@ const courses = {
 
                     {
 
-                        id: "lesson-02",
+                        id:
+                            "module-01-lesson-02",
 
-                        number: 2,
+                        number:
+                            2,
 
                         title:
-                            "Why Cybersecurity Matters",
+                            "Defense-in-Depth",
 
                         description:
-                            "Explore the importance of cybersecurity and the consequences of security failures.",
+                            "Learn how multiple layers of security controls work together to reduce risk.",
 
                         objectives: [
 
-                            "Understand the impact of cyber attacks.",
+                            "Explain defense-in-depth.",
 
-                            "Identify common security consequences.",
+                            "Distinguish physical, technical and administrative controls.",
 
-                            "Understand why organizations invest in security.",
+                            "Understand why multiple controls are valuable.",
 
-                            "Recognize the importance of protecting information."
+                            "Identify examples of layered security."
 
                         ],
 
                         content: [
 
                             {
-
                                 type: "heading",
-
-                                text:
-                                    "The Importance of Security"
-
+                                text: "What Is Defense-in-Depth?"
                             },
 
                             {
-
                                 type: "paragraph",
-
-                                text:
-                                    "Cybersecurity is important because digital systems have become essential to everyday life. Organizations rely on technology to communicate, process payments, store information and provide services."
-
+                                text: "Defense-in-depth is a security strategy that uses multiple layers of controls. If one control fails, another layer can still reduce the likelihood or impact of compromise."
                             },
 
                             {
-
                                 type: "heading",
-
-                                text:
-                                    "Consequences of Security Incidents"
-
+                                text: "Physical Controls"
                             },
 
                             {
-
-                                type: "list",
-
-                                items: [
-
-                                    "Loss of sensitive information",
-
-                                    "Financial losses",
-
-                                    "Service disruption",
-
-                                    "Reputational damage",
-
-                                    "Legal and regulatory consequences",
-
-                                    "Loss of customer trust"
-
-                                ]
-
+                                type: "paragraph",
+                                text: "Physical controls protect facilities, hardware and physical access. Examples include locks, access cards, security guards, cameras and environmental controls."
                             },
 
                             {
+                                type: "heading",
+                                text: "Technical Controls"
+                            },
 
+                            {
+                                type: "paragraph",
+                                text: "Technical controls are implemented through technology. Examples include firewalls, authentication systems, encryption, endpoint protection and network monitoring."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Administrative Controls"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Administrative controls include policies, procedures, security awareness training, risk management and organizational rules."
+                            },
+
+                            {
                                 type: "callout",
-
-                                title:
-                                    "Security Principle",
-
-                                text:
-                                    "Good cybersecurity reduces the likelihood and impact of security incidents."
-
+                                title: "Key Idea",
+                                text: "Security should not depend on a single control. Layered defenses make it harder for one failure to become a major security incident."
                             }
 
                         ]
@@ -462,71 +427,86 @@ const courses = {
 
                     {
 
-                        id: "lesson-03",
+                        id:
+                            "module-01-lesson-03",
 
-                        number: 3,
+                        number:
+                            3,
 
                         title:
-                            "The Cybersecurity Landscape",
+                            "Cryptography Basics",
 
                         description:
-                            "Understand the people, technologies and threats that make up the modern cybersecurity environment.",
+                            "Understand encryption, hashing and the role of public key infrastructure.",
 
                         objectives: [
 
-                            "Identify major areas of cybersecurity.",
+                            "Differentiate symmetric and asymmetric encryption.",
 
-                            "Understand the relationship between attackers and defenders.",
+                            "Explain the purpose of hashing.",
 
-                            "Recognize the changing nature of cyber threats."
+                            "Understand SHA-256 at a conceptual level.",
+
+                            "Describe the role of PKI."
 
                         ],
 
                         content: [
 
                             {
-
                                 type: "heading",
-
-                                text:
-                                    "A Changing Environment"
-
+                                text: "Symmetric Encryption"
                             },
 
                             {
-
                                 type: "paragraph",
-
-                                text:
-                                    "Cybersecurity is constantly changing. New technologies create new opportunities, but they can also introduce new security risks."
-
+                                text: "Symmetric encryption uses the same secret key to encrypt and decrypt information. It is generally efficient and is commonly used for protecting data once a secure key has been established."
                             },
 
                             {
-
-                                type: "paragraph",
-
-                                text:
-                                    "Security professionals therefore need to continuously learn about operating systems, networks, applications, cloud environments, vulnerabilities and emerging threats."
-
-                            },
-
-                            {
-
                                 type: "heading",
-
-                                text:
-                                    "Attackers and Defenders"
-
+                                text: "Asymmetric Encryption"
                             },
 
                             {
-
                                 type: "paragraph",
+                                text: "Asymmetric cryptography uses a related public and private key. The public key can be shared, while the private key must be protected. This model supports applications such as secure communication and digital signatures."
+                            },
 
-                                text:
-                                    "Cybersecurity involves understanding how systems can be attacked and how those systems can be defended. Security professionals use this knowledge to identify weaknesses, reduce risk and improve defenses."
+                            {
+                                type: "heading",
+                                text: "Hashing"
+                            },
 
+                            {
+                                type: "paragraph",
+                                text: "A cryptographic hash function transforms input data into a fixed-length value. Hashes are designed to be one-way and are useful for integrity verification and other security applications."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "SHA-256"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "SHA-256 is a member of the SHA-2 family of cryptographic hash functions and produces a 256-bit digest."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Public Key Infrastructure"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "PKI provides the systems, policies and processes used to manage digital certificates and public keys. Certificate authorities play an important role in establishing trust relationships."
+                            },
+
+                            {
+                                type: "callout",
+                                title: "Remember",
+                                text: "Encryption is designed to protect confidentiality, while hashing is primarily used to support integrity and verification."
                             }
 
                         ]
@@ -536,96 +516,76 @@ const courses = {
 
                     {
 
-                        id: "lesson-04",
+                        id:
+                            "module-01-lesson-04",
 
-                        number: 4,
+                        number:
+                            4,
 
                         title:
-                            "The Security Mindset",
+                            "Identity & Access Management",
 
                         description:
-                            "Develop the analytical and responsible mindset required for cybersecurity work.",
+                            "Explore MFA, SSO and least privilege as fundamental access-control concepts.",
 
                         objectives: [
 
-                            "Understand the importance of critical thinking.",
+                            "Explain identity and access management.",
 
-                            "Recognize the value of questioning assumptions.",
+                            "Understand multi-factor authentication.",
 
-                            "Understand responsible security behavior.",
+                            "Explain single sign-on.",
 
-                            "Develop a defensive security mindset."
+                            "Apply the principle of least privilege."
 
                         ],
 
                         content: [
 
                             {
-
                                 type: "heading",
-
-                                text:
-                                    "Thinking Like a Security Professional"
-
+                                text: "Identity and Access Management"
                             },
 
                             {
-
                                 type: "paragraph",
-
-                                text:
-                                    "Cybersecurity professionals need to think critically about how systems work and how those systems could fail. They ask questions about trust, access, configuration and potential weaknesses."
-
+                                text: "Identity and Access Management, or IAM, focuses on identifying users and systems and controlling what resources they are allowed to access."
                             },
 
                             {
-
-                                type: "list",
-
-                                items: [
-
-                                    "What could go wrong?",
-
-                                    "Who has access?",
-
-                                    "What happens if this control fails?",
-
-                                    "What information needs protection?",
-
-                                    "How could the system be abused?"
-
-                                ]
-
-                            },
-
-                            {
-
                                 type: "heading",
-
-                                text:
-                                    "Ethical Responsibility"
-
+                                text: "Multi-Factor Authentication"
                             },
 
                             {
-
                                 type: "paragraph",
-
-                                text:
-                                    "Security knowledge must be used responsibly. Testing systems without authorization can cause damage and may be illegal. Professional cybersecurity work requires permission, clearly defined scope and responsible handling of information."
-
+                                text: "MFA requires multiple authentication factors. Common factor categories include something you know, something you have and something you are."
                             },
 
                             {
+                                type: "heading",
+                                text: "Single Sign-On"
+                            },
 
+                            {
+                                type: "paragraph",
+                                text: "SSO allows a user to authenticate through a central identity provider and then access multiple authorized applications without repeatedly entering credentials."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Least Privilege"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "The principle of least privilege means users and systems should receive only the access necessary to perform their legitimate responsibilities."
+                            },
+
+                            {
                                 type: "callout",
-
-                                title:
-                                    "Remember",
-
-                                text:
-                                    "Authorization comes before security testing."
-
+                                title: "Security Principle",
+                                text: "Access should be intentional, limited and regularly reviewed."
                             }
 
                         ]
@@ -639,191 +599,1490 @@ const courses = {
 
             /* =================================================
                MODULE 02
-               -------------------------------------------------
-               Add lesson content here when ready.
-            ================================================== */
+            ================================================= */
 
             {
 
-                id: "module-02",
+                id:
+                    "module-02",
 
-                number: 2,
+                number:
+                    2,
 
                 title:
-                    "The CIA Triad",
+                    "Network Security",
 
                 description:
-                    "Learn confidentiality, integrity and availability and how these principles influence security decisions.",
+                    "Learn how networks communicate and how security controls protect network infrastructure.",
 
-                lessons: []
+                lessons: [
+
+                    {
+
+                        id:
+                            "module-02-lesson-01",
+
+                        number:
+                            1,
+
+                        title:
+                            "Ports, Protocols & TCP/IP",
+
+                        description:
+                            "Understand how network services communicate using ports and protocols.",
+
+                        objectives: [
+
+                            "Explain the purpose of ports.",
+
+                            "Understand TCP/IP at a high level.",
+
+                            "Recognize common network protocols.",
+
+                            "Understand why protocol knowledge matters to defenders."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Network Communication"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Networks allow devices and applications to communicate. Protocols define how that communication is structured, while ports help identify services associated with network connections."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Common Protocols"
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "TCP/IP",
+                                    "DNS",
+                                    "HTTP",
+                                    "HTTPS",
+                                    "SSH",
+                                    "DHCP"
+                                ]
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Why Ports Matter"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Ports allow operating systems to distinguish between different network services. Security teams monitor exposed services because unnecessary or incorrectly configured services can increase attack surface."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-02-lesson-02",
+
+                        number:
+                            2,
+
+                        title:
+                            "The OSI Model",
+
+                        description:
+                            "Learn the seven-layer OSI model and how it helps security professionals understand networks.",
+
+                        objectives: [
+
+                            "Identify the seven OSI layers.",
+
+                            "Understand the purpose of each layer.",
+
+                            "Relate protocols to layers.",
+
+                            "Use the OSI model for troubleshooting."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "The Seven Layers"
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "Layer 7 — Application",
+                                    "Layer 6 — Presentation",
+                                    "Layer 5 — Session",
+                                    "Layer 4 — Transport",
+                                    "Layer 3 — Network",
+                                    "Layer 2 — Data Link",
+                                    "Layer 1 — Physical"
+                                ]
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "The OSI model provides a conceptual framework for understanding how data moves through a network. Security professionals use it when analyzing network traffic, diagnosing problems and understanding where controls operate."
+                            },
+
+                            {
+                                type: "callout",
+                                title: "Study Tip",
+                                text: "When investigating a network problem, asking which OSI layer is involved can help narrow the problem space."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-02-lesson-03",
+
+                        number:
+                            3,
+
+                        title:
+                            "Firewalls & IDS/IPS",
+
+                        description:
+                            "Understand network security controls used to monitor and control traffic.",
+
+                        objectives: [
+
+                            "Explain the purpose of firewalls.",
+
+                            "Differentiate IDS and IPS.",
+
+                            "Understand network segmentation.",
+
+                            "Recognize the importance of security monitoring."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Firewalls"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "A firewall controls network traffic according to defined rules. Firewalls can be deployed at network boundaries, between network segments or directly on endpoints."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Intrusion Detection Systems"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "An IDS monitors activity and generates alerts when suspicious patterns or known indicators are detected."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Intrusion Prevention Systems"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "An IPS can actively block or prevent traffic that matches defined security conditions."
+                            },
+
+                            {
+                                type: "callout",
+                                title: "Important",
+                                text: "Security controls must be properly configured, monitored and maintained. A security product alone does not guarantee security."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-02-lesson-04",
+
+                        number:
+                            4,
+
+                        title:
+                            "VPNs & Wireless Security",
+
+                        description:
+                            "Learn how VPNs and modern Wi-Fi security help protect network communications.",
+
+                        objectives: [
+
+                            "Explain the purpose of VPNs.",
+
+                            "Understand WPA3.",
+
+                            "Explain enterprise wireless authentication.",
+
+                            "Recognize secure wireless configuration principles."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Virtual Private Networks"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "A VPN creates a protected communication channel across a network. Organizations commonly use VPN technologies to provide secure remote access or connect network environments."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Wireless Security"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Wireless networks must be configured to prevent unauthorized access and protect communications. Modern deployments should use strong authentication and current security standards."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "WPA3"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "WPA3 is a modern Wi-Fi security standard designed to improve protection over earlier wireless security technologies."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Enterprise Authentication"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Enterprise wireless environments can integrate authentication with centralized identity systems, allowing organizations to manage access more effectively."
+                            }
+
+                        ]
+
+                    }
+
+                ]
 
             },
 
 
             /* =================================================
                MODULE 03
-            ================================================== */
+            ================================================= */
 
             {
 
-                id: "module-03",
+                id:
+                    "module-03",
 
-                number: 3,
+                number:
+                    3,
 
                 title:
-                    "Threats and Attack Types",
+                    "Threats, Attacks & Vulnerabilities",
 
                 description:
-                    "Explore common cyber threats including phishing, malware, social engineering and denial-of-service attacks.",
+                    "Understand common threats and vulnerabilities from a defensive cybersecurity perspective.",
 
-                lessons: []
+                lessons: [
+
+                    {
+
+                        id:
+                            "module-03-lesson-01",
+
+                        number:
+                            1,
+
+                        title:
+                            "Malware",
+
+                        description:
+                            "Learn the characteristics of viruses, worms, trojans, ransomware and fileless malware.",
+
+                        objectives: [
+
+                            "Define malware.",
+
+                            "Differentiate common malware categories.",
+
+                            "Understand common defensive controls.",
+
+                            "Recognize why malware analysis matters."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "What Is Malware?"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Malware is malicious software designed to compromise systems, disrupt operations, steal information or perform other unauthorized actions."
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "Viruses",
+                                    "Worms",
+                                    "Trojans",
+                                    "Ransomware",
+                                    "Fileless malware"
+                                ]
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Defensive Approach"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Defenders can use endpoint protection, application controls, monitoring, patch management, backups and security awareness to reduce malware risk."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-03-lesson-02",
+
+                        number:
+                            2,
+
+                        title:
+                            "Social Engineering",
+
+                        description:
+                            "Recognize phishing and other techniques that manipulate people rather than technology alone.",
+
+                        objectives: [
+
+                            "Explain social engineering.",
+
+                            "Identify phishing and spear phishing.",
+
+                            "Recognize vishing and tailgating.",
+
+                            "Understand watering-hole attacks."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "The Human Element"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Social engineering involves manipulating people into revealing information, performing actions or violating security procedures."
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "Phishing",
+                                    "Spear phishing",
+                                    "Vishing",
+                                    "Tailgating",
+                                    "Watering-hole attacks"
+                                ]
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Defensive Measures"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Security awareness training, strong authentication, verification procedures, reporting mechanisms and technical email controls can reduce social engineering risk."
+                            },
+
+                            {
+                                type: "callout",
+                                title: "Think Before You Trust",
+                                text: "Unexpected urgency, requests for sensitive information and unusual communication channels should be treated cautiously."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-03-lesson-03",
+
+                        number:
+                            3,
+
+                        title:
+                            "Application Attacks",
+
+                        description:
+                            "Understand SQL injection and Cross-Site Scripting from a defensive perspective.",
+
+                        objectives: [
+
+                            "Explain SQL injection conceptually.",
+
+                            "Explain Cross-Site Scripting.",
+
+                            "Understand input validation.",
+
+                            "Recognize secure development practices."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "SQL Injection"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "SQL injection occurs when untrusted input is incorrectly incorporated into database queries. Secure development practices such as parameterized queries help prevent this class of vulnerability."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Cross-Site Scripting"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Cross-Site Scripting, or XSS, involves untrusted content being interpreted as executable script in a user's browser. Output encoding, input handling and appropriate security controls help reduce the risk."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Secure Development"
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "Validate input",
+                                    "Use parameterized database queries",
+                                    "Encode output appropriately",
+                                    "Apply secure authentication",
+                                    "Keep dependencies updated"
+                                ]
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-03-lesson-04",
+
+                        number:
+                            4,
+
+                        title:
+                            "Network Attacks",
+
+                        description:
+                            "Understand DDoS and Man-in-the-Middle attacks and how defenders reduce exposure.",
+
+                        objectives: [
+
+                            "Explain denial-of-service attacks.",
+
+                            "Understand DDoS at a high level.",
+
+                            "Explain Man-in-the-Middle attacks.",
+
+                            "Identify defensive strategies."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Denial of Service"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "A denial-of-service attack attempts to make a service unavailable to legitimate users. Distributed denial-of-service attacks use multiple systems or sources to generate traffic or requests."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Man-in-the-Middle"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "A Man-in-the-Middle attack involves an unauthorized party positioning itself between communicating parties in an attempt to observe or manipulate communications."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Defensive Controls"
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "Encryption",
+                                    "Certificate validation",
+                                    "Secure network configuration",
+                                    "Network monitoring",
+                                    "DDoS protection services",
+                                    "Strong authentication"
+                                ]
+                            }
+
+                        ]
+
+                    }
+
+                ]
 
             },
 
 
             /* =================================================
                MODULE 04
-            ================================================== */
+            ================================================= */
 
             {
 
-                id: "module-04",
+                id:
+                    "module-04",
 
-                number: 4,
+                number:
+                    4,
 
                 title:
-                    "Vulnerabilities and Risk",
+                    "System & Endpoint Security",
 
                 description:
-                    "Learn how vulnerabilities are identified, evaluated and connected to cybersecurity risk.",
+                    "Learn how operating systems and endpoints can be hardened and protected.",
 
-                lessons: []
+                lessons: [
+
+                    {
+
+                        id:
+                            "module-04-lesson-01",
+
+                        number:
+                            1,
+
+                        title:
+                            "Operating System Hardening",
+
+                        description:
+                            "Learn how Windows, Linux and macOS systems can be securely configured.",
+
+                        objectives: [
+
+                            "Explain operating system hardening.",
+
+                            "Identify unnecessary services.",
+
+                            "Understand secure configuration.",
+
+                            "Recognize the importance of system baselines."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "What Is Hardening?"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "System hardening reduces unnecessary attack surface by configuring systems securely and removing or disabling features that are not required."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Common Hardening Activities"
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "Disable unnecessary services",
+                                    "Remove unused applications",
+                                    "Apply security updates",
+                                    "Use strong authentication",
+                                    "Restrict administrative access",
+                                    "Enable appropriate logging"
+                                ]
+                            },
+
+                            {
+                                type: "callout",
+                                title: "Security Baseline",
+                                text: "Organizations should establish secure configuration baselines and regularly verify that systems continue to meet them."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-04-lesson-02",
+
+                        number:
+                            2,
+
+                        title:
+                            "Endpoint Protection & EDR",
+
+                        description:
+                            "Understand endpoint protection and Endpoint Detection and Response capabilities.",
+
+                        objectives: [
+
+                            "Explain endpoint protection.",
+
+                            "Understand EDR.",
+
+                            "Recognize endpoint telemetry.",
+
+                            "Understand detection and response."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Endpoint Protection"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Endpoints include laptops, desktops, servers and other computing devices. Endpoint security controls help prevent, detect and respond to suspicious activity."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Endpoint Detection and Response"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "EDR platforms collect endpoint telemetry and provide capabilities for detecting suspicious behavior, investigating events and supporting response activities."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Local Firewalls"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Host-based firewalls can control network connections to and from individual systems and provide an additional layer of protection."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-04-lesson-03",
+
+                        number:
+                            3,
+
+                        title:
+                            "Patch Management",
+
+                        description:
+                            "Learn how organizations identify, test and deploy software and firmware updates.",
+
+                        objectives: [
+
+                            "Explain patch management.",
+
+                            "Understand vulnerability remediation.",
+
+                            "Recognize the importance of testing.",
+
+                            "Understand patch prioritization."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Why Patching Matters"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Software vulnerabilities can expose systems to security risks. Patch management provides a structured process for identifying available updates, assessing them and deploying them appropriately."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Patch Lifecycle"
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "Identify updates",
+                                    "Assess security impact",
+                                    "Test updates",
+                                    "Schedule deployment",
+                                    "Deploy updates",
+                                    "Verify successful installation",
+                                    "Document results"
+                                ]
+                            },
+
+                            {
+                                type: "callout",
+                                title: "Important",
+                                text: "Critical updates should be prioritized based on factors such as severity, exposure, exploitability and business impact."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-04-lesson-04",
+
+                        number:
+                            4,
+
+                        title:
+                            "Endpoint Security Strategy",
+
+                        description:
+                            "Combine hardening, monitoring, access control and patching into an endpoint security strategy.",
+
+                        objectives: [
+
+                            "Combine multiple endpoint controls.",
+
+                            "Understand defense-in-depth for endpoints.",
+
+                            "Recognize the role of monitoring.",
+
+                            "Understand endpoint security lifecycle management."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Layered Endpoint Security"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Endpoint security is strongest when multiple controls work together. Hardening, patching, authentication, endpoint protection, firewalls and monitoring can collectively reduce risk."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Continuous Monitoring"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Security is not a one-time configuration. Organizations need to continuously monitor systems, investigate alerts and verify that security controls remain effective."
+                            },
+
+                            {
+                                type: "callout",
+                                title: "Security Mindset",
+                                text: "Secure configuration is a process rather than a single event."
+                            }
+
+                        ]
+
+                    }
+
+                ]
 
             },
 
 
             /* =================================================
                MODULE 05
-            ================================================== */
+            ================================================= */
 
             {
 
-                id: "module-05",
+                id:
+                    "module-05",
 
-                number: 5,
+                number:
+                    5,
 
                 title:
-                    "Security Controls",
+                    "Governance, Risk & Compliance",
 
                 description:
-                    "Understand administrative, technical and physical security controls.",
+                    "Understand how organizations manage cyber risk, security frameworks and regulatory obligations.",
 
-                lessons: []
+                lessons: [
+
+                    {
+
+                        id:
+                            "module-05-lesson-01",
+
+                        number:
+                            1,
+
+                        title:
+                            "Risk Management",
+
+                        description:
+                            "Learn how organizations identify, assess and treat cybersecurity risks.",
+
+                        objectives: [
+
+                            "Define cybersecurity risk.",
+
+                            "Understand risk assessment.",
+
+                            "Explain risk treatment options.",
+
+                            "Differentiate acceptance, avoidance and transference."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Cybersecurity Risk"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Risk represents the possibility that a threat may exploit a vulnerability and cause an unwanted outcome. Risk management helps organizations identify and prioritize these situations."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Risk Treatment"
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "Risk acceptance",
+                                    "Risk avoidance",
+                                    "Risk transference",
+                                    "Risk mitigation"
+                                ]
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "The appropriate treatment depends on the organization's risk appetite, business requirements, available controls and potential impact."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-05-lesson-02",
+
+                        number:
+                            2,
+
+                        title:
+                            "Security Frameworks",
+
+                        description:
+                            "Explore NIST, ISO/IEC 27001, CIS Controls and MITRE ATT&CK.",
+
+                        objectives: [
+
+                            "Explain the purpose of security frameworks.",
+
+                            "Understand NIST at a high level.",
+
+                            "Understand ISO/IEC 27001.",
+
+                            "Recognize CIS Controls and MITRE ATT&CK."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Why Frameworks Matter"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Security frameworks provide structured approaches for managing cybersecurity activities, identifying risks and improving security maturity."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "NIST"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "NIST cybersecurity guidance provides organizations with structured approaches for identifying, protecting, detecting, responding to and recovering from cybersecurity risks."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "ISO/IEC 27001"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "ISO/IEC 27001 focuses on establishing and continually improving an information security management system."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "CIS Controls"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "CIS Controls provide prioritized safeguards intended to help organizations improve cybersecurity."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "MITRE ATT&CK"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "MITRE ATT&CK is a knowledge base describing adversary tactics and techniques. Security teams use it for threat-informed defense, detection engineering and analysis."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-05-lesson-03",
+
+                        number:
+                            3,
+
+                        title:
+                            "Regulations & Privacy",
+
+                        description:
+                            "Understand the purpose of data protection and security regulations.",
+
+                        objectives: [
+
+                            "Understand privacy obligations.",
+
+                            "Recognize GDPR concepts.",
+
+                            "Understand HIPAA at a high level.",
+
+                            "Understand PCI-DSS."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Privacy and Security"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Organizations may have legal and contractual obligations concerning how information is collected, processed, stored and protected."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "GDPR"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "The General Data Protection Regulation establishes requirements around the processing and protection of personal data within its scope."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "HIPAA"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "HIPAA establishes requirements related to protected health information in the United States healthcare context."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "PCI-DSS"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "PCI-DSS provides security requirements for organizations involved in storing, processing or transmitting payment card data."
+                            },
+
+                            {
+                                type: "callout",
+                                title: "Important",
+                                text: "Compliance does not automatically mean an organization is secure. Security programs should address both regulatory obligations and actual risk."
+                            }
+
+                        ]
+
+                    },
+
+
+                    {
+
+                        id:
+                            "module-05-lesson-04",
+
+                        number:
+                            4,
+
+                        title:
+                            "Governance & Security Policy",
+
+                        description:
+                            "Understand how security governance turns security objectives into organizational processes.",
+
+                        objectives: [
+
+                            "Explain security governance.",
+
+                            "Understand security policies.",
+
+                            "Recognize roles and responsibilities.",
+
+                            "Understand security accountability."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Security Governance"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Security governance establishes accountability, direction and oversight for cybersecurity activities."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Security Policies"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Policies define organizational expectations around areas such as acceptable use, access control, incident response, data handling and security responsibilities."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Accountability"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Effective governance requires clearly defined responsibilities, appropriate oversight and regular review of security performance."
+                            }
+
+                        ]
+
+                    }
+
+                ]
 
             },
 
 
             /* =================================================
                MODULE 06
-            ================================================== */
+            ================================================= */
 
             {
 
-                id: "module-06",
+                id:
+                    "module-06",
 
-                number: 6,
-
-                title:
-                    "Authentication and Access Control",
-
-                description:
-                    "Learn authentication factors, authorization, least privilege and access management.",
-
-                lessons: []
-
-            },
-
-
-            /* =================================================
-               MODULE 07
-            ================================================== */
-
-            {
-
-                id: "module-07",
-
-                number: 7,
+                number:
+                    6,
 
                 title:
-                    "Network Security Fundamentals",
+                    "Incident Response & Business Continuity",
 
                 description:
-                    "Understand basic network security concepts and how network traffic can be protected.",
+                    "Learn how organizations detect, contain and recover from security incidents while maintaining business operations.",
 
-                lessons: []
+                lessons: [
 
-            },
+                    {
+
+                        id:
+                            "module-06-lesson-01",
+
+                        number:
+                            1,
+
+                        title:
+                            "Incident Response Lifecycle",
+
+                        description:
+                            "Understand the major phases of responding to cybersecurity incidents.",
+
+                        objectives: [
+
+                            "Explain incident response.",
+
+                            "Identify the major lifecycle phases.",
+
+                            "Understand containment and eradication.",
+
+                            "Understand lessons learned."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Incident Response"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Incident response is the structured process used to prepare for, detect, investigate, contain and recover from security incidents."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Lifecycle"
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "Preparation",
+                                    "Detection and analysis",
+                                    "Containment",
+                                    "Eradication",
+                                    "Recovery",
+                                    "Lessons learned"
+                                ]
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "A mature incident response capability helps organizations reduce damage, restore services and improve defenses after an incident."
+                            }
+
+                        ]
+
+                    },
 
 
-            /* =================================================
-               MODULE 08
-            ================================================== */
+                    {
 
-            {
+                        id:
+                            "module-06-lesson-02",
 
-                id: "module-08",
+                        number:
+                            2,
 
-                number: 8,
+                        title:
+                            "Digital Forensics",
 
-                title:
-                    "Endpoint and System Security",
+                        description:
+                            "Learn the foundations of preserving and analyzing digital evidence.",
 
-                description:
-                    "Explore operating-system security, patching, endpoint protection and system hardening.",
+                        objectives: [
 
-                lessons: []
+                            "Understand digital forensics.",
 
-            },
+                            "Explain evidence preservation.",
+
+                            "Understand chain of custody.",
+
+                            "Recognize the importance of logs."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Digital Forensics"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Digital forensics involves the structured collection, preservation and analysis of digital evidence."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Chain of Custody"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Chain of custody documents how evidence is collected, handled, transferred and stored. Proper documentation helps maintain confidence in the integrity of evidence."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Log Analysis"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Logs can provide valuable information about authentication events, system activity, network connections and application behavior."
+                            },
+
+                            {
+                                type: "callout",
+                                title: "Forensic Principle",
+                                text: "Evidence should be handled carefully and documented throughout the investigation."
+                            }
+
+                        ]
+
+                    },
 
 
-            /* =================================================
-               MODULE 09
-            ================================================== */
+                    {
 
-            {
+                        id:
+                            "module-06-lesson-03",
 
-                id: "module-09",
+                        number:
+                            3,
 
-                number: 9,
+                        title:
+                            "Disaster Recovery",
 
-                title:
-                    "Security Policies and Ethics",
+                        description:
+                            "Understand backups, recovery strategies and the 3-2-1 backup principle.",
 
-                description:
-                    "Understand security policies, acceptable use, responsible disclosure and ethical security practice.",
+                        objectives: [
 
-                lessons: []
+                            "Explain disaster recovery.",
 
-            },
+                            "Understand backup strategies.",
+
+                            "Explain the 3-2-1 rule.",
+
+                            "Understand recovery objectives."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Disaster Recovery"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Disaster recovery focuses on restoring systems and data after disruptive events such as security incidents, hardware failures or natural disasters."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "The 3-2-1 Rule"
+                            },
+
+                            {
+                                type: "list",
+                                items: [
+                                    "Maintain at least 3 copies of important data.",
+                                    "Use at least 2 different storage media or environments.",
+                                    "Keep at least 1 copy offsite or otherwise isolated."
+                                ]
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Recovery Objectives"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Organizations should establish recovery requirements based on business needs, including how quickly systems need to be restored and how much data loss can be tolerated."
+                            }
+
+                        ]
+
+                    },
 
 
-            /* =================================================
-               MODULE 10
-            ================================================== */
+                    {
 
-            {
+                        id:
+                            "module-06-lesson-04",
 
-                id: "module-10",
+                        number:
+                            4,
 
-                number: 10,
+                        title:
+                            "Business Continuity & Lessons Learned",
 
-                title:
-                    "Cybersecurity Foundations Review",
+                        description:
+                            "Bring incident response, recovery and business continuity together into a resilient security program.",
 
-                description:
-                    "Bring the concepts together through a comprehensive review and final assessment.",
+                        objectives: [
 
-                lessons: []
+                            "Explain business continuity planning.",
+
+                            "Understand the relationship between IR and DR.",
+
+                            "Recognize the importance of testing plans.",
+
+                            "Understand lessons learned."
+
+                        ],
+
+                        content: [
+
+                            {
+                                type: "heading",
+                                text: "Business Continuity"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Business Continuity Planning focuses on maintaining critical business functions during and after disruptive events."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Incident Response vs Disaster Recovery"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Incident response focuses on managing security incidents, while disaster recovery focuses on restoring systems and services. The two disciplines often operate together during major disruptions."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Testing"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "Plans should be tested regularly. Exercises can reveal unclear responsibilities, missing dependencies and weaknesses in recovery procedures."
+                            },
+
+                            {
+                                type: "heading",
+                                text: "Lessons Learned"
+                            },
+
+                            {
+                                type: "paragraph",
+                                text: "After an incident or exercise, organizations should review what happened, identify improvements and update their security and continuity plans."
+                            },
+
+                            {
+                                type: "callout",
+                                title: "Course Principle",
+                                text: "Cybersecurity maturity improves when organizations continuously learn, measure and improve."
+                            }
+
+                        ]
+
+                    }
+
+                ]
 
             }
 
@@ -835,7 +2094,7 @@ const courses = {
 
 
 /* =========================================================
-   URL HELPERS
+   URL PARAMETERS
 ========================================================= */
 
 function getUrlParameters() {
@@ -849,199 +2108,27 @@ function getUrlParameters() {
     return {
 
         courseId:
-            normalizeId(
-                params.get("course")
-            ),
+            (
+                params.get("course") || ""
+            )
+                .trim()
+                .toLowerCase(),
 
         moduleId:
-            normalizeId(
-                params.get("module")
-            ),
+            (
+                params.get("module") || ""
+            )
+                .trim()
+                .toLowerCase(),
 
         lessonId:
-            normalizeId(
-                params.get("lesson")
+            (
+                params.get("lesson") || ""
             )
+                .trim()
+                .toLowerCase()
 
     };
-
-}
-
-
-function normalizeId(value) {
-
-    return (
-        typeof value === "string"
-            ? value
-            : ""
-    )
-        .trim()
-        .toLowerCase();
-
-}
-
-
-/* =========================================================
-   URL BUILDERS
-========================================================= */
-
-function buildLessonUrl(
-    courseId,
-    moduleId,
-    lessonId
-) {
-
-    const params =
-        new URLSearchParams();
-
-
-    params.set(
-        "course",
-        courseId
-    );
-
-
-    params.set(
-        "module",
-        moduleId
-    );
-
-
-    if (lessonId) {
-
-        params.set(
-            "lesson",
-            lessonId
-        );
-
-    }
-
-
-    return (
-        `${LESSON_PATH}?${params.toString()}`
-    );
-
-}
-
-
-function buildCourseDetailsUrl(
-    courseId
-) {
-
-    const params =
-        new URLSearchParams();
-
-
-    params.set(
-        "course",
-        courseId
-    );
-
-
-    return (
-        `${COURSE_DETAILS_PATH}?${params.toString()}`
-    );
-
-}
-
-
-function buildLoginUrl(
-    courseId,
-    moduleId,
-    lessonId
-) {
-
-    const params =
-        new URLSearchParams();
-
-
-    params.set(
-        "redirect",
-        "lesson"
-    );
-
-
-    if (courseId) {
-
-        params.set(
-            "course",
-            courseId
-        );
-
-    }
-
-
-    if (moduleId) {
-
-        params.set(
-            "module",
-            moduleId
-        );
-
-    }
-
-
-    if (lessonId) {
-
-        params.set(
-            "lesson",
-            lessonId
-        );
-
-    }
-
-
-    return (
-        `${LOGIN_PATH}?${params.toString()}`
-    );
-
-}
-
-
-/* =========================================================
-   BROWSER URL
-========================================================= */
-
-function updateBrowserUrl(
-    courseId,
-    moduleId,
-    lessonId,
-    replace = true
-) {
-
-    const url =
-        buildLessonUrl(
-            courseId,
-            moduleId,
-            lessonId
-        );
-
-
-    if (replace) {
-
-        window.history.replaceState(
-            {
-                courseId,
-                moduleId,
-                lessonId
-            },
-            "",
-            url
-        );
-
-    } else {
-
-        window.history.pushState(
-            {
-                courseId,
-                moduleId,
-                lessonId
-            },
-            "",
-            url
-        );
-
-    }
 
 }
 
@@ -1060,7 +2147,7 @@ function getUserName(user) {
 
 
     if (
-        typeof user.displayName === "string" &&
+        user.displayName &&
         user.displayName.trim()
     ) {
 
@@ -1070,36 +2157,20 @@ function getUserName(user) {
 
 
     if (
-        typeof user.email === "string" &&
+        user.email &&
         user.email.includes("@")
     ) {
 
-        const name =
-            user.email
-                .split("@")[0]
-                .replace(
-                    /[._-]+/g,
-                    " "
-                )
-                .replace(
-                    /\s+/g,
-                    " "
-                )
-                .trim();
-
-
-        if (name) {
-
-            return name
-                .split(" ")
-                .map(
-                    word =>
-                        word.charAt(0).toUpperCase() +
-                        word.slice(1)
-                )
-                .join(" ");
-
-        }
+        return user.email
+            .split("@")[0]
+            .replace(/[._-]+/g, " ")
+            .split(" ")
+            .map(
+                word =>
+                    word.charAt(0).toUpperCase() +
+                    word.slice(1)
+            )
+            .join(" ");
 
     }
 
@@ -1110,20 +2181,17 @@ function getUserName(user) {
 
 
 /* =========================================================
-   DISPLAY STUDENT
+   DISPLAY USER
 ========================================================= */
 
 function displayStudent(user) {
 
-    if (!studentName) {
+    if (studentName) {
 
-        return;
+        studentName.textContent =
+            getUserName(user);
 
     }
-
-
-    studentName.textContent =
-        getUserName(user);
 
 }
 
@@ -1160,7 +2228,7 @@ function showLoading() {
 }
 
 
-function showLessonNotFound() {
+function showNotFound() {
 
     if (lessonLoading) {
 
@@ -1188,7 +2256,7 @@ function showLessonNotFound() {
 }
 
 
-function showLessonContent() {
+function showContent() {
 
     if (lessonLoading) {
 
@@ -1217,29 +2285,17 @@ function showLessonContent() {
 
 
 /* =========================================================
-   FIND COURSE
+   COURSE HELPERS
 ========================================================= */
 
-function findCourse(
-    courseId
-) {
+function findCourse(courseId) {
 
-    return (
-        courses[courseId] ||
-        null
-    );
+    return courses[courseId] || null;
 
 }
 
 
-/* =========================================================
-   FIND MODULE
-========================================================= */
-
-function findModule(
-    course,
-    moduleId
-) {
+function findModule(course, moduleId) {
 
     if (!course) {
 
@@ -1252,26 +2308,15 @@ function findModule(
         course.modules.find(
             module =>
                 module.id === moduleId
-        ) ||
-        null
+        ) || null
     );
 
 }
 
 
-/* =========================================================
-   FIND LESSON
-========================================================= */
+function findLesson(module, lessonId) {
 
-function findLesson(
-    module,
-    lessonId
-) {
-
-    if (
-        !module ||
-        !Array.isArray(module.lessons)
-    ) {
+    if (!module) {
 
         return null;
 
@@ -1282,69 +2327,17 @@ function findLesson(
         module.lessons.find(
             lesson =>
                 lesson.id === lessonId
-        ) ||
-        null
+        ) || null
     );
 
 }
 
 
 /* =========================================================
-   TOTAL LESSONS
+   ALL LESSONS
 ========================================================= */
 
-function getTotalLessons(
-    course
-) {
-
-    if (!course) {
-
-        return 0;
-
-    }
-
-
-    return course.modules.reduce(
-        (
-            total,
-            module
-        ) => {
-
-            return (
-                total +
-                (
-                    Array.isArray(module.lessons)
-                        ? module.lessons.length
-                        : 0
-                )
-            );
-
-        },
-        0
-    );
-
-}
-
-
-/* =========================================================
-   FLATTEN COURSE LESSONS
-   ---------------------------------------------------------
-   This is the key navigation system.
-
-   Example:
-
-   Module 1 / Lesson 1
-   Module 1 / Lesson 2
-   Module 1 / Lesson 3
-   Module 1 / Lesson 4
-   Module 2 / Lesson 1
-   Module 2 / Lesson 2
-   ...
-========================================================= */
-
-function getAllLessons(
-    course
-) {
+function getAllLessons(course) {
 
     if (!course) {
 
@@ -1353,30 +2346,16 @@ function getAllLessons(
     }
 
 
-    const lessons = [];
+    const result = [];
 
 
     course.modules.forEach(
         module => {
 
-            if (
-                !Array.isArray(
-                    module.lessons
-                )
-            ) {
-
-                return;
-
-            }
-
-
             module.lessons.forEach(
                 lesson => {
 
-                    lessons.push({
-
-                        courseId:
-                            course.id,
+                    result.push({
 
                         moduleId:
                             module.id,
@@ -1405,101 +2384,13 @@ function getAllLessons(
     );
 
 
-    return lessons;
+    return result;
 
 }
 
 
 /* =========================================================
-   GET CURRENT LESSON INDEX
-========================================================= */
-
-function getCurrentLessonIndex() {
-
-    const lessons =
-        getAllLessons(
-            currentCourse
-        );
-
-
-    return lessons.findIndex(
-        item =>
-            item.moduleId ===
-                currentModule?.id &&
-            item.lessonId ===
-                currentLesson?.id
-    );
-
-}
-
-
-/* =========================================================
-   GET PREVIOUS LESSON
-========================================================= */
-
-function getPreviousLesson() {
-
-    const lessons =
-        getAllLessons(
-            currentCourse
-        );
-
-
-    const index =
-        getCurrentLessonIndex();
-
-
-    if (index <= 0) {
-
-        return null;
-
-    }
-
-
-    return (
-        lessons[index - 1] ||
-        null
-    );
-
-}
-
-
-/* =========================================================
-   GET NEXT LESSON
-========================================================= */
-
-function getNextLesson() {
-
-    const lessons =
-        getAllLessons(
-            currentCourse
-        );
-
-
-    const index =
-        getCurrentLessonIndex();
-
-
-    if (
-        index < 0 ||
-        index >= lessons.length - 1
-    ) {
-
-        return null;
-
-    }
-
-
-    return (
-        lessons[index + 1] ||
-        null
-    );
-
-}
-
-
-/* =========================================================
-   DEFAULT PROGRESS
+   PROGRESS
 ========================================================= */
 
 function getDefaultProgress() {
@@ -1507,104 +2398,30 @@ function getDefaultProgress() {
     return {
 
         courseId:
-            currentCourse
-                ? currentCourse.id
-                : null,
+            currentCourse.id,
 
         completedLessons:
             [],
 
-        completedLabs:
-            [],
-
-        completedAssessments:
-            [],
-
         currentModule:
-            currentModule
-                ? currentModule.id
-                : null,
+            currentModule.id,
 
         currentLesson:
-            currentLesson
-                ? currentLesson.id
-                : null,
-
-        progressPercent:
-            0,
+            currentLesson.id,
 
         started:
             true,
 
         completed:
-            false
+            false,
+
+        progressPercent:
+            0
 
     };
 
 }
 
-
-/* =========================================================
-   NORMALIZE PROGRESS
-========================================================= */
-
-function normalizeProgress(
-    progress
-) {
-
-    const normalized = {
-
-        ...getDefaultProgress(),
-
-        ...(progress || {})
-
-    };
-
-
-    if (
-        !Array.isArray(
-            normalized.completedLessons
-        )
-    ) {
-
-        normalized.completedLessons =
-            [];
-
-    }
-
-
-    if (
-        !Array.isArray(
-            normalized.completedLabs
-        )
-    ) {
-
-        normalized.completedLabs =
-            [];
-
-    }
-
-
-    if (
-        !Array.isArray(
-            normalized.completedAssessments
-        )
-    ) {
-
-        normalized.completedAssessments =
-            [];
-
-    }
-
-
-    return normalized;
-
-}
-
-
-/* =========================================================
-   FIRESTORE REFERENCE
-========================================================= */
 
 function getProgressRef() {
 
@@ -1630,84 +2447,17 @@ function getProgressRef() {
 }
 
 
-/* =========================================================
-   TIMEOUT
-========================================================= */
-
-function withTimeout(
-    promise,
-    timeout = FIRESTORE_TIMEOUT
-) {
-
-    return Promise.race([
-
-        promise,
-
-        new Promise(
-            (_, reject) => {
-
-                const timer =
-                    setTimeout(
-                        () => {
-
-                            reject(
-                                new Error(
-                                    "Firestore request timed out."
-                                )
-                            );
-
-                        },
-                        timeout
-                    );
-
-
-                /*
-                   Prevent unhandled timer references
-                   from becoming significant.
-                */
-
-                void timer;
-
-            }
-        )
-
-    ]);
-
-}
-
-
-/* =========================================================
-   LOAD PROGRESS
-========================================================= */
-
 async function loadProgress() {
 
-    if (
-        progressLoadPromise
-    ) {
-
-        return progressLoadPromise;
-
-    }
-
-
     currentProgress =
-        normalizeProgress(
-            currentProgress
+        getDefaultProgress();
+
+
+    if (!db) {
+
+        warn(
+            "Firestore unavailable."
         );
-
-
-    if (
-        !db ||
-        !currentUser ||
-        !currentCourse
-    ) {
-
-        updateProgressUI();
-
-        updateCompleteButton();
-
-        renderModuleList();
 
         return;
 
@@ -1725,102 +2475,50 @@ async function loadProgress() {
     }
 
 
-    progressLoadPromise =
-        (async () => {
-
-            try {
-
-                const snapshot =
-                    await withTimeout(
-                        getDoc(
-                            progressRef
-                        )
-                    );
-
-
-                if (snapshot.exists()) {
-
-                    currentProgress =
-                        normalizeProgress(
-                            snapshot.data()
-                        );
-
-                }
-
-
-                /*
-                   Preserve the actual lesson the user
-                   is currently viewing.
-                */
-
-                currentProgress.currentModule =
-                    currentModule.id;
-
-                currentProgress.currentLesson =
-                    currentLesson.id;
-
-
-                currentProgress.started =
-                    true;
-
-
-                currentProgress.progressPercent =
-                    calculateProgress();
-
-
-                updateProgressUI();
-
-                updateCompleteButton();
-
-                renderModuleList();
-
-
-                log(
-                    "Progress loaded."
-                );
-
-            } catch (err) {
-
-                error(
-                    "Progress load failed:",
-                    err
-                );
-
-
-                currentProgress =
-                    normalizeProgress(
-                        currentProgress
-                    );
-
-
-                updateProgressUI();
-
-                updateCompleteButton();
-
-                renderModuleList();
-
-            }
-
-        })();
-
-
     try {
 
-        await progressLoadPromise;
+        const snapshot =
+            await getDoc(
+                progressRef
+            );
 
-    } finally {
 
-        progressLoadPromise =
-            null;
+        if (snapshot.exists()) {
+
+            currentProgress = {
+
+                ...getDefaultProgress(),
+
+                ...snapshot.data()
+
+            };
+
+        }
+
+
+        if (
+            !Array.isArray(
+                currentProgress.completedLessons
+            )
+        ) {
+
+            currentProgress.completedLessons =
+                [];
+
+        }
+
+
+    } catch (err) {
+
+        error(
+            "Progress load failed:",
+            err
+        );
 
     }
 
 }
 
-
-/* =========================================================
-   SAVE PROGRESS
-========================================================= */
 
 async function saveProgress() {
 
@@ -1831,11 +2529,7 @@ async function saveProgress() {
         !currentProgress
     ) {
 
-        warn(
-            "Progress save skipped."
-        );
-
-        return false;
+        return;
 
     }
 
@@ -1846,41 +2540,28 @@ async function saveProgress() {
 
     if (!progressRef) {
 
-        return false;
+        return;
 
     }
 
 
     try {
 
-        await withTimeout(
+        await setDoc(
+            progressRef,
+            {
 
-            setDoc(
-                progressRef,
-                {
+                ...currentProgress,
 
-                    ...currentProgress,
+                updatedAt:
+                    serverTimestamp()
 
-                    updatedAt:
-                        serverTimestamp()
-
-                },
-
-                {
-                    merge: true
-                }
-
-            )
-
+            },
+            {
+                merge: true
+            }
         );
 
-
-        log(
-            "Progress saved."
-        );
-
-
-        return true;
 
     } catch (err) {
 
@@ -1888,9 +2569,6 @@ async function saveProgress() {
             "Progress save failed:",
             err
         );
-
-
-        return false;
 
     }
 
@@ -1910,10 +2588,27 @@ function calculateProgress() {
     }
 
 
-    const total =
-        getTotalLessons(
+    const lessons =
+        getAllLessons(
             currentCourse
         );
+
+
+    const total =
+        lessons.length;
+
+
+    const completed =
+        currentProgress
+            ?.completedLessons
+            ?.filter(
+                id =>
+                    lessons.some(
+                        lesson =>
+                            lesson.lessonId === id
+                    )
+            )
+            .length || 0;
 
 
     if (!total) {
@@ -1923,22 +2618,11 @@ function calculateProgress() {
     }
 
 
-    const completed =
-        Array.isArray(
-            currentProgress?.completedLessons
-        )
-            ? currentProgress.completedLessons.length
-            : 0;
-
-
-    return Math.min(
-        100,
-        Math.round(
-            (
-                completed /
-                total
-            ) * 100
-        )
+    return Math.round(
+        (
+            completed /
+            total
+        ) * 100
     );
 
 }
@@ -1952,6 +2636,18 @@ function updateProgressUI() {
 
     const percent =
         calculateProgress();
+
+
+    const lessons =
+        getAllLessons(
+            currentCourse
+        );
+
+
+    const completed =
+        currentProgress
+            ?.completedLessons
+            ?.length || 0;
 
 
     if (lessonProgressPercent) {
@@ -1970,6 +2666,14 @@ function updateProgressUI() {
     }
 
 
+    if (lessonProgressText) {
+
+        lessonProgressText.textContent =
+            `${completed} of ${lessons.length} lessons completed`;
+
+    }
+
+
     const progressBar =
         document.querySelector(
             ".lesson-progress-bar"
@@ -1982,37 +2686,6 @@ function updateProgressUI() {
             "aria-valuenow",
             String(percent)
         );
-
-    }
-
-
-    if (lessonProgressText) {
-
-        const completed =
-            Array.isArray(
-                currentProgress?.completedLessons
-            )
-                ? currentProgress.completedLessons.length
-                : 0;
-
-
-        const total =
-            getTotalLessons(
-                currentCourse
-            );
-
-
-        if (!total) {
-
-            lessonProgressText.textContent =
-                "No lessons available yet.";
-
-        } else {
-
-            lessonProgressText.textContent =
-                `${completed} of ${total} lessons completed`;
-
-        }
 
     }
 
@@ -2038,17 +2711,6 @@ function renderObjectives(
         "";
 
 
-    if (
-        !Array.isArray(
-            objectives
-        )
-    ) {
-
-        return;
-
-    }
-
-
     objectives.forEach(
         objective => {
 
@@ -2068,13 +2730,13 @@ function renderObjectives(
                 "fa-solid fa-check";
 
 
-            const span =
+            const text =
                 document.createElement(
                     "span"
                 );
 
 
-            span.textContent =
+            text.textContent =
                 objective;
 
 
@@ -2084,7 +2746,7 @@ function renderObjectives(
 
 
             li.appendChild(
-                span
+                text
             );
 
 
@@ -2099,7 +2761,7 @@ function renderObjectives(
 
 
 /* =========================================================
-   RENDER LESSON BODY
+   RENDER LESSON CONTENT
 ========================================================= */
 
 function renderLessonBody(
@@ -2117,28 +2779,10 @@ function renderLessonBody(
         "";
 
 
-    if (
-        !Array.isArray(
-            content
-        )
-    ) {
-
-        return;
-
-    }
-
-
     content.forEach(
         block => {
 
-            if (!block) {
-
-                return;
-
-            }
-
-
-            let element = null;
+            let element;
 
 
             switch (
@@ -2152,11 +2796,8 @@ function renderLessonBody(
                             "h2"
                         );
 
-
                     element.textContent =
-                        block.text ||
-                        "";
-
+                        block.text;
 
                     break;
 
@@ -2168,11 +2809,8 @@ function renderLessonBody(
                             "p"
                         );
 
-
                     element.textContent =
-                        block.text ||
-                        "";
-
+                        block.text;
 
                     break;
 
@@ -2185,39 +2823,32 @@ function renderLessonBody(
                         );
 
 
-                    if (
-                        Array.isArray(
-                            block.items
-                        )
-                    ) {
+                    (
+                        block.items || []
+                    ).forEach(
+                        item => {
 
-                        block.items.forEach(
-                            item => {
-
-                                const li =
-                                    document.createElement(
-                                        "li"
-                                    );
-
-
-                                li.textContent =
-                                    item;
-
-
-                                element.appendChild(
-                                    li
+                            const li =
+                                document.createElement(
+                                    "li"
                                 );
 
-                            }
-                        );
 
-                    }
+                            li.textContent =
+                                item;
 
+
+                            element.appendChild(
+                                li
+                            );
+
+                        }
+                    );
 
                     break;
 
 
-                case "callout": {
+                case "callout":
 
                     element =
                         document.createElement(
@@ -2240,15 +2871,14 @@ function renderLessonBody(
                         "Important";
 
 
-                    const text =
+                    const paragraph =
                         document.createElement(
                             "p"
                         );
 
 
-                    text.textContent =
-                        block.text ||
-                        "";
+                    paragraph.textContent =
+                        block.text;
 
 
                     element.appendChild(
@@ -2257,13 +2887,10 @@ function renderLessonBody(
 
 
                     element.appendChild(
-                        text
+                        paragraph
                     );
 
-
                     break;
-
-                }
 
 
                 default:
@@ -2296,7 +2923,32 @@ function renderLessonBody(
 
 
 /* =========================================================
-   RENDER MODULE LIST
+   LESSON URL
+========================================================= */
+
+function buildLessonUrl(
+    courseId,
+    moduleId,
+    lessonId
+) {
+
+    return (
+        `./lesson.html?course=${encodeURIComponent(
+            courseId
+        )}` +
+        `&module=${encodeURIComponent(
+            moduleId
+        )}` +
+        `&lesson=${encodeURIComponent(
+            lessonId
+        )}`
+    );
+
+}
+
+
+/* =========================================================
+   RENDER MODULE SIDEBAR
 ========================================================= */
 
 function renderModuleList() {
@@ -2312,149 +2964,326 @@ function renderModuleList() {
         "";
 
 
-    if (!currentCourse) {
+    currentCourse.modules.forEach(
+        module => {
 
-        return;
-
-    }
-
-
-    /*
-       Display the lessons of the CURRENT MODULE.
-    */
-
-    if (
-        !currentModule ||
-        !Array.isArray(
-            currentModule.lessons
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    currentModule.lessons.forEach(
-        lesson => {
-
-            const link =
+            const section =
                 document.createElement(
-                    "a"
+                    "div"
                 );
 
 
-            link.className =
-                "lesson-module-item";
+            section.className =
+                "module-section";
 
 
-            link.href =
-                buildLessonUrl(
-                    currentCourse.id,
-                    currentModule.id,
-                    lesson.id
-                );
-
-
-            if (
-                currentLesson &&
-                lesson.id ===
-                    currentLesson.id
-            ) {
-
-                link.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            const completed =
-                Array.isArray(
-                    currentProgress?.completedLessons
-                ) &&
-                currentProgress.completedLessons.includes(
-                    lesson.id
-                );
-
-
-            if (completed) {
-
-                link.classList.add(
-                    "completed"
-                );
-
-            }
-
-
-            const number =
+            const heading =
                 document.createElement(
-                    "span"
+                    "div"
                 );
 
 
-            number.className =
-                "lesson-module-item-number";
+            heading.className =
+                "module-section-title";
 
 
-            number.textContent =
-                String(
-                    lesson.number
+            heading.textContent =
+                `Module ${String(
+                    module.number
                 ).padStart(
                     2,
                     "0"
-                );
+                )} — ${module.title}`;
 
 
-            const title =
-                document.createElement(
-                    "span"
-                );
-
-
-            title.className =
-                "lesson-module-item-title";
-
-
-            title.textContent =
-                lesson.title;
-
-
-            link.appendChild(
-                number
+            section.appendChild(
+                heading
             );
 
 
-            link.appendChild(
-                title
-            );
+            module.lessons.forEach(
+                lesson => {
+
+                    const link =
+                        document.createElement(
+                            "a"
+                        );
 
 
-            if (completed) {
+                    link.className =
+                        "lesson-module-item";
 
-                const icon =
-                    document.createElement(
-                        "i"
+
+                    link.href =
+                        buildLessonUrl(
+                            currentCourse.id,
+                            module.id,
+                            lesson.id
+                        );
+
+
+                    if (
+                        currentModule.id ===
+                            module.id &&
+                        currentLesson.id ===
+                            lesson.id
+                    ) {
+
+                        link.classList.add(
+                            "active"
+                        );
+
+                    }
+
+
+                    const completed =
+                        currentProgress
+                            ?.completedLessons
+                            ?.includes(
+                                lesson.id
+                            );
+
+
+                    if (completed) {
+
+                        link.classList.add(
+                            "completed"
+                        );
+
+                    }
+
+
+                    const number =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    number.className =
+                        "lesson-module-item-number";
+
+
+                    number.textContent =
+                        String(
+                            lesson.number
+                        ).padStart(
+                            2,
+                            "0"
+                        );
+
+
+                    const title =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    title.className =
+                        "lesson-module-item-title";
+
+
+                    title.textContent =
+                        lesson.title;
+
+
+                    link.appendChild(
+                        number
                     );
 
 
-                icon.className =
-                    "fa-solid fa-check";
+                    link.appendChild(
+                        title
+                    );
 
 
-                link.appendChild(
-                    icon
-                );
+                    if (completed) {
 
-            }
+                        const check =
+                            document.createElement(
+                                "i"
+                            );
+
+
+                        check.className =
+                            "fa-solid fa-check";
+
+
+                        link.appendChild(
+                            check
+                        );
+
+                    }
+
+
+                    section.appendChild(
+                        link
+                    );
+
+                }
+            );
 
 
             lessonModuleList.appendChild(
-                link
+                section
             );
 
         }
     );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function updateNavigation() {
+
+    const lessons =
+        getAllLessons(
+            currentCourse
+        );
+
+
+    const currentIndex =
+        lessons.findIndex(
+            lesson =>
+                lesson.lessonId ===
+                currentLesson.id
+        );
+
+
+    log(
+        "Navigation:",
+        {
+            currentIndex,
+            total: lessons.length
+        }
+    );
+
+
+    /* =====================================================
+       PREVIOUS
+    ====================================================== */
+
+    if (previousLessonBtn) {
+
+        if (currentIndex > 0) {
+
+            const previous =
+                lessons[
+                    currentIndex - 1
+                ];
+
+
+            previousLessonBtn.href =
+                buildLessonUrl(
+                    currentCourse.id,
+                    previous.moduleId,
+                    previous.lessonId
+                );
+
+
+            previousLessonBtn.hidden =
+                false;
+
+        } else {
+
+            previousLessonBtn.hidden =
+                true;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       NEXT
+    ====================================================== */
+
+    if (nextLessonBtn) {
+
+        if (
+            currentIndex >= 0 &&
+            currentIndex <
+                lessons.length - 1
+        ) {
+
+            const next =
+                lessons[
+                    currentIndex + 1
+                ];
+
+
+            nextLessonBtn.href =
+                buildLessonUrl(
+                    currentCourse.id,
+                    next.moduleId,
+                    next.lessonId
+                );
+
+
+            nextLessonBtn.hidden =
+                false;
+
+        } else {
+
+            nextLessonBtn.hidden =
+                true;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   COMPLETE BUTTON
+========================================================= */
+
+function updateCompleteButton() {
+
+    if (!markCompleteBtn) {
+
+        return;
+
+    }
+
+
+    const completed =
+        currentProgress
+            ?.completedLessons
+            ?.includes(
+                currentLesson.id
+            );
+
+
+    if (completed) {
+
+        markCompleteBtn.classList.add(
+            "completed"
+        );
+
+
+        markCompleteBtn.innerHTML = `
+            <i class="fa-solid fa-check"></i>
+            Lesson Completed
+        `;
+
+    } else {
+
+        markCompleteBtn.classList.remove(
+            "completed"
+        );
+
+
+        markCompleteBtn.innerHTML = `
+            <i class="fa-solid fa-check"></i>
+            Mark Lesson Complete
+        `;
+
+    }
 
 }
 
@@ -2546,246 +3375,60 @@ function renderLesson() {
 
     updateProgressUI();
 
-    updateCompleteButton();
 
     renderModuleList();
 
+
     updateNavigation();
 
+
+    updateCompleteButton();
+
 }
 
 
 /* =========================================================
-   UPDATE NAVIGATION
+   REMEMBER LESSON
 ========================================================= */
 
-function updateNavigation() {
+async function rememberCurrentLesson() {
 
-    if (
-        !currentCourse ||
-        !currentModule ||
-        !currentLesson
-    ) {
+    if (!currentProgress) {
 
         return;
 
     }
 
 
-    const previous =
-        getPreviousLesson();
+    currentProgress.currentModule =
+        currentModule.id;
 
 
-    const next =
-        getNextLesson();
+    currentProgress.currentLesson =
+        currentLesson.id;
 
 
-    /* =====================================================
-       PREVIOUS
-    ====================================================== */
-
-    if (previousLessonBtn) {
-
-        if (previous) {
-
-            previousLessonBtn.hidden =
-                false;
+    currentProgress.started =
+        true;
 
 
-            previousLessonBtn.href =
-                buildLessonUrl(
-                    currentCourse.id,
-                    previous.moduleId,
-                    previous.lessonId
-                );
-
-
-            previousLessonBtn.removeAttribute(
-                "aria-disabled"
-            );
-
-        } else {
-
-            previousLessonBtn.hidden =
-                true;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       NEXT
-    ====================================================== */
-
-    if (nextLessonBtn) {
-
-        if (next) {
-
-            nextLessonBtn.hidden =
-                false;
-
-
-            nextLessonBtn.href =
-                buildLessonUrl(
-                    currentCourse.id,
-                    next.moduleId,
-                    next.lessonId
-                );
-
-
-            nextLessonBtn.removeAttribute(
-                "aria-disabled"
-            );
-
-        } else {
-
-            /*
-               No next lesson means this is currently
-               the final available lesson.
-            */
-
-            nextLessonBtn.hidden =
-                false;
-
-
-            nextLessonBtn.href =
-                buildCourseDetailsUrl(
-                    currentCourse.id
-                );
-
-
-            nextLessonBtn.innerHTML = `
-                Finish Course
-                <i class="fa-solid fa-arrow-right"></i>
-            `;
-
-
-            nextLessonBtn.setAttribute(
-                "aria-label",
-                "Return to course details"
-            );
-
-        }
-
-    }
+    await saveProgress();
 
 }
 
 
 /* =========================================================
-   RESET NEXT BUTTON
-========================================================= */
-
-function resetNextButton() {
-
-    if (!nextLessonBtn) {
-
-        return;
-
-    }
-
-
-    nextLessonBtn.innerHTML = `
-        Next Lesson
-        <i class="fa-solid fa-arrow-right"></i>
-    `;
-
-
-    nextLessonBtn.removeAttribute(
-        "aria-label"
-    );
-
-}
-
-
-/* =========================================================
-   UPDATE COMPLETE BUTTON
-========================================================= */
-
-function updateCompleteButton() {
-
-    if (
-        !markCompleteBtn ||
-        !currentLesson
-    ) {
-
-        return;
-
-    }
-
-
-    const completed =
-        Array.isArray(
-            currentProgress?.completedLessons
-        ) &&
-        currentProgress.completedLessons.includes(
-            currentLesson.id
-        );
-
-
-    if (completed) {
-
-        markCompleteBtn.classList.add(
-            "completed"
-        );
-
-
-        markCompleteBtn.innerHTML = `
-            <i class="fa-solid fa-check"></i>
-            Lesson Completed
-        `;
-
-
-        markCompleteBtn.setAttribute(
-            "aria-label",
-            "Lesson completed"
-        );
-
-    } else {
-
-        markCompleteBtn.classList.remove(
-            "completed"
-        );
-
-
-        markCompleteBtn.innerHTML = `
-            <i class="fa-solid fa-check"></i>
-            Mark Lesson Complete
-        `;
-
-
-        markCompleteBtn.setAttribute(
-            "aria-label",
-            "Mark lesson complete"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   MARK LESSON COMPLETE
+   MARK COMPLETE
 ========================================================= */
 
 async function markLessonComplete() {
 
     if (
-        !currentLesson ||
-        !currentModule ||
-        !currentCourse
+        !currentProgress ||
+        !currentLesson
     ) {
 
         return;
-
-    }
-
-
-    if (!currentProgress) {
-
-        currentProgress =
-            getDefaultProgress();
 
     }
 
@@ -2831,112 +3474,33 @@ async function markLessonComplete() {
         calculateProgress();
 
 
+    const totalLessons =
+        getAllLessons(
+            currentCourse
+        ).length;
+
+
     currentProgress.completed =
-        currentProgress.progressPercent >=
-        100;
+        currentProgress.completedLessons.length >=
+        totalLessons;
 
 
     updateProgressUI();
 
+
     updateCompleteButton();
+
 
     renderModuleList();
 
 
-    /*
-       Save AFTER UI update.
-    */
-
     await saveProgress();
 
-}
 
-
-/* =========================================================
-   REMEMBER CURRENT LESSON
-========================================================= */
-
-async function rememberCurrentLesson() {
-
-    if (
-        !currentCourse ||
-        !currentModule ||
-        !currentLesson
-    ) {
-
-        return;
-
-    }
-
-
-    if (!currentProgress) {
-
-        currentProgress =
-            getDefaultProgress();
-
-    }
-
-
-    currentProgress.currentModule =
-        currentModule.id;
-
-
-    currentProgress.currentLesson =
-        currentLesson.id;
-
-
-    currentProgress.started =
-        true;
-
-
-    currentProgress.progressPercent =
-        calculateProgress();
-
-
-    await saveProgress();
-
-}
-
-
-/* =========================================================
-   LOGOUT STATE
-========================================================= */
-
-function setLogoutLoading(
-    isLoading
-) {
-
-    if (!logoutBtn) {
-
-        return;
-
-    }
-
-
-    logoutBtn.disabled =
-        isLoading;
-
-
-    logoutBtn.classList.toggle(
-        "is-loading",
-        isLoading
+    log(
+        "Completed:",
+        currentLesson.id
     );
-
-
-    if (isLoading) {
-
-        logoutBtn.setAttribute(
-            "aria-busy",
-            "true"
-        );
-
-    } else {
-
-        logoutBtn.removeAttribute(
-            "aria-busy"
-        );
-
-    }
 
 }
 
@@ -2953,23 +3517,24 @@ async function logout() {
             "Firebase Auth unavailable."
         );
 
-
-        window.location.replace(
-            LOGIN_PATH
-        );
-
-
         return;
 
     }
 
 
-    try {
+    if (logoutBtn) {
 
-        setLogoutLoading(
-            true
+        logoutBtn.disabled =
+            true;
+
+        logoutBtn.classList.add(
+            "is-loading"
         );
 
+    }
+
+
+    try {
 
         await signOut(
             auth
@@ -2977,8 +3542,9 @@ async function logout() {
 
 
         window.location.replace(
-            LOGIN_PATH
+            "../pages/login.html"
         );
+
 
     } catch (err) {
 
@@ -2988,9 +3554,16 @@ async function logout() {
         );
 
 
-        setLogoutLoading(
-            false
-        );
+        if (logoutBtn) {
+
+            logoutBtn.disabled =
+                false;
+
+            logoutBtn.classList.remove(
+                "is-loading"
+            );
+
+        }
 
 
         alert(
@@ -3031,314 +3604,12 @@ if (markCompleteBtn) {
 
 
 /* =========================================================
-   INTERNAL NAVIGATION
-   ---------------------------------------------------------
-   This makes navigation instant and prevents the browser
-   from unnecessarily reloading the entire page.
+   LOAD LESSON
 ========================================================= */
 
-function navigateToLesson(
-    moduleId,
-    lessonId
-) {
+async function loadLesson() {
 
-    if (!currentCourse) {
-
-        return;
-
-    }
-
-
-    const module =
-        findModule(
-            currentCourse,
-            moduleId
-        );
-
-
-    if (!module) {
-
-        warn(
-            "Navigation module not found:",
-            moduleId
-        );
-
-
-        return;
-
-    }
-
-
-    const lesson =
-        findLesson(
-            module,
-            lessonId
-        );
-
-
-    if (!lesson) {
-
-        warn(
-            "Navigation lesson not found:",
-            lessonId
-        );
-
-
-        return;
-
-    }
-
-
-    navigationToken++;
-
-
-    currentModule =
-        module;
-
-
-    currentLesson =
-        lesson;
-
-
-    if (!currentProgress) {
-
-        currentProgress =
-            getDefaultProgress();
-
-    }
-
-
-    currentProgress.currentModule =
-        module.id;
-
-
-    currentProgress.currentLesson =
-        lesson.id;
-
-
-    currentProgress.started =
-        true;
-
-
-    resetNextButton();
-
-
-    renderLesson();
-
-
-    showLessonContent();
-
-
-    updateBrowserUrl(
-        currentCourse.id,
-        module.id,
-        lesson.id,
-        false
-    );
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-
-    /*
-       Save in background.
-    */
-
-    rememberCurrentLesson()
-        .catch(
-            err => {
-
-                error(
-                    "Navigation progress save failed:",
-                    err
-                );
-
-            }
-        );
-
-}
-
-
-/* =========================================================
-   INTERCEPT LESSON LINKS
-   ---------------------------------------------------------
-   Allows module list links to navigate without a full reload.
-========================================================= */
-
-if (lessonModuleList) {
-
-    lessonModuleList.addEventListener(
-        "click",
-        event => {
-
-            const link =
-                event.target.closest(
-                    "a.lesson-module-item"
-                );
-
-
-            if (!link) {
-
-                return;
-
-            }
-
-
-            const url =
-                new URL(
-                    link.href,
-                    window.location.href
-                );
-
-
-            const courseId =
-                normalizeId(
-                    url.searchParams.get(
-                        "course"
-                    )
-                );
-
-
-            const moduleId =
-                normalizeId(
-                    url.searchParams.get(
-                        "module"
-                    )
-                );
-
-
-            const lessonId =
-                normalizeId(
-                    url.searchParams.get(
-                        "lesson"
-                    )
-                );
-
-
-            if (
-                courseId !==
-                currentCourse?.id
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                !moduleId ||
-                !lessonId
-            ) {
-
-                return;
-
-            }
-
-
-            event.preventDefault();
-
-
-            navigateToLesson(
-                moduleId,
-                lessonId
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   PREVIOUS BUTTON
-========================================================= */
-
-if (previousLessonBtn) {
-
-    previousLessonBtn.addEventListener(
-        "click",
-        event => {
-
-            const previous =
-                getPreviousLesson();
-
-
-            if (!previous) {
-
-                event.preventDefault();
-
-                return;
-
-            }
-
-
-            event.preventDefault();
-
-
-            navigateToLesson(
-                previous.moduleId,
-                previous.lessonId
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   NEXT BUTTON
-========================================================= */
-
-if (nextLessonBtn) {
-
-    nextLessonBtn.addEventListener(
-        "click",
-        event => {
-
-            const next =
-                getNextLesson();
-
-
-            if (!next) {
-
-                /*
-                   Final lesson -> course details.
-                */
-
-                return;
-
-            }
-
-
-            event.preventDefault();
-
-
-            navigateToLesson(
-                next.moduleId,
-                next.lessonId
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   LOAD LESSON FROM URL
-========================================================= */
-
-async function loadLessonFromUrl(
-    options = {}
-) {
-
-    const {
-        pushHistory = false
-    } = options;
+    showLoading();
 
 
     const {
@@ -3350,7 +3621,7 @@ async function loadLessonFromUrl(
 
 
     log(
-        "Loading URL:",
+        "URL:",
         {
             courseId,
             moduleId,
@@ -3366,11 +3637,10 @@ async function loadLessonFromUrl(
     if (!courseId) {
 
         warn(
-            "Missing course ID."
+            "Missing course parameter."
         );
 
-
-        showLessonNotFound();
+        showNotFound();
 
         return;
 
@@ -3390,26 +3660,7 @@ async function loadLessonFromUrl(
             courseId
         );
 
-
-        showLessonNotFound();
-
-        return;
-
-    }
-
-
-    if (
-        course.status !==
-        "available"
-    ) {
-
-        warn(
-            "Course unavailable:",
-            courseId
-        );
-
-
-        showLessonNotFound();
+        showNotFound();
 
         return;
 
@@ -3423,21 +3674,10 @@ async function loadLessonFromUrl(
     if (!moduleId) {
 
         warn(
-            "Missing module ID."
+            "Missing module parameter."
         );
 
-
-        /*
-           If there is no module at all, return to
-           course details instead of hanging.
-        */
-
-        window.location.replace(
-            buildCourseDetailsUrl(
-                course.id
-            )
-        );
-
+        showNotFound();
 
         return;
 
@@ -3458,32 +3698,7 @@ async function loadLessonFromUrl(
             moduleId
         );
 
-
-        showLessonNotFound();
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       MODULE MUST HAVE LESSONS
-    ====================================================== */
-
-    if (
-        !Array.isArray(
-            module.lessons
-        ) ||
-        module.lessons.length === 0
-    ) {
-
-        warn(
-            "This module has no lessons yet:",
-            module.id
-        );
-
-
-        showLessonNotFound();
+        showNotFound();
 
         return;
 
@@ -3491,22 +3706,30 @@ async function loadLessonFromUrl(
 
 
     /* =====================================================
-       SELECT LESSON
+       LESSON
     ====================================================== */
 
     let selectedLessonId =
         lessonId;
 
 
-    /*
-       No lesson parameter means:
-       automatically open lesson 01.
-    */
-
     if (!selectedLessonId) {
 
         selectedLessonId =
-            module.lessons[0].id;
+            module.lessons[0]?.id;
+
+    }
+
+
+    if (!selectedLessonId) {
+
+        warn(
+            "Module has no lessons."
+        );
+
+        showNotFound();
+
+        return;
 
     }
 
@@ -3525,8 +3748,7 @@ async function loadLessonFromUrl(
             selectedLessonId
         );
 
-
-        showLessonNotFound();
+        showNotFound();
 
         return;
 
@@ -3540,128 +3762,76 @@ async function loadLessonFromUrl(
     currentCourse =
         course;
 
+
     currentModule =
         module;
+
 
     currentLesson =
         lesson;
 
 
-    if (!currentProgress) {
+    /* =====================================================
+       LOAD FIRESTORE PROGRESS
+    ====================================================== */
 
-        currentProgress =
-            getDefaultProgress();
-
-    }
-
-
-    currentProgress.currentModule =
-        module.id;
-
-
-    currentProgress.currentLesson =
-        lesson.id;
-
-
-    currentProgress.started =
-        true;
+    await loadProgress();
 
 
     /* =====================================================
-       RENDER IMMEDIATELY
+       SAVE CURRENT LOCATION
     ====================================================== */
 
-    resetNextButton();
+    await rememberCurrentLesson();
+
+
+    /* =====================================================
+       RENDER
+    ====================================================== */
 
     renderLesson();
 
-    showLessonContent();
+
+    showContent();
 
 
     /* =====================================================
        NORMALIZE URL
     ====================================================== */
 
-    if (!lessonId) {
-
-        updateBrowserUrl(
-            course.id,
-            module.id,
-            lesson.id,
-            true
+    const normalizedUrl =
+        buildLessonUrl(
+            currentCourse.id,
+            currentModule.id,
+            currentLesson.id
         );
 
-    } else if (pushHistory) {
 
-        updateBrowserUrl(
-            course.id,
-            module.id,
-            lesson.id,
-            false
+    if (
+        window.location.pathname +
+        window.location.search !==
+        normalizedUrl
+    ) {
+
+        window.history.replaceState(
+            {},
+            "",
+            normalizedUrl
         );
 
     }
 
 
     log(
-        "Lesson rendered:",
-        lesson.title
+        "Lesson loaded:",
+        currentLesson.title
     );
-
-
-    /* =====================================================
-       BACKGROUND PROGRESS
-    ====================================================== */
-
-    loadProgress()
-        .catch(
-            err => {
-
-                error(
-                    "Background progress load failed:",
-                    err
-                );
-
-            }
-        );
-
-
-    rememberCurrentLesson()
-        .catch(
-            err => {
-
-                error(
-                    "Background lesson save failed:",
-                    err
-                );
-
-            }
-        );
 
 }
 
 
 /* =========================================================
-   BROWSER BACK / FORWARD
-========================================================= */
-
-window.addEventListener(
-    "popstate",
-    () => {
-
-        log(
-            "Browser Back/Forward detected."
-        );
-
-
-        loadLessonFromUrl();
-
-    }
-);
-
-
-/* =========================================================
-   AUTHENTICATION
+   AUTH
 ========================================================= */
 
 if (!auth) {
@@ -3671,11 +3841,8 @@ if (!auth) {
     );
 
 
-    showLessonNotFound();
-
-
     window.location.replace(
-        LOGIN_PATH
+        "../pages/login.html"
     );
 
 } else {
@@ -3685,20 +3852,12 @@ if (!auth) {
         async user => {
 
             log(
-                "Authentication state:",
+                "Auth state:",
                 user
                     ? "AUTHENTICATED"
-                    : "NOT AUTHENTICATED"
+                    : "SIGNED OUT"
             );
 
-
-            authResolved =
-                true;
-
-
-            /* =================================================
-               NOT AUTHENTICATED
-            ================================================== */
 
             if (!user) {
 
@@ -3714,12 +3873,22 @@ if (!auth) {
                     getUrlParameters();
 
 
-                window.location.replace(
-                    buildLoginUrl(
-                        courseId,
-                        moduleId,
+                const loginUrl =
+                    `../pages/login.html` +
+                    `?redirect=lesson` +
+                    `&course=${encodeURIComponent(
+                        courseId
+                    )}` +
+                    `&module=${encodeURIComponent(
+                        moduleId
+                    )}` +
+                    `&lesson=${encodeURIComponent(
                         lessonId
-                    )
+                    )}`;
+
+
+                window.location.replace(
+                    loginUrl
                 );
 
 
@@ -3727,10 +3896,6 @@ if (!auth) {
 
             }
 
-
-            /* =================================================
-               AUTHENTICATED
-            ================================================== */
 
             currentUser =
                 user;
@@ -3741,10 +3906,21 @@ if (!auth) {
             );
 
 
-            showLoading();
+            try {
+
+                await loadLesson();
+
+            } catch (err) {
+
+                error(
+                    "Lesson initialization failed:",
+                    err
+                );
 
 
-            await loadLessonFromUrl();
+                showNotFound();
+
+            }
 
         }
     );
@@ -3753,36 +3929,9 @@ if (!auth) {
 
 
 /* =========================================================
-   AUTH SAFETY TIMEOUT
-========================================================= */
-
-setTimeout(
-    () => {
-
-        if (
-            !authResolved &&
-            lessonLoading &&
-            !lessonLoading.hidden
-        ) {
-
-            error(
-                "Firebase Authentication did not resolve."
-            );
-
-
-            showLessonNotFound();
-
-        }
-
-    },
-    10000
-);
-
-
-/* =========================================================
-   INITIAL LOG
+   INITIAL MESSAGE
 ========================================================= */
 
 log(
-    "lesson.js loaded successfully."
+    "CWS Lesson Engine v2 loaded."
 );
