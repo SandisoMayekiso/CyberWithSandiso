@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CWS Academy Networking Fundamentals course covering IP addressing, CIDR, ARP, TCP, UDP, ICMP, routing, DNS, HTTP, HTTPS and network security."
+    >
+
+    <title>
+        Networking Fundamentals | CWS Academy
+    </title>
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+
+    <!-- =====================================================
+         DASHBOARD CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/dashboard.css"
+    >
+
+
+    <!-- =====================================================
+         NETWORKING COURSE CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/networking-fundamentals.css"
+    >
+
+</head>
+
+
+<body class="student-dashboard networking-course-body">
+
+
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
+
+<header class="student-header">
+
+    <nav class="student-nav">
+
+
+        <a
+            href="../student/dashboard.html"
+            class="academy-logo"
+            aria-label="CWS Academy Dashboard"
+        >
+
+            <span class="logo-cws">
+                CWS
+            </span>
+
+            <span class="logo-text">
+                Academy
+            </span>
+
+        </a>
+
+
+        <div class="student-nav-links">
+
+            <a href="../student/dashboard.html">
+
+                <i class="fa-solid fa-house"></i>
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                href="../student/student-courses.html"
+                class="active"
+            >
+
+                <i class="fa-solid fa-book"></i>
+
+                Courses
+
+            </a>
+
+
+            <a href="../student/labs.html">
+
+                <i class="fa-solid fa-flask"></i>
+
+                Labs
+
+            </a>
+
+
+            <a href="../student/assessments.html">
+
+                <i class="fa-solid fa-clipboard-check"></i>
+
+                Assessments
+
+            </a>
+
+
+            <a href="../student/progress.html">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                Progress
+
+            </a>
+
+
+            <a href="../student/certificates.html">
+
+                <i class="fa-solid fa-certificate"></i>
+
+                Certificates
+
+            </a>
+
+        </div>
+
+
+        <div class="student-nav-account">
+
+            <span
+                id="studentName"
+                class="student-nav-name"
+            >
+                Student
+            </span>
+
+
+            <button
+                type="button"
+                id="logoutBtn"
+                class="dashboard-logout-btn"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="networking-main">
+
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    <section
+        id="courseLoading"
+        class="network-course-loading"
+        aria-live="polite"
+    >
+
+        <div class="network-loading-icon">
+
+            <i class="fa-solid fa-network-wired"></i>
+
+        </div>
+
+
+        <h2>
+            Loading Networking Fundamentals
+        </h2>
+
+
+        <p>
+            Preparing your networking learning environment.
+        </p>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ERROR
+    ====================================================== -->
+
+    <section
+        id="courseError"
+        class="network-course-error"
+        hidden
+    >
+
+        <div class="network-error-icon">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+        </div>
+
+
+        <span class="dashboard-label">
+            COURSE UNAVAILABLE
+        </span>
+
+
+        <h1>
+            Unable to Load Course
+        </h1>
+
+
+        <p>
+            Networking Fundamentals could not be loaded.
+            Please return to the courses page and try again.
+        </p>
+
+
+        <a
+            href="../student/student-courses.html"
+            class="network-primary-btn"
+        >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to Courses
+
+        </a>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CONTENT
+    ====================================================== -->
+
+    <div
+        id="courseContent"
+        hidden
+    >
+
+
+        <!-- =================================================
+             BREADCRUMB
+        ================================================== -->
+
+        <nav
+            class="network-breadcrumb"
+            aria-label="Breadcrumb"
+        >
+
+            <a href="../student/student-courses.html">
+
+                <i class="fa-solid fa-book"></i>
+
+                Courses
+
+            </a>
+
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+
+            <span>
+                Networking Fundamentals
+            </span>
+
+        </nav>
+
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="network-course-hero">
+
+
+            <div class="network-hero-content">
+
+
+                <div class="network-course-badges">
+
+                    <span class="network-status">
+                        AVAILABLE
+                    </span>
+
+                    <span class="network-level">
+                        BEGINNER
+                    </span>
+
+                </div>
+
+
+                <span class="dashboard-label">
+                    CWS ACADEMY • NETWORKING
+                </span>
+
+
+                <h1>
+                    Networking Fundamentals
+                </h1>
+
+
+                <p>
+
+                    Learn how computers communicate across
+                    networks and understand IP addressing,
+                    CIDR, ARP, TCP, UDP, ICMP, routing,
+                    DNS, DHCP, HTTP and HTTPS from a
+                    cybersecurity perspective.
+
+                </p>
+
+
+                <div class="network-hero-meta">
+
+                    <span>
+
+                        <i class="fa-solid fa-book-open"></i>
+
+                        10 Modules
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-network-wired"></i>
+
+                        Network Labs
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-clipboard-check"></i>
+
+                        Assessments
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        20–25 Hours
+
+                    </span>
+
+                </div>
+
+
+                <div class="network-hero-actions">
+
+                    <button
+                        type="button"
+                        id="startCourseBtn"
+                        class="network-primary-btn"
+                    >
+
+                        <i class="fa-solid fa-play"></i>
+
+                        Start Course
+
+                    </button>
+
+
+                    <a
+                        href="../student/student-courses.html"
+                        class="network-secondary-btn"
+                    >
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Back to Courses
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 NETWORK VISUAL
+            ============================================== -->
+
+            <div
+                class="network-hero-visual"
+                aria-hidden="true"
+            >
+
+                <div class="network-node network-node-main">
+
+                    <i class="fa-solid fa-network-wired"></i>
+
+                </div>
+
+
+                <div class="network-node network-node-one">
+
+                    <i class="fa-solid fa-laptop"></i>
+
+                </div>
+
+
+                <div class="network-node network-node-two">
+
+                    <i class="fa-solid fa-server"></i>
+
+                </div>
+
+
+                <div class="network-node network-node-three">
+
+                    <i class="fa-solid fa-globe"></i>
+
+                </div>
+
+
+                <div class="network-line line-one"></div>
+
+                <div class="network-line line-two"></div>
+
+                <div class="network-line line-three"></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             OVERVIEW
+        ================================================== -->
+
+        <section class="network-overview-section">
+
+
+            <div class="network-overview-main">
+
+                <span class="dashboard-label">
+                    COURSE OVERVIEW
+                </span>
+
+
+                <h2>
+                    Understand the Networks You Protect
+                </h2>
+
+
+                <p>
+
+                    Cybersecurity depends heavily on networking.
+                    Before a security professional can defend,
+                    monitor or test a network, they need to
+                    understand how devices discover each other,
+                    exchange packets, resolve names, establish
+                    connections and communicate with services.
+
+                </p>
+
+
+                <p>
+
+                    Networking Fundamentals teaches these
+                    concepts from a security perspective.
+                    You'll examine the technologies behind
+                    everyday network communication while also
+                    learning why attackers and defenders care
+                    about protocols, ports, addressing,
+                    routing and traffic behaviour.
+
+                </p>
+
+
+
+                <!-- =========================================
+                     OBJECTIVES
+                ========================================== -->
+
+                <div class="network-objectives">
+
+                    <h3>
+                        What You'll Learn
+                    </h3>
+
+
+                    <div class="network-objective-grid">
+
+
+                        <div class="network-objective">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Understand network models and
+                                packet communication.
+                            </span>
+
+                        </div>
+
+
+                        <div class="network-objective">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Understand IPv4 addressing and
+                                private/public addresses.
+                            </span>
+
+                        </div>
+
+
+                        <div class="network-objective">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Understand CIDR notation and
+                                subnetting fundamentals.
+                            </span>
+
+                        </div>
+
+
+                        <div class="network-objective">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Explain MAC addresses and ARP.
+                            </span>
+
+                        </div>
+
+
+                        <div class="network-objective">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Compare TCP and UDP.
+                            </span>
+
+                        </div>
+
+
+                        <div class="network-objective">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Understand ICMP and network
+                                diagnostics.
+                            </span>
+
+                        </div>
+
+
+                        <div class="network-objective">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Understand routing and gateways.
+                            </span>
+
+                        </div>
+
+
+                        <div class="network-objective">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Understand DNS and DHCP.
+                            </span>
+
+                        </div>
+
+
+                        <div class="network-objective">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Understand HTTP and HTTPS traffic.
+                            </span>
+
+                        </div>
+
+
+                        <div class="network-objective">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Analyze networking concepts from
+                                a cybersecurity perspective.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 SIDEBAR
+            ============================================== -->
+
+            <aside class="network-course-sidebar">
+
+                <div class="network-course-info-card">
+
+                    <h3>
+                        Course Information
+                    </h3>
+
+
+                    <div class="network-info-item">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        <div>
+
+                            <span>
+                                Level
+                            </span>
+
+                            <strong>
+                                Beginner
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="network-info-item">
+
+                        <i class="fa-solid fa-book-open"></i>
+
+                        <div>
+
+                            <span>
+                                Modules
+                            </span>
+
+                            <strong>
+                                10 Modules
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="network-info-item">
+
+                        <i class="fa-solid fa-graduation-cap"></i>
+
+                        <div>
+
+                            <span>
+                                Lessons
+                            </span>
+
+                            <strong id="lessonCount">
+                                40 Lessons
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="network-info-item">
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        <div>
+
+                            <span>
+                                Estimated Time
+                            </span>
+
+                            <strong>
+                                20–25 Hours
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="network-info-item">
+
+                        <i class="fa-solid fa-flask"></i>
+
+                        <div>
+
+                            <span>
+                                Practical Work
+                            </span>
+
+                            <strong>
+                                Network Labs
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="network-info-item">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <div>
+
+                            <span>
+                                Perspective
+                            </span>
+
+                            <strong>
+                                Cybersecurity
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PROGRESS
+        ================================================== -->
+
+        <section class="network-progress-section">
+
+
+            <div class="network-progress-header">
+
+                <div>
+
+                    <span class="dashboard-label">
+                        YOUR PROGRESS
+                    </span>
+
+                    <h2>
+                        Networking Fundamentals Progress
+                    </h2>
+
+                </div>
+
+
+                <strong id="courseProgressPercent">
+                    0%
+                </strong>
+
+            </div>
+
+
+            <div
+                class="network-progress-bar"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+            >
+
+                <div
+                    id="courseProgressFill"
+                    class="network-progress-fill"
+                ></div>
+
+            </div>
+
+
+            <p id="courseProgressText">
+
+                Start Module 1 to begin your networking journey.
+
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CURRICULUM
+        ================================================== -->
+
+        <section class="network-curriculum-section">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="dashboard-label">
+                        NETWORKING CURRICULUM
+                    </span>
+
+
+                    <h2>
+                        Course Modules
+                    </h2>
+
+
+                    <p>
+
+                        Progress from fundamental networking
+                        concepts to analysing modern network
+                        communication from a cybersecurity
+                        perspective.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="courseModules"
+                class="network-course-modules"
+            ></div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             WHY NETWORKING MATTERS
+        ================================================== -->
+
+        <section class="network-security-section">
+
+
+            <div class="network-security-icon">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+            </div>
+
+
+            <div>
+
+                <span class="dashboard-label">
+                    CYBERSECURITY PERSPECTIVE
+                </span>
+
+
+                <h2>
+                    Why Networking Matters in Security
+                </h2>
+
+
+                <p>
+
+                    Firewalls, vulnerability scanners,
+                    intrusion detection systems, SIEM
+                    platforms and penetration-testing tools
+                    all analyse network communication.
+                    Understanding the underlying protocols
+                    allows security professionals to
+                    distinguish normal traffic from
+                    suspicious behaviour.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="student-footer">
+
+    <p>
+        © 2026 CWS Academy.
+        Part of the CyberWithSandiso ecosystem.
+    </p>
+
+</footer>
+
+
+
+<script
+    type="module"
+    src="../js/networking-fundamentals.js"
+></script>
+
+
+</body>
+</html>
