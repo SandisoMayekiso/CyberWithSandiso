@@ -2,7 +2,7 @@
    CWS ACADEMY
    CYBERSECURITY FUNDAMENTALS
    LESSON PAGE
-   Matched to lesson.html
+   CSS MATCHED TO CURRENT lesson.html
 ========================================================= */
 
 
@@ -13,21 +13,28 @@
 :root {
     --cws-bg: #05080d;
     --cws-bg-2: #080e16;
+
     --cws-panel: #0b121b;
     --cws-panel-2: #0e1721;
 
     --cws-primary: #00ffaa;
     --cws-primary-2: #00d9ff;
 
-    --cws-primary-soft: rgba(0, 255, 170, 0.07);
-    --cws-primary-border: rgba(0, 255, 170, 0.20);
+    --cws-primary-soft:
+        rgba(0, 255, 170, 0.07);
+
+    --cws-primary-border:
+        rgba(0, 255, 170, 0.20);
 
     --cws-text: #f2f7f5;
     --cws-text-secondary: #a7b4bd;
     --cws-text-muted: #6d7b86;
 
-    --cws-border: rgba(255, 255, 255, 0.075);
-    --cws-border-hover: rgba(0, 255, 170, 0.30);
+    --cws-border:
+        rgba(255, 255, 255, 0.075);
+
+    --cws-border-hover:
+        rgba(0, 255, 170, 0.30);
 
     --cws-danger: #ff6675;
     --cws-warning: #ffc46b;
@@ -125,38 +132,47 @@ a:focus-visible {
 }
 
 
-/* =========================================================
-   APP
-========================================================= */
-
-.lesson-app {
-    min-height: 100vh;
+[hidden] {
+    display: none !important;
 }
 
 
 /* =========================================================
-   HEADER
+   PAGE WRAPPER
 ========================================================= */
 
-.lesson-header {
+.lesson-page {
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+/* =========================================================
+   TOP HEADER
+========================================================= */
+
+.lesson-topbar {
     position: sticky;
+
     top: 0;
+
     z-index: 1000;
 
     min-height: 76px;
 
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        auto
-        minmax(0, 1fr);
+    display: flex;
 
     align-items: center;
 
+    justify-content: space-between;
+
     gap: 20px;
 
-    padding: 12px 30px;
+    padding:
+        12px 30px;
 
     background:
         rgba(5, 9, 15, 0.94);
@@ -172,60 +188,26 @@ a:focus-visible {
 }
 
 
-.header-left {
-    justify-self: start;
-    min-width: 0;
-}
-
-
-.header-center {
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: center;
-
-    line-height: 1.2;
-
-    white-space: nowrap;
-}
-
-
-.header-right {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: flex-end;
-
-    gap: 9px;
-
-    min-width: 0;
-}
-
-
 /* =========================================================
    BRAND
 ========================================================= */
 
-.brand {
+.lesson-brand {
+    min-width: 0;
+
     display: inline-flex;
 
     align-items: center;
 
     gap: 12px;
 
-    min-width: 0;
-
-    font-weight: 700;
+    flex-shrink: 0;
 }
 
 
-.brand-logo {
-    width: 42px;
-    height: 42px;
+.lesson-brand-logo {
+    width: 44px;
+    height: 44px;
 
     flex-shrink: 0;
 
@@ -242,11 +224,17 @@ a:focus-visible {
     background:
         rgba(0, 255, 170, 0.055);
 
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
+
+    font-family:
+        Orbitron,
+        Inter,
+        sans-serif;
 
     font-size: 12px;
 
-    font-weight: 900;
+    font-weight: 800;
 
     letter-spacing: 1px;
 
@@ -256,7 +244,18 @@ a:focus-visible {
 }
 
 
-.brand-text {
+.lesson-brand-text {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    line-height: 1.15;
+}
+
+
+.lesson-brand-title {
     overflow: hidden;
 
     text-overflow: ellipsis;
@@ -267,14 +266,19 @@ a:focus-visible {
 
     font-size: 15px;
 
-    letter-spacing: 0.3px;
+    font-weight: 800;
+
+    letter-spacing: 0.2px;
 }
 
 
-.academy-label {
-    color: var(--cws-primary);
+.lesson-brand-subtitle {
+    margin-top: 3px;
 
-    font-size: 10px;
+    color:
+        var(--cws-primary);
+
+    font-size: 9px;
 
     font-weight: 900;
 
@@ -284,20 +288,68 @@ a:focus-visible {
 }
 
 
-.student-name {
-    margin-top: 4px;
+/* =========================================================
+   HEADER RIGHT
+========================================================= */
 
-    color: var(--cws-text-secondary);
+.lesson-topbar-right {
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 9px;
+}
+
+
+/* =========================================================
+   STUDENT
+========================================================= */
+
+.lesson-student {
+    min-height: 40px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        0 10px;
+
+    color:
+        var(--cws-text-secondary);
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+
+.lesson-student i {
+    color:
+        var(--cws-primary);
 
     font-size: 12px;
 }
 
 
+#studentName {
+    color: #ffffff;
+
+    font-weight: 700;
+}
+
+
 /* =========================================================
-   HEADER BUTTONS
+   HEADER / NAV BUTTON
 ========================================================= */
 
-.header-btn {
+.lesson-nav-btn {
     min-height: 40px;
 
     display: inline-flex;
@@ -308,7 +360,8 @@ a:focus-visible {
 
     gap: 8px;
 
-    padding: 0 13px;
+    padding:
+        0 13px;
 
     border:
         1px solid var(--cws-border);
@@ -330,8 +383,9 @@ a:focus-visible {
 }
 
 
-.header-btn:hover {
-    color: var(--cws-primary);
+.lesson-nav-btn:hover {
+    color:
+        var(--cws-primary);
 
     border-color:
         var(--cws-border-hover);
@@ -344,32 +398,71 @@ a:focus-visible {
 }
 
 
-.header-btn i {
+.lesson-nav-btn i {
+    color:
+        var(--cws-primary);
+
     font-size: 12px;
 }
 
 
-.logout-btn {
-    border-color:
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+#logoutBtn {
+    min-height: 40px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding:
+        0 13px;
+
+    border:
+        1px solid
         rgba(255, 102, 117, 0.18);
+
+    border-radius:
+        var(--cws-radius-sm);
+
+    background:
+        rgba(255, 255, 255, 0.025);
+
+    color:
+        #dbe5eb;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    transition:
+        var(--cws-transition);
 }
 
 
-.logout-btn:hover {
-    color: #ff929d;
+#logoutBtn:hover {
+    color:
+        #ff929d;
 
     border-color:
         rgba(255, 102, 117, 0.42);
 
     background:
         rgba(255, 80, 95, 0.07);
+
+    transform:
+        translateY(-1px);
 }
 
 
-.logout-btn.is-loading {
-    opacity: 0.55;
-
-    pointer-events: none;
+#logoutBtn i {
+    font-size: 12px;
 }
 
 
@@ -378,11 +471,15 @@ a:focus-visible {
 ========================================================= */
 
 .lesson-layout {
+    width: 100%;
+
     display: grid;
 
     grid-template-columns:
         var(--cws-sidebar-width)
         minmax(0, 1fr);
+
+    flex: 1;
 
     min-height:
         calc(100vh - 76px);
@@ -403,13 +500,14 @@ a:focus-visible {
 
     overflow-y: auto;
 
-    padding: 28px 20px;
+    padding:
+        28px 20px;
 
     background:
         linear-gradient(
             180deg,
-            rgba(7, 13, 21, 0.96),
-            rgba(5, 10, 16, 0.92)
+            rgba(7, 13, 21, 0.97),
+            rgba(5, 10, 16, 0.94)
         );
 
     border-right:
@@ -419,20 +517,30 @@ a:focus-visible {
 }
 
 
-.sidebar-heading {
-    padding-bottom: 21px;
+.lesson-sidebar-card {
+    width: 100%;
+}
+
+
+/* =========================================================
+   SIDEBAR HEADER
+========================================================= */
+
+.lesson-sidebar-header {
+    padding-bottom: 20px;
 
     border-bottom:
         1px solid var(--cws-border);
 }
 
 
-.sidebar-eyebrow {
+.lesson-sidebar-label {
     display: block;
 
     margin-bottom: 7px;
 
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 
     font-size: 9px;
 
@@ -444,7 +552,7 @@ a:focus-visible {
 }
 
 
-.sidebar-heading h2 {
+.lesson-sidebar-title {
     color: #ffffff;
 
     font-size: 16px;
@@ -456,13 +564,15 @@ a:focus-visible {
 
 
 /* =========================================================
-   SIDEBAR PROGRESS
+   PROGRESS CARD
 ========================================================= */
 
-.sidebar-progress {
-    margin: 20px 0;
+.lesson-progress-card {
+    margin:
+        20px 0;
 
-    padding: 15px;
+    padding:
+        15px;
 
     border:
         1px solid var(--cws-border);
@@ -475,7 +585,7 @@ a:focus-visible {
 }
 
 
-.progress-header {
+.lesson-progress-header {
     display: flex;
 
     align-items: center;
@@ -488,8 +598,9 @@ a:focus-visible {
 }
 
 
-.progress-header span {
-    color: var(--cws-text-secondary);
+.lesson-progress-header span:first-child {
+    color:
+        var(--cws-text-secondary);
 
     font-size: 11px;
 
@@ -497,17 +608,25 @@ a:focus-visible {
 }
 
 
-.progress-header strong {
-    color: var(--cws-primary);
+#lessonProgressPercent {
+    color:
+        var(--cws-primary);
 
     font-family:
         "Cascadia Code",
+        "Fira Code",
         Consolas,
         monospace;
 
     font-size: 12px;
+
+    font-weight: 800;
 }
 
+
+/* =========================================================
+   PROGRESS BAR
+========================================================= */
 
 .lesson-progress-bar {
     position: relative;
@@ -525,7 +644,7 @@ a:focus-visible {
 }
 
 
-.lesson-progress-fill {
+#lessonProgressFill {
     width: 0%;
 
     height: 100%;
@@ -548,10 +667,13 @@ a:focus-visible {
 }
 
 
-.sidebar-progress p {
+#lessonProgressText {
+    display: block;
+
     margin-top: 8px;
 
-    color: var(--cws-text-muted);
+    color:
+        var(--cws-text-muted);
 
     font-size: 10px;
 }
@@ -561,7 +683,7 @@ a:focus-visible {
    MODULE LIST
 ========================================================= */
 
-.lesson-module-list {
+#lessonModuleList {
     display: flex;
 
     flex-direction: column;
@@ -570,15 +692,22 @@ a:focus-visible {
 }
 
 
+/*
+   These classes are expected to be generated
+   by lesson.js.
+*/
+
 .module-section {
     margin-top: 16px;
 }
 
 
 .module-section-title {
-    padding: 7px 10px;
+    padding:
+        7px 10px;
 
-    color: var(--cws-text-muted);
+    color:
+        var(--cws-text-muted);
 
     font-size: 9px;
 
@@ -606,18 +735,19 @@ a:focus-visible {
 
     gap: 8px;
 
-    padding: 8px 9px;
+    padding:
+        8px 9px;
 
     border:
         1px solid transparent;
 
-    border-radius:
-        9px;
+    border-radius: 9px;
 
     background:
         transparent;
 
-    color: #8d9ba5;
+    color:
+        #8d9ba5;
 
     transition:
         var(--cws-transition);
@@ -625,7 +755,8 @@ a:focus-visible {
 
 
 .lesson-module-item:hover {
-    color: #edf6f4;
+    color:
+        #edf6f4;
 
     background:
         rgba(255, 255, 255, 0.035);
@@ -636,7 +767,8 @@ a:focus-visible {
 
 
 .lesson-module-item.active {
-    color: #ffffff;
+    color:
+        #ffffff;
 
     background:
         rgba(0, 255, 170, 0.065);
@@ -645,12 +777,14 @@ a:focus-visible {
         var(--cws-primary-border);
 
     box-shadow:
-        inset 3px 0 0 var(--cws-primary);
+        inset 3px 0 0
+        var(--cws-primary);
 }
 
 
 .lesson-module-item.completed {
-    color: #b9cec8;
+    color:
+        #b9cec8;
 }
 
 
@@ -671,7 +805,8 @@ a:focus-visible {
     background:
         rgba(255, 255, 255, 0.035);
 
-    color: #7d8d98;
+    color:
+        #7d8d98;
 
     font-family:
         "Cascadia Code",
@@ -686,7 +821,8 @@ a:focus-visible {
 
 .lesson-module-item.active
 .lesson-module-item-number {
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 
     border-color:
         rgba(0, 255, 170, 0.22);
@@ -712,7 +848,8 @@ a:focus-visible {
 
 
 .lesson-module-item i {
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 
     font-size: 10px;
 }
@@ -725,6 +862,8 @@ a:focus-visible {
 .lesson-main {
     min-width: 0;
 
+    width: 100%;
+
     padding:
         42px
         50px
@@ -736,12 +875,10 @@ a:focus-visible {
    LOADING
 ========================================================= */
 
-.lesson-loading {
+#lessonLoading {
     min-height: 60vh;
 
     display: flex;
-
-    flex-direction: column;
 
     align-items: center;
 
@@ -751,7 +888,18 @@ a:focus-visible {
 }
 
 
-.loading-spinner {
+.lesson-loading-inner {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.lesson-loading-spinner {
     width: 44px;
     height: 44px;
 
@@ -770,28 +918,38 @@ a:focus-visible {
     border-radius: 50%;
 
     animation:
-        cws-spin 0.8s linear infinite;
+        cws-spin
+        0.8s
+        linear
+        infinite;
 }
 
 
 @keyframes cws-spin {
+
     to {
-        transform: rotate(360deg);
+        transform:
+            rotate(360deg);
     }
+
 }
 
 
-.lesson-loading h2 {
-    color: #ffffff;
+.lesson-loading-inner h2 {
+    color:
+        #ffffff;
 
     font-size: 20px;
+
+    font-weight: 700;
 }
 
 
-.lesson-loading p {
+.lesson-loading-inner p {
     margin-top: 5px;
 
-    color: var(--cws-text-muted);
+    color:
+        var(--cws-text-muted);
 
     font-size: 13px;
 }
@@ -801,7 +959,7 @@ a:focus-visible {
    NOT FOUND
 ========================================================= */
 
-.lesson-not-found {
+#lessonNotFound {
     min-height: 60vh;
 
     display: flex;
@@ -816,7 +974,7 @@ a:focus-visible {
 }
 
 
-.not-found-icon {
+#lessonNotFound > i {
     width: 70px;
     height: 70px;
 
@@ -835,23 +993,27 @@ a:focus-visible {
     background:
         rgba(255, 180, 80, 0.07);
 
-    color: var(--cws-warning);
+    color:
+        var(--cws-warning);
 
     font-size: 24px;
 }
 
 
-.lesson-not-found h2 {
-    color: #ffffff;
+#lessonNotFound h2 {
+    color:
+        #ffffff;
 
     font-size: 24px;
 }
 
 
-.lesson-not-found p {
-    margin: 7px 0 22px;
+#lessonNotFound p {
+    margin:
+        7px 0 22px;
 
-    color: var(--cws-text-muted);
+    color:
+        var(--cws-text-muted);
 
     font-size: 13px;
 }
@@ -861,20 +1023,21 @@ a:focus-visible {
    LESSON CONTENT
 ========================================================= */
 
-.lesson-content {
+#lessonContent {
     width: 100%;
 
     max-width: 1050px;
 
-    margin: 0 auto;
+    margin:
+        0 auto;
 }
 
 
 /* =========================================================
-   BREADCRUMB
+   BREADCRUMBS
 ========================================================= */
 
-.lesson-breadcrumb {
+.lesson-breadcrumbs {
     display: flex;
 
     align-items: center;
@@ -885,27 +1048,31 @@ a:focus-visible {
 
     margin-bottom: 22px;
 
-    color: var(--cws-text-muted);
+    color:
+        var(--cws-text-muted);
 
     font-size: 11px;
 }
 
 
-.lesson-breadcrumb a {
-    color: var(--cws-primary);
+.lesson-breadcrumbs a {
+    color:
+        var(--cws-primary);
 
     transition:
         var(--cws-transition);
 }
 
 
-.lesson-breadcrumb a:hover {
-    color: #ffffff;
+.lesson-breadcrumbs a:hover {
+    color:
+        #ffffff;
 }
 
 
-.lesson-breadcrumb i {
-    color: #46545f;
+.lesson-breadcrumbs i {
+    color:
+        #46545f;
 
     font-size: 8px;
 }
@@ -913,7 +1080,8 @@ a:focus-visible {
 
 #breadcrumbCourse,
 #breadcrumbModule {
-    color: var(--cws-text-secondary);
+    color:
+        var(--cws-text-secondary);
 }
 
 
@@ -926,7 +1094,8 @@ a:focus-visible {
 
     overflow: hidden;
 
-    padding: 42px;
+    padding:
+        42px;
 
     border:
         1px solid var(--cws-border);
@@ -963,16 +1132,25 @@ a:focus-visible {
     background:
         rgba(0, 255, 170, 0.055);
 
-    filter: blur(8px);
+    filter:
+        blur(8px);
 
     pointer-events: none;
 }
 
 
-.lesson-meta {
+.lesson-hero-content {
     position: relative;
-    z-index: 1;
 
+    z-index: 1;
+}
+
+
+/* =========================================================
+   HERO LABELS
+========================================================= */
+
+.lesson-labels {
     display: flex;
 
     align-items: center;
@@ -982,8 +1160,21 @@ a:focus-visible {
     gap: 9px;
 
     margin-bottom: 15px;
+}
 
-    color: var(--cws-primary);
+
+.lesson-module-number,
+.lesson-number {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding:
+        5px 9px;
+
+    border-radius: 6px;
 
     font-size: 10px;
 
@@ -993,16 +1184,9 @@ a:focus-visible {
 }
 
 
-.meta-divider {
-    color: #3d4c56;
-}
-
-
-#lessonModuleNumber,
-#lessonNumber {
-    padding: 5px 9px;
-
-    border-radius: 6px;
+.lesson-module-number {
+    color:
+        var(--cws-primary);
 
     background:
         rgba(0, 255, 170, 0.07);
@@ -1013,24 +1197,32 @@ a:focus-visible {
 }
 
 
-#lessonNumber {
-    color: var(--cws-primary-2);
+.lesson-number {
+    color:
+        var(--cws-primary-2);
 
     background:
         rgba(0, 210, 255, 0.055);
 
-    border-color:
+    border:
+        1px solid
         rgba(0, 210, 255, 0.14);
 }
 
 
-.lesson-hero h1 {
+/* =========================================================
+   HERO TITLE
+========================================================= */
+
+#lessonTitle {
     position: relative;
+
     z-index: 1;
 
     max-width: 820px;
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
     font-size:
         clamp(30px, 4vw, 50px);
@@ -1039,19 +1231,22 @@ a:focus-visible {
 
     line-height: 1.12;
 
-    letter-spacing: -1px;
+    letter-spacing:
+        -1px;
 }
 
 
-.lesson-hero p {
+#lessonDescription {
     position: relative;
+
     z-index: 1;
 
     max-width: 820px;
 
     margin-top: 18px;
 
-    color: var(--cws-text-secondary);
+    color:
+        var(--cws-text-secondary);
 
     font-size: 16px;
 
@@ -1063,10 +1258,11 @@ a:focus-visible {
    OBJECTIVES
 ========================================================= */
 
-.objectives-card {
+.lesson-objectives-card {
     margin-top: 24px;
 
-    padding: 25px;
+    padding:
+        25px;
 
     border:
         1px solid var(--cws-border);
@@ -1079,7 +1275,7 @@ a:focus-visible {
 }
 
 
-.section-label {
+.lesson-section-title {
     display: flex;
 
     align-items: center;
@@ -1088,7 +1284,8 @@ a:focus-visible {
 
     margin-bottom: 18px;
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
     font-size: 14px;
 
@@ -1096,24 +1293,26 @@ a:focus-visible {
 }
 
 
-.section-label i {
-    color: var(--cws-primary);
+.lesson-section-title i {
+    color:
+        var(--cws-primary);
 }
 
 
-.objectives-list {
+#lessonObjectives {
     display: grid;
 
     grid-template-columns:
         repeat(2, minmax(0, 1fr));
 
-    gap: 11px 14px;
+    gap:
+        11px 14px;
 
     list-style: none;
 }
 
 
-.objectives-list li {
+#lessonObjectives li {
     display: flex;
 
     align-items: flex-start;
@@ -1122,7 +1321,8 @@ a:focus-visible {
 
     min-width: 0;
 
-    padding: 11px 12px;
+    padding:
+        11px 12px;
 
     border:
         1px solid
@@ -1133,7 +1333,8 @@ a:focus-visible {
     background:
         rgba(255, 255, 255, 0.018);
 
-    color: var(--cws-text-secondary);
+    color:
+        var(--cws-text-secondary);
 
     font-size: 13px;
 
@@ -1141,12 +1342,13 @@ a:focus-visible {
 }
 
 
-.objectives-list li i {
+#lessonObjectives li i {
     flex-shrink: 0;
 
     margin-top: 5px;
 
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 
     font-size: 10px;
 }
@@ -1159,17 +1361,17 @@ a:focus-visible {
 .lesson-body {
     margin-top: 35px;
 
-    padding: 0 5px;
+    padding:
+        0 5px;
 
-    overflow-wrap: break-word;
+    overflow-wrap:
+        break-word;
 }
 
 
 .lesson-body h2 {
     margin:
-        38px
-        0
-        14px;
+        38px 0 14px;
 
     padding-bottom: 9px;
 
@@ -1177,7 +1379,8 @@ a:focus-visible {
         1px solid
         rgba(0, 255, 170, 0.09);
 
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 
     font-size: 25px;
 
@@ -1192,11 +1395,10 @@ a:focus-visible {
 
 .lesson-body h3 {
     margin:
-        28px
-        0
-        10px;
+        28px 0 10px;
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
     font-size: 19px;
 
@@ -1204,10 +1406,22 @@ a:focus-visible {
 }
 
 
+.lesson-body h4 {
+    margin:
+        22px 0 8px;
+
+    color:
+        #ffffff;
+
+    font-size: 16px;
+}
+
+
 .lesson-body p {
     margin-bottom: 17px;
 
-    color: #a9b5bd;
+    color:
+        #a9b5bd;
 
     font-size: 15px;
 
@@ -1218,14 +1432,12 @@ a:focus-visible {
 .lesson-body ul,
 .lesson-body ol {
     margin:
-        18px
-        0
-        24px
-        20px;
+        18px 0 24px 20px;
 
     padding-left: 20px;
 
-    color: #9eabb4;
+    color:
+        #9eabb4;
 }
 
 
@@ -1239,17 +1451,26 @@ a:focus-visible {
 
 
 .lesson-body li::marker {
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 }
 
 
 .lesson-body strong {
-    color: #ffffff;
+    color:
+        #ffffff;
+}
+
+
+.lesson-body em {
+    color:
+        #c5d1d7;
 }
 
 
 .lesson-body a {
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 
     text-decoration:
         underline;
@@ -1265,12 +1486,32 @@ a:focus-visible {
 }
 
 
+.lesson-body blockquote {
+    margin:
+        24px 0;
+
+    padding:
+        15px 20px;
+
+    border-left:
+        3px solid
+        var(--cws-primary);
+
+    background:
+        rgba(0, 255, 170, 0.04);
+
+    color:
+        var(--cws-text-secondary);
+}
+
+
 /* =========================================================
    INLINE CODE
 ========================================================= */
 
 .lesson-body code {
-    padding: 2px 6px;
+    padding:
+        2px 6px;
 
     border:
         1px solid
@@ -1281,7 +1522,8 @@ a:focus-visible {
     background:
         rgba(0, 255, 170, 0.06);
 
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 
     font-family:
         "Cascadia Code",
@@ -1289,7 +1531,8 @@ a:focus-visible {
         Consolas,
         monospace;
 
-    font-size: 0.88em;
+    font-size:
+        0.88em;
 }
 
 
@@ -1303,19 +1546,21 @@ a:focus-visible {
     overflow-x: auto;
 
     margin:
-        22px
-        0;
+        22px 0;
 
-    padding: 18px;
+    padding:
+        18px;
 
     border:
         1px solid var(--cws-border);
 
     border-radius: 10px;
 
-    background: #030609;
+    background:
+        #030609;
 
-    color: #d8f7ec;
+    color:
+        #d8f7ec;
 
     font-family:
         "Cascadia Code",
@@ -1336,11 +1581,14 @@ a:focus-visible {
 
     border: 0;
 
-    background: transparent;
+    background:
+        transparent;
 
-    color: inherit;
+    color:
+        inherit;
 
-    font-size: inherit;
+    font-size:
+        inherit;
 }
 
 
@@ -1350,12 +1598,10 @@ a:focus-visible {
 
 .lesson-callout {
     margin:
-        28px
-        0;
+        28px 0;
 
     padding:
-        20px
-        22px;
+        20px 22px;
 
     border-left:
         3px solid
@@ -1374,10 +1620,7 @@ a:focus-visible {
         rgba(0, 255, 170, 0.10);
 
     border-radius:
-        0
-        10px
-        10px
-        0;
+        0 10px 10px 0;
 
     background:
         rgba(0, 255, 170, 0.045);
@@ -1389,7 +1632,8 @@ a:focus-visible {
 
     margin-bottom: 7px;
 
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 
     font-size: 13px;
 }
@@ -1398,7 +1642,8 @@ a:focus-visible {
 .lesson-callout p {
     margin: 0;
 
-    color: var(--cws-text-secondary);
+    color:
+        var(--cws-text-secondary);
 
     font-size: 13px;
 }
@@ -1416,12 +1661,14 @@ a:focus-visible {
 
     gap: 18px;
 
-    margin: 25px 0;
+    margin:
+        25px 0;
 }
 
 
 .lesson-info-card {
-    padding: 20px;
+    padding:
+        20px;
 
     border:
         1px solid var(--cws-border);
@@ -1435,9 +1682,11 @@ a:focus-visible {
 
 
 .lesson-info-card h3 {
-    margin: 0 0 8px;
+    margin:
+        0 0 8px;
 
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 
     font-size: 15px;
 }
@@ -1451,10 +1700,10 @@ a:focus-visible {
 
 
 /* =========================================================
-   COMPLETION CARD
+   COMPLETION
 ========================================================= */
 
-.completion-card {
+.lesson-complete-area {
     display: flex;
 
     align-items: center;
@@ -1463,7 +1712,8 @@ a:focus-visible {
 
     margin-top: 45px;
 
-    padding: 24px;
+    padding:
+        24px;
 
     border:
         1px solid
@@ -1481,49 +1731,26 @@ a:focus-visible {
 }
 
 
-.completion-icon {
-    width: 46px;
-    height: 46px;
-
-    flex-shrink: 0;
-
-    display: grid;
-
-    place-items: center;
-
-    border:
-        1px solid
-        rgba(0, 255, 170, 0.12);
-
-    border-radius: 50%;
-
-    background:
-        rgba(0, 255, 170, 0.08);
-
-    color: var(--cws-primary);
-
-    font-size: 17px;
-}
-
-
-.completion-copy {
+.lesson-complete-info {
     flex: 1;
 
     min-width: 0;
 }
 
 
-.completion-copy h3 {
-    color: #ffffff;
+.lesson-complete-info h3 {
+    color:
+        #ffffff;
 
     font-size: 15px;
 }
 
 
-.completion-copy p {
+.lesson-complete-info p {
     margin-top: 3px;
 
-    color: var(--cws-text-muted);
+    color:
+        var(--cws-text-muted);
 
     font-size: 12px;
 }
@@ -1533,7 +1760,7 @@ a:focus-visible {
    COMPLETE BUTTON
 ========================================================= */
 
-.complete-btn {
+#markCompleteBtn {
     min-height: 44px;
 
     display: inline-flex;
@@ -1545,8 +1772,7 @@ a:focus-visible {
     gap: 8px;
 
     padding:
-        0
-        17px;
+        0 17px;
 
     flex-shrink: 0;
 
@@ -1560,7 +1786,8 @@ a:focus-visible {
     background:
         var(--cws-primary);
 
-    color: #03100b;
+    color:
+        #03100b;
 
     font-size: 12px;
 
@@ -1575,7 +1802,7 @@ a:focus-visible {
 }
 
 
-.complete-btn:hover {
+#markCompleteBtn:hover {
     transform:
         translateY(-2px);
 
@@ -1585,13 +1812,13 @@ a:focus-visible {
 }
 
 
-.complete-btn:active {
+#markCompleteBtn:active {
     transform:
         translateY(0);
 }
 
 
-.complete-btn.completed {
+#markCompleteBtn.completed {
     background:
         rgba(0, 255, 170, 0.08);
 
@@ -1601,7 +1828,8 @@ a:focus-visible {
     border-color:
         rgba(0, 255, 170, 0.32);
 
-    box-shadow: none;
+    box-shadow:
+        none;
 }
 
 
@@ -1622,7 +1850,7 @@ a:focus-visible {
 }
 
 
-.lesson-nav-btn {
+.lesson-navigation .lesson-nav-btn {
     min-width: 210px;
 
     display: flex;
@@ -1632,8 +1860,7 @@ a:focus-visible {
     gap: 14px;
 
     padding:
-        14px
-        18px;
+        14px 18px;
 
     border:
         1px solid var(--cws-border);
@@ -1644,14 +1871,15 @@ a:focus-visible {
     background:
         rgba(255, 255, 255, 0.025);
 
-    color: inherit;
+    color:
+        inherit;
 
     transition:
         var(--cws-transition);
 }
 
 
-.lesson-nav-btn:hover {
+.lesson-navigation .lesson-nav-btn:hover {
     border-color:
         var(--cws-border-hover);
 
@@ -1663,7 +1891,7 @@ a:focus-visible {
 }
 
 
-.lesson-nav-btn.next {
+.lesson-navigation .lesson-nav-next {
     margin-left: auto;
 
     justify-content: flex-end;
@@ -1672,14 +1900,15 @@ a:focus-visible {
 }
 
 
-.lesson-nav-btn i {
+.lesson-navigation .lesson-nav-btn i {
     flex-shrink: 0;
 
-    color: var(--cws-primary);
+    color:
+        var(--cws-primary);
 }
 
 
-.lesson-nav-btn span {
+.lesson-navigation .lesson-nav-btn span {
     display: flex;
 
     flex-direction: column;
@@ -1688,8 +1917,9 @@ a:focus-visible {
 }
 
 
-.lesson-nav-btn small {
-    color: var(--cws-text-muted);
+.lesson-navigation .lesson-nav-btn small {
+    color:
+        var(--cws-text-muted);
 
     font-size: 9px;
 
@@ -1699,7 +1929,7 @@ a:focus-visible {
 }
 
 
-.lesson-nav-btn strong {
+.lesson-navigation .lesson-nav-btn strong {
     margin-top: 3px;
 
     overflow: hidden;
@@ -1708,64 +1938,41 @@ a:focus-visible {
 
     white-space: nowrap;
 
-    color: #dce6eb;
+    color:
+        #dce6eb;
 
     font-size: 12px;
 }
 
 
-.lesson-nav-btn[hidden] {
-    display: none;
+.lesson-navigation .lesson-nav-btn[hidden] {
+    display: none !important;
 }
 
 
 /* =========================================================
-   PRIMARY BUTTON
+   FOOTER
 ========================================================= */
 
-.primary-btn {
-    display: inline-flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 8px;
-
-    min-height: 42px;
-
+.lesson-footer {
     padding:
-        0
-        16px;
+        22px 30px;
 
-    border:
-        1px solid
-        var(--cws-primary);
-
-    border-radius:
-        var(--cws-radius-sm);
+    border-top:
+        1px solid var(--cws-border);
 
     background:
-        var(--cws-primary);
+        rgba(4, 8, 13, 0.9);
 
-    color: #03100b;
-
-    font-size: 12px;
-
-    font-weight: 900;
-
-    transition:
-        var(--cws-transition);
+    text-align: center;
 }
 
 
-.primary-btn:hover {
-    transform:
-        translateY(-1px);
+.lesson-footer p {
+    color:
+        var(--cws-text-muted);
 
-    box-shadow:
-        0 8px 25px
-        rgba(0, 255, 170, 0.15);
+    font-size: 11px;
 }
 
 
@@ -1789,7 +1996,8 @@ a:focus-visible {
 
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+    background:
+        transparent;
 }
 
 
@@ -1797,7 +2005,8 @@ a:focus-visible {
     background:
         rgba(0, 255, 170, 0.25);
 
-    border-radius: 100px;
+    border-radius:
+        100px;
 }
 
 
@@ -1813,10 +2022,9 @@ a:focus-visible {
 
 @media (max-width: 1100px) {
 
-    .lesson-header {
+    .lesson-topbar {
         padding:
-            12px
-            22px;
+            12px 22px;
     }
 
 
@@ -1836,7 +2044,8 @@ a:focus-visible {
 
 
     .lesson-hero {
-        padding: 34px;
+        padding:
+            34px;
     }
 
 }
@@ -1848,63 +2057,69 @@ a:focus-visible {
 
 @media (max-width: 760px) {
 
-    .lesson-header {
+    .lesson-topbar {
         min-height: 66px;
 
-        grid-template-columns:
-            1fr
-            auto;
-
         padding:
-            10px
-            16px;
+            10px 16px;
     }
 
 
-    .header-center {
+    .lesson-brand-text {
         display: none;
     }
 
 
-    .brand-text {
-        display: none;
-    }
-
-
-    .brand-logo {
+    .lesson-brand-logo {
         width: 38px;
         height: 38px;
     }
 
 
-    .header-right {
+    .lesson-topbar-right {
         gap: 6px;
     }
 
 
-    .header-btn {
-        min-height: 38px;
-
-        padding:
-            0
-            10px;
-
-        font-size: 11px;
+    .lesson-student {
+        display: none;
     }
 
 
-    .header-btn:first-child {
+    .lesson-topbar-right > .lesson-nav-btn {
+        min-height: 38px;
+
+        padding:
+            0 10px;
+
         font-size: 0;
     }
 
 
-    .header-btn:first-child i {
+    .lesson-topbar-right > .lesson-nav-btn i {
+        font-size: 14px;
+    }
+
+
+    #logoutBtn {
+        min-height: 38px;
+
+        padding:
+            0 10px;
+
+        font-size: 0;
+    }
+
+
+    #logoutBtn i {
         font-size: 14px;
     }
 
 
     .lesson-layout {
         display: block;
+
+        min-height: auto;
     }
 
 
@@ -1923,17 +2138,17 @@ a:focus-visible {
         border-right: none;
 
         border-bottom:
-            1px solid
-            var(--cws-border);
+            1px solid var(--cws-border);
     }
 
 
-    .sidebar-heading {
-        padding-bottom: 17px;
+    .lesson-sidebar-header {
+        padding-bottom:
+            17px;
     }
 
 
-    .lesson-module-list {
+    #lessonModuleList {
         display: grid;
 
         grid-template-columns:
@@ -1944,7 +2159,8 @@ a:focus-visible {
 
 
     .module-section {
-        grid-column: 1 / -1;
+        grid-column:
+            1 / -1;
     }
 
 
@@ -1958,12 +2174,11 @@ a:focus-visible {
 
     .lesson-hero {
         padding:
-            28px
-            22px;
+            28px 22px;
     }
 
 
-    .lesson-hero h1 {
+    #lessonTitle {
         font-size:
             clamp(27px, 8vw, 34px);
 
@@ -1972,58 +2187,66 @@ a:focus-visible {
     }
 
 
-    .lesson-hero p {
+    #lessonDescription {
         font-size: 14px;
     }
 
 
-    .objectives-list {
-        grid-template-columns: 1fr;
+    #lessonObjectives {
+        grid-template-columns:
+            1fr;
     }
 
 
     .lesson-info-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
 
 
-    .completion-card {
-        align-items: flex-start;
+    .lesson-complete-area {
+        align-items:
+            flex-start;
 
-        flex-direction: column;
+        flex-direction:
+            column;
     }
 
 
-    .completion-copy {
+    .lesson-complete-info {
         width: 100%;
     }
 
 
-    .complete-btn {
+    #markCompleteBtn {
         width: 100%;
     }
 
 
     .lesson-navigation {
-        flex-direction: column;
+        flex-direction:
+            column;
     }
 
 
-    .lesson-nav-btn {
+    .lesson-navigation .lesson-nav-btn {
         width: 100%;
 
         min-width: 0;
     }
 
 
-    .lesson-nav-btn.next {
-        order: -1;
+    .lesson-navigation .lesson-nav-next {
+        order:
+            -1;
 
         margin-left: 0;
 
-        justify-content: flex-start;
+        justify-content:
+            flex-start;
 
-        text-align: left;
+        text-align:
+            left;
     }
 
 }
@@ -2035,24 +2258,22 @@ a:focus-visible {
 
 @media (max-width: 480px) {
 
-    .lesson-header {
+    .lesson-topbar {
         padding:
-            9px
-            12px;
+            9px 12px;
     }
 
 
-    .header-btn {
+    .lesson-topbar-right {
+        gap: 5px;
+    }
+
+
+    .lesson-topbar-right > .lesson-nav-btn,
+    #logoutBtn {
         width: 38px;
 
         padding: 0;
-
-        font-size: 0;
-    }
-
-
-    .header-btn i {
-        font-size: 13px;
     }
 
 
@@ -2061,26 +2282,26 @@ a:focus-visible {
     }
 
 
-    .lesson-module-list {
-        grid-template-columns: 1fr;
+    #lessonModuleList {
+        grid-template-columns:
+            1fr;
     }
 
 
     .lesson-main {
         padding:
-            20px
-            14px
-            40px;
+            20px 14px 40px;
     }
 
 
-    .lesson-content {
+    #lessonContent {
         width: 100%;
     }
 
 
-    .lesson-breadcrumb {
-        margin-bottom: 18px;
+    .lesson-breadcrumbs {
+        margin-bottom:
+            18px;
 
         font-size: 10px;
     }
@@ -2088,28 +2309,34 @@ a:focus-visible {
 
     .lesson-hero {
         padding:
-            23px
-            18px;
+            23px 18px;
 
         border-radius:
             var(--cws-radius-md);
     }
 
 
-    .lesson-meta {
+    .lesson-labels {
+        gap: 6px;
+    }
+
+
+    .lesson-module-number,
+    .lesson-number {
         font-size: 9px;
     }
 
 
-    .lesson-hero h1 {
+    #lessonTitle {
         font-size: 27px;
 
         line-height: 1.2;
     }
 
 
-    .lesson-hero p {
-        margin-top: 14px;
+    #lessonDescription {
+        margin-top:
+            14px;
 
         font-size: 13px;
 
@@ -2117,20 +2344,20 @@ a:focus-visible {
     }
 
 
-    .objectives-card {
+    .lesson-objectives-card {
         padding:
-            20px
-            17px;
+            20px 17px;
     }
 
 
-    .objectives-list li {
+    #lessonObjectives li {
         font-size: 12px;
     }
 
 
     .lesson-body {
-        margin-top: 28px;
+        margin-top:
+            28px;
 
         padding: 0;
     }
@@ -2154,23 +2381,31 @@ a:focus-visible {
 
 
     .lesson-body pre {
-        padding: 14px;
+        padding:
+            14px;
 
         font-size: 12px;
     }
 
 
-    .completion-card {
-        padding: 20px;
+    .lesson-complete-area {
+        padding:
+            20px;
 
-        margin-top: 35px;
+        margin-top:
+            35px;
     }
 
 
-    .lesson-nav-btn {
+    .lesson-navigation .lesson-nav-btn {
         padding:
-            13px
-            15px;
+            13px 15px;
+    }
+
+
+    .lesson-footer {
+        padding:
+            18px 14px;
     }
 
 }
@@ -2210,62 +2445,76 @@ a:focus-visible {
 @media print {
 
     body {
-        background: #ffffff;
+        background:
+            #ffffff;
 
-        color: #000000;
+        color:
+            #000000;
     }
 
 
-    .lesson-header,
+    .lesson-topbar,
     .lesson-sidebar,
     .lesson-navigation,
-    #markCompleteBtn {
-        display: none !important;
+    #markCompleteBtn,
+    .lesson-footer {
+        display:
+            none !important;
     }
 
 
     .lesson-layout {
-        display: block;
+        display:
+            block;
 
-        min-height: auto;
+        min-height:
+            auto;
     }
 
 
     .lesson-main {
-        padding: 0;
+        padding:
+            0;
     }
 
 
-    .lesson-content {
-        max-width: none;
+    #lessonContent {
+        max-width:
+            none;
     }
 
 
     .lesson-hero,
-    .objectives-card,
-    .completion-card {
-        border: 1px solid #cccccc;
+    .lesson-objectives-card,
+    .lesson-complete-area {
+        border:
+            1px solid #cccccc;
 
-        background: #ffffff;
+        background:
+            #ffffff;
 
-        box-shadow: none;
+        box-shadow:
+            none;
     }
 
 
-    .lesson-hero h1,
+    #lessonTitle,
     .lesson-body h2,
     .lesson-body h3,
-    .section-label,
-    .completion-copy h3 {
-        color: #000000;
+    .lesson-section-title,
+    .lesson-complete-info h3 {
+        color:
+            #000000;
     }
 
 
-    .lesson-hero p,
+    #lessonDescription,
     .lesson-body p,
     .lesson-body li,
-    .objectives-list li,
-    .completion-copy p {
-        color: #222222;
+    #lessonObjectives li,
+    .lesson-complete-info p {
+        color:
+            #222222;
     }
+
 }
