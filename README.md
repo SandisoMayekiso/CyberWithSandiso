@@ -1,5 +1,3 @@
-# CyberWithSandiso
-
 # 🛡️ CyberWithSandiso
 
 ### Cybersecurity • Penetration Testing • Security Engineering • IT
