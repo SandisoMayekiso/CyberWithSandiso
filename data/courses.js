@@ -21,6 +21,9 @@ import {
     linuxFundamentals
 } from "./linux-fundamentals.js";
 
+import {
+    practicalPenetrationTesting
+} from "./practical-penetration-testing.js";
 /*
    Future courses:
 
@@ -55,7 +58,10 @@ export const courses = {
         networkingFundamentals,
 
     [linuxFundamentals.id]:
-        linuxFundamentals
+        linuxFundamentals,
+
+    [practicalPenetrationTesting.id]:
+        practicalPenetrationTesting
 
 };
 
