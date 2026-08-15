@@ -462,6 +462,14 @@ function renderEntitlement() {
 
 
 /* =========================================================
+   PAYSTACK TEST CHECKOUT
+========================================================= */
+
+const PAYSTACK_TEST_CHECKOUT_URL =
+    "https://paystack.shop/pay/-lczow8-dd";
+
+
+/* =========================================================
    UPGRADE
 ========================================================= */
 
@@ -470,10 +478,13 @@ function handleProUpgrade() {
     /*
      * IMPORTANT:
      *
-     * Do NOT modify Firestore entitlements here.
+     * This redirects the student to the Paystack
+     * TEST subscription checkout only.
      *
-     * Later this button will redirect to a trusted
-     * payment provider / backend checkout session.
+     * It does NOT grant Pro access.
+     *
+     * Pro access will only be granted later after
+     * Paystack payment verification is implemented.
      */
 
     if (
@@ -481,19 +492,36 @@ function handleProUpgrade() {
         "pro"
     ) {
 
+        log(
+            "User already has Pro access."
+        );
+
         return;
 
     }
 
 
-    alert(
-        "CWS Academy Pro checkout is not connected yet. The next step is to connect a secure payment provider."
-    );
+    if (upgradeProBtn) {
+
+        upgradeProBtn.disabled =
+            true;
+
+
+        upgradeProBtn.innerHTML = `
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            Opening Paystack...
+        `;
+
+    }
 
 
     log(
-        "Pro upgrade requested."
+        "Redirecting to Paystack test checkout."
     );
+
+
+    window.location.href =
+        PAYSTACK_TEST_CHECKOUT_URL;
 
 }
 
