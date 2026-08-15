@@ -31,6 +31,11 @@ module.exports = {
     ],
 
     /*
+     * Allow Windows CRLF line endings.
+     */
+    "linebreak-style": "off",
+
+    /*
      * CWS Academy Firebase Functions use descriptive
      * section comments rather than JSDoc for every
      * helper function.
