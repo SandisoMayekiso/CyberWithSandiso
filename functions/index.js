@@ -103,6 +103,76 @@ function normalizeMetadata(
 }
 
 
+async function grantProEntitlement(
+    uid,
+    payment,
+) {
+  const entitlementRef =
+        db
+            .collection(
+                "entitlements",
+            )
+            .doc(
+                uid,
+            );
+
+  const entitlementSnapshot =
+        await entitlementRef.get();
+
+  const entitlementData = {
+    plan:
+          "pro",
+
+    status:
+          "active",
+
+    provider:
+          "paystack",
+
+    planCode:
+          PAYSTACK_PRO_PLAN_CODE,
+
+    sourcePaymentReference:
+          payment.reference,
+
+    paystackCustomerCode:
+          payment.paystackCustomerCode ||
+          null,
+
+    updatedAt:
+          FieldValue.serverTimestamp(),
+  };
+
+  if (
+    !entitlementSnapshot.exists
+  ) {
+    entitlementData.createdAt =
+          FieldValue.serverTimestamp();
+
+    entitlementData.activatedAt =
+          FieldValue.serverTimestamp();
+  }
+
+  await entitlementRef.set(
+      entitlementData,
+      {
+        merge:
+            true,
+      },
+  );
+
+  console.log(
+      "[CWS Paystack] Pro entitlement ACTIVE:",
+      {
+        uid,
+
+        reference:
+              payment.reference,
+      },
+  );
+}
+
+
 async function verifyTransaction(
     reference,
 ) {
@@ -634,10 +704,21 @@ exports.paystackWebhook =
               pending?.status ===
                     "verified"
             ) {
+              await grantProEntitlement(
+                  pending.uid,
+                  {
+                    reference,
+
+                    paystackCustomerCode:
+                          pending.paystackCustomerCode ||
+                          null,
+                  },
+              );
+
               response
                   .status(200)
                   .send(
-                      "Already verified",
+                      "Already verified and entitlement ensured",
                   );
 
               return;
@@ -831,10 +912,23 @@ exports.paystackWebhook =
             );
 
 
+            await grantProEntitlement(
+                pending.uid,
+                {
+                  reference,
+
+                  paystackCustomerCode:
+                        verified?.customer
+                            ?.customer_code ||
+                          null,
+                },
+            );
+
+
             response
                 .status(200)
                 .send(
-                    "Payment verified",
+                    "Payment verified and Pro entitlement activated",
                 );
           } catch (err) {
             console.error(
