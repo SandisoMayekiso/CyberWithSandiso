@@ -12,12 +12,10 @@
 
     <meta
         name="description"
-        content="Explore CWS Academy cybersecurity courses, learning paths, practical labs and assessments."
+        content="CWS Academy student courses and cybersecurity learning paths."
     >
 
-    <title>
-        Courses | CWS Academy
-    </title>
+    <title>Courses | CWS Academy</title>
 
 
     <!-- =====================================================
@@ -42,6 +40,7 @@
 
     <!-- =====================================================
          DASHBOARD CSS
+         Keeps navigation/header visually consistent
     ====================================================== -->
 
     <link
@@ -51,7 +50,7 @@
 
 
     <!-- =====================================================
-         STUDENT COURSES CSS
+         LABS CSS
     ====================================================== -->
 
     <link
@@ -74,14 +73,11 @@
     <nav class="student-nav">
 
 
-        <!-- =================================================
-             LOGO
-        ================================================== -->
+        <!-- LOGO -->
 
         <a
             href="dashboard.html"
             class="academy-logo"
-            aria-label="CWS Academy Dashboard"
         >
 
             <span class="logo-cws">
@@ -95,9 +91,7 @@
         </a>
 
 
-        <!-- =================================================
-             NAVIGATION LINKS
-        ================================================== -->
+        <!-- NAVIGATION LINKS -->
 
         <div class="student-nav-links">
 
@@ -105,9 +99,7 @@
 
                 <i class="fa-solid fa-house"></i>
 
-                <span>
-                    Dashboard
-                </span>
+                Dashboard
 
             </a>
 
@@ -120,9 +112,7 @@
 
                 <i class="fa-solid fa-book"></i>
 
-                <span>
-                    Courses
-                </span>
+                Courses
 
             </a>
 
@@ -131,9 +121,7 @@
 
                 <i class="fa-solid fa-flask"></i>
 
-                <span>
-                    Labs
-                </span>
+                Labs
 
             </a>
 
@@ -142,9 +130,7 @@
 
                 <i class="fa-solid fa-clipboard-check"></i>
 
-                <span>
-                    Assessments
-                </span>
+                Assessments
 
             </a>
 
@@ -153,9 +139,7 @@
 
                 <i class="fa-solid fa-chart-line"></i>
 
-                <span>
-                    Progress
-                </span>
+                Progress
 
             </a>
 
@@ -164,18 +148,23 @@
 
                 <i class="fa-solid fa-certificate"></i>
 
-                <span>
-                    Certificates
-                </span>
+                Certificates
+
+            </a>
+
+
+            <a href="profile.html">
+
+                <i class="fa-solid fa-user"></i>
+
+                Profile
 
             </a>
 
         </div>
 
 
-        <!-- =================================================
-             ACCOUNT
-        ================================================== -->
+        <!-- ACCOUNT -->
 
         <div class="student-nav-account">
 
@@ -195,9 +184,7 @@
 
                 <i class="fa-solid fa-right-from-bracket"></i>
 
-                <span>
-                    Logout
-                </span>
+                Logout
 
             </button>
 
@@ -235,20 +222,16 @@
 
 
             <p>
-
-                Choose a learning path and continue developing
-                your cybersecurity knowledge through structured
-                lessons, practical labs and assessments.
-
+                Choose a cybersecurity learning path and
+                continue developing your technical skills
+                through structured lessons, practical labs
+                and assessments.
             </p>
 
         </div>
 
 
-        <div
-            class="courses-hero-icon"
-            aria-hidden="true"
-        >
+        <div class="courses-hero-icon">
 
             <i class="fa-solid fa-book-open"></i>
 
@@ -265,9 +248,7 @@
     <section class="dashboard-section courses-section">
 
 
-        <!-- =================================================
-             SECTION HEADING
-        ================================================== -->
+        <!-- SECTION HEADING -->
 
         <div class="section-heading courses-section-heading">
 
@@ -279,35 +260,15 @@
 
 
                 <h2>
-                    CWS Academy Courses
+                    Available Courses
                 </h2>
 
 
                 <p>
-
-                    Start with foundational courses and
-                    progress toward more advanced defensive,
-                    offensive and practical cybersecurity
-                    skills.
-
+                    Start with foundational cybersecurity
+                    knowledge and progress toward advanced
+                    security skills.
                 </p>
-
-            </div>
-
-
-            <div
-                id="courseCatalogSummary"
-                class="course-catalog-summary"
-                aria-live="polite"
-            >
-
-                <span id="availableCourseCount">
-                    0 Available
-                </span>
-
-                <span id="plannedCourseCount">
-                    0 Planned
-                </span>
 
             </div>
 
@@ -326,7 +287,6 @@
 
             <div class="course-filter-buttons">
 
-
                 <button
                     type="button"
                     class="course-filter active"
@@ -334,16 +294,6 @@
                     aria-pressed="true"
                 >
                     All Courses
-                </button>
-
-
-                <button
-                    type="button"
-                    class="course-filter"
-                    data-filter="available"
-                    aria-pressed="false"
-                >
-                    Available
                 </button>
 
 
@@ -376,68 +326,7 @@
                     Advanced
                 </button>
 
-
-                <button
-                    type="button"
-                    class="course-filter"
-                    data-filter="planned"
-                    aria-pressed="false"
-                >
-                    Planned
-                </button>
-
-
             </div>
-
-
-            <!-- =============================================
-                 SEARCH
-            ============================================== -->
-
-            <div class="course-search">
-
-                <label
-                    for="courseSearchInput"
-                    class="sr-only"
-                >
-                    Search courses
-                </label>
-
-
-                <i
-                    class="fa-solid fa-magnifying-glass"
-                    aria-hidden="true"
-                ></i>
-
-
-                <input
-                    type="search"
-                    id="courseSearchInput"
-                    placeholder="Search courses..."
-                    autocomplete="off"
-                >
-
-            </div>
-
-        </div>
-
-
-
-        <!-- =================================================
-             LOADING STATE
-        ================================================== -->
-
-        <div
-            id="studentCoursesLoading"
-            class="student-courses-loading"
-            aria-live="polite"
-        >
-
-            <i class="fa-solid fa-circle-notch fa-spin"></i>
-
-            <span>
-                Loading CWS Academy courses...
-            </span>
 
         </div>
 
@@ -445,26 +334,495 @@
 
         <!-- =================================================
              COURSE GRID
-
-             Courses are NOT hardcoded here anymore.
-
-             student-courses.js imports the central
-             course registry from:
-
-             ../data/courses.js
         ================================================== -->
 
         <div
             id="studentCourseGrid"
             class="student-course-grid"
-            hidden
-        ></div>
+        >
+
+
+            <!-- =================================================
+                 COURSE 1
+            ================================================== -->
+
+            <article
+                class="student-course-card"
+                data-course-id="cybersecurity-fundamentals"
+                data-level="beginner"
+                data-status="available"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status available">
+                        AVAILABLE
+                    </span>
+
+
+                    <span class="course-level">
+                        BEGINNER
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                </div>
+
+
+                <h3>
+                    Cybersecurity Fundamentals
+                </h3>
+
+
+                <p>
+                    Build a strong foundation in cybersecurity
+                    concepts, threats, vulnerabilities, security
+                    controls and ethical security practices.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fa-solid fa-book"></i>
+                        10 Modules
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-flask"></i>
+                        Practical Labs
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-bullseye"></i>
+                        Assessments
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="../student/course-details.html?course=cybersecurity-fundamentals"
+                    class="course-action"
+                >
+
+                    View Course
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </article>
 
 
 
-        <!-- =================================================
-             EMPTY FILTER / SEARCH STATE
-        ================================================== -->
+            <!-- =================================================
+                 COURSE 2
+            ================================================== -->
+
+            <article
+                class="student-course-card"
+                data-course-id="networking-fundamentals"
+                data-level="beginner"
+                data-status="available"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status available">
+                        AVAILABLE
+                    </span>
+
+
+                    <span class="course-level">
+                        BEGINNER
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+
+                    <i class="fa-solid fa-network-wired"></i>
+
+                </div>
+
+
+                <h3>
+                    Networking Fundamentals
+                </h3>
+
+
+                <p>
+                    Learn IP addressing, CIDR, ARP, TCP, UDP,
+                    ICMP, routing, DNS, HTTP and HTTPS from
+                    a cybersecurity perspective.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fa-solid fa-book"></i>
+                        10 Modules
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-network-wired"></i>
+                        Network Labs
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-bullseye"></i>
+                        Assessments
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="../student/course-details.html?course=networking-fundamentals"
+                    class="course-action"
+                >
+
+                    View Course
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </article>
+
+
+
+            <!-- =================================================
+                 COURSE 3
+            ================================================== -->
+
+            <article
+                class="student-course-card"
+                data-course-id="linux-fundamentals"
+                data-level="beginner"
+                data-status="available"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status available">
+                        AVAILABLE
+                    </span>
+
+
+                    <span class="course-level">
+                        BEGINNER
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+
+                    <i class="fa-brands fa-linux"></i>
+
+                </div>
+
+
+                <h3>
+                    Linux Fundamentals
+                </h3>
+
+
+                <p>
+                    Learn the Linux command line, filesystem,
+                    permissions, processes, networking utilities
+                    and security fundamentals.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fa-solid fa-book"></i>
+                        10 Modules
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-terminal"></i>
+                        Linux Labs
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-bullseye"></i>
+                        Assessments
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="../pages/course-details.html?course=linux-fundamentals"
+                    class="course-action"
+                >
+
+                    View Course
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </article>
+
+
+
+            <!-- =================================================
+                 COURSE 4
+            ================================================== -->
+
+            <article
+                class="student-course-card planned"
+                data-course-id="ethical-hacking-fundamentals"
+                data-level="intermediate"
+                data-status="planned"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status planned">
+                        PLANNED
+                    </span>
+
+
+                    <span class="course-level">
+                        INTERMEDIATE
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+
+                    <i class="fa-solid fa-user-secret"></i>
+
+                </div>
+
+
+                <h3>
+                    Ethical Hacking Fundamentals
+                </h3>
+
+
+                <p>
+                    Explore penetration testing methodology,
+                    reconnaissance, enumeration, vulnerability
+                    identification and professional reporting.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fa-solid fa-book"></i>
+                        Planned
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-flask"></i>
+                        Practical Labs
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-bullseye"></i>
+                        Assessments
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="course-action disabled"
+                    disabled
+                >
+                    Coming Soon
+                </button>
+
+            </article>
+
+
+
+            <!-- =================================================
+                 COURSE 5
+            ================================================== -->
+
+            <article
+                class="student-course-card planned"
+                data-course-id="web-application-security"
+                data-level="intermediate"
+                data-status="planned"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status planned">
+                        PLANNED
+                    </span>
+
+
+                    <span class="course-level">
+                        INTERMEDIATE
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+
+                    <i class="fa-solid fa-globe"></i>
+
+                </div>
+
+
+                <h3>
+                    Web Application Security
+                </h3>
+
+
+                <p>
+                    Learn how web applications communicate and
+                    explore authentication, sessions, input
+                    validation and common application security
+                    weaknesses.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fa-solid fa-book"></i>
+                        Planned
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-code"></i>
+                        Web Labs
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-bullseye"></i>
+                        Assessments
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="course-action disabled"
+                    disabled
+                >
+                    Coming Soon
+                </button>
+
+            </article>
+
+
+
+            <!-- =================================================
+                 COURSE 6
+            ================================================== -->
+
+            <article
+                class="student-course-card planned"
+                data-course-id="practical-penetration-testing"
+                data-level="advanced"
+                data-status="planned"
+            >
+
+                <div class="course-card-top">
+
+                    <span class="course-status planned">
+                        PLANNED
+                    </span>
+
+
+                    <span class="course-level">
+                        ADVANCED
+                    </span>
+
+                </div>
+
+
+                <div class="course-icon">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                </div>
+
+
+                <h3>
+                    Practical Penetration Testing
+                </h3>
+
+
+                <p>
+                    Bring reconnaissance, enumeration,
+                    vulnerability analysis, controlled validation
+                    and professional reporting together.
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fa-solid fa-book"></i>
+                        Planned
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-flask"></i>
+                        Pentest Labs
+                    </span>
+
+
+                    <span>
+                        <i class="fa-solid fa-flag-checkered"></i>
+                        Capstone
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="course-action disabled"
+                    disabled
+                >
+                    Coming Soon
+                </button>
+
+            </article>
+
+        </div>
+
+
+
+        <!-- EMPTY FILTER STATE -->
 
         <div
             id="noCoursesMessage"
@@ -484,47 +842,11 @@
             </h3>
 
 
-            <p id="noCoursesText">
-
-                No courses match the selected filters.
-
-            </p>
-
-        </div>
-
-
-
-        <!-- =================================================
-             CATALOG EMPTY / ERROR STATE
-        ================================================== -->
-
-        <div
-            id="courseCatalogEmpty"
-            class="no-courses-message"
-            hidden
-        >
-
-            <div class="no-courses-icon">
-
-                <i class="fa-solid fa-book-open"></i>
-
-            </div>
-
-
-            <h3>
-                Course Catalogue Unavailable
-            </h3>
-
-
             <p>
-
-                No courses are currently available in the
-                CWS Academy course registry.
-
+                No courses match the selected category.
             </p>
 
         </div>
-
 
     </section>
 
@@ -539,10 +861,8 @@
 <footer class="student-footer">
 
     <p>
-
         © 2026 CWS Academy.
         Part of the CyberWithSandiso ecosystem.
-
     </p>
 
 </footer>
@@ -558,7 +878,5 @@
     src="../js/student-courses.js"
 ></script>
 
-
 </body>
-
 </html>
