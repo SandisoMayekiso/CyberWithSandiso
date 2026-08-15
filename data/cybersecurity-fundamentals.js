@@ -62,6 +62,7 @@ export const cybersecurityFundamentals = {
     level: "Beginner",
     levelKey: "beginner",
     status: "available",
+    access: "free",
     icon: "fa-solid fa-shield-halved",
     description: "Build a strong foundation in cybersecurity concepts, threats, vulnerabilities, security controls and ethical security practices.",
     longDescription: "Cybersecurity Fundamentals introduces the core concepts students need before progressing into networking, Linux, defensive security, ethical hacking and penetration testing. Each lesson develops the ideas in depth and connects them to realistic defensive and risk-management decisions.",
