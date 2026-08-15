@@ -1,0 +1,881 @@
+/* =========================================================
+   CWS ACADEMY
+   SUBSCRIPTION PAGE
+========================================================= */
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.subscription-page-body {
+    min-height: 100vh;
+}
+
+
+.subscription-main {
+    width: 100%;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.subscription-loading {
+    min-height: 420px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 16px;
+
+    color:
+        var(--dashboard-text-secondary);
+}
+
+
+.subscription-loading i {
+    color:
+        var(--dashboard-primary);
+
+    font-size: 1.7rem;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.subscription-hero {
+    position: relative;
+
+    min-height: 330px;
+
+    padding: 54px 58px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        190px;
+
+    align-items: center;
+
+    gap: 40px;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(0, 255, 170, 0.16);
+
+    border-radius: 22px;
+
+    background:
+        radial-gradient(
+            circle at 85% 25%,
+            rgba(0, 255, 170, 0.12),
+            transparent 28%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(10, 24, 30, 0.98),
+            rgba(5, 12, 20, 0.98)
+        );
+
+    box-shadow:
+        var(--dashboard-shadow);
+}
+
+
+.subscription-hero-content {
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.subscription-hero h1 {
+    margin:
+        6px 0 18px;
+
+    color:
+        var(--dashboard-text);
+
+    font-size:
+        clamp(
+            2.3rem,
+            5vw,
+            4rem
+        );
+
+    line-height: 1.05;
+
+    letter-spacing:
+        -0.04em;
+}
+
+
+.subscription-hero p {
+    max-width: 760px;
+
+    margin: 0;
+
+    color:
+        var(--dashboard-text-secondary);
+
+    font-size: 1rem;
+
+    line-height: 1.8;
+}
+
+
+.subscription-hero-icon {
+    width: 160px;
+    height: 160px;
+
+    margin: auto;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(0, 255, 170, 0.22);
+
+    border-radius: 38px;
+
+    color:
+        var(--dashboard-primary);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0, 255, 170, 0.13),
+            rgba(0, 255, 170, 0.03)
+        );
+
+    font-size: 4rem;
+
+    box-shadow:
+        0 20px 50px
+        rgba(0, 0, 0, 0.22);
+}
+
+
+/* =========================================================
+   CURRENT PLAN
+========================================================= */
+
+.subscription-current {
+    margin-top: 55px;
+}
+
+
+.subscription-current h2 {
+    margin:
+        7px 0 20px;
+
+    color:
+        var(--dashboard-text);
+
+    font-size: 1.7rem;
+}
+
+
+.current-plan-card {
+    padding: 24px;
+
+    display: grid;
+
+    grid-template-columns:
+        58px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 20px;
+
+    border:
+        1px solid
+        var(--dashboard-border);
+
+    border-radius:
+        var(--dashboard-radius);
+
+    background:
+        rgba(10, 24, 30, 0.90);
+}
+
+
+.current-plan-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(0, 255, 170, 0.18);
+
+    border-radius: 14px;
+
+    color:
+        var(--dashboard-primary);
+
+    background:
+        rgba(0, 255, 170, 0.07);
+
+    font-size: 1.4rem;
+}
+
+
+.current-plan-content h3 {
+    margin:
+        7px 0 5px;
+
+    color:
+        var(--dashboard-text);
+
+    font-size: 1.2rem;
+}
+
+
+.current-plan-content p {
+    margin: 0;
+
+    color:
+        var(--dashboard-text-secondary);
+
+    font-size: 0.84rem;
+}
+
+
+.current-plan-meta {
+    display: grid;
+
+    grid-template-columns:
+        auto
+        auto;
+
+    gap:
+        6px 18px;
+
+    text-align: right;
+}
+
+
+.current-plan-meta span {
+    color:
+        var(--dashboard-text-muted);
+
+    font-size: 0.68rem;
+
+    text-transform: uppercase;
+}
+
+
+.current-plan-meta strong {
+    color:
+        var(--dashboard-text);
+
+    font-size: 0.78rem;
+}
+
+
+/* =========================================================
+   PLAN BADGES
+========================================================= */
+
+.subscription-plan-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 26px;
+
+    padding:
+        4px 10px;
+
+    border-radius: 999px;
+
+    font-size: 0.65rem;
+
+    font-weight: 800;
+
+    letter-spacing:
+        0.08em;
+}
+
+
+.subscription-plan-badge.free {
+    color:
+        #7dffd0;
+
+    border:
+        1px solid
+        rgba(0, 255, 170, 0.17);
+
+    background:
+        rgba(0, 255, 170, 0.06);
+}
+
+
+.subscription-plan-badge.pro {
+    color:
+        #c8b5ff;
+
+    border:
+        1px solid
+        rgba(139, 92, 246, 0.22);
+
+    background:
+        rgba(139, 92, 246, 0.10);
+}
+
+
+/* =========================================================
+   PLAN SECTION
+========================================================= */
+
+.subscription-plans-section {
+    margin-top: 65px;
+}
+
+
+.subscription-plan-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 22px;
+}
+
+
+/* =========================================================
+   PLAN CARD
+========================================================= */
+
+.subscription-plan-card {
+    position: relative;
+
+    min-height: 560px;
+
+    padding: 28px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    border:
+        1px solid
+        var(--dashboard-border);
+
+    border-radius:
+        20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10, 24, 30, 0.96),
+            rgba(5, 12, 20, 0.98)
+        );
+
+    box-shadow:
+        0 15px 42px
+        rgba(0, 0, 0, 0.16);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.subscription-plan-card:hover {
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(0, 255, 170, 0.25);
+}
+
+
+.subscription-plan-card.featured {
+    border-color:
+        rgba(139, 92, 246, 0.30);
+
+    box-shadow:
+        0 18px 50px
+        rgba(0, 0, 0, 0.20),
+        0 0 35px
+        rgba(139, 92, 246, 0.06);
+}
+
+
+.featured-plan-label {
+    position: absolute;
+
+    top: 18px;
+    right: 18px;
+
+    padding:
+        5px 9px;
+
+    border-radius: 999px;
+
+    color:
+        #d9ccff;
+
+    background:
+        rgba(139, 92, 246, 0.11);
+
+    border:
+        1px solid
+        rgba(139, 92, 246, 0.20);
+
+    font-size: 0.58rem;
+
+    font-weight: 800;
+
+    letter-spacing:
+        0.07em;
+}
+
+
+.plan-card-top {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 22px;
+}
+
+
+.plan-card-icon {
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    color:
+        var(--dashboard-primary);
+
+    background:
+        rgba(0, 255, 170, 0.07);
+
+    border:
+        1px solid
+        rgba(0, 255, 170, 0.14);
+
+    font-size: 1.35rem;
+}
+
+
+.plan-card-icon.pro {
+    color:
+        #c8b5ff;
+
+    background:
+        rgba(139, 92, 246, 0.08);
+
+    border-color:
+        rgba(139, 92, 246, 0.17);
+}
+
+
+.subscription-plan-card h3 {
+    margin:
+        0 0 10px;
+
+    color:
+        var(--dashboard-text);
+
+    font-size: 1.35rem;
+}
+
+
+.plan-description {
+    margin: 0;
+
+    color:
+        var(--dashboard-text-secondary);
+
+    font-size: 0.87rem;
+
+    line-height: 1.7;
+}
+
+
+.plan-price {
+    margin:
+        24px 0;
+
+    padding:
+        18px 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    border-top:
+        1px solid
+        var(--dashboard-border);
+
+    border-bottom:
+        1px solid
+        var(--dashboard-border);
+}
+
+
+.plan-price strong {
+    color:
+        var(--dashboard-text);
+
+    font-size: 1.7rem;
+}
+
+
+.plan-price span {
+    margin-top: 3px;
+
+    color:
+        var(--dashboard-text-muted);
+
+    font-size: 0.72rem;
+}
+
+
+.plan-features {
+    margin:
+        0 0 28px;
+
+    padding: 0;
+
+    list-style: none;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 13px;
+}
+
+
+.plan-features li {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    color:
+        var(--dashboard-text-secondary);
+
+    font-size: 0.82rem;
+
+    line-height: 1.5;
+}
+
+
+.plan-features i {
+    margin-top: 3px;
+
+    color:
+        var(--dashboard-primary);
+
+    font-size: 0.72rem;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.subscription-primary-btn,
+.subscription-secondary-btn {
+    width: 100%;
+
+    min-height: 46px;
+
+    margin-top: auto;
+
+    padding:
+        10px 16px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    border-radius: 9px;
+
+    font: inherit;
+
+    font-size: 0.82rem;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.subscription-primary-btn {
+    color:
+        #03100b;
+
+    border:
+        1px solid
+        var(--dashboard-primary);
+
+    background:
+        var(--dashboard-primary);
+}
+
+
+.subscription-primary-btn:hover {
+    transform:
+        translateY(-1px);
+
+    background:
+        #3dffc1;
+}
+
+
+.subscription-secondary-btn {
+    color:
+        var(--dashboard-text-secondary);
+
+    border:
+        1px solid
+        var(--dashboard-border);
+
+    background:
+        rgba(255, 255, 255, 0.025);
+}
+
+
+.subscription-secondary-btn:disabled {
+    opacity: 0.65;
+
+    cursor: default;
+}
+
+
+/* =========================================================
+   SECURITY NOTE
+========================================================= */
+
+.subscription-security-note {
+    margin-top: 65px;
+
+    padding: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 22px;
+
+    border:
+        1px solid
+        rgba(0, 255, 170, 0.13);
+
+    border-radius:
+        var(--dashboard-radius);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(0, 255, 170, 0.045),
+            rgba(5, 12, 20, 0.88)
+        );
+}
+
+
+.subscription-security-icon {
+    width: 56px;
+    height: 56px;
+
+    flex:
+        0 0 56px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    color:
+        var(--dashboard-primary);
+
+    background:
+        rgba(0, 255, 170, 0.07);
+
+    border:
+        1px solid
+        rgba(0, 255, 170, 0.16);
+}
+
+
+.subscription-security-note h2 {
+    margin:
+        7px 0 7px;
+
+    color:
+        var(--dashboard-text);
+
+    font-size: 1.2rem;
+}
+
+
+.subscription-security-note p {
+    max-width: 850px;
+
+    margin: 0;
+
+    color:
+        var(--dashboard-text-secondary);
+
+    font-size: 0.82rem;
+
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .subscription-hero {
+        grid-template-columns:
+            1fr;
+
+        padding:
+            44px 36px;
+    }
+
+
+    .subscription-hero-icon {
+        width: 125px;
+        height: 125px;
+
+        margin: 0;
+
+        font-size: 3rem;
+    }
+
+
+    .subscription-plan-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .current-plan-card {
+        grid-template-columns:
+            58px
+            1fr;
+    }
+
+
+    .current-plan-meta {
+        grid-column:
+            1 / -1;
+
+        text-align: left;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .subscription-hero {
+        padding:
+            32px 22px;
+    }
+
+
+    .subscription-hero h1 {
+        font-size:
+            2.15rem;
+    }
+
+
+    .subscription-hero-icon {
+        width: 100px;
+        height: 100px;
+
+        font-size: 2.4rem;
+    }
+
+
+    .subscription-plan-card {
+        min-height: 0;
+
+        padding: 22px;
+    }
+
+
+    .current-plan-card {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .subscription-security-note {
+        align-items:
+            flex-start;
+
+        flex-direction:
+            column;
+    }
+
+}
+
+
+/* =========================================================
+   HIDDEN
+========================================================= */
+
+[hidden] {
+    display: none !important;
+}
