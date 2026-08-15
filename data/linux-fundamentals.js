@@ -192,6 +192,9 @@ export const linuxFundamentals = {
     status:
         "available",
 
+    access:
+        "free",
+
     icon:
         "fa-brands fa-linux",
 
