@@ -148,214 +148,283 @@ async function verifyTransaction(
 
 exports.createPaystackCheckout =
   onCall(
-    {
-      secrets: [
-        PAYSTACK_SECRET_KEY,
-      ],
+      {
+        secrets: [
+          PAYSTACK_SECRET_KEY,
+        ],
 
-      cors: [
-        "https://sandisomayekiso.github.io",
-      ],
-    },
+        cors: [
+          "https://sandisomayekiso.github.io",
+        ],
+      },
 
-        async (request) => {
-          if (!request.auth) {
-            throw new HttpsError(
-                "unauthenticated",
-                "You must be signed in to subscribe.",
-            );
-          }
-
-          const uid =
-                request.auth.uid;
-
-          const email =
-                request.auth.token.email;
-
-          if (!email) {
-            throw new HttpsError(
-                "failed-precondition",
-                "Your Firebase account does not have an email address.",
-            );
-          }
+      async (request) => {
+        if (!request.auth) {
+          throw new HttpsError(
+              "unauthenticated",
+              "You must be signed in to subscribe.",
+          );
+        }
 
 
-          const entitlementSnapshot =
-                await db
-                    .collection(
-                        "entitlements",
-                    )
-                    .doc(
-                        uid,
-                    )
-                    .get();
+        /* =================================================
+           FIREBASE USER
+        ================================================= */
+
+        const uid =
+              request.auth.uid;
+
+        const email =
+              request.auth.token.email;
+
+
+        if (!email) {
+          throw new HttpsError(
+              "failed-precondition",
+              "Your Firebase account does not have an email address.",
+          );
+        }
+
+
+        /* =================================================
+           CHECK EXISTING ENTITLEMENT
+        ================================================= */
+
+        const entitlementSnapshot =
+              await db
+                  .collection(
+                      "entitlements",
+                  )
+                  .doc(
+                      uid,
+                  )
+                  .get();
+
+
+        if (
+          entitlementSnapshot.exists
+        ) {
+          const entitlement =
+                  entitlementSnapshot.data();
 
           if (
-            entitlementSnapshot.exists
+            entitlement?.plan === "pro" &&
+              (
+                entitlement?.status === "active" ||
+                entitlement?.status === "trialing"
+              )
           ) {
-            const entitlement =
-                    entitlementSnapshot.data();
-
-            if (
-              entitlement?.plan === "pro" &&
-                    (
-                      entitlement?.status === "active" ||
-                        entitlement?.status === "trialing"
-                    )
-            ) {
-              throw new HttpsError(
-                  "already-exists",
-                  "Your account already has active Pro access.",
-              );
-            }
+            throw new HttpsError(
+                "already-exists",
+                "Your account already has active Pro access.",
+            );
           }
+        }
 
 
-          const metadata = {
+        /* =================================================
+           CWS METADATA
+        ================================================= */
 
-            cwsUserId:
-                    uid,
+        const metadata = {
 
-            cwsPlan:
-                    "pro",
+          cwsUserId:
+                uid,
 
-            cwsPlanCode:
+          cwsPlan:
+                "pro",
+
+          cwsPlanCode:
+                PAYSTACK_PRO_PLAN_CODE,
+
+          source:
+                "cws-academy",
+
+        };
+
+
+        /* =================================================
+           PAYSTACK INITIALIZE TRANSACTION
+        ================================================= */
+
+        const paystackPayload = {
+
+          email,
+
+          /*
+           * Paystack expects the transaction amount in
+           * the smallest currency unit.
+           *
+           * R99.00 = 9900 cents.
+           *
+           * Send it to Paystack as a string.
+           */
+
+          amount:
+                String(
+                    PAYSTACK_PRO_AMOUNT,
+                ),
+
+          plan:
+                PAYSTACK_PRO_PLAN_CODE,
+
+          currency:
+                PAYSTACK_CURRENCY,
+
+          callback_url:
+                CWS_CALLBACK_URL,
+
+          metadata:
+                JSON.stringify(
+                    metadata,
+                ),
+
+        };
+
+
+        console.log(
+            "[CWS Paystack] Initializing checkout:",
+            {
+              uid,
+
+              email,
+
+              amount:
+                    paystackPayload.amount,
+
+              plan:
                     PAYSTACK_PRO_PLAN_CODE,
 
-            source:
-                    "cws-academy",
-
-          };
-
-
-          const response =
-                await fetch(
-                    "https://api.paystack.co/transaction/initialize",
-                    {
-                      method:
-                            "POST",
-
-                      headers: {
-
-                        "Authorization":
-                                `Bearer ${getSecretKey()}`,
-
-                        "Content-Type":
-                                "application/json",
-
-                      },
-
-                      body:
-                            JSON.stringify(
-                                {
-                                  email,
-
-                                  amount:
-                                        PAYSTACK_PRO_AMOUNT,
-
-                                  plan:
-                                        PAYSTACK_PRO_PLAN_CODE,
-
-                                  currency:
-                                        PAYSTACK_CURRENCY,
-
-                                  callback_url:
-                                        CWS_CALLBACK_URL,
-
-                                  metadata:
-                                        JSON.stringify(
-                                            metadata,
-                                        ),
-                                },
-                            ),
-                    },
-                );
-
-          const result =
-                await response.json();
-
-          if (
-            !response.ok ||
-                !result?.status ||
-                !result?.data?.authorization_url ||
-                !result?.data?.reference
-          ) {
-            console.error(
-                "[CWS Paystack] Checkout initialization failed:",
-                result,
-            );
-
-            throw new HttpsError(
-                "internal",
-                "Unable to start Paystack checkout.",
-            );
-          }
+              currency:
+                    PAYSTACK_CURRENCY,
+            },
+        );
 
 
-          await db
-              .collection(
-                  "paystackPayments",
-              )
-              .doc(
-                  result.data.reference,
-              )
-              .set(
+        const response =
+              await fetch(
+                  "https://api.paystack.co/transaction/initialize",
                   {
-                    uid,
+                    method:
+                          "POST",
 
-                    email,
+                    headers: {
 
-                    plan:
-                            "pro",
+                      "Authorization":
+                              `Bearer ${getSecretKey()}`,
 
-                    planCode:
-                            PAYSTACK_PRO_PLAN_CODE,
+                      "Content-Type":
+                              "application/json",
 
-                    expectedAmount:
-                            PAYSTACK_PRO_AMOUNT,
+                    },
 
-                    currency:
-                            PAYSTACK_CURRENCY,
-
-                    status:
-                            "pending",
-
-                    provider:
-                            "paystack",
-
-                    reference:
-                            result.data.reference,
-
-                    createdAt:
-                            FieldValue.serverTimestamp(),
-
-                    updatedAt:
-                            FieldValue.serverTimestamp(),
+                    body:
+                          JSON.stringify(
+                              paystackPayload,
+                          ),
                   },
               );
 
 
-          console.log(
-              "[CWS Paystack] Checkout initialized:",
-              {
-                uid,
-                reference:
-                        result.data.reference,
-              },
+        const result =
+              await response.json();
+
+
+        /* =================================================
+           CHECK PAYSTACK RESPONSE
+        ================================================= */
+
+        if (
+          !response.ok ||
+            !result?.status ||
+            !result?.data?.authorization_url ||
+            !result?.data?.reference
+        ) {
+          console.error(
+              "[CWS Paystack] Checkout initialization failed:",
+              result,
           );
 
+          throw new HttpsError(
+              "internal",
+              "Unable to start Paystack checkout.",
+          );
+        }
 
-          return {
 
-            authorizationUrl:
-                    result.data.authorization_url,
+        /* =================================================
+           SAVE PENDING CHECKOUT
+        ================================================= */
 
-            reference:
+        await db
+            .collection(
+                "paystackPayments",
+            )
+            .doc(
+                result.data.reference,
+            )
+            .set(
+                {
+                  uid,
+
+                  email,
+
+                  plan:
+                        "pro",
+
+                  planCode:
+                        PAYSTACK_PRO_PLAN_CODE,
+
+                  expectedAmount:
+                        PAYSTACK_PRO_AMOUNT,
+
+                  currency:
+                        PAYSTACK_CURRENCY,
+
+                  status:
+                        "pending",
+
+                  provider:
+                        "paystack",
+
+                  reference:
+                        result.data.reference,
+
+                  createdAt:
+                        FieldValue.serverTimestamp(),
+
+                  updatedAt:
+                        FieldValue.serverTimestamp(),
+                },
+            );
+
+
+        console.log(
+            "[CWS Paystack] Checkout initialized:",
+            {
+              uid,
+
+              reference:
                     result.data.reference,
+            },
+        );
 
-          };
-        },
-    );
+
+        /* =================================================
+           RETURN CHECKOUT URL
+        ================================================= */
+
+        return {
+
+          authorizationUrl:
+                result.data.authorization_url,
+
+          reference:
+                result.data.reference,
+
+        };
+      },
+  );
 
 
 /* =========================================================
@@ -377,6 +446,10 @@ exports.paystackWebhook =
             request,
             response,
         ) => {
+          /* =================================================
+             ONLY ALLOW POST
+          ================================================= */
+
           if (
             request.method !==
                 "POST"
@@ -391,10 +464,15 @@ exports.paystackWebhook =
           }
 
 
+          /* =================================================
+             PAYSTACK SIGNATURE
+          ================================================= */
+
           const signature =
                 request.get(
                     "x-paystack-signature",
                 );
+
 
           if (!signature) {
             console.warn(
@@ -426,6 +504,7 @@ exports.paystackWebhook =
                         "hex",
                     );
 
+
           const signatureBuffer =
                 Buffer.from(
                     String(signature),
@@ -437,6 +516,7 @@ exports.paystackWebhook =
                     expectedSignature,
                     "utf8",
                 );
+
 
           if (
             signatureBuffer.length !==
@@ -460,8 +540,13 @@ exports.paystackWebhook =
           }
 
 
+          /* =================================================
+             PAYSTACK EVENT
+          ================================================= */
+
           const event =
                 request.body;
+
 
           if (
             event?.event !==
@@ -477,8 +562,13 @@ exports.paystackWebhook =
           }
 
 
+          /* =================================================
+             TRANSACTION REFERENCE
+          ================================================= */
+
           const reference =
                 event?.data?.reference;
+
 
           if (!reference) {
             console.error(
@@ -496,17 +586,23 @@ exports.paystackWebhook =
 
 
           try {
+            /* =================================================
+               FIND CWS CHECKOUT
+            ================================================= */
+
             const paymentRef =
-                    db
-                        .collection(
-                            "paystackPayments",
-                        )
-                        .doc(
-                            reference,
-                        );
+                  db
+                      .collection(
+                          "paystackPayments",
+                      )
+                      .doc(
+                          reference,
+                      );
+
 
             const pendingSnapshot =
-                    await paymentRef.get();
+                  await paymentRef.get();
+
 
             if (
               !pendingSnapshot.exists
@@ -527,7 +623,12 @@ exports.paystackWebhook =
 
 
             const pending =
-                    pendingSnapshot.data();
+                  pendingSnapshot.data();
+
+
+            /* =================================================
+               ALREADY VERIFIED
+            ================================================= */
 
             if (
               pending?.status ===
@@ -543,65 +644,83 @@ exports.paystackWebhook =
             }
 
 
+            /* =================================================
+               VERIFY DIRECTLY WITH PAYSTACK
+            ================================================= */
+
             const verified =
-                    await verifyTransaction(
-                        reference,
-                    );
+                  await verifyTransaction(
+                      reference,
+                  );
+
 
             const metadata =
-                    normalizeMetadata(
-                        verified.metadata,
-                    );
+                  normalizeMetadata(
+                      verified.metadata,
+                  );
 
+
+            /* =================================================
+               SECURITY VALIDATION
+            ================================================= */
 
             const validStatus =
-                    verified.status ===
+                  verified.status ===
                     "success";
 
+
             const validAmount =
-                    Number(
-                        verified.amount,
-                    ) ===
+                  Number(
+                      verified.amount,
+                  ) ===
                     PAYSTACK_PRO_AMOUNT;
 
+
             const validCurrency =
-                    verified.currency ===
+                  verified.currency ===
                     PAYSTACK_CURRENCY;
 
+
             const validUser =
-                    metadata.cwsUserId ===
+                  metadata.cwsUserId ===
                     pending.uid;
 
+
             const validPlan =
-                    metadata.cwsPlan ===
-                        "pro" &&
-                    metadata.cwsPlanCode ===
-                        PAYSTACK_PRO_PLAN_CODE &&
-                    pending.planCode ===
-                        PAYSTACK_PRO_PLAN_CODE;
+                  metadata.cwsPlan ===
+                    "pro" &&
+                  metadata.cwsPlanCode ===
+                    PAYSTACK_PRO_PLAN_CODE &&
+                  pending.planCode ===
+                    PAYSTACK_PRO_PLAN_CODE;
+
 
             const validEmail =
-                    String(
-                        verified?.customer?.email ||
+                  String(
+                      verified?.customer?.email ||
                         "",
-                    )
-                        .trim()
-                        .toLowerCase() ===
-                    String(
-                        pending.email ||
+                  )
+                      .trim()
+                      .toLowerCase() ===
+                  String(
+                      pending.email ||
                         "",
-                    )
-                        .trim()
-                        .toLowerCase();
+                  )
+                      .trim()
+                      .toLowerCase();
 
+
+            /* =================================================
+               VERIFICATION FAILED
+            ================================================= */
 
             if (
               !validStatus ||
-                    !validAmount ||
-                    !validCurrency ||
-                    !validUser ||
-                    !validPlan ||
-                    !validEmail
+                !validAmount ||
+                !validCurrency ||
+                !validUser ||
+                !validPlan ||
+                !validEmail
             ) {
               console.error(
                   "[CWS Paystack] Verification mismatch:",
@@ -616,22 +735,24 @@ exports.paystackWebhook =
                   },
               );
 
+
               await paymentRef.set(
                   {
                     status:
-                                "verification_failed",
+                          "verification_failed",
 
                     verifiedAt:
-                                FieldValue.serverTimestamp(),
+                          FieldValue.serverTimestamp(),
 
                     updatedAt:
-                                FieldValue.serverTimestamp(),
+                          FieldValue.serverTimestamp(),
                   },
                   {
                     merge:
-                                true,
+                          true,
                   },
               );
+
 
               response
                   .status(200)
@@ -643,48 +764,52 @@ exports.paystackWebhook =
             }
 
 
+            /* =================================================
+               PAYMENT VERIFIED
+            ================================================= */
+
             await paymentRef.set(
                 {
                   status:
-                            "verified",
+                        "verified",
 
                   amount:
-                            Number(
-                                verified.amount,
-                            ),
+                        Number(
+                            verified.amount,
+                        ),
 
                   currency:
-                            verified.currency,
+                        verified.currency,
 
                   channel:
-                            verified.channel ||
-                            null,
+                        verified.channel ||
+                          null,
 
                   paystackTransactionId:
-                            String(
-                                verified.id ||
-                                "",
-                            ),
+                        String(
+                            verified.id ||
+                              "",
+                        ),
 
                   paystackCustomerCode:
-                            verified?.customer
-                                ?.customer_code ||
-                            null,
+                        verified?.customer
+                            ?.customer_code ||
+                          null,
 
                   paidAt:
-                            verified.paid_at ||
-                            verified.paidAt ||
-                            null,
+                        verified.paid_at ||
+                        verified.paidAt ||
+                          null,
 
                   verifiedAt:
-                            FieldValue.serverTimestamp(),
+                        FieldValue.serverTimestamp(),
 
                   updatedAt:
-                            FieldValue.serverTimestamp(),
+                        FieldValue.serverTimestamp(),
                 },
                 {
                   merge:
-                            true,
+                        true,
                 },
             );
 
@@ -693,15 +818,15 @@ exports.paystackWebhook =
                 "[CWS Paystack] Payment VERIFIED:",
                 {
                   uid:
-                            pending.uid,
+                        pending.uid,
 
                   reference,
 
                   amount:
-                            verified.amount,
+                        verified.amount,
 
                   currency:
-                            verified.currency,
+                        verified.currency,
                 },
             );
 
