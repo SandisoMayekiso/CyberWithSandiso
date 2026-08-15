@@ -88,6 +88,9 @@ export const networkingFundamentals = {
     status:
         "available",
 
+    access:
+        "free",
+
     icon:
         "fa-solid fa-network-wired",
 
