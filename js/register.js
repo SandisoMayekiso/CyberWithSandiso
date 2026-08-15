@@ -1,28 +1,92 @@
 /* =========================================================
    CWS ACADEMY
-   Registration Controller
-   Firebase Authentication + Cloud Firestore
+   REGISTRATION CONTROLLER
+
+   Firebase Authentication
+   Cloud Firestore
+   Email Verification
+========================================================= */
+
+
+/* =========================================================
+   FIREBASE AUTH
 ========================================================= */
 
 import {
+
     createUserWithEmailAndPassword,
     sendEmailVerification,
     signOut
+
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+
+/* =========================================================
+   FIRESTORE
+========================================================= */
+
 import {
+
     doc,
     setDoc,
     serverTimestamp
+
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
+
 import {
+
     auth,
     db
+
 } from "./firebase-config.js";
 
 
-console.log("CWS Academy register.js loaded");
+
+/* =========================================================
+   DEBUG
+========================================================= */
+
+const DEBUG =
+    true;
+
+
+function log(
+    ...args
+) {
+
+    if (DEBUG) {
+
+        console.log(
+            "[CWS Register]",
+            ...args
+        );
+
+    }
+
+}
+
+
+function error(
+    ...args
+) {
+
+    console.error(
+        "[CWS Register]",
+        ...args
+    );
+
+}
+
+
+log(
+    "register.js loaded."
+);
+
 
 
 /* =========================================================
@@ -30,28 +94,52 @@ console.log("CWS Academy register.js loaded");
 ========================================================= */
 
 const registerForm =
-    document.getElementById("registerForm");
+    document.getElementById(
+        "registerForm"
+    );
+
 
 const registerName =
-    document.getElementById("registerName");
+    document.getElementById(
+        "registerName"
+    );
+
 
 const registerEmail =
-    document.getElementById("registerEmail");
+    document.getElementById(
+        "registerEmail"
+    );
+
 
 const registerPassword =
-    document.getElementById("registerPassword");
+    document.getElementById(
+        "registerPassword"
+    );
+
 
 const confirmPassword =
-    document.getElementById("confirmPassword");
+    document.getElementById(
+        "confirmPassword"
+    );
+
 
 const termsCheckbox =
-    document.getElementById("termsCheckbox");
+    document.getElementById(
+        "termsCheckbox"
+    );
+
 
 const registerBtn =
-    document.getElementById("registerBtn");
+    document.getElementById(
+        "registerBtn"
+    );
+
 
 const authMessage =
-    document.getElementById("authMessage");
+    document.getElementById(
+        "authMessage"
+    );
+
 
 
 /* =========================================================
@@ -65,66 +153,117 @@ function showMessage(
 
     if (!authMessage) {
 
-        console.log(message);
+        console.log(
+            message
+        );
 
         return;
 
     }
 
+
     authMessage.textContent =
         message;
+
 
     authMessage.className =
         `auth-message ${type}`;
 
-    authMessage.hidden = false;
+
+    authMessage.hidden =
+        false;
 
 }
+
+
+function clearMessage() {
+
+    if (!authMessage) {
+        return;
+    }
+
+
+    authMessage.textContent =
+        "";
+
+
+    authMessage.className =
+        "auth-message";
+
+
+    authMessage.hidden =
+        true;
+
+}
+
 
 
 /* =========================================================
    EMAIL VALIDATION
 ========================================================= */
 
-function isValidEmail(email) {
+function isValidEmail(
+    email
+) {
 
     const emailPattern =
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    return emailPattern.test(email);
+
+    return emailPattern.test(
+        email
+    );
 
 }
+
 
 
 /* =========================================================
-   RESET BUTTON
+   REGISTER BUTTON
 ========================================================= */
 
-function resetRegisterButton() {
+function setRegisterLoading(
+    loading
+) {
 
-    if (!registerBtn) return;
+    if (!registerBtn) {
+        return;
+    }
 
-    registerBtn.disabled = false;
 
-    registerBtn.textContent =
-        "Create Account";
+    registerBtn.disabled =
+        loading;
+
+
+    registerBtn.innerHTML =
+        loading
+            ? `
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                Creating Account...
+              `
+            : "Create Account";
 
 }
+
 
 
 /* =========================================================
    FIREBASE ERROR MESSAGE
 ========================================================= */
 
-function getRegistrationErrorMessage(error) {
+function getRegistrationErrorMessage(
+    registrationError
+) {
 
-    switch (error.code) {
+    switch (
+        registrationError?.code
+    ) {
+
 
         case "auth/email-already-in-use":
 
             return (
-                "An account with this email already exists. " +
-                "Please sign in instead."
+                "An account with this email already exists. Please sign in instead."
             );
 
 
@@ -138,8 +277,7 @@ function getRegistrationErrorMessage(error) {
         case "auth/weak-password":
 
             return (
-                "Your password is too weak. " +
-                "Please choose a stronger password."
+                "Your password is too weak. Please choose a stronger password."
             );
 
 
@@ -160,29 +298,27 @@ function getRegistrationErrorMessage(error) {
         case "auth/network-request-failed":
 
             return (
-                "A network error occurred. " +
-                "Please check your internet connection and try again."
+                "A network error occurred. Please check your internet connection and try again."
             );
 
 
         case "auth/too-many-requests":
 
             return (
-                "Too many requests were made. " +
-                "Please wait a while and try again."
+                "Too many requests were made. Please wait a while and try again."
             );
 
 
         default:
 
-            console.error(
+            error(
                 "Unhandled registration error:",
-                error
+                registrationError
             );
 
+
             return (
-                "Unable to create your account. " +
-                "Please try again."
+                "Unable to create your account. Please try again."
             );
 
     }
@@ -190,329 +326,531 @@ function getRegistrationErrorMessage(error) {
 }
 
 
+
+/* =========================================================
+   GET FORM VALUES
+========================================================= */
+
+function getRegistrationValues() {
+
+    const name =
+        String(
+            registerName?.value ||
+            ""
+        )
+            .trim();
+
+
+    const email =
+        String(
+            registerEmail?.value ||
+            ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const password =
+        String(
+            registerPassword?.value ||
+            ""
+        );
+
+
+    const confirmPasswordValue =
+        String(
+            confirmPassword?.value ||
+            ""
+        );
+
+
+    return {
+
+        name,
+        email,
+        password,
+        confirmPasswordValue
+
+    };
+
+}
+
+
+
+/* =========================================================
+   VALIDATE FORM
+========================================================= */
+
+function validateRegistration(
+    values
+) {
+
+    const {
+
+        name,
+        email,
+        password,
+        confirmPasswordValue
+
+    } =
+        values;
+
+
+    if (!name) {
+
+        showMessage(
+            "Please enter your full name."
+        );
+
+
+        registerName?.focus();
+
+
+        return false;
+
+    }
+
+
+    if (!email) {
+
+        showMessage(
+            "Please enter your email address."
+        );
+
+
+        registerEmail?.focus();
+
+
+        return false;
+
+    }
+
+
+    if (
+        !isValidEmail(
+            email
+        )
+    ) {
+
+        showMessage(
+            "Please enter a valid email address."
+        );
+
+
+        registerEmail?.focus();
+
+
+        return false;
+
+    }
+
+
+    if (
+        password.length < 8
+    ) {
+
+        showMessage(
+            "Password must contain at least 8 characters."
+        );
+
+
+        registerPassword?.focus();
+
+
+        return false;
+
+    }
+
+
+    if (
+        password !==
+        confirmPasswordValue
+    ) {
+
+        showMessage(
+            "Passwords do not match."
+        );
+
+
+        confirmPassword?.focus();
+
+
+        return false;
+
+    }
+
+
+    if (
+        !termsCheckbox?.checked
+    ) {
+
+        showMessage(
+            "You must agree to the Terms of Use and Privacy Policy."
+        );
+
+
+        termsCheckbox?.focus();
+
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+
+/* =========================================================
+   REDIRECT TO LOGIN
+========================================================= */
+
+function redirectToLoginAfterRegistration() {
+
+    const params =
+        new URLSearchParams();
+
+
+    params.set(
+        "registered",
+        "true"
+    );
+
+
+    params.set(
+        "verify",
+        "true"
+    );
+
+
+    window.location.replace(
+        `login.html?${params.toString()}`
+    );
+
+}
+
+
+
 /* =========================================================
    REGISTRATION
 ========================================================= */
 
-if (!registerForm) {
+async function registerUser(
+    event
+) {
 
-    console.error(
-        "CWS Academy: registerForm was not found."
+    event.preventDefault();
+
+
+    clearMessage();
+
+
+
+    /* =====================================================
+       FIREBASE CHECK
+    ===================================================== */
+
+    if (
+        !auth ||
+        !db
+    ) {
+
+        error(
+            "Firebase Auth or Firestore is unavailable."
+        );
+
+
+        showMessage(
+            "Registration is temporarily unavailable. Please try again later."
+        );
+
+
+        return;
+
+    }
+
+
+
+    /* =====================================================
+       GET FORM DATA
+    ===================================================== */
+
+    const values =
+        getRegistrationValues();
+
+
+
+    /* =====================================================
+       VALIDATION
+    ===================================================== */
+
+    if (
+        !validateRegistration(
+            values
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const {
+
+        name,
+        email,
+        password
+
+    } =
+        values;
+
+
+
+    /* =====================================================
+       LOADING
+    ===================================================== */
+
+    setRegisterLoading(
+        true
     );
 
-} else {
+
+
+    try {
+
+
+        /* =================================================
+           CREATE FIREBASE ACCOUNT
+        ================================================= */
+
+        log(
+            "Creating Firebase account..."
+        );
+
+
+        const userCredential =
+            await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+
+
+        const user =
+            userCredential.user;
+
+
+        log(
+            "Firebase account created:",
+            user.uid
+        );
+
+
+
+        /* =================================================
+           SEND VERIFICATION EMAIL
+        ================================================= */
+
+        log(
+            "Sending verification email..."
+        );
+
+
+        await sendEmailVerification(
+            user
+        );
+
+
+        log(
+            "Verification email sent:",
+            user.email
+        );
+
+
+
+        /* =================================================
+           CREATE FIRESTORE PROFILE
+        ================================================= */
+
+        await setDoc(
+
+            doc(
+                db,
+                "users",
+                user.uid
+            ),
+
+            {
+
+                uid:
+                    user.uid,
+
+                displayName:
+                    name,
+
+                name:
+                    name,
+
+                email:
+                    user.email,
+
+                emailVerified:
+                    false,
+
+                authProvider:
+                    "password",
+
+                role:
+                    "student",
+
+                createdAt:
+                    serverTimestamp(),
+
+                updatedAt:
+                    serverTimestamp()
+
+            }
+
+        );
+
+
+        log(
+            "Firestore user profile created:",
+            user.uid
+        );
+
+
+
+        /* =================================================
+           SIGN OUT
+
+           The student must verify their email before
+           normal CWS Academy access is granted.
+        ================================================= */
+
+        await signOut(
+            auth
+        );
+
+
+        log(
+            "New account signed out pending verification."
+        );
+
+
+
+        /* =================================================
+           SUCCESS MESSAGE
+        ================================================= */
+
+        showMessage(
+
+            "Account created successfully! We sent a verification link to your email address. Please check your inbox and verify your email before signing in.",
+
+            "success"
+
+        );
+
+
+
+        /* =================================================
+           CLEAR PASSWORD FIELDS
+        ================================================= */
+
+        if (registerPassword) {
+
+            registerPassword.value =
+                "";
+
+        }
+
+
+        if (confirmPassword) {
+
+            confirmPassword.value =
+                "";
+
+        }
+
+
+
+        /* =================================================
+           REDIRECT
+
+           Give the student a moment to read the success
+           message, then move them to the login page.
+
+           login.js will detect:
+           ?registered=true&verify=true
+        ================================================= */
+
+        window.setTimeout(
+
+            () => {
+
+                redirectToLoginAfterRegistration();
+
+            },
+
+            2500
+
+        );
+
+
+    }
+    catch (registrationError) {
+
+
+        error(
+            "Registration failed:",
+            registrationError
+        );
+
+
+        showMessage(
+
+            getRegistrationErrorMessage(
+                registrationError
+            ),
+
+            "error"
+
+        );
+
+
+        setRegisterLoading(
+            false
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   EVENT
+========================================================= */
+
+if (!registerForm) {
+
+    error(
+        "#registerForm was not found."
+    );
+
+}
+else {
 
     registerForm.addEventListener(
         "submit",
-        async (event) => {
+        registerUser
+    );
 
-            event.preventDefault();
 
-
-            /* =================================================
-               CLEAR MESSAGE
-            ================================================= */
-
-            if (authMessage) {
-
-                authMessage.textContent = "";
-
-                authMessage.className =
-                    "auth-message";
-
-                authMessage.hidden = true;
-
-            }
-
-
-            /* =================================================
-               GET VALUES
-            ================================================= */
-
-            const name =
-                registerName?.value
-                    .trim() || "";
-
-            const email =
-                registerEmail?.value
-                    .trim()
-                    .toLowerCase() || "";
-
-            const password =
-                registerPassword?.value || "";
-
-            const confirmPasswordValue =
-                confirmPassword?.value || "";
-
-
-            /* =================================================
-               VALIDATION
-            ================================================= */
-
-            if (!name) {
-
-                showMessage(
-                    "Please enter your full name."
-                );
-
-                registerName?.focus();
-
-                return;
-
-            }
-
-
-            if (!email) {
-
-                showMessage(
-                    "Please enter your email address."
-                );
-
-                registerEmail?.focus();
-
-                return;
-
-            }
-
-
-            if (!isValidEmail(email)) {
-
-                showMessage(
-                    "Please enter a valid email address."
-                );
-
-                registerEmail?.focus();
-
-                return;
-
-            }
-
-
-            if (password.length < 8) {
-
-                showMessage(
-                    "Password must contain at least 8 characters."
-                );
-
-                registerPassword?.focus();
-
-                return;
-
-            }
-
-
-            if (password !== confirmPasswordValue) {
-
-                showMessage(
-                    "Passwords do not match."
-                );
-
-                confirmPassword?.focus();
-
-                return;
-
-            }
-
-
-            if (!termsCheckbox?.checked) {
-
-                showMessage(
-                    "You must agree to the Terms of Use and Privacy Policy."
-                );
-
-                termsCheckbox?.focus();
-
-                return;
-
-            }
-
-
-            /* =================================================
-               DISABLE BUTTON
-            ================================================= */
-
-            if (registerBtn) {
-
-                registerBtn.disabled = true;
-
-                registerBtn.textContent =
-                    "Creating Account...";
-
-            }
-
-
-            try {
-
-                /* =================================================
-                   CREATE FIREBASE AUTH ACCOUNT
-                ================================================= */
-
-                console.log(
-                    "Creating Firebase account..."
-                );
-
-
-                const userCredential =
-                    await createUserWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
-
-
-                const user =
-                    userCredential.user;
-
-
-                console.log(
-                    "Firebase account created:",
-                    user.uid
-                );
-
-
-                /* =================================================
-                   SEND EMAIL VERIFICATION
-                ================================================= */
-
-                console.log(
-                    "Sending verification email..."
-                );
-
-
-                await sendEmailVerification(
-                    user
-                );
-
-
-                console.log(
-                    "Verification email sent:",
-                    user.email
-                );
-
-
-                /* =================================================
-                   CREATE FIRESTORE USER PROFILE
-                ================================================= */
-
-                await setDoc(
-                    doc(
-                        db,
-                        "users",
-                        user.uid
-                    ),
-                    {
-
-                        uid:
-                            user.uid,
-
-                        name:
-                            name,
-
-                        email:
-                            user.email,
-
-                        emailVerified:
-                            false,
-
-                        authProvider:
-                            "password",
-
-                        role:
-                            "student",
-
-                        createdAt:
-                            serverTimestamp(),
-
-                        updatedAt:
-                            serverTimestamp()
-
-                    }
-                );
-
-
-                console.log(
-                    "Firestore user profile created:",
-                    user.uid
-                );
-
-
-                /* =================================================
-                   SIGN OUT
-
-                   The account has been created, but the email
-                   must be verified before normal login.
-                ================================================= */
-
-                await signOut(auth);
-
-
-                /* =================================================
-                   SUCCESS MESSAGE
-                ================================================= */
-
-                showMessage(
-                    "Account created! A verification email has been sent to your inbox. Please verify your email before signing in.",
-                    "success"
-                );
-
-
-                /* =================================================
-                   CLEAR FORM
-                ================================================= */
-
-                if (registerPassword) {
-
-                    registerPassword.value = "";
-
-                }
-
-                if (confirmPassword) {
-
-                    confirmPassword.value = "";
-
-                }
-
-
-                /* =================================================
-                   REDIRECT TO LOGIN
-                ================================================= */
-
-                setTimeout(
-                    () => {
-
-                        window.location.href =
-                            "login.html";
-
-                    },
-                    2500
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "CWS Academy registration error:",
-                    error
-                );
-
-
-                /* =================================================
-                   FIREBASE REGISTRATION ERROR
-                ================================================= */
-
-                showMessage(
-                    getRegistrationErrorMessage(
-                        error
-                    ),
-                    "error"
-                );
-
-
-                resetRegisterButton();
-
-            }
-
-        }
+    log(
+        "Registration form ready."
     );
 
 }
