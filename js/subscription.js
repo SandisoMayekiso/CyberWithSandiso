@@ -4,72 +4,50 @@
 
    Firebase Authentication
    Read-Only Entitlement Display
-========================================================= */
-
-
-/* =========================================================
-   FIREBASE AUTH
+   Paystack Checkout via Firebase Cloud Functions
 ========================================================= */
 
 import {
-
     onAuthStateChanged,
     signOut
-
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-
-/* =========================================================
-   FIREBASE CONFIG
-========================================================= */
+import {
+    getFunctions,
+    httpsCallable
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-functions.js";
 
 import {
-
     auth
-
 } from "./firebase-config.js";
 
-
-/* =========================================================
-   ACCESS CONTROL
-========================================================= */
-
 import {
-
     getUserEntitlement,
     getPlanLabel
-
 } from "./access-control.js";
 
 
+const functions =
+    getFunctions();
 
-/* =========================================================
-   DEBUG
-========================================================= */
 
 const DEBUG =
     true;
 
 
-function log(
-    ...args
-) {
+function log(...args) {
 
     if (DEBUG) {
-
         console.log(
             "[CWS Subscription]",
             ...args
         );
-
     }
 
 }
 
 
-function error(
-    ...args
-) {
+function error(...args) {
 
     console.error(
         "[CWS Subscription]",
@@ -79,76 +57,60 @@ function error(
 }
 
 
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
 const subscriptionLoading =
     document.getElementById(
         "subscriptionLoading"
     );
-
 
 const subscriptionContent =
     document.getElementById(
         "subscriptionContent"
     );
 
-
 const studentName =
     document.getElementById(
         "studentName"
     );
-
 
 const logoutBtn =
     document.getElementById(
         "logoutBtn"
     );
 
-
 const currentPlanIcon =
     document.getElementById(
         "currentPlanIcon"
     );
-
 
 const currentPlanBadge =
     document.getElementById(
         "currentPlanBadge"
     );
 
-
 const currentPlanName =
     document.getElementById(
         "currentPlanName"
     );
-
 
 const currentPlanDescription =
     document.getElementById(
         "currentPlanDescription"
     );
 
-
 const currentPlanStatus =
     document.getElementById(
         "currentPlanStatus"
     );
-
 
 const currentPlanExpiry =
     document.getElementById(
         "currentPlanExpiry"
     );
 
-
 const freePlanBtn =
     document.getElementById(
         "freePlanBtn"
     );
-
 
 const upgradeProBtn =
     document.getElementById(
@@ -156,36 +118,21 @@ const upgradeProBtn =
     );
 
 
-
-/* =========================================================
-   STATE
-========================================================= */
-
 let currentUser =
     null;
 
-
 let currentEntitlement =
     null;
-
 
 let initialized =
     false;
 
 
-
-/* =========================================================
-   USER NAME
-========================================================= */
-
-function getUserName(
-    user
-) {
+function getUserName(user) {
 
     if (!user) {
         return "Student";
     }
-
 
     if (
         typeof user.displayName ===
@@ -196,7 +143,6 @@ function getUserName(
         return user.displayName.trim();
 
     }
-
 
     if (
         typeof user.email ===
@@ -209,7 +155,6 @@ function getUserName(
                 .split("@")[0]
                 .replace(/[._-]+/g, " ")
                 .trim();
-
 
         if (rawName) {
 
@@ -227,29 +172,19 @@ function getUserName(
 
     }
 
-
     return "Student";
 
 }
 
 
-
-/* =========================================================
-   DATE
-========================================================= */
-
-function formatDate(
-    value
-) {
+function formatDate(value) {
 
     if (!value) {
         return "No expiry";
     }
 
-
     let date =
         null;
-
 
     if (
         typeof value.toDate ===
@@ -269,7 +204,6 @@ function formatDate(
 
     }
 
-
     if (
         !(date instanceof Date) ||
         Number.isNaN(
@@ -280,7 +214,6 @@ function formatDate(
         return "No expiry";
 
     }
-
 
     return new Intl.DateTimeFormat(
         undefined,
@@ -301,17 +234,11 @@ function formatDate(
 }
 
 
-
-/* =========================================================
-   PAGE STATE
-========================================================= */
-
 function showContent() {
 
     if (subscriptionLoading) {
         subscriptionLoading.hidden = true;
     }
-
 
     if (subscriptionContent) {
         subscriptionContent.hidden = false;
@@ -319,11 +246,6 @@ function showContent() {
 
 }
 
-
-
-/* =========================================================
-   RENDER ENTITLEMENT
-========================================================= */
 
 function renderEntitlement() {
 
@@ -339,30 +261,23 @@ function renderEntitlement() {
                 null
         };
 
-
     const plan =
         entitlement.plan ||
         "free";
 
-
     const status =
         entitlement.status ||
         "inactive";
-
 
     const label =
         getPlanLabel(
             plan
         );
 
-
     if (currentPlanName) {
-
         currentPlanName.textContent =
             label;
-
     }
-
 
     if (currentPlanBadge) {
 
@@ -370,20 +285,15 @@ function renderEntitlement() {
             String(label)
                 .toUpperCase();
 
-
         currentPlanBadge.className =
             `subscription-plan-badge ${plan}`;
 
     }
 
-
     if (currentPlanStatus) {
-
         currentPlanStatus.textContent =
             status;
-
     }
-
 
     if (currentPlanExpiry) {
 
@@ -394,7 +304,6 @@ function renderEntitlement() {
 
     }
 
-
     if (currentPlanIcon) {
 
         currentPlanIcon.className =
@@ -403,7 +312,6 @@ function renderEntitlement() {
                 : "fa-solid fa-user";
 
     }
-
 
     if (currentPlanDescription) {
 
@@ -414,7 +322,6 @@ function renderEntitlement() {
 
     }
 
-
     if (freePlanBtn) {
 
         freePlanBtn.textContent =
@@ -424,30 +331,24 @@ function renderEntitlement() {
 
     }
 
+    if (
+        upgradeProBtn &&
+        plan === "pro" &&
+        (
+            status === "active" ||
+            status === "trialing"
+        )
+    ) {
 
-    if (upgradeProBtn) {
+        upgradeProBtn.disabled =
+            true;
 
-        if (
-            plan === "pro" &&
-            (
-                status === "active" ||
-                status === "trialing"
-            )
-        ) {
-
-            upgradeProBtn.disabled =
-                true;
-
-
-            upgradeProBtn.innerHTML = `
-                <i class="fa-solid fa-circle-check"></i>
-                Pro Active
-            `;
-
-        }
+        upgradeProBtn.innerHTML = `
+            <i class="fa-solid fa-circle-check"></i>
+            Pro Active
+        `;
 
     }
-
 
     log(
         "Entitlement rendered:",
@@ -460,32 +361,7 @@ function renderEntitlement() {
 }
 
 
-
-/* =========================================================
-   PAYSTACK TEST CHECKOUT
-========================================================= */
-
-const PAYSTACK_TEST_CHECKOUT_URL =
-    "https://paystack.shop/pay/-lczow8-dd";
-
-
-/* =========================================================
-   UPGRADE
-========================================================= */
-
-function handleProUpgrade() {
-
-    /*
-     * IMPORTANT:
-     *
-     * This redirects the student to the Paystack
-     * TEST subscription checkout only.
-     *
-     * It does NOT grant Pro access.
-     *
-     * Pro access will only be granted later after
-     * Paystack payment verification is implemented.
-     */
+async function handleProUpgrade() {
 
     if (
         currentEntitlement?.plan ===
@@ -500,36 +376,105 @@ function handleProUpgrade() {
 
     }
 
+    if (
+        !auth?.currentUser
+    ) {
 
-    if (upgradeProBtn) {
+        window.location.replace(
+            "../pages/login.html?redirect=subscription"
+        );
 
-        upgradeProBtn.disabled =
-            true;
-
-
-        upgradeProBtn.innerHTML = `
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            Opening Paystack...
-        `;
+        return;
 
     }
 
+    try {
 
-    log(
-        "Redirecting to Paystack test checkout."
-    );
+        if (upgradeProBtn) {
 
+            upgradeProBtn.disabled =
+                true;
 
-    window.location.href =
-        PAYSTACK_TEST_CHECKOUT_URL;
+            upgradeProBtn.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Opening Paystack...
+            `;
+
+        }
+
+        const createPaystackCheckout =
+            httpsCallable(
+                functions,
+                "createPaystackCheckout"
+            );
+
+        const result =
+            await createPaystackCheckout();
+
+        const authorizationUrl =
+            result?.data?.authorizationUrl;
+
+        if (!authorizationUrl) {
+
+            throw new Error(
+                "No Paystack checkout URL was returned."
+            );
+
+        }
+
+        window.location.assign(
+            authorizationUrl
+        );
+
+    }
+    catch (err) {
+
+        error(
+            "Unable to start Paystack checkout:",
+            err
+        );
+
+        if (upgradeProBtn) {
+
+            upgradeProBtn.disabled =
+                false;
+
+            upgradeProBtn.innerHTML = `
+                <i class="fa-solid fa-arrow-up-right-dots"></i>
+                Upgrade to Pro
+            `;
+
+        }
+
+        alert(
+            "CWS Academy could not start the Paystack checkout. Please try again."
+        );
+
+    }
 
 }
 
 
+function checkPaymentReturn() {
 
-/* =========================================================
-   LOGOUT
-========================================================= */
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    if (
+        params.get("payment") ===
+        "processing"
+    ) {
+
+        log(
+            "Returned from Paystack. Waiting for verified webhook processing."
+        );
+
+    }
+
+}
+
 
 async function logout() {
 
@@ -537,21 +482,15 @@ async function logout() {
         return;
     }
 
-
     try {
 
         if (logoutBtn) {
-
-            logoutBtn.disabled =
-                true;
-
+            logoutBtn.disabled = true;
         }
-
 
         await signOut(
             auth
         );
-
 
         window.location.replace(
             "../pages/login.html"
@@ -565,23 +504,14 @@ async function logout() {
             err
         );
 
-
         if (logoutBtn) {
-
-            logoutBtn.disabled =
-                false;
-
+            logoutBtn.disabled = false;
         }
 
     }
 
 }
 
-
-
-/* =========================================================
-   EVENTS
-========================================================= */
 
 if (upgradeProBtn) {
 
@@ -591,7 +521,6 @@ if (upgradeProBtn) {
     );
 
 }
-
 
 if (logoutBtn) {
 
@@ -603,17 +532,11 @@ if (logoutBtn) {
 }
 
 
-
-/* =========================================================
-   AUTHENTICATION
-========================================================= */
-
 if (!auth) {
 
     error(
         "Firebase Auth unavailable."
     );
-
 
     window.location.replace(
         "../pages/login.html"
@@ -626,26 +549,21 @@ else {
         auth,
         async user => {
 
-
             if (!user) {
 
                 currentUser =
                     null;
 
-
                 window.location.replace(
                     "../pages/login.html?redirect=subscription"
                 );
-
 
                 return;
 
             }
 
-
             currentUser =
                 user;
-
 
             if (studentName) {
 
@@ -656,15 +574,12 @@ else {
 
             }
 
-
             if (initialized) {
                 return;
             }
 
-
             initialized =
                 true;
-
 
             try {
 
@@ -673,12 +588,11 @@ else {
                         user
                     );
 
-
                 renderEntitlement();
 
+                checkPaymentReturn();
 
                 showContent();
-
 
                 log(
                     "Subscription page loaded."
@@ -692,7 +606,6 @@ else {
                     err
                 );
 
-
                 currentEntitlement = {
                     plan:
                         "free",
@@ -704,8 +617,9 @@ else {
                         null
                 };
 
-
                 renderEntitlement();
+
+                checkPaymentReturn();
 
                 showContent();
 
