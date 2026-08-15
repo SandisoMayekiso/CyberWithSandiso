@@ -66,6 +66,25 @@ import {
 
 
 /* =========================================================
+   ACCESS CONTROL
+========================================================= */
+
+import {
+
+    getUserEntitlement,
+
+    canAccessItem,
+
+    getRequiredAccess,
+
+    getAccessMessage,
+
+    getUpgradeUrl
+
+} from "./access-control.js";
+
+
+/* =========================================================
    DEBUG
 ========================================================= */
 
@@ -303,6 +322,8 @@ let currentUser = null;
 let currentCourse = null;
 
 let currentProgress = null;
+
+let currentEntitlement = null;
 
 let courseInitialized = false;
 
@@ -2451,6 +2472,92 @@ function renderCourse(course) {
 
 
 /* =========================================================
+   COURSE ACCESS
+========================================================= */
+
+function hasCurrentCourseAccess() {
+
+    if (!currentCourse) {
+
+        return false;
+
+    }
+
+
+    return canAccessItem(
+
+        currentCourse,
+
+        currentEntitlement
+
+    );
+
+}
+
+
+function redirectToUpgrade() {
+
+    if (!currentCourse) {
+
+        return;
+
+    }
+
+
+    const requiredPlan =
+
+        getRequiredAccess(
+            currentCourse
+        );
+
+
+    warn(
+
+        "Course access denied:",
+
+        {
+            course:
+                currentCourse.id,
+
+            requiredPlan,
+
+            userPlan:
+                currentEntitlement?.plan ||
+                "free"
+        }
+
+    );
+
+
+    const message =
+
+        getAccessMessage(
+            requiredPlan
+        );
+
+
+    if (message) {
+
+        log(
+            "Access message:",
+            message
+        );
+
+    }
+
+
+    window.location.replace(
+
+        getUpgradeUrl(
+            requiredPlan
+        )
+
+    );
+
+}
+
+
+/* =========================================================
    START / CONTINUE COURSE
 ========================================================= */
 
@@ -2470,6 +2577,21 @@ async function startCourse(
         error(
             "Cannot start course: currentCourse is null."
         );
+
+        return;
+
+    }
+
+
+    /* =============================================
+       ACCESS CHECK
+    ============================================== */
+
+    if (
+        !hasCurrentCourseAccess()
+    ) {
+
+        redirectToUpgrade();
 
         return;
 
@@ -2728,6 +2850,42 @@ async function loadCourse() {
 
 
     /* =============================================
+       ACCESS CHECK
+    ============================================== */
+
+    if (
+        !hasCurrentCourseAccess()
+    ) {
+
+        redirectToUpgrade();
+
+        return;
+
+    }
+
+
+    log(
+
+        "Course access granted:",
+
+        {
+            course:
+                currentCourse.id,
+
+            requiredPlan:
+                getRequiredAccess(
+                    currentCourse
+                ),
+
+            userPlan:
+                currentEntitlement?.plan ||
+                "free"
+        }
+
+    );
+
+
+    /* =============================================
        RENDER IMMEDIATELY
     ============================================== */
 
@@ -2965,6 +3123,34 @@ else {
 
             displayStudent(
                 user
+            );
+
+
+            /* =============================================
+               LOAD USER ENTITLEMENT
+            ============================================== */
+
+            currentEntitlement =
+
+                await getUserEntitlement(
+                    user
+                );
+
+
+            log(
+
+                "User entitlement:",
+
+                {
+                    plan:
+                        currentEntitlement?.plan ||
+                        "free",
+
+                    status:
+                        currentEntitlement?.status ||
+                        "inactive"
+                }
+
             );
 
 
