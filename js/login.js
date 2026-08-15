@@ -1,15 +1,67 @@
 /* =========================================================
    CWS ACADEMY
-   Login Controller
+   LOGIN CONTROLLER
+
+   Email / Password Authentication
+   Remember Me
+   Email Verification Guard
 ========================================================= */
 
-import {
-    signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
+
+    signInWithEmailAndPassword,
+    signOut,
+    setPersistence,
+    browserLocalPersistence,
+    browserSessionPersistence
+
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+import {
+
     auth
+
 } from "./firebase-config.js";
+
+
+
+/* =========================================================
+   DEBUG
+========================================================= */
+
+const DEBUG =
+    true;
+
+
+function log(
+    ...args
+) {
+
+    if (DEBUG) {
+
+        console.log(
+            "[CWS Login]",
+            ...args
+        );
+
+    }
+
+}
+
+
+function error(
+    ...args
+) {
+
+    console.error(
+        "[CWS Login]",
+        ...args
+    );
+
+}
+
 
 
 /* =========================================================
@@ -17,22 +69,40 @@ import {
 ========================================================= */
 
 const loginForm =
-    document.getElementById("loginForm");
+    document.getElementById(
+        "loginForm"
+    );
+
 
 const emailInput =
-    document.getElementById("loginEmail");
+    document.getElementById(
+        "loginEmail"
+    );
+
 
 const passwordInput =
-    document.getElementById("loginPassword");
+    document.getElementById(
+        "loginPassword"
+    );
+
+
+const rememberMe =
+    document.getElementById(
+        "rememberMe"
+    );
+
 
 const loginButton =
-    document.getElementById("loginBtn");
+    document.getElementById(
+        "loginBtn"
+    );
+
 
 const loginMessage =
-    document.getElementById("loginMessage");
+    document.getElementById(
+        "loginMessage"
+    );
 
-
-console.log("CWS Academy login.js loaded");
 
 
 /* =========================================================
@@ -46,37 +116,74 @@ function showLoginMessage(
 
     if (!loginMessage) {
 
-        console.log(message);
+        console.log(
+            message
+        );
 
         return;
 
     }
 
+
     loginMessage.textContent =
         message;
+
 
     loginMessage.className =
         `auth-message ${type}`;
 
-    loginMessage.hidden = false;
+
+    loginMessage.hidden =
+        false;
 
 }
+
+
+function clearLoginMessage() {
+
+    if (!loginMessage) {
+        return;
+    }
+
+
+    loginMessage.textContent =
+        "";
+
+
+    loginMessage.hidden =
+        true;
+
+}
+
 
 
 /* =========================================================
-   BUTTON RESET
+   BUTTON STATE
 ========================================================= */
 
-function resetLoginButton() {
+function setLoginLoading(
+    loading
+) {
 
-    if (!loginButton) return;
+    if (!loginButton) {
+        return;
+    }
 
-    loginButton.disabled = false;
 
-    loginButton.textContent =
-        "Sign In";
+    loginButton.disabled =
+        loading;
+
+
+    loginButton.innerHTML =
+        loading
+            ? `
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                Signing In...
+              `
+            : "Sign In";
 
 }
+
 
 
 /* =========================================================
@@ -90,15 +197,57 @@ function redirectAfterLogin() {
             window.location.search
         );
 
+
     const redirect =
-        params.get("redirect");
+        params.get(
+            "redirect"
+        );
+
+
+    const courseId =
+        params.get(
+            "course"
+        );
+
+
+    const moduleId =
+        params.get(
+            "module"
+        );
+
+
+    const lessonId =
+        params.get(
+            "lesson"
+        );
+
+
+    /* =====================================================
+       PROFILE
+    ===================================================== */
+
+    if (
+        redirect ===
+        "profile"
+    ) {
+
+        window.location.replace(
+            "../student/profile.html"
+        );
+
+        return;
+
+    }
 
 
     /* =====================================================
        LABS
     ===================================================== */
 
-    if (redirect === "labs") {
+    if (
+        redirect ===
+        "labs"
+    ) {
 
         window.location.replace(
             "../student/labs.html"
@@ -113,7 +262,10 @@ function redirectAfterLogin() {
        ASSESSMENTS
     ===================================================== */
 
-    if (redirect === "assessments") {
+    if (
+        redirect ===
+        "assessments"
+    ) {
 
         window.location.replace(
             "../student/assessments.html"
@@ -125,16 +277,74 @@ function redirectAfterLogin() {
 
 
     /* =====================================================
-       COURSE
+       COURSE DETAILS
     ===================================================== */
 
     if (
-        redirect &&
-        redirect.startsWith("course-")
+        courseId &&
+        (
+            redirect ===
+                "course-details" ||
+            redirect ===
+                "course"
+        )
     ) {
 
+        const query =
+            new URLSearchParams();
+
+
+        query.set(
+            "course",
+            courseId
+        );
+
+
         window.location.replace(
-            "../student/dashboard.html"
+            `../student/course-details.html?${query.toString()}`
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       LESSON
+    ===================================================== */
+
+    if (
+        courseId &&
+        moduleId &&
+        lessonId &&
+        redirect ===
+        "lesson"
+    ) {
+
+        const query =
+            new URLSearchParams();
+
+
+        query.set(
+            "course",
+            courseId
+        );
+
+
+        query.set(
+            "module",
+            moduleId
+        );
+
+
+        query.set(
+            "lesson",
+            lessonId
+        );
+
+
+        window.location.replace(
+            `../student/lesson.html?${query.toString()}`
         );
 
         return;
@@ -153,238 +363,401 @@ function redirectAfterLogin() {
 }
 
 
+
+/* =========================================================
+   VALIDATION
+========================================================= */
+
+function getCredentials() {
+
+    const email =
+        String(
+            emailInput?.value ||
+            ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const password =
+        String(
+            passwordInput?.value ||
+            ""
+        );
+
+
+    return {
+
+        email,
+        password
+
+    };
+
+}
+
+
+
+/* =========================================================
+   AUTH ERROR MESSAGE
+========================================================= */
+
+function getAuthErrorMessage(
+    authError
+) {
+
+    switch (
+        authError?.code
+    ) {
+
+
+        case "auth/invalid-credential":
+
+        case "auth/wrong-password":
+
+        case "auth/user-not-found":
+
+            return (
+                "The email address or password is incorrect."
+            );
+
+
+        case "auth/invalid-email":
+
+            return (
+                "Please enter a valid email address."
+            );
+
+
+        case "auth/user-disabled":
+
+            return (
+                "This account has been disabled."
+            );
+
+
+        case "auth/too-many-requests":
+
+            return (
+                "Too many unsuccessful attempts. Please try again later."
+            );
+
+
+        case "auth/network-request-failed":
+
+            return (
+                "A network error occurred. Check your internet connection."
+            );
+
+
+        case "auth/operation-not-allowed":
+
+            return (
+                "Email/password sign-in is not enabled in Firebase Authentication."
+            );
+
+
+        case "auth/missing-password":
+
+            return (
+                "Please enter your password."
+            );
+
+
+        default:
+
+            return (
+                "Unable to sign in. Please try again."
+            );
+
+    }
+
+}
+
+
+
 /* =========================================================
    LOGIN
 ========================================================= */
 
-if (!loginForm) {
+async function login(
+    event
+) {
 
-    console.error(
-        "CWS Academy: loginForm was not found."
+    event.preventDefault();
+
+
+    clearLoginMessage();
+
+
+    /* =====================================================
+       FIREBASE CHECK
+    ===================================================== */
+
+    if (!auth) {
+
+        error(
+            "Firebase Auth is unavailable."
+        );
+
+
+        showLoginMessage(
+            "Authentication is temporarily unavailable."
+        );
+
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       FORM VALUES
+    ===================================================== */
+
+    const {
+
+        email,
+        password
+
+    } =
+        getCredentials();
+
+
+
+    /* =====================================================
+       VALIDATION
+    ===================================================== */
+
+    if (!email) {
+
+        showLoginMessage(
+            "Please enter your email address."
+        );
+
+
+        emailInput?.focus();
+
+
+        return;
+
+    }
+
+
+    if (!password) {
+
+        showLoginMessage(
+            "Please enter your password."
+        );
+
+
+        passwordInput?.focus();
+
+
+        return;
+
+    }
+
+
+
+    /* =====================================================
+       LOADING
+    ===================================================== */
+
+    setLoginLoading(
+        true
     );
 
-} else {
 
-    loginForm.addEventListener(
-        "submit",
-        async (event) => {
-
-            event.preventDefault();
+    try {
 
 
-            /* =================================================
-               GET FORM VALUES
-            ================================================= */
+        /* =================================================
+           AUTH PERSISTENCE
 
-            const email =
-                emailInput?.value
-                    .trim()
-                    .toLowerCase();
+           Remember Me checked:
+               stays signed in after browser restart.
 
-            const password =
-                passwordInput?.value || "";
+           Not checked:
+               session only.
+        ================================================= */
 
-
-            /* =================================================
-               VALIDATION
-            ================================================= */
-
-            if (!email) {
-
-                showLoginMessage(
-                    "Please enter your email address."
-                );
-
-                return;
-
-            }
+        const persistence =
+            rememberMe?.checked
+                ? browserLocalPersistence
+                : browserSessionPersistence;
 
 
-            if (!password) {
-
-                showLoginMessage(
-                    "Please enter your password."
-                );
-
-                return;
-
-            }
+        await setPersistence(
+            auth,
+            persistence
+        );
 
 
-            /* =================================================
-               DISABLE BUTTON
-            ================================================= */
-
-            if (loginButton) {
-
-                loginButton.disabled = true;
-
-                loginButton.textContent =
-                    "Signing In...";
-
-            }
+        log(
+            "Authentication persistence:",
+            rememberMe?.checked
+                ? "LOCAL"
+                : "SESSION"
+        );
 
 
-            try {
 
-                console.log(
-                    "Attempting Firebase login..."
-                );
+        /* =================================================
+           EMAIL / PASSWORD LOGIN
+        ================================================= */
 
-
-                /* =================================================
-                   FIREBASE EMAIL/PASSWORD LOGIN
-                ================================================= */
-
-                const userCredential =
-                    await signInWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
+        log(
+            "Attempting email/password login..."
+        );
 
 
-                const user =
-                    userCredential.user;
+        const userCredential =
+            await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
 
 
-                console.log(
-                    "Firebase login successful:",
-                    user.uid
-                );
+        const user =
+            userCredential.user;
 
 
-                /* =================================================
-                   REFRESH USER
-
-                   This detects a verification completed
-                   in another browser tab.
-                ================================================= */
-
-                await user.reload();
+        log(
+            "Firebase login successful:",
+            user.uid
+        );
 
 
-                console.log(
-                    "Email:",
-                    user.email
-                );
 
-                console.log(
-                    "Email verified:",
+        /* =================================================
+           REFRESH USER DATA
+        ================================================= */
+
+        await user.reload();
+
+
+        log(
+            "User:",
+            {
+                email:
+                    user.email,
+
+                emailVerified:
                     user.emailVerified
-                );
-
-
-                /* =================================================
-                   EMAIL VERIFICATION
-                ================================================= */
-
-                if (!user.emailVerified) {
-
-                    showLoginMessage(
-                        "Your account is correct, but your email address has not been verified yet.",
-                        "error"
-                    );
-
-                    resetLoginButton();
-
-                    return;
-
-                }
-
-
-                /* =================================================
-                   LOGIN SUCCESS
-                ================================================= */
-
-                showLoginMessage(
-                    "Login successful. Redirecting...",
-                    "success"
-                );
-
-
-                redirectAfterLogin();
-
-
-            } catch (error) {
-
-                console.error(
-                    "CWS Academy login error:",
-                    error
-                );
-
-
-                let message =
-                    "Unable to sign in. Please try again.";
-
-
-                switch (error.code) {
-
-                    case "auth/invalid-credential":
-
-                    case "auth/wrong-password":
-
-                    case "auth/user-not-found":
-
-                        message =
-                            "The email address or password is incorrect.";
-
-                        break;
-
-
-                    case "auth/invalid-email":
-
-                        message =
-                            "Please enter a valid email address.";
-
-                        break;
-
-
-                    case "auth/user-disabled":
-
-                        message =
-                            "This account has been disabled.";
-
-                        break;
-
-
-                    case "auth/too-many-requests":
-
-                        message =
-                            "Too many unsuccessful attempts. Please try again later.";
-
-                        break;
-
-
-                    case "auth/network-request-failed":
-
-                        message =
-                            "A network error occurred. Check your internet connection.";
-
-                        break;
-
-
-                    case "auth/operation-not-allowed":
-
-                        message =
-                            "Email/password sign-in is not enabled in Firebase Authentication.";
-
-                        break;
-
-                }
-
-
-                showLoginMessage(
-                    message,
-                    "error"
-                );
-
-
-                resetLoginButton();
-
             }
+        );
+
+
+
+        /* =================================================
+           EMAIL VERIFICATION
+        ================================================= */
+
+        if (
+            !user.emailVerified
+        ) {
+
+            /*
+             * Important:
+             * The credentials were correct, but this user
+             * should not remain authenticated if CWS requires
+             * verified-email access.
+             */
+
+            await signOut(
+                auth
+            );
+
+
+            showLoginMessage(
+                "Your email address has not been verified yet. Please verify it before signing in.",
+                "error"
+            );
+
+
+            setLoginLoading(
+                false
+            );
+
+
+            return;
 
         }
+
+
+
+        /* =================================================
+           SUCCESS
+        ================================================= */
+
+        showLoginMessage(
+            "Login successful. Redirecting...",
+            "success"
+        );
+
+
+        redirectAfterLogin();
+
+
+    }
+    catch (authError) {
+
+
+        error(
+            "Login failed:",
+            authError
+        );
+
+
+        showLoginMessage(
+
+            getAuthErrorMessage(
+                authError
+            ),
+
+            "error"
+
+        );
+
+
+        setLoginLoading(
+            false
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   EVENT
+========================================================= */
+
+if (!loginForm) {
+
+    error(
+        "#loginForm was not found."
     );
 
 }
+else {
+
+    loginForm.addEventListener(
+        "submit",
+        login
+    );
+
+
+    log(
+        "Login form ready."
+    );
+
+}
+
+
+
+log(
+    "login.js loaded."
+);
