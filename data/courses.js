@@ -17,19 +17,19 @@ import {
     networkingFundamentals
 } from "./networking-fundamentals.js";
 
+
 import {
     linuxFundamentals
 } from "./linux-fundamentals.js";
 
+
 import {
     practicalPenetrationTesting
 } from "./practical-penetration-testing.js";
+
+
 /*
    Future courses:
-
-   import {
-       linuxFundamentals
-   } from "./linux-fundamentals.js";
 
    import {
        ethicalHackingFundamentals
@@ -38,10 +38,6 @@ import {
    import {
        webApplicationSecurity
    } from "./web-application-security.js";
-
-   import {
-       practicalPenetrationTesting
-   } from "./practical-penetration-testing.js";
 */
 
 
