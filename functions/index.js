@@ -250,6 +250,9 @@ exports.createPaystackCheckout =
                                 {
                                   email,
 
+                                  amount:
+                                        PAYSTACK_PRO_AMOUNT,
+
                                   plan:
                                         PAYSTACK_PRO_PLAN_CODE,
 
