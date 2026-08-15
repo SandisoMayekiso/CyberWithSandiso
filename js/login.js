@@ -5,8 +5,13 @@
    Email / Password Authentication
    Remember Me
    Email Verification Guard
+   Post-Registration Verification Notice
 ========================================================= */
 
+
+/* =========================================================
+   FIREBASE AUTH
+========================================================= */
 
 import {
 
@@ -18,6 +23,10 @@ import {
 
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
 
 import {
 
@@ -150,6 +159,10 @@ function clearLoginMessage() {
         "";
 
 
+    loginMessage.className =
+        "auth-message";
+
+
     loginMessage.hidden =
         true;
 
@@ -187,7 +200,7 @@ function setLoginLoading(
 
 
 /* =========================================================
-   REDIRECT
+   REDIRECT AFTER LOGIN
 ========================================================= */
 
 function redirectAfterLogin() {
@@ -365,7 +378,7 @@ function redirectAfterLogin() {
 
 
 /* =========================================================
-   VALIDATION
+   GET CREDENTIALS
 ========================================================= */
 
 function getCredentials() {
@@ -476,6 +489,51 @@ function getAuthErrorMessage(
 
 
 /* =========================================================
+   REGISTRATION VERIFICATION NOTICE
+========================================================= */
+
+function checkRegistrationNotice() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const registered =
+        params.get(
+            "registered"
+        );
+
+
+    const verify =
+        params.get(
+            "verify"
+        );
+
+
+    if (
+        registered === "true" &&
+        verify === "true"
+    ) {
+
+        showLoginMessage(
+            "Account created successfully! We sent a verification link to your email address. Please check your inbox and verify your email before signing in.",
+            "success"
+        );
+
+
+        log(
+            "Post-registration verification notice displayed."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
    LOGIN
 ========================================================= */
 
@@ -486,7 +544,14 @@ async function login(
     event.preventDefault();
 
 
+    /*
+     * Clear previous login errors/messages.
+     *
+     * This also clears the registration notice once
+     * the user actually attempts to sign in.
+     */
     clearLoginMessage();
+
 
 
     /* =====================================================
@@ -508,6 +573,7 @@ async function login(
         return;
 
     }
+
 
 
     /* =====================================================
@@ -659,25 +725,30 @@ async function login(
         ) {
 
             /*
-             * Important:
-             * The credentials were correct, but this user
-             * should not remain authenticated if CWS requires
-             * verified-email access.
+             * Credentials were valid, but CWS requires
+             * email verification before student access.
+             *
+             * Sign the user back out so other student
+             * pages do not treat the account as authorized.
              */
-
             await signOut(
                 auth
             );
 
 
             showLoginMessage(
-                "Your email address has not been verified yet. Please verify it before signing in.",
+                "Your email address has not been verified yet. Please check your inbox, open the verification email from CWS Academy, verify your account, then return here and sign in again.",
                 "error"
             );
 
 
             setLoginLoading(
                 false
+            );
+
+
+            log(
+                "Login blocked because email is not verified."
             );
 
 
@@ -694,6 +765,11 @@ async function login(
         showLoginMessage(
             "Login successful. Redirecting...",
             "success"
+        );
+
+
+        log(
+            "Login successful. Redirecting user."
         );
 
 
@@ -757,6 +833,18 @@ else {
 }
 
 
+
+/* =========================================================
+   INITIAL PAGE NOTICE
+========================================================= */
+
+checkRegistrationNotice();
+
+
+
+/* =========================================================
+   INITIAL LOG
+========================================================= */
 
 log(
     "login.js loaded."
