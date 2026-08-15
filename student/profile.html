@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Manage your CWS Academy profile, account details, subscription and learning information."
+    >
+
+    <title>
+        Profile | CWS Academy
+    </title>
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+
+    <!-- =====================================================
+         DASHBOARD CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/dashboard.css"
+    >
+
+
+    <!-- =====================================================
+         PROFILE CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/profile.css"
+    >
+
+</head>
+
+
+<body class="student-dashboard profile-page-body">
+
+
+<!-- =========================================================
+     STUDENT NAVIGATION
+========================================================= -->
+
+<header class="student-header">
+
+    <nav class="student-nav">
+
+
+        <!-- LOGO -->
+
+        <a
+            href="dashboard.html"
+            class="academy-logo"
+            aria-label="CWS Academy Dashboard"
+        >
+
+            <span class="logo-cws">
+                CWS
+            </span>
+
+            <span class="logo-text">
+                Academy
+            </span>
+
+        </a>
+
+
+        <!-- NAVIGATION LINKS -->
+
+        <div class="student-nav-links">
+
+            <a href="dashboard.html">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a href="student-courses.html">
+
+                <i class="fa-solid fa-book"></i>
+
+                <span>
+                    Courses
+                </span>
+
+            </a>
+
+
+            <a href="labs.html">
+
+                <i class="fa-solid fa-flask"></i>
+
+                <span>
+                    Labs
+                </span>
+
+            </a>
+
+
+            <a href="assessments.html">
+
+                <i class="fa-solid fa-clipboard-check"></i>
+
+                <span>
+                    Assessments
+                </span>
+
+            </a>
+
+
+            <a href="progress.html">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                <span>
+                    Progress
+                </span>
+
+            </a>
+
+
+            <a href="certificates.html">
+
+                <i class="fa-solid fa-certificate"></i>
+
+                <span>
+                    Certificates
+                </span>
+
+            </a>
+
+
+            <a
+                href="profile.html"
+                class="active"
+                aria-current="page"
+            >
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+                    Profile
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- ACCOUNT -->
+
+        <div class="student-nav-account">
+
+            <span
+                id="studentName"
+                class="student-nav-name"
+            >
+                Student
+            </span>
+
+
+            <button
+                type="button"
+                id="logoutBtn"
+                class="dashboard-logout-btn"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </button>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="dashboard-main profile-main">
+
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    <section
+        id="profileLoading"
+        class="profile-loading"
+        aria-live="polite"
+    >
+
+        <i
+            class="fa-solid fa-circle-notch fa-spin"
+            aria-hidden="true"
+        ></i>
+
+        <p>
+            Loading your profile...
+        </p>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PROFILE CONTENT
+    ====================================================== -->
+
+    <div
+        id="profileContent"
+        hidden
+    >
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="profile-hero">
+
+            <div class="profile-avatar-wrap">
+
+                <div
+                    id="profileAvatar"
+                    class="profile-avatar"
+                    aria-hidden="true"
+                >
+                    S
+                </div>
+
+                <span
+                    id="verificationBadge"
+                    class="profile-verification-badge"
+                    title="Email verification status"
+                >
+                    <i class="fa-solid fa-shield-halved"></i>
+                </span>
+
+            </div>
+
+
+            <div class="profile-hero-content">
+
+                <span class="dashboard-label">
+                    CWS ACADEMY PROFILE
+                </span>
+
+                <h1 id="profileDisplayName">
+                    Student
+                </h1>
+
+                <p id="profileEmail">
+                    student@example.com
+                </p>
+
+
+                <div class="profile-hero-badges">
+
+                    <span
+                        id="profilePlanBadge"
+                        class="profile-plan-badge free"
+                    >
+                        FREE
+                    </span>
+
+                    <span
+                        id="profileEmailStatus"
+                        class="profile-status-badge"
+                    >
+                        EMAIL STATUS
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             GRID
+        ================================================== -->
+
+        <section class="profile-grid">
+
+
+            <!-- =============================================
+                 PERSONAL INFORMATION
+            ============================================== -->
+
+            <article class="profile-card profile-card-large">
+
+                <div class="profile-card-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            ACCOUNT
+                        </span>
+
+                        <h2>
+                            Personal Information
+                        </h2>
+
+                    </div>
+
+                    <i class="fa-solid fa-id-card"></i>
+
+                </div>
+
+
+                <form
+                    id="profileForm"
+                    class="profile-form"
+                >
+
+                    <div class="profile-form-group">
+
+                        <label for="displayNameInput">
+                            Display Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="displayNameInput"
+                            name="displayName"
+                            maxlength="80"
+                            autocomplete="name"
+                            placeholder="Enter your name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="emailInput">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="emailInput"
+                            name="email"
+                            autocomplete="email"
+                            readonly
+                        >
+
+                        <small>
+                            Your sign-in email is managed by Firebase Authentication.
+                        </small>
+
+                    </div>
+
+
+                    <div class="profile-form-grid">
+
+                        <div class="profile-form-group">
+
+                            <label>
+                                Account ID
+                            </label>
+
+                            <div
+                                id="uidDisplay"
+                                class="profile-readonly-value"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div class="profile-form-group">
+
+                            <label>
+                                Member Since
+                            </label>
+
+                            <div
+                                id="memberSince"
+                                class="profile-readonly-value"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="profileMessage"
+                        class="profile-message"
+                        hidden
+                        aria-live="polite"
+                    ></div>
+
+
+                    <div class="profile-form-actions">
+
+                        <button
+                            type="submit"
+                            id="saveProfileBtn"
+                            class="profile-primary-btn"
+                        >
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            Save Changes
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </article>
+
+
+
+            <!-- =============================================
+                 SUBSCRIPTION
+            ============================================== -->
+
+            <article class="profile-card">
+
+                <div class="profile-card-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            SUBSCRIPTION
+                        </span>
+
+                        <h2>
+                            Current Plan
+                        </h2>
+
+                    </div>
+
+                    <i class="fa-solid fa-crown"></i>
+
+                </div>
+
+
+                <div class="profile-plan-panel">
+
+                    <span
+                        id="currentPlanName"
+                        class="profile-current-plan"
+                    >
+                        Free
+                    </span>
+
+                    <span
+                        id="currentPlanStatus"
+                        class="profile-plan-status active"
+                    >
+                        Active
+                    </span>
+
+
+                    <p id="currentPlanDescription">
+                        Access to CWS Academy free learning content.
+                    </p>
+
+
+                    <div class="profile-plan-meta">
+
+                        <div>
+
+                            <span>
+                                Renewal / Expiry
+                            </span>
+
+                            <strong id="currentPeriodEnd">
+                                No expiry
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="subscription.html"
+                        id="manageSubscriptionBtn"
+                        class="profile-secondary-btn"
+                    >
+
+                        <i class="fa-solid fa-arrow-up-right-dots"></i>
+
+                        View Plans
+
+                    </a>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- =============================================
+                 LEARNING SUMMARY
+            ============================================== -->
+
+            <article class="profile-card profile-card-wide">
+
+                <div class="profile-card-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            LEARNING
+                        </span>
+
+                        <h2>
+                            Learning Summary
+                        </h2>
+
+                    </div>
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                </div>
+
+
+                <div class="profile-stats">
+
+                    <div class="profile-stat">
+
+                        <i class="fa-solid fa-book-open"></i>
+
+                        <strong id="coursesStarted">
+                            0
+                        </strong>
+
+                        <span>
+                            Courses Started
+                        </span>
+
+                    </div>
+
+
+                    <div class="profile-stat">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        <strong id="coursesCompleted">
+                            0
+                        </strong>
+
+                        <span>
+                            Courses Completed
+                        </span>
+
+                    </div>
+
+
+                    <div class="profile-stat">
+
+                        <i class="fa-solid fa-graduation-cap"></i>
+
+                        <strong id="lessonsCompleted">
+                            0
+                        </strong>
+
+                        <span>
+                            Lessons Completed
+                        </span>
+
+                    </div>
+
+
+                    <div class="profile-stat">
+
+                        <i class="fa-solid fa-certificate"></i>
+
+                        <strong id="certificatesEarned">
+                            0
+                        </strong>
+
+                        <span>
+                            Certificates
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- =============================================
+                 SECURITY
+            ============================================== -->
+
+            <article class="profile-card">
+
+                <div class="profile-card-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            SECURITY
+                        </span>
+
+                        <h2>
+                            Account Security
+                        </h2>
+
+                    </div>
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                </div>
+
+
+                <div class="profile-security-list">
+
+
+                    <div class="profile-security-item">
+
+                        <div>
+
+                            <strong>
+                                Email Verification
+                            </strong>
+
+                            <span id="securityEmailStatus">
+                                Checking...
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            id="verifyEmailBtn"
+                            class="profile-text-btn"
+                        >
+                            Send Verification Email
+                        </button>
+
+                    </div>
+
+
+                    <div class="profile-security-item">
+
+                        <div>
+
+                            <strong>
+                                Password
+                            </strong>
+
+                            <span>
+                                Send yourself a secure password reset email.
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            id="resetPasswordBtn"
+                            class="profile-text-btn"
+                        >
+                            Reset Password
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- =============================================
+                 ACCOUNT ACTIONS
+            ============================================== -->
+
+            <article class="profile-card">
+
+                <div class="profile-card-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            ACCOUNT ACTIONS
+                        </span>
+
+                        <h2>
+                            Session & Account
+                        </h2>
+
+                    </div>
+
+                    <i class="fa-solid fa-gear"></i>
+
+                </div>
+
+
+                <div class="profile-account-actions">
+
+                    <button
+                        type="button"
+                        id="profileLogoutBtn"
+                        class="profile-secondary-btn"
+                    >
+
+                        <i class="fa-solid fa-right-from-bracket"></i>
+
+                        Sign Out
+
+                    </button>
+
+
+                    <p>
+                        Account deletion is not enabled yet. It should be implemented later with re-authentication and secure cleanup of associated account data.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+        </section>
+
+    </div>
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="student-footer">
+
+    <p>
+        © 2026 CWS Academy.
+        Part of the CyberWithSandiso ecosystem.
+    </p>
+
+</footer>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script
+    type="module"
+    src="../js/profile.js"
+></script>
+
+
+</body>
+</html>
