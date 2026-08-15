@@ -147,12 +147,16 @@ async function verifyTransaction(
 ========================================================= */
 
 exports.createPaystackCheckout =
-    onCall(
-        {
-          secrets: [
-            PAYSTACK_SECRET_KEY,
-          ],
-        },
+  onCall(
+    {
+      secrets: [
+        PAYSTACK_SECRET_KEY,
+      ],
+
+      cors: [
+        "https://sandisomayekiso.github.io",
+      ],
+    },
 
         async (request) => {
           if (!request.auth) {
