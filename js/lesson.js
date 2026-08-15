@@ -62,6 +62,19 @@ import {
 
 
 /* =========================================================
+   ACCESS CONTROL
+========================================================= */
+
+import {
+    getUserEntitlement,
+    canAccessItem,
+    getRequiredAccess,
+    getAccessMessage,
+    getUpgradeUrl
+} from "./access-control.js";
+
+
+/* =========================================================
    DEBUG
 ========================================================= */
 
@@ -357,6 +370,8 @@ let currentModule = null;
 let currentLesson = null;
 
 let currentProgress = null;
+
+let currentEntitlement = null;
 
 let lessonInitialized = false;
 
@@ -2608,6 +2623,131 @@ function escapeHTML(value) {
 
 
 /* =========================================================
+   LESSON ACCESS
+========================================================= */
+
+function hasCurrentLessonAccess() {
+
+    if (!currentCourse) {
+        return false;
+    }
+
+    /*
+     * Course access is the minimum gate.
+     * If you later add access: "pro" directly to modules
+     * or lessons, these checks will enforce those too.
+     */
+
+    if (
+        !canAccessItem(
+            currentCourse,
+            currentEntitlement
+        )
+    ) {
+        return false;
+    }
+
+
+    if (
+        currentModule &&
+        !canAccessItem(
+            currentModule,
+            currentEntitlement
+        )
+    ) {
+        return false;
+    }
+
+
+    if (
+        currentLesson &&
+        !canAccessItem(
+            currentLesson,
+            currentEntitlement
+        )
+    ) {
+        return false;
+    }
+
+
+    return true;
+}
+
+
+function getCurrentRequiredAccess() {
+
+    const levels = [
+        currentCourse,
+        currentModule,
+        currentLesson
+    ]
+        .filter(Boolean)
+        .map(item =>
+            getRequiredAccess(item)
+        );
+
+
+    /*
+     * Current CWS plans are free/pro.
+     * If any part requires pro, the lesson requires pro.
+     */
+
+    return levels.includes("pro")
+        ? "pro"
+        : "free";
+}
+
+
+function redirectToUpgrade() {
+
+    const requiredPlan =
+        getCurrentRequiredAccess();
+
+
+    warn(
+        "Lesson access denied:",
+        {
+            course:
+                currentCourse?.id || null,
+
+            module:
+                currentModule?.id || null,
+
+            lesson:
+                currentLesson?.id || null,
+
+            requiredPlan,
+
+            userPlan:
+                currentEntitlement?.plan ||
+                "free"
+        }
+    );
+
+
+    const message =
+        getAccessMessage(
+            requiredPlan
+        );
+
+
+    if (message) {
+        log(
+            "Access message:",
+            message
+        );
+    }
+
+
+    window.location.replace(
+        getUpgradeUrl(
+            requiredPlan
+        )
+    );
+}
+
+
+/* =========================================================
    LOAD LESSON
 ========================================================= */
 
@@ -2784,6 +2924,43 @@ async function loadLesson() {
 
             lesson:
                 currentLesson.title
+        }
+    );
+
+
+    /* =====================================================
+       ACCESS CHECK
+    ====================================================== */
+
+    if (
+        !hasCurrentLessonAccess()
+    ) {
+
+        redirectToUpgrade();
+
+        return;
+
+    }
+
+
+    log(
+        "Lesson access granted:",
+        {
+            course:
+                currentCourse.id,
+
+            module:
+                currentModule.id,
+
+            lesson:
+                currentLesson.id,
+
+            requiredPlan:
+                getCurrentRequiredAccess(),
+
+            userPlan:
+                currentEntitlement?.plan ||
+                "free"
         }
     );
 
@@ -3098,6 +3275,30 @@ else {
 
             currentUser =
                 user;
+
+
+            /* =============================================
+               LOAD USER ENTITLEMENT
+            ============================================== */
+
+            currentEntitlement =
+                await getUserEntitlement(
+                    user
+                );
+
+
+            log(
+                "User entitlement:",
+                {
+                    plan:
+                        currentEntitlement?.plan ||
+                        "free",
+
+                    status:
+                        currentEntitlement?.status ||
+                        "inactive"
+                }
+            );
 
 
             if (
