@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="View and manage your CWS Academy subscription plan."
+    >
+
+    <title>
+        Subscription | CWS Academy
+    </title>
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         SITE CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/subscription.css"
+    >
+
+</head>
+
+
+<body class="student-dashboard subscription-page-body">
+
+
+<!-- =========================================================
+     STUDENT NAVIGATION
+========================================================= -->
+
+<header class="student-header">
+
+    <nav class="student-nav">
+
+
+        <!-- LOGO -->
+
+        <a
+            href="dashboard.html"
+            class="academy-logo"
+            aria-label="CWS Academy Dashboard"
+        >
+
+            <span class="logo-cws">
+                CWS
+            </span>
+
+            <span class="logo-text">
+                Academy
+            </span>
+
+        </a>
+
+
+        <!-- NAVIGATION -->
+
+        <div class="student-nav-links">
+
+            <a href="dashboard.html">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a href="student-courses.html">
+
+                <i class="fa-solid fa-book"></i>
+
+                <span>
+                    Courses
+                </span>
+
+            </a>
+
+
+            <a href="labs.html">
+
+                <i class="fa-solid fa-flask"></i>
+
+                <span>
+                    Labs
+                </span>
+
+            </a>
+
+
+            <a href="assessments.html">
+
+                <i class="fa-solid fa-clipboard-check"></i>
+
+                <span>
+                    Assessments
+                </span>
+
+            </a>
+
+
+            <a href="progress.html">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                <span>
+                    Progress
+                </span>
+
+            </a>
+
+
+            <a href="certificates.html">
+
+                <i class="fa-solid fa-certificate"></i>
+
+                <span>
+                    Certificates
+                </span>
+
+            </a>
+
+
+            <a href="profile.html">
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+                    Profile
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- ACCOUNT -->
+
+        <div class="student-nav-account">
+
+            <span
+                id="studentName"
+                class="student-nav-name"
+            >
+                Student
+            </span>
+
+
+            <button
+                type="button"
+                id="logoutBtn"
+                class="dashboard-logout-btn"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </button>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="dashboard-main subscription-main">
+
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    <section
+        id="subscriptionLoading"
+        class="subscription-loading"
+        aria-live="polite"
+    >
+
+        <i class="fa-solid fa-circle-notch fa-spin"></i>
+
+        <p>
+            Loading subscription information...
+        </p>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CONTENT
+    ====================================================== -->
+
+    <div
+        id="subscriptionContent"
+        hidden
+    >
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="subscription-hero">
+
+            <div class="subscription-hero-content">
+
+                <span class="dashboard-label">
+                    CWS ACADEMY PLANS
+                </span>
+
+                <h1>
+                    Choose Your Learning Access
+                </h1>
+
+                <p>
+                    Start with free cybersecurity learning or unlock advanced courses,
+                    premium labs and future professional learning features with CWS Academy Pro.
+                </p>
+
+            </div>
+
+
+            <div class="subscription-hero-icon">
+
+                <i class="fa-solid fa-crown"></i>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CURRENT PLAN
+        ================================================== -->
+
+        <section class="subscription-current">
+
+            <div>
+
+                <span class="dashboard-label">
+                    YOUR SUBSCRIPTION
+                </span>
+
+                <h2>
+                    Current Plan
+                </h2>
+
+            </div>
+
+
+            <div class="current-plan-card">
+
+                <div class="current-plan-icon">
+
+                    <i
+                        id="currentPlanIcon"
+                        class="fa-solid fa-user"
+                    ></i>
+
+                </div>
+
+
+                <div class="current-plan-content">
+
+                    <span
+                        id="currentPlanBadge"
+                        class="subscription-plan-badge free"
+                    >
+                        FREE
+                    </span>
+
+                    <h3 id="currentPlanName">
+                        Free
+                    </h3>
+
+                    <p id="currentPlanDescription">
+                        Access to free CWS Academy learning content.
+                    </p>
+
+                </div>
+
+
+                <div class="current-plan-meta">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong id="currentPlanStatus">
+                        Active
+                    </strong>
+
+
+                    <span>
+                        Renewal / Expiry
+                    </span>
+
+                    <strong id="currentPlanExpiry">
+                        No expiry
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PLANS
+        ================================================== -->
+
+        <section class="subscription-plans-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="dashboard-label">
+                        MEMBERSHIP OPTIONS
+                    </span>
+
+                    <h2>
+                        Compare Plans
+                    </h2>
+
+                    <p>
+                        Choose the level of access that matches your learning goals.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="subscription-plan-grid">
+
+
+                <!-- =========================================
+                     FREE
+                ========================================== -->
+
+                <article
+                    class="subscription-plan-card"
+                    data-plan="free"
+                >
+
+                    <div class="plan-card-top">
+
+                        <div class="plan-card-icon">
+
+                            <i class="fa-solid fa-shield-halved"></i>
+
+                        </div>
+
+
+                        <span class="subscription-plan-badge free">
+                            FREE
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        CWS Academy Free
+                    </h3>
+
+
+                    <p class="plan-description">
+                        Build your cybersecurity foundation with selected beginner courses and learning resources.
+                    </p>
+
+
+                    <div class="plan-price">
+
+                        <strong>
+                            R0
+                        </strong>
+
+                        <span>
+                            forever
+                        </span>
+
+                    </div>
+
+
+                    <ul class="plan-features">
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Cybersecurity Fundamentals
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Networking Fundamentals
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Linux Fundamentals
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Learning progress tracking
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Basic assessments
+                        </li>
+
+                    </ul>
+
+
+                    <button
+                        type="button"
+                        id="freePlanBtn"
+                        class="subscription-secondary-btn"
+                        disabled
+                    >
+                        Current Free Access
+                    </button>
+
+                </article>
+
+
+
+                <!-- =========================================
+                     PRO
+                ========================================== -->
+
+                <article
+                    class="subscription-plan-card featured"
+                    data-plan="pro"
+                >
+
+                    <div class="featured-plan-label">
+                        RECOMMENDED
+                    </div>
+
+
+                    <div class="plan-card-top">
+
+                        <div class="plan-card-icon pro">
+
+                            <i class="fa-solid fa-crown"></i>
+
+                        </div>
+
+
+                        <span class="subscription-plan-badge pro">
+                            PRO
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        CWS Academy Pro
+                    </h3>
+
+
+                    <p class="plan-description">
+                        Unlock advanced training, premium courses, expanded practical labs and future professional features.
+                    </p>
+
+
+                    <div class="plan-price">
+
+                        <strong>
+                            Coming Soon
+                        </strong>
+
+                        <span>
+                            pricing will be added later
+                        </span>
+
+                    </div>
+
+
+                    <ul class="plan-features">
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Everything in Free
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Premium cybersecurity courses
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Advanced practical labs
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Pro assessments
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Advanced learning paths
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Future premium certificates
+                        </li>
+
+                    </ul>
+
+
+                    <button
+                        type="button"
+                        id="upgradeProBtn"
+                        class="subscription-primary-btn"
+                    >
+
+                        <i class="fa-solid fa-arrow-up-right-dots"></i>
+
+                        Upgrade to Pro
+
+                    </button>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SECURITY NOTE
+        ================================================== -->
+
+        <section class="subscription-security-note">
+
+            <div class="subscription-security-icon">
+
+                <i class="fa-solid fa-lock"></i>
+
+            </div>
+
+
+            <div>
+
+                <span class="dashboard-label">
+                    SECURE ACCESS
+                </span>
+
+                <h2>
+                    Subscription Access Is Server Controlled
+                </h2>
+
+                <p>
+                    Your CWS Academy plan cannot be changed directly from the browser.
+                    Paid access will only be activated after a trusted payment system confirms a successful subscription.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="student-footer">
+
+    <p>
+        © 2026 CWS Academy.
+        Part of the CyberWithSandiso ecosystem.
+    </p>
+
+</footer>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script
+    type="module"
+    src="../js/subscription.js"
+></script>
+
+
+</body>
+</html>
