@@ -1,10 +1,10 @@
 /* =========================================================
    CWS ACADEMY
-   PROFILE PAGE
+   STUDENT PROFILE
 
    Firebase Authentication
-   Firestore Profile + Learning Summary
-   Read-Only Subscription Entitlement
+   Firestore Entitlements
+   Profile Management
 ========================================================= */
 
 
@@ -22,26 +22,11 @@ import {
 
 
 /* =========================================================
-   FIRESTORE
-========================================================= */
-
-import {
-    collection,
-    doc,
-    getDoc,
-    getDocs,
-    setDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-/* =========================================================
    FIREBASE CONFIG
 ========================================================= */
 
 import {
-    auth,
-    db
+    auth
 } from "./firebase-config.js";
 
 
@@ -59,10 +44,13 @@ import {
    DEBUG
 ========================================================= */
 
-const DEBUG = true;
+const DEBUG =
+    true;
 
 
-function log(...args) {
+function log(
+    ...args
+) {
 
     if (DEBUG) {
 
@@ -76,7 +64,25 @@ function log(...args) {
 }
 
 
-function error(...args) {
+function warn(
+    ...args
+) {
+
+    if (DEBUG) {
+
+        console.warn(
+            "[CWS Profile]",
+            ...args
+        );
+
+    }
+
+}
+
+
+function error(
+    ...args
+) {
 
     console.error(
         "[CWS Profile]",
@@ -95,140 +101,186 @@ const profileLoading =
         "profileLoading"
     );
 
+
 const profileContent =
     document.getElementById(
         "profileContent"
     );
+
 
 const studentName =
     document.getElementById(
         "studentName"
     );
 
+
 const logoutBtn =
     document.getElementById(
         "logoutBtn"
     );
+
 
 const profileLogoutBtn =
     document.getElementById(
         "profileLogoutBtn"
     );
 
+
 const profileAvatar =
     document.getElementById(
         "profileAvatar"
     );
+
 
 const verificationBadge =
     document.getElementById(
         "verificationBadge"
     );
 
+
 const profileDisplayName =
     document.getElementById(
         "profileDisplayName"
     );
+
 
 const profileEmail =
     document.getElementById(
         "profileEmail"
     );
 
+
 const profilePlanBadge =
     document.getElementById(
         "profilePlanBadge"
     );
+
 
 const profileEmailStatus =
     document.getElementById(
         "profileEmailStatus"
     );
 
+
 const profileForm =
     document.getElementById(
         "profileForm"
     );
+
 
 const displayNameInput =
     document.getElementById(
         "displayNameInput"
     );
 
+
 const emailInput =
     document.getElementById(
         "emailInput"
     );
+
 
 const uidDisplay =
     document.getElementById(
         "uidDisplay"
     );
 
+
 const memberSince =
     document.getElementById(
         "memberSince"
     );
+
 
 const profileMessage =
     document.getElementById(
         "profileMessage"
     );
 
+
 const saveProfileBtn =
     document.getElementById(
         "saveProfileBtn"
     );
+
+
+/* =========================================================
+   SUBSCRIPTION ELEMENTS
+========================================================= */
 
 const currentPlanName =
     document.getElementById(
         "currentPlanName"
     );
 
+
 const currentPlanStatus =
     document.getElementById(
         "currentPlanStatus"
     );
+
 
 const currentPlanDescription =
     document.getElementById(
         "currentPlanDescription"
     );
 
+
 const currentPeriodEnd =
     document.getElementById(
         "currentPeriodEnd"
     );
+
+
+const manageSubscriptionBtn =
+    document.getElementById(
+        "manageSubscriptionBtn"
+    );
+
+
+/* =========================================================
+   LEARNING SUMMARY
+========================================================= */
 
 const coursesStarted =
     document.getElementById(
         "coursesStarted"
     );
 
+
 const coursesCompleted =
     document.getElementById(
         "coursesCompleted"
     );
+
 
 const lessonsCompleted =
     document.getElementById(
         "lessonsCompleted"
     );
 
+
 const certificatesEarned =
     document.getElementById(
         "certificatesEarned"
     );
+
+
+/* =========================================================
+   SECURITY ELEMENTS
+========================================================= */
 
 const securityEmailStatus =
     document.getElementById(
         "securityEmailStatus"
     );
 
+
 const verifyEmailBtn =
     document.getElementById(
         "verifyEmailBtn"
     );
+
 
 const resetPasswordBtn =
     document.getElementById(
@@ -240,39 +292,109 @@ const resetPasswordBtn =
    STATE
 ========================================================= */
 
-let currentUser = null;
+let currentUser =
+    null;
 
-let currentEntitlement = null;
 
-let profileInitialized = false;
+let currentEntitlement =
+    null;
+
+
+let initialized =
+    false;
+
+
+/* =========================================================
+   DEFAULT ENTITLEMENT
+========================================================= */
+
+const FREE_ENTITLEMENT = {
+
+    plan:
+        "free",
+
+    status:
+        "active",
+
+    currentPeriodEnd:
+        null
+
+};
 
 
 /* =========================================================
    PAGE STATE
 ========================================================= */
 
-function showLoading() {
+function showContent() {
 
     if (profileLoading) {
-        profileLoading.hidden = false;
+
+        profileLoading.hidden =
+            true;
+
     }
 
+
     if (profileContent) {
-        profileContent.hidden = true;
+
+        profileContent.hidden =
+            false;
+
     }
 
 }
 
 
-function showContent() {
+/* =========================================================
+   MESSAGE
+========================================================= */
 
-    if (profileLoading) {
-        profileLoading.hidden = true;
+function showMessage(
+    message,
+    type = "info"
+) {
+
+    if (!profileMessage) {
+
+        return;
+
     }
 
-    if (profileContent) {
-        profileContent.hidden = false;
+
+    profileMessage.textContent =
+        message;
+
+
+    profileMessage.className =
+        `profile-message ${type}`;
+
+
+    profileMessage.hidden =
+        false;
+
+}
+
+
+function clearMessage() {
+
+    if (!profileMessage) {
+
+        return;
+
     }
+
+
+    profileMessage.textContent =
+        "";
+
+
+    profileMessage.className =
+        "profile-message";
+
+
+    profileMessage.hidden =
+        true;
 
 }
 
@@ -281,15 +403,20 @@ function showContent() {
    USER NAME
 ========================================================= */
 
-function getUserName(user) {
+function getUserName(
+    user
+) {
 
     if (!user) {
+
         return "Student";
+
     }
 
 
     if (
-        typeof user.displayName === "string" &&
+        typeof user.displayName ===
+            "string" &&
         user.displayName.trim()
     ) {
 
@@ -299,11 +426,12 @@ function getUserName(user) {
 
 
     if (
-        typeof user.email === "string" &&
+        typeof user.email ===
+            "string" &&
         user.email.includes("@")
     ) {
 
-        const rawName =
+        const emailName =
             user.email
                 .split("@")[0]
                 .replace(/[._-]+/g, " ")
@@ -311,9 +439,9 @@ function getUserName(user) {
                 .trim();
 
 
-        if (rawName) {
+        if (emailName) {
 
-            return rawName
+            return emailName
                 .split(" ")
                 .map(
                     word =>
@@ -334,20 +462,24 @@ function getUserName(user) {
 
 
 /* =========================================================
-   INITIALS
+   AVATAR
 ========================================================= */
 
-function getInitials(name) {
+function getInitials(
+    name
+) {
 
     const words =
-        String(name || "Student")
+        String(name || "")
             .trim()
             .split(/\s+/)
             .filter(Boolean);
 
 
     if (!words.length) {
+
         return "S";
+
     }
 
 
@@ -363,66 +495,33 @@ function getInitials(name) {
     return (
         words[0].charAt(0) +
         words[words.length - 1].charAt(0)
-    ).toUpperCase();
+    )
+        .toUpperCase();
 
 }
 
 
 /* =========================================================
-   MESSAGE
+   DATE
 ========================================================= */
 
-function showMessage(
-    message,
-    type = "success"
+function formatDate(
+    value
 ) {
 
-    if (!profileMessage) {
-        return;
-    }
-
-
-    profileMessage.textContent =
-        message;
-
-    profileMessage.className =
-        `profile-message ${type}`;
-
-    profileMessage.hidden =
-        false;
-
-}
-
-
-function hideMessage() {
-
-    if (!profileMessage) {
-        return;
-    }
-
-
-    profileMessage.hidden =
-        true;
-
-}
-
-
-/* =========================================================
-   DATE HELPERS
-========================================================= */
-
-function formatDate(value) {
-
     if (!value) {
-        return "—";
+
+        return null;
+
     }
 
 
-    let date = null;
+    let date =
+        null;
 
 
     if (
-        typeof value.toDate ===
+        typeof value?.toDate ===
         "function"
     ) {
 
@@ -447,7 +546,7 @@ function formatDate(value) {
         )
     ) {
 
-        return "—";
+        return null;
 
     }
 
@@ -472,98 +571,567 @@ function formatDate(value) {
 
 
 /* =========================================================
-   USER PROFILE DOCUMENT
+   MEMBER SINCE
 ========================================================= */
 
-function getUserProfileRef() {
+function getMemberSince(
+    user
+) {
 
-    if (
-        !db ||
-        !currentUser
-    ) {
+    const creationTime =
+        user?.metadata?.creationTime;
 
-        return null;
+
+    const formatted =
+        formatDate(
+            creationTime
+        );
+
+
+    return formatted ||
+        "—";
+
+}
+
+
+/* =========================================================
+   RENDER AUTH PROFILE
+========================================================= */
+
+function renderUser(
+    user
+) {
+
+    const name =
+        getUserName(
+            user
+        );
+
+
+    if (studentName) {
+
+        studentName.textContent =
+            name;
 
     }
 
 
-    return doc(
-        db,
-        "users",
-        currentUser.uid
+    if (profileDisplayName) {
+
+        profileDisplayName.textContent =
+            name;
+
+    }
+
+
+    if (profileEmail) {
+
+        profileEmail.textContent =
+            user?.email ||
+            "No email address";
+
+    }
+
+
+    if (displayNameInput) {
+
+        displayNameInput.value =
+            name;
+
+    }
+
+
+    if (emailInput) {
+
+        emailInput.value =
+            user?.email ||
+            "";
+
+    }
+
+
+    if (uidDisplay) {
+
+        uidDisplay.textContent =
+            user?.uid ||
+            "—";
+
+    }
+
+
+    if (memberSince) {
+
+        memberSince.textContent =
+            getMemberSince(
+                user
+            );
+
+    }
+
+
+    if (profileAvatar) {
+
+        profileAvatar.textContent =
+            getInitials(
+                name
+            );
+
+    }
+
+
+    renderEmailVerification(
+        user
+    );
+
+
+    log(
+        "User rendered:",
+        {
+            uid:
+                user?.uid,
+
+            email:
+                user?.email,
+
+            name
+        }
     );
 
 }
 
 
 /* =========================================================
-   LOAD PROFILE DOCUMENT
+   EMAIL VERIFICATION
 ========================================================= */
 
-async function loadUserProfileDocument() {
+function renderEmailVerification(
+    user
+) {
 
-    const fallback = {
-
-        displayName:
-            getUserName(
-                currentUser
-            ),
-
-        createdAt:
-            null
-
-    };
+    const verified =
+        Boolean(
+            user?.emailVerified
+        );
 
 
-    if (!db) {
-        return fallback;
+    if (profileEmailStatus) {
+
+        profileEmailStatus.textContent =
+            verified
+                ? "EMAIL VERIFIED"
+                : "EMAIL NOT VERIFIED";
+
+
+        profileEmailStatus.className =
+            verified
+                ? "profile-status-badge verified"
+                : "profile-status-badge";
+
     }
 
 
-    try {
+    if (securityEmailStatus) {
 
-        const profileRef =
-            getUserProfileRef();
+        securityEmailStatus.textContent =
+            verified
+                ? "Your email address is verified."
+                : "Your email address has not been verified.";
+
+    }
 
 
-        if (!profileRef) {
-            return fallback;
+    if (verificationBadge) {
+
+        verificationBadge.title =
+            verified
+                ? "Email verified"
+                : "Email not verified";
+
+
+        verificationBadge.classList.toggle(
+            "verified",
+            verified
+        );
+
+    }
+
+
+    if (verifyEmailBtn) {
+
+        verifyEmailBtn.disabled =
+            verified;
+
+
+        verifyEmailBtn.textContent =
+            verified
+                ? "Email Verified"
+                : "Send Verification Email";
+
+    }
+
+}
+
+
+/* =========================================================
+   NORMALIZE ENTITLEMENT
+========================================================= */
+
+function normalizeEntitlement(
+    entitlement
+) {
+
+    if (
+        !entitlement ||
+        typeof entitlement !==
+            "object"
+    ) {
+
+        return {
+            ...FREE_ENTITLEMENT
+        };
+
+    }
+
+
+    const plan =
+        String(
+            entitlement.plan ||
+            "free"
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const status =
+        String(
+            entitlement.status ||
+            (
+                plan === "free"
+                    ? "active"
+                    : "inactive"
+            )
+        )
+            .trim()
+            .toLowerCase();
+
+
+    return {
+
+        ...entitlement,
+
+        plan,
+
+        status
+
+    };
+
+}
+
+
+/* =========================================================
+   RENDER SUBSCRIPTION
+========================================================= */
+
+function renderEntitlement() {
+
+    const entitlement =
+        normalizeEntitlement(
+            currentEntitlement
+        );
+
+
+    const plan =
+        entitlement.plan;
+
+
+    const status =
+        entitlement.status;
+
+
+    const isPro =
+        plan === "pro" &&
+        (
+            status === "active" ||
+            status === "trialing"
+        );
+
+
+    const label =
+        getPlanLabel(
+            plan
+        );
+
+
+    if (profilePlanBadge) {
+
+        profilePlanBadge.textContent =
+            String(label)
+                .toUpperCase();
+
+
+        profilePlanBadge.className =
+            `profile-plan-badge ${plan}`;
+
+    }
+
+
+    if (currentPlanName) {
+
+        currentPlanName.textContent =
+            label;
+
+    }
+
+
+    if (currentPlanStatus) {
+
+        currentPlanStatus.textContent =
+            status.charAt(0)
+                .toUpperCase() +
+            status.slice(1);
+
+
+        currentPlanStatus.className =
+            `profile-plan-status ${status}`;
+
+    }
+
+
+    if (currentPlanDescription) {
+
+        if (isPro) {
+
+            currentPlanDescription.textContent =
+                "Your account currently has CWS Academy Pro access.";
+
+        }
+        else if (
+            plan === "pro"
+        ) {
+
+            currentPlanDescription.textContent =
+                "Your CWS Academy Pro subscription is currently inactive.";
+
+        }
+        else {
+
+            currentPlanDescription.textContent =
+                "Access to CWS Academy free learning content.";
+
         }
 
+    }
 
-        const snapshot =
-            await getDoc(
-                profileRef
+
+    if (currentPeriodEnd) {
+
+        const expiry =
+            formatDate(
+                entitlement.currentPeriodEnd
             );
 
 
-        if (!snapshot.exists()) {
+        if (expiry) {
 
-            return fallback;
+            currentPeriodEnd.textContent =
+                expiry;
+
+        }
+        else if (isPro) {
+
+            currentPeriodEnd.textContent =
+                "Monthly subscription";
+
+        }
+        else {
+
+            currentPeriodEnd.textContent =
+                "No expiry";
 
         }
 
+    }
 
-        return {
 
-            ...fallback,
+    if (manageSubscriptionBtn) {
 
-            ...snapshot.data()
+        const textNode =
+            Array.from(
+                manageSubscriptionBtn.childNodes
+            )
+                .find(
+                    node =>
+                        node.nodeType ===
+                        Node.TEXT_NODE
+                );
 
-        };
+
+        if (textNode) {
+
+            textNode.textContent =
+                isPro
+                    ? " Manage Subscription "
+                    : " View Plans ";
+
+        }
+
+    }
+
+
+    log(
+        "Entitlement rendered:",
+        {
+            plan,
+            status,
+            isPro
+        }
+    );
+
+}
+
+
+/* =========================================================
+   LOAD ENTITLEMENT
+========================================================= */
+
+async function loadEntitlement(
+    user
+) {
+
+    try {
+
+        currentEntitlement =
+            normalizeEntitlement(
+                await getUserEntitlement(
+                    user
+                )
+            );
+
+
+        log(
+            "Entitlement loaded:",
+            currentEntitlement
+        );
 
     }
     catch (err) {
 
         error(
-            "Profile document load failed:",
+            "Unable to load entitlement:",
             err
         );
 
 
-        return fallback;
+        currentEntitlement = {
+            ...FREE_ENTITLEMENT
+        };
 
     }
+
+
+    renderEntitlement();
+
+}
+
+
+/* =========================================================
+   LEARNING SUMMARY
+========================================================= */
+
+function renderLearningSummary(
+    stats = {}
+) {
+
+    const data = {
+
+        coursesStarted:
+            0,
+
+        coursesCompleted:
+            0,
+
+        lessonsCompleted:
+            0,
+
+        certificatesEarned:
+            0,
+
+        ...stats
+
+    };
+
+
+    if (coursesStarted) {
+
+        coursesStarted.textContent =
+            String(
+                data.coursesStarted
+            );
+
+    }
+
+
+    if (coursesCompleted) {
+
+        coursesCompleted.textContent =
+            String(
+                data.coursesCompleted
+            );
+
+    }
+
+
+    if (lessonsCompleted) {
+
+        lessonsCompleted.textContent =
+            String(
+                data.lessonsCompleted
+            );
+
+    }
+
+
+    if (certificatesEarned) {
+
+        certificatesEarned.textContent =
+            String(
+                data.certificatesEarned
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE PROFILE BUTTON STATE
+========================================================= */
+
+function setSaveLoading(
+    loading
+) {
+
+    if (!saveProfileBtn) {
+
+        return;
+
+    }
+
+
+    saveProfileBtn.disabled =
+        loading;
+
+
+    saveProfileBtn.innerHTML =
+        loading
+            ? `
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                Saving...
+              `
+            : `
+                <i class="fa-solid fa-floppy-disk"></i>
+                Save Changes
+              `;
 
 }
 
@@ -578,29 +1146,49 @@ async function saveProfile(
 
     event.preventDefault();
 
-    hideMessage();
+
+    clearMessage();
 
 
-    if (
-        !currentUser ||
-        !displayNameInput
-    ) {
+    if (!currentUser) {
+
+        showMessage(
+            "Your session is no longer available. Please sign in again.",
+            "error"
+        );
 
         return;
 
     }
 
 
-    const newDisplayName =
-        displayNameInput
-            .value
-            .trim();
+    const displayName =
+        displayNameInput?.value
+            ?.trim() ||
+        "";
 
 
-    if (!newDisplayName) {
+    if (!displayName) {
 
         showMessage(
             "Please enter a display name.",
+            "error"
+        );
+
+        displayNameInput?.focus();
+
+        return;
+
+    }
+
+
+    if (
+        displayName.length >
+        80
+    ) {
+
+        showMessage(
+            "Display name must be 80 characters or fewer.",
             "error"
         );
 
@@ -611,71 +1199,33 @@ async function saveProfile(
 
     try {
 
-        if (saveProfileBtn) {
-
-            saveProfileBtn.disabled =
-                true;
-
-            saveProfileBtn.innerHTML = `
-                <i class="fa-solid fa-circle-notch fa-spin"></i>
-                Saving...
-            `;
-
-        }
+        setSaveLoading(
+            true
+        );
 
 
-        /*
-         * Update Firebase Authentication.
-         */
         await updateProfile(
             currentUser,
             {
-                displayName:
-                    newDisplayName
+                displayName
             }
         );
 
 
-        /*
-         * Mirror basic profile data in Firestore.
-         */
-        if (db) {
-
-            const profileRef =
-                getUserProfileRef();
+        await currentUser.reload();
 
 
-            if (profileRef) {
-
-                await setDoc(
-                    profileRef,
-                    {
-                        displayName:
-                            newDisplayName,
-
-                        email:
-                            currentUser.email ||
-                            "",
-
-                        updatedAt:
-                            serverTimestamp()
-                    },
-                    {
-                        merge:
-                            true
-                    }
-                );
-
-            }
-
-        }
+        currentUser =
+            auth.currentUser;
 
 
-        renderIdentity();
+        renderUser(
+            currentUser
+        );
 
 
         showMessage(
-            "Profile updated successfully.",
+            "Your profile has been updated.",
             "success"
         );
 
@@ -694,24 +1244,16 @@ async function saveProfile(
 
 
         showMessage(
-            "Unable to update your profile. Please try again.",
+            "CWS Academy could not update your profile. Please try again.",
             "error"
         );
 
     }
     finally {
 
-        if (saveProfileBtn) {
-
-            saveProfileBtn.disabled =
-                false;
-
-            saveProfileBtn.innerHTML = `
-                <i class="fa-solid fa-floppy-disk"></i>
-                Save Changes
-            `;
-
-        }
+        setSaveLoading(
+            false
+        );
 
     }
 
@@ -719,489 +1261,7 @@ async function saveProfile(
 
 
 /* =========================================================
-   RENDER IDENTITY
-========================================================= */
-
-function renderIdentity() {
-
-    if (!currentUser) {
-        return;
-    }
-
-
-    const name =
-        getUserName(
-            currentUser
-        );
-
-
-    if (studentName) {
-        studentName.textContent = name;
-    }
-
-
-    if (profileDisplayName) {
-        profileDisplayName.textContent = name;
-    }
-
-
-    if (profileEmail) {
-
-        profileEmail.textContent =
-            currentUser.email ||
-            "No email address";
-
-    }
-
-
-    if (profileAvatar) {
-
-        profileAvatar.textContent =
-            getInitials(
-                name
-            );
-
-    }
-
-
-    if (displayNameInput) {
-
-        displayNameInput.value =
-            name;
-
-    }
-
-
-    if (emailInput) {
-
-        emailInput.value =
-            currentUser.email ||
-            "";
-
-    }
-
-
-    if (uidDisplay) {
-
-        uidDisplay.textContent =
-            currentUser.uid;
-
-        uidDisplay.title =
-            currentUser.uid;
-
-    }
-
-
-    const verified =
-        Boolean(
-            currentUser.emailVerified
-        );
-
-
-    if (profileEmailStatus) {
-
-        profileEmailStatus.textContent =
-            verified
-                ? "EMAIL VERIFIED"
-                : "EMAIL NOT VERIFIED";
-
-    }
-
-
-    if (securityEmailStatus) {
-
-        securityEmailStatus.textContent =
-            verified
-                ? "Your email address is verified."
-                : "Your email address has not been verified.";
-
-    }
-
-
-    if (verificationBadge) {
-
-        verificationBadge
-            .classList
-            .toggle(
-                "verified",
-                verified
-            );
-
-        verificationBadge.title =
-            verified
-                ? "Email verified"
-                : "Email not verified";
-
-    }
-
-
-    if (verifyEmailBtn) {
-
-        verifyEmailBtn.hidden =
-            verified;
-
-    }
-
-}
-
-
-/* =========================================================
-   MEMBER SINCE
-========================================================= */
-
-function renderMemberSince(
-    profileDocument
-) {
-
-    if (!memberSince) {
-        return;
-    }
-
-
-    let value =
-        profileDocument?.createdAt ||
-        null;
-
-
-    /*
-     * Firebase Auth account metadata is a useful fallback.
-     */
-    if (
-        !value &&
-        currentUser?.metadata?.creationTime
-    ) {
-
-        value =
-            currentUser
-                .metadata
-                .creationTime;
-
-    }
-
-
-    memberSince.textContent =
-        formatDate(
-            value
-        );
-
-}
-
-
-/* =========================================================
-   SUBSCRIPTION
-========================================================= */
-
-function renderEntitlement() {
-
-    const entitlement =
-        currentEntitlement || {
-            plan:
-                "free",
-
-            status:
-                "active",
-
-            currentPeriodEnd:
-                null
-        };
-
-
-    const plan =
-        entitlement.plan ||
-        "free";
-
-
-    const status =
-        entitlement.status ||
-        "inactive";
-
-
-    const planLabel =
-        getPlanLabel(
-            plan
-        );
-
-
-    if (profilePlanBadge) {
-
-        profilePlanBadge.textContent =
-            String(
-                planLabel
-            ).toUpperCase();
-
-        profilePlanBadge.className =
-            `profile-plan-badge ${plan}`;
-
-    }
-
-
-    if (currentPlanName) {
-
-        currentPlanName.textContent =
-            planLabel;
-
-    }
-
-
-    if (currentPlanStatus) {
-
-        currentPlanStatus.textContent =
-            status;
-
-        currentPlanStatus.className =
-            `profile-plan-status ${
-                status === "active" ||
-                status === "trialing"
-                    ? "active"
-                    : "inactive"
-            }`;
-
-    }
-
-
-    if (currentPlanDescription) {
-
-        if (plan === "pro") {
-
-            currentPlanDescription.textContent =
-                "Your account has CWS Academy Pro access.";
-
-        }
-        else if (
-            plan === "academy"
-        ) {
-
-            currentPlanDescription.textContent =
-                "Your account has CWS Academy subscription access.";
-
-        }
-        else {
-
-            currentPlanDescription.textContent =
-                "Access to CWS Academy free learning content.";
-
-        }
-
-    }
-
-
-    if (currentPeriodEnd) {
-
-        currentPeriodEnd.textContent =
-            entitlement.currentPeriodEnd
-                ? formatDate(
-                    entitlement.currentPeriodEnd
-                )
-                : "No expiry";
-
-    }
-
-}
-
-
-/* =========================================================
-   LEARNING SUMMARY
-========================================================= */
-
-async function loadLearningSummary() {
-
-    const summary = {
-
-        started:
-            0,
-
-        completed:
-            0,
-
-        lessons:
-            0,
-
-        certificates:
-            0
-
-    };
-
-
-    if (
-        !db ||
-        !currentUser
-    ) {
-
-        renderLearningSummary(
-            summary
-        );
-
-        return;
-
-    }
-
-
-    try {
-
-        const progressCollection =
-            collection(
-                db,
-                "users",
-                currentUser.uid,
-                "courseProgress"
-            );
-
-
-        const snapshot =
-            await getDocs(
-                progressCollection
-            );
-
-
-        snapshot.forEach(
-            progressDoc => {
-
-                const data =
-                    progressDoc.data() ||
-                    {};
-
-
-                if (
-                    data.started ||
-                    Number(
-                        data.progressPercent ||
-                        0
-                    ) > 0
-                ) {
-
-                    summary.started++;
-
-                }
-
-
-                if (
-                    data.completed === true ||
-                    Number(
-                        data.progressPercent ||
-                        0
-                    ) >= 100
-                ) {
-
-                    summary.completed++;
-
-                }
-
-
-                if (
-                    Array.isArray(
-                        data.completedLessons
-                    )
-                ) {
-
-                    summary.lessons +=
-                        data.completedLessons.length;
-
-                }
-
-            }
-        );
-
-
-        /*
-         * Optional future collection:
-         * users/{uid}/certificates/{certificateId}
-         *
-         * If it does not exist, Firestore simply returns
-         * an empty query result.
-         */
-        const certificatesCollection =
-            collection(
-                db,
-                "users",
-                currentUser.uid,
-                "certificates"
-            );
-
-
-        const certificateSnapshot =
-            await getDocs(
-                certificatesCollection
-            );
-
-
-        summary.certificates =
-            certificateSnapshot.size;
-
-
-    }
-    catch (err) {
-
-        error(
-            "Learning summary load failed:",
-            err
-        );
-
-    }
-
-
-    renderLearningSummary(
-        summary
-    );
-
-}
-
-
-/* =========================================================
-   RENDER LEARNING SUMMARY
-========================================================= */
-
-function renderLearningSummary(
-    summary
-) {
-
-    if (coursesStarted) {
-
-        coursesStarted.textContent =
-            String(
-                summary.started ||
-                0
-            );
-
-    }
-
-
-    if (coursesCompleted) {
-
-        coursesCompleted.textContent =
-            String(
-                summary.completed ||
-                0
-            );
-
-    }
-
-
-    if (lessonsCompleted) {
-
-        lessonsCompleted.textContent =
-            String(
-                summary.lessons ||
-                0
-            );
-
-    }
-
-
-    if (certificatesEarned) {
-
-        certificatesEarned.textContent =
-            String(
-                summary.certificates ||
-                0
-            );
-
-    }
-
-}
-
-
-/* =========================================================
-   VERIFY EMAIL
+   SEND VERIFICATION EMAIL
 ========================================================= */
 
 async function sendVerification() {
@@ -1218,12 +1278,12 @@ async function sendVerification() {
 
     try {
 
-        if (verifyEmailBtn) {
+        verifyEmailBtn.disabled =
+            true;
 
-            verifyEmailBtn.disabled =
-                true;
 
-        }
+        verifyEmailBtn.textContent =
+            "Sending...";
 
 
         await sendEmailVerification(
@@ -1232,10 +1292,13 @@ async function sendVerification() {
 
 
         showMessage(
-            "Verification email sent. Check your inbox.",
+            "Verification email sent. Check your inbox and spam folder.",
             "success"
         );
 
+
+        verifyEmailBtn.textContent =
+            "Verification Email Sent";
 
     }
     catch (err) {
@@ -1247,19 +1310,17 @@ async function sendVerification() {
 
 
         showMessage(
-            "Unable to send the verification email right now.",
+            "Unable to send the verification email right now. Please try again.",
             "error"
         );
 
-    }
-    finally {
 
-        if (verifyEmailBtn) {
+        verifyEmailBtn.disabled =
+            false;
 
-            verifyEmailBtn.disabled =
-                false;
 
-        }
+        verifyEmailBtn.textContent =
+            "Send Verification Email";
 
     }
 
@@ -1272,10 +1333,16 @@ async function sendVerification() {
 
 async function resetPassword() {
 
-    if (
-        !auth ||
-        !currentUser?.email
-    ) {
+    const email =
+        currentUser?.email;
+
+
+    if (!email) {
+
+        showMessage(
+            "No email address is available for this account.",
+            "error"
+        );
 
         return;
 
@@ -1284,49 +1351,48 @@ async function resetPassword() {
 
     try {
 
-        if (resetPasswordBtn) {
+        resetPasswordBtn.disabled =
+            true;
 
-            resetPasswordBtn.disabled =
-                true;
 
-        }
+        resetPasswordBtn.textContent =
+            "Sending...";
 
 
         await sendPasswordResetEmail(
             auth,
-            currentUser.email
+            email
         );
 
 
         showMessage(
-            "Password reset email sent.",
+            "Password reset email sent. Check your inbox and spam folder.",
             "success"
         );
-
 
     }
     catch (err) {
 
         error(
-            "Password reset email failed:",
+            "Password reset failed:",
             err
         );
 
 
         showMessage(
-            "Unable to send a password reset email right now.",
+            "Unable to send the password reset email right now. Please try again.",
             "error"
         );
 
     }
     finally {
 
-        if (resetPasswordBtn) {
+        resetPasswordBtn.disabled =
+            false;
 
-            resetPasswordBtn.disabled =
-                false;
 
-        }
+        resetPasswordBtn.textContent =
+            "Reset Password";
 
     }
 
@@ -1340,18 +1406,27 @@ async function resetPassword() {
 async function logout() {
 
     if (!auth) {
+
         return;
+
     }
 
 
     try {
 
         if (logoutBtn) {
-            logoutBtn.disabled = true;
+
+            logoutBtn.disabled =
+                true;
+
         }
 
+
         if (profileLogoutBtn) {
-            profileLogoutBtn.disabled = true;
+
+            profileLogoutBtn.disabled =
+                true;
+
         }
 
 
@@ -1364,7 +1439,6 @@ async function logout() {
             "../pages/login.html"
         );
 
-
     }
     catch (err) {
 
@@ -1375,74 +1449,27 @@ async function logout() {
 
 
         if (logoutBtn) {
-            logoutBtn.disabled = false;
+
+            logoutBtn.disabled =
+                false;
+
         }
+
 
         if (profileLogoutBtn) {
-            profileLogoutBtn.disabled = false;
+
+            profileLogoutBtn.disabled =
+                false;
+
         }
+
+
+        showMessage(
+            "Unable to sign out. Please try again.",
+            "error"
+        );
 
     }
-
-}
-
-
-/* =========================================================
-   INITIALIZE PROFILE
-========================================================= */
-
-async function initializeProfile(
-    user
-) {
-
-    showLoading();
-
-
-    const [
-        profileDocument,
-        entitlement
-    ] =
-        await Promise.all([
-
-            loadUserProfileDocument(),
-
-            getUserEntitlement(
-                user
-            )
-
-        ]);
-
-
-    currentEntitlement =
-        entitlement;
-
-
-    renderIdentity();
-
-    renderMemberSince(
-        profileDocument
-    );
-
-    renderEntitlement();
-
-
-    await loadLearningSummary();
-
-
-    showContent();
-
-
-    log(
-        "Profile loaded:",
-        {
-            uid:
-                user.uid,
-
-            plan:
-                currentEntitlement?.plan ||
-                "free"
-        }
-    );
 
 }
 
@@ -1508,7 +1535,7 @@ if (profileLogoutBtn) {
 if (!auth) {
 
     error(
-        "Firebase Auth unavailable."
+        "Firebase Authentication is unavailable."
     );
 
 
@@ -1523,10 +1550,13 @@ else {
         auth,
         async user => {
 
-
             if (!user) {
 
                 currentUser =
+                    null;
+
+
+                currentEntitlement =
                     null;
 
 
@@ -1544,23 +1574,49 @@ else {
                 user;
 
 
-            if (
-                profileInitialized
-            ) {
+            /*
+             * Firebase may fire this callback more than once.
+             * Render authentication data every time, but only
+             * run the initial profile load once.
+             */
+
+            renderUser(
+                user
+            );
+
+
+            if (initialized) {
 
                 return;
 
             }
 
 
-            profileInitialized =
+            initialized =
                 true;
 
 
             try {
 
-                await initializeProfile(
+                await loadEntitlement(
                     user
+                );
+
+
+                /*
+                 * Learning statistics are still displayed safely
+                 * at zero until the profile page is connected to
+                 * the progress/certificate collections.
+                 */
+
+                renderLearningSummary();
+
+
+                showContent();
+
+
+                log(
+                    "Profile page loaded."
                 );
 
             }
@@ -1572,18 +1628,18 @@ else {
                 );
 
 
-                if (profileLoading) {
+                currentEntitlement = {
+                    ...FREE_ENTITLEMENT
+                };
 
-                    profileLoading.innerHTML = `
-                        <i class="fa-solid fa-triangle-exclamation"></i>
 
-                        <p>
-                            Your profile could not be loaded.
-                            Please refresh the page and try again.
-                        </p>
-                    `;
+                renderEntitlement();
 
-                }
+
+                renderLearningSummary();
+
+
+                showContent();
 
             }
 
