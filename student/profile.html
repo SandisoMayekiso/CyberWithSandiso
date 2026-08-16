@@ -527,17 +527,20 @@
                     </div>
 
 
-                    <a
-                        href="subscription.html"
+                    <button
+                        type="button"
                         id="manageSubscriptionBtn"
-                        class="profile-secondary-btn"
+                        class="profile-secondary-btn profile-pro-disabled"
+                        disabled
+                        aria-disabled="true"
+                        title="CWS Academy Pro is coming soon"
                     >
 
-                        <i class="fa-solid fa-arrow-up-right-dots"></i>
+                        <i class="fa-solid fa-lock"></i>
 
-                        View Plans
+                        Pro Coming Soon
 
-                    </a>
+                    </button>
 
                 </div>
 
@@ -619,6 +622,36 @@
 
                     <div class="profile-stat">
 
+                        <i class="fa-solid fa-flask"></i>
+
+                        <strong id="labsCompleted">
+                            0
+                        </strong>
+
+                        <span>
+                            Labs Completed
+                        </span>
+
+                    </div>
+
+
+                    <div class="profile-stat">
+
+                        <i class="fa-solid fa-clipboard-check"></i>
+
+                        <strong id="assessmentsCompleted">
+                            0
+                        </strong>
+
+                        <span>
+                            Assessments Completed
+                        </span>
+
+                    </div>
+
+
+                    <div class="profile-stat">
+
                         <i class="fa-solid fa-certificate"></i>
 
                         <strong id="certificatesEarned">
@@ -629,9 +662,232 @@
                             Certificates
                         </span>
 
+                        <small class="profile-stat-note">
+                            Available after eligible course completion
+                        </small>
+
                     </div>
 
                 </div>
+
+
+                <div class="profile-card-actions">
+
+                    <a
+                        href="progress.html"
+                        class="profile-secondary-btn"
+                    >
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        View Full Progress
+
+                    </a>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- =============================================
+                 LEARNING PREFERENCES
+            ============================================== -->
+
+            <article class="profile-card profile-card-wide">
+
+                <div class="profile-card-header">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            LEARNING PREFERENCES
+                        </span>
+
+                        <h2>
+                            Personalise Your Learning
+                        </h2>
+
+                    </div>
+
+                    <i class="fa-solid fa-sliders"></i>
+
+                </div>
+
+
+                <form
+                    id="learningPreferencesForm"
+                    class="profile-form"
+                >
+
+                    <div class="profile-form-grid">
+
+                        <div class="profile-form-group">
+
+                            <label for="learningGoalInput">
+                                Primary Learning Goal
+                            </label>
+
+                            <select
+                                id="learningGoalInput"
+                                name="learningGoal"
+                            >
+
+                                <option value="">
+                                    Select your goal
+                                </option>
+
+                                <option value="foundations">
+                                    Cybersecurity Foundations
+                                </option>
+
+                                <option value="pentesting">
+                                    Ethical Hacking / Penetration Testing
+                                </option>
+
+                                <option value="automation">
+                                    Security Automation
+                                </option>
+
+                                <option value="active-directory">
+                                    Active Directory Security
+                                </option>
+
+                                <option value="web-security">
+                                    Web Application Security
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="profile-form-group">
+
+                            <label for="experienceLevelInput">
+                                Experience Level
+                            </label>
+
+                            <select
+                                id="experienceLevelInput"
+                                name="experienceLevel"
+                            >
+
+                                <option value="">
+                                    Select your level
+                                </option>
+
+                                <option value="beginner">
+                                    Beginner
+                                </option>
+
+                                <option value="intermediate">
+                                    Intermediate
+                                </option>
+
+                                <option value="advanced">
+                                    Advanced
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <fieldset class="profile-interest-fieldset">
+
+                        <legend>
+                            Topics of Interest
+                        </legend>
+
+                        <div class="profile-interest-grid">
+
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="interests"
+                                    value="networking"
+                                >
+                                <span>Networking</span>
+                            </label>
+
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="interests"
+                                    value="linux"
+                                >
+                                <span>Linux</span>
+                            </label>
+
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="interests"
+                                    value="python"
+                                >
+                                <span>Python</span>
+                            </label>
+
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="interests"
+                                    value="active-directory"
+                                >
+                                <span>Active Directory</span>
+                            </label>
+
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="interests"
+                                    value="web-security"
+                                >
+                                <span>Web Security</span>
+                            </label>
+
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="interests"
+                                    value="pentesting"
+                                >
+                                <span>Penetration Testing</span>
+                            </label>
+
+                        </div>
+
+                    </fieldset>
+
+
+                    <div
+                        id="learningPreferencesMessage"
+                        class="profile-message"
+                        hidden
+                        aria-live="polite"
+                    ></div>
+
+
+                    <div class="profile-form-actions">
+
+                        <button
+                            type="submit"
+                            id="saveLearningPreferencesBtn"
+                            class="profile-primary-btn"
+                        >
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            Save Preferences
+
+                        </button>
+
+                    </div>
+
+                </form>
 
             </article>
 
@@ -716,6 +972,50 @@
 
                     </div>
 
+                    <div class="profile-security-item">
+
+                        <div>
+
+                            <strong>
+                                Sign-in Method
+                            </strong>
+
+                            <span id="signInMethod">
+                                Checking...
+                            </span>
+
+                        </div>
+
+                        <i
+                            class="fa-solid fa-key profile-security-static-icon"
+                            aria-hidden="true"
+                        ></i>
+
+                    </div>
+
+
+                    <div class="profile-security-item">
+
+                        <div>
+
+                            <strong>
+                                Last Sign In
+                            </strong>
+
+                            <span id="lastSignInAt">
+                                Checking...
+                            </span>
+
+                        </div>
+
+                        <i
+                            class="fa-solid fa-clock profile-security-static-icon"
+                            aria-hidden="true"
+                        ></i>
+
+                    </div>
+
+
                 </div>
 
             </article>
@@ -762,9 +1062,27 @@
                     </button>
 
 
-                    <p>
-                        Account deletion is not enabled yet. It should be implemented later with re-authentication and secure cleanup of associated account data.
-                    </p>
+                    <div class="profile-account-support">
+
+                        <p>
+                            Account deletion is not currently available
+                            from the student dashboard.
+                        </p>
+
+                        <p>
+                            Need help with your account?
+                            Contact CWS Academy Support.
+                        </p>
+
+                        <a
+                            href="../pages/contact.html"
+                            class="profile-text-btn"
+                        >
+                            <i class="fa-solid fa-envelope"></i>
+                            Contact Support
+                        </a>
+
+                    </div>
 
                 </div>
 
