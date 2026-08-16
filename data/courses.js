@@ -24,21 +24,18 @@ import {
 
 
 import {
+    ethicalHackingFundamentals
+} from "./ethical-hacking-fundamentals.js";
+
+
+import {
+    webApplicationSecurity
+} from "./web-application-security.js";
+
+
+import {
     practicalPenetrationTesting
 } from "./practical-penetration-testing.js";
-
-
-/*
-   Future courses:
-
-   import {
-       ethicalHackingFundamentals
-   } from "./ethical-hacking-fundamentals.js";
-
-   import {
-       webApplicationSecurity
-   } from "./web-application-security.js";
-*/
 
 
 /* =========================================================
@@ -56,6 +53,12 @@ export const courses = {
     [linuxFundamentals.id]:
         linuxFundamentals,
 
+    [ethicalHackingFundamentals.id]:
+        ethicalHackingFundamentals,
+
+    [webApplicationSecurity.id]:
+        webApplicationSecurity,
+
     [practicalPenetrationTesting.id]:
         practicalPenetrationTesting
 
@@ -66,7 +69,9 @@ export const courses = {
    NORMALIZE ID
 ========================================================= */
 
-function normalizeId(value) {
+function normalizeId(
+    value
+) {
 
     if (
         value === null ||
@@ -78,7 +83,27 @@ function normalizeId(value) {
     }
 
 
-    return String(value)
+    return String(
+        value
+    )
+        .trim()
+        .toLowerCase();
+
+}
+
+
+/* =========================================================
+   NORMALIZE VALUE
+========================================================= */
+
+function normalizeValue(
+    value
+) {
+
+    return String(
+        value ||
+        ""
+    )
         .trim()
         .toLowerCase();
 
@@ -122,7 +147,8 @@ export function getCourse(
     return (
         courses[
             normalizedCourseId
-        ] || null
+        ] ||
+        null
     );
 
 }
@@ -337,9 +363,268 @@ export function isCourseAvailable(
         );
 
 
+    if (!course) {
+
+        return false;
+
+    }
+
+
     return (
-        course?.status ===
+        normalizeValue(
+            course.status
+        ) ===
         "available"
     );
+
+}
+
+
+/* =========================================================
+   COURSE ACCESS LEVEL
+========================================================= */
+
+export function getCourseAccess(
+    courseId
+) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    if (!course) {
+
+        return "free";
+
+    }
+
+
+    return normalizeValue(
+        course.access ||
+        "free"
+    ) ||
+    "free";
+
+}
+
+
+/* =========================================================
+   PRO COURSE
+========================================================= */
+
+export function isProCourse(
+    courseId
+) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    if (!course) {
+
+        return false;
+
+    }
+
+
+    return (
+        course.proOnly ===
+            true ||
+
+        normalizeValue(
+            course.access
+        ) ===
+            "pro"
+    );
+
+}
+
+
+/* =========================================================
+   COURSE LOCKED
+========================================================= */
+
+export function isCourseLocked(
+    courseId
+) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    if (!course) {
+
+        return true;
+
+    }
+
+
+    return (
+        course.locked ===
+            true ||
+
+        normalizeValue(
+            course.availability
+        ) ===
+            "pro-coming-soon"
+    );
+
+}
+
+
+/* =========================================================
+   COURSE DISPLAY STATUS
+========================================================= */
+
+export function getCourseDisplayStatus(
+    courseId
+) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    if (!course) {
+
+        return {
+            key:
+                "unknown",
+
+            label:
+                "Unavailable"
+        };
+
+    }
+
+
+    if (
+        isProCourse(
+            courseId
+        ) &&
+        isCourseLocked(
+            courseId
+        )
+    ) {
+
+        return {
+            key:
+                "pro-coming-soon",
+
+            label:
+                course.availabilityLabel ||
+                "Pro Coming Soon"
+        };
+
+    }
+
+
+    if (
+        isCourseAvailable(
+            courseId
+        )
+    ) {
+
+        return {
+            key:
+                "available",
+
+            label:
+                "Available"
+        };
+
+    }
+
+
+    return {
+        key:
+            "planned",
+
+        label:
+            "Planned"
+    };
+
+}
+
+
+/* =========================================================
+   GET COURSES BY LEVEL
+========================================================= */
+
+export function getCoursesByLevel(
+    level
+) {
+
+    const normalizedLevel =
+        normalizeValue(
+            level
+        );
+
+
+    if (!normalizedLevel) {
+
+        return getCourses();
+
+    }
+
+
+    return getCourses()
+        .filter(
+            course =>
+
+                normalizeValue(
+                    course?.levelKey ||
+                    course?.level
+                ) ===
+                normalizedLevel
+        );
+
+}
+
+
+/* =========================================================
+   GET FREE COURSES
+========================================================= */
+
+export function getFreeCourses() {
+
+    return getCourses()
+        .filter(
+            course =>
+
+                normalizeValue(
+                    course?.access
+                ) !==
+                "pro"
+        );
+
+}
+
+
+/* =========================================================
+   GET PRO COURSES
+========================================================= */
+
+export function getProCourses() {
+
+    return getCourses()
+        .filter(
+            course =>
+
+                course?.proOnly ===
+                    true ||
+
+                normalizeValue(
+                    course?.access
+                ) ===
+                    "pro"
+        );
 
 }
