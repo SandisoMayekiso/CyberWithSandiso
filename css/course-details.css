@@ -615,6 +615,302 @@
 
 
 /* =========================================================
+   PRO COURSE / TEMPORARILY LOCKED
+========================================================= */
+
+/*
+ * Apply the class "pro-locked" to the course details page
+ * or main course wrapper while CWS Academy Pro is paused.
+ */
+
+.course-details-page-body.pro-locked
+.course-details-hero {
+    border-color:
+        rgba(139, 92, 246, 0.20);
+
+    background:
+        radial-gradient(
+            circle at 85% 30%,
+            rgba(139, 92, 246, 0.08),
+            transparent 25%
+        ),
+        linear-gradient(
+            135deg,
+            #101522,
+            #090d15
+        );
+
+    filter:
+        saturate(0.58);
+}
+
+
+.course-details-page-body.pro-locked
+.course-details-hero-icon {
+    color:
+        #a8a8b5;
+
+    border-color:
+        rgba(255, 255, 255, 0.10);
+
+    background:
+        rgba(255, 255, 255, 0.045);
+
+    box-shadow:
+        inset
+        0 0 40px
+        rgba(255, 255, 255, 0.025),
+
+        0 20px 50px
+        rgba(0, 0, 0, 0.25);
+}
+
+
+.course-details-page-body.pro-locked
+.course-status.pro {
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    color:
+        #c9b8ff;
+
+    background:
+        rgba(139, 92, 246, 0.10);
+
+    border:
+        1px solid
+        rgba(139, 92, 246, 0.24);
+}
+
+
+.course-details-page-body.pro-locked
+.course-status.pro i {
+    color:
+        #b99cff;
+}
+
+
+.course-details-page-body.pro-locked
+.course-level {
+    color:
+        #a9b2bf;
+
+    background:
+        rgba(255, 255, 255, 0.04);
+
+    border-color:
+        rgba(255, 255, 255, 0.09);
+}
+
+
+.course-details-page-body.pro-locked
+.course-details-hero h1,
+.course-details-page-body.pro-locked
+.course-details-hero-content > p {
+    opacity:
+        0.78;
+}
+
+
+.course-pro-lock-notice {
+    margin-top:
+        26px;
+
+    padding:
+        16px 18px;
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    gap:
+        13px;
+
+    max-width:
+        700px;
+
+    color:
+        #aeb7c5;
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius:
+        12px;
+
+    line-height:
+        1.6;
+}
+
+
+.course-pro-lock-notice i {
+    margin-top:
+        3px;
+
+    color:
+        #b99cff;
+}
+
+
+.course-pro-lock-notice strong {
+    color:
+        #d8d0f5;
+}
+
+
+.course-primary-btn.pro-disabled,
+.course-primary-btn:disabled {
+    color:
+        #7f8997;
+
+    background:
+        rgba(255, 255, 255, 0.045);
+
+    border-color:
+        rgba(255, 255, 255, 0.09);
+
+    box-shadow:
+        none;
+
+    cursor:
+        not-allowed;
+
+    pointer-events:
+        none;
+
+    opacity:
+        0.72;
+
+    transform:
+        none;
+}
+
+
+.course-primary-btn.pro-disabled:hover,
+.course-primary-btn:disabled:hover {
+    color:
+        #7f8997;
+
+    background:
+        rgba(255, 255, 255, 0.045);
+
+    border-color:
+        rgba(255, 255, 255, 0.09);
+
+    box-shadow:
+        none;
+
+    transform:
+        none;
+}
+
+
+/*
+ * Pro course content remains visible as a preview,
+ * but lessons, labs and assessments are visually locked.
+ */
+
+.course-details-page-body.pro-locked
+.course-progress-section,
+.course-details-page-body.pro-locked
+.course-curriculum-section,
+.course-details-page-body.pro-locked
+.course-completion-section {
+    opacity:
+        0.58;
+
+    filter:
+        grayscale(0.72);
+}
+
+
+.course-details-page-body.pro-locked
+.course-module {
+    border-color:
+        rgba(255, 255, 255, 0.06);
+
+    box-shadow:
+        none;
+}
+
+
+.course-details-page-body.pro-locked
+.course-module:hover {
+    border-color:
+        rgba(255, 255, 255, 0.06);
+
+    box-shadow:
+        none;
+}
+
+
+.course-details-page-body.pro-locked
+.course-module-header,
+.course-details-page-body.pro-locked
+.course-lesson-action,
+.course-details-page-body.pro-locked
+.course-module-extra {
+    cursor:
+        not-allowed;
+}
+
+
+.course-details-page-body.pro-locked
+.course-lesson-action,
+.course-details-page-body.pro-locked
+.course-module-extra {
+    pointer-events:
+        none;
+}
+
+
+.course-details-page-body.pro-locked
+.course-module-number,
+.course-details-page-body.pro-locked
+.course-lesson-icon,
+.course-details-page-body.pro-locked
+.course-module-extra-icon {
+    color:
+        #7d8794;
+
+    background:
+        rgba(255, 255, 255, 0.045);
+
+    border-color:
+        rgba(255, 255, 255, 0.07);
+}
+
+
+.course-details-page-body.pro-locked
+.course-progress-fill {
+    background:
+        #68727f;
+
+    box-shadow:
+        none;
+}
+
+
+.course-details-page-body.pro-locked
+#courseProgressPercent {
+    color:
+        #9099a5;
+}
+
+
+/* =========================================================
    OVERVIEW
 ========================================================= */
 
