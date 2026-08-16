@@ -693,6 +693,122 @@
 
 
 /* =========================================================
+   PRO PLAN - COMING SOON / DISABLED
+========================================================= */
+
+.subscription-plan-card.pro-coming-soon {
+    opacity: 0.62;
+
+    filter:
+        grayscale(0.7);
+
+    cursor:
+        default;
+}
+
+
+.subscription-plan-card.pro-coming-soon:hover {
+    transform:
+        none;
+
+    border-color:
+        rgba(139, 92, 246, 0.22);
+
+    box-shadow:
+        0 15px 42px
+        rgba(0, 0, 0, 0.16);
+}
+
+
+.subscription-plan-card.pro-coming-soon
+.plan-card-icon.pro {
+    opacity:
+        0.7;
+}
+
+
+.subscription-plan-card.pro-coming-soon
+.subscription-plan-badge.pro {
+    opacity:
+        0.75;
+}
+
+
+.subscription-plan-card.pro-coming-soon
+.plan-description,
+.subscription-plan-card.pro-coming-soon
+.plan-price,
+.subscription-plan-card.pro-coming-soon
+.plan-features {
+    opacity:
+        0.82;
+}
+
+
+.subscription-plan-card.pro-coming-soon
+.plan-features i {
+    color:
+        var(--dashboard-text-muted);
+}
+
+
+.subscription-plan-card.pro-coming-soon
+.featured-plan-label {
+    color:
+        var(--dashboard-text-muted);
+
+    border-color:
+        var(--dashboard-border);
+
+    background:
+        rgba(255, 255, 255, 0.04);
+}
+
+
+#upgradeProBtn:disabled {
+    color:
+        var(--dashboard-text-muted);
+
+    border:
+        1px solid
+        var(--dashboard-border);
+
+    background:
+        rgba(255, 255, 255, 0.045);
+
+    opacity:
+        0.7;
+
+    cursor:
+        not-allowed;
+
+    pointer-events:
+        none;
+
+    transform:
+        none;
+}
+
+
+#upgradeProBtn:disabled:hover {
+    transform:
+        none;
+
+    background:
+        rgba(255, 255, 255, 0.045);
+
+    border-color:
+        var(--dashboard-border);
+}
+
+
+#upgradeProBtn:disabled i {
+    opacity:
+        0.75;
+}
+
+
+/* =========================================================
    SECURITY NOTE
 ========================================================= */
 
