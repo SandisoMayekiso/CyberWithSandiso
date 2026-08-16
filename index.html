@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -10,102 +11,149 @@
 
     <meta
         name="description"
-        content="CWS Academy - Cybersecurity education, practical labs, assessments and hands-on learning."
+        content="CWS Academy offers structured cybersecurity education, practical labs, assessments and hands-on learning across networking, Linux, Python, Active Directory, ethical hacking and penetration testing."
     >
 
     <meta
         name="keywords"
-        content="CWS Academy, cybersecurity, ethical hacking, penetration testing, networking, Linux"
+        content="CWS Academy, cybersecurity, ethical hacking, penetration testing, networking, Linux, Bash, Python, Active Directory, cybersecurity labs"
     >
 
-    <meta name="author" content="CyberWithSandiso">
+    <meta
+        name="author"
+        content="CyberWithSandiso"
+    >
 
-    <title>CWS Academy | Cybersecurity Education</title>
+    <title>
+        CWS Academy | Learn Cybersecurity by Doing
+    </title>
 
-    <!-- Favicon -->
+
+    <!-- ==================================================
+         FAVICON
+    =================================================== -->
+
     <link
         rel="icon"
         href="assets/icons/favicon.png"
         type="image/png"
     >
 
-    <!-- Main CSS -->
+
+    <!-- ==================================================
+         STYLES
+    =================================================== -->
+
     <link
         rel="stylesheet"
         href="css/style.css"
-    
-        
     >
+
     <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
-    
-        <link
+
+    <link
         rel="stylesheet"
         href="css/auth.css"
     >
-    <link 
-        rel="stylesheet" 
-        href="css/about.css">
-    <link 
-        rel="stylesheet" 
-        href="css/courses.css">
-    <link 
-        rel="stylesheet" 
-        href="css/contact.css">
+
+    <link
+        rel="stylesheet"
+        href="css/about.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/courses.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/contact.css"
+    >
+
 </head>
+
 
 <body>
 
-    <!-- ==========================================
+
+    <!-- ==================================================
          HEADER / NAVIGATION
-    =========================================== -->
+    =================================================== -->
 
     <header class="site-header">
 
         <nav class="navbar">
 
-            <!-- Logo -->
-            <a href="index.html" class="academy-logo">
-                <span class="logo-cws">CWS</span>
-                <span class="logo-text">Academy</span>
+            <a
+                href="index.html"
+                class="academy-logo"
+            >
+
+                <span class="logo-cws">
+                    CWS
+                </span>
+
+                <span class="logo-text">
+                    Academy
+                </span>
+
             </a>
 
-            <!-- Navigation -->
+
             <ul class="nav-links">
 
                 <li>
-                    <a href="index.html">Home</a>
-                </li>
-
-                <li>
-                    <a href="pages/courses.html">Courses</a>
-                </li>
-
-                <li class="auth-only-nav" hidden>
-                    <a href="../student/labs.html">
-                                                    Labs
-                    </a>
-                </li>
-
-                <li class="auth-only-nav" hidden>
-                    <a href="../student/assessments.html">
-                                                Assessments
+                    <a
+                        href="index.html"
+                        aria-current="page"
+                    >
+                        Home
                     </a>
                 </li>
 
                 <li>
-                    <a href="pages/about.html">About</a>
+                    <a href="pages/courses.html">
+                        Courses
+                    </a>
+                </li>
+
+                <li
+                    class="auth-only-nav"
+                    hidden
+                >
+                    <a href="student/labs.html">
+                        Labs
+                    </a>
+                </li>
+
+                <li
+                    class="auth-only-nav"
+                    hidden
+                >
+                    <a href="student/assessments.html">
+                        Assessments
+                    </a>
                 </li>
 
                 <li>
-                    <a href="pages/contact.html">Contact</a>
+                    <a href="pages/about.html">
+                        About
+                    </a>
+                </li>
+
+                <li>
+                    <a href="pages/contact.html">
+                        Contact
+                    </a>
                 </li>
 
             </ul>
 
-            <!-- Authentication -->
+
             <div class="nav-auth">
 
                 <a
@@ -120,10 +168,8 @@
                     class="btn-register"
                 >
                     Get Started
-
-                
                 </a>
-                
+
                 <span
                     id="studentNavName"
                     hidden
@@ -131,24 +177,25 @@
                     Student
                 </span>
 
-<button
-    type="button"
-    id="logoutNavBtn"
-    hidden
->
-    Logout
-</button>
+                <button
+                    type="button"
+                    id="logoutNavBtn"
+                    hidden
+                >
+                    Logout
+                </button>
+
             </div>
 
-            <!-- Mobile Menu -->
+
             <button
-                    class="menu-toggle"
-                    id="menuToggle"
-                    aria-label="Open navigation menu"
-                    aria-expanded="false"
-                    type="button"
-                    >
-                    ☰
+                class="menu-toggle"
+                id="menuToggle"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                type="button"
+            >
+                ☰
             </button>
 
         </nav>
@@ -156,13 +203,17 @@
     </header>
 
 
-    <!-- ==========================================
-         HERO SECTION
-    =========================================== -->
-
     <main>
 
-        <section class="hero" id="hero">
+
+        <!-- ==================================================
+             HERO
+        =================================================== -->
+
+        <section
+            class="hero"
+            id="hero"
+        >
 
             <div class="hero-content">
 
@@ -170,29 +221,42 @@
                     CWS ACADEMY
                 </span>
 
+
                 <h1>
                     Learn Cybersecurity.
-                    <span>Build Real Skills.</span>
+                    <span>
+                        Build Real Skills.
+                    </span>
                 </h1>
 
+
                 <p>
-                    Practical cybersecurity education designed
-                    to help you understand, practise, and apply
-                    security concepts in controlled environments.
+                    Learn networking, Linux, Bash, Python,
+                    Active Directory, ethical hacking and
+                    penetration testing through structured
+                    lessons, practical labs and assessments.
                 </p>
+
 
                 <div class="hero-buttons">
 
                     <a
-                        href="pages/courses.html"
+                        href="pages/register.html"
                         class="btn-primary"
                     >
-                        Explore Courses
+                        Start Learning Free
+                    </a>
+
+                    <a
+                        href="pages/courses.html"
+                        class="btn-secondary"
+                    >
+                        Explore All Courses
                     </a>
 
                     <a
                         href="student/labs.html"
-                        id="exploreLabsBtn"
+                        id="heroExploreLabsBtn"
                         class="btn-secondary"
                         hidden
                     >
@@ -206,15 +270,87 @@
         </section>
 
 
-        <!-- ==========================================
-             ACADEMY FEATURES
-        =========================================== -->
+        <!-- ==================================================
+             PLATFORM STATS
+        =================================================== -->
 
-        <section class="features" id="features">
+        <section
+            class="academy-stats"
+            aria-label="CWS Academy platform highlights"
+        >
+
+            <div class="academy-stats-grid">
+
+                <div class="academy-stat">
+
+                    <strong>
+                        12
+                    </strong>
+
+                    <span>
+                        Courses
+                    </span>
+
+                </div>
+
+
+                <div class="academy-stat">
+
+                    <strong>
+                        Practical
+                    </strong>
+
+                    <span>
+                        Labs
+                    </span>
+
+                </div>
+
+
+                <div class="academy-stat">
+
+                    <strong>
+                        Self-Paced
+                    </strong>
+
+                    <span>
+                        Learning
+                    </span>
+
+                </div>
+
+
+                <div class="academy-stat">
+
+                    <strong>
+                        Free
+                    </strong>
+
+                    <span>
+                        Learning Paths
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             WHY CWS ACADEMY
+        =================================================== -->
+
+        <section
+            class="features"
+            id="features"
+        >
 
             <div class="section-heading">
 
-                <span>WHY CWS ACADEMY</span>
+                <span>
+                    WHY CWS ACADEMY
+                </span>
 
                 <h2>
                     Learn. Practise. Build.
@@ -242,9 +378,9 @@
                     </h3>
 
                     <p>
-                        Follow organised cybersecurity
-                        learning paths from fundamentals
-                        to advanced concepts.
+                        Follow organised cybersecurity learning
+                        paths from fundamentals to advanced
+                        concepts.
                     </p>
 
                 </article>
@@ -280,8 +416,8 @@
                     </h3>
 
                     <p>
-                        Test your understanding through
-                        quizzes, practical exercises and
+                        Test your understanding through quizzes,
+                        practical exercises and structured
                         assessments.
                     </p>
 
@@ -299,8 +435,9 @@
                     </h3>
 
                     <p>
-                        Work toward course completion,
-                        achievements and certificates.
+                        Track lessons, course completion,
+                        achievements and future certificates
+                        from your student dashboard.
                     </p>
 
                 </article>
@@ -310,9 +447,9 @@
         </section>
 
 
-        <!-- ==========================================
-             FEATURED COURSES
-        =========================================== -->
+        <!-- ==================================================
+             FEATURED FREE COURSES
+        =================================================== -->
 
         <section
             class="featured-courses"
@@ -321,7 +458,9 @@
 
             <div class="section-heading">
 
-                <span>START LEARNING</span>
+                <span>
+                    START LEARNING FREE
+                </span>
 
                 <h2>
                     Featured Courses
@@ -329,7 +468,7 @@
 
                 <p>
                     Build your cybersecurity foundation
-                    one skill at a time.
+                    one practical skill at a time.
                 </p>
 
             </div>
@@ -337,19 +476,22 @@
 
             <div class="course-grid">
 
+
                 <article class="course-card">
 
                     <div class="course-image">
+
                         <img
                             src="assets/images/cybersecurity.png"
                             alt="Cybersecurity Fundamentals"
                         >
+
                     </div>
 
                     <div class="course-content">
 
                         <span class="course-level">
-                            BEGINNER
+                            BEGINNER • FREE
                         </span>
 
                         <h3>
@@ -357,9 +499,9 @@
                         </h3>
 
                         <p>
-                            Learn the fundamental concepts
-                            behind cybersecurity and ethical
-                            security testing.
+                            Learn core cybersecurity concepts,
+                            threats, vulnerabilities, controls
+                            and ethical security practices.
                         </p>
 
                         <a
@@ -377,16 +519,18 @@
                 <article class="course-card">
 
                     <div class="course-image">
+
                         <img
                             src="assets/images/networking.png"
                             alt="Networking Fundamentals"
                         >
+
                     </div>
 
                     <div class="course-content">
 
                         <span class="course-level">
-                            BEGINNER
+                            BEGINNER • FREE
                         </span>
 
                         <h3>
@@ -395,7 +539,7 @@
 
                         <p>
                             Understand IP addressing, TCP/IP,
-                            DNS, HTTP, routing and networking
+                            DNS, routing, HTTP and the network
                             concepts used in cybersecurity.
                         </p>
 
@@ -414,16 +558,18 @@
                 <article class="course-card">
 
                     <div class="course-image">
+
                         <img
                             src="assets/images/linux.png"
                             alt="Linux Fundamentals"
                         >
+
                     </div>
 
                     <div class="course-content">
 
                         <span class="course-level">
-                            BEGINNER
+                            BEGINNER • FREE
                         </span>
 
                         <h3>
@@ -431,9 +577,9 @@
                         </h3>
 
                         <p>
-                            Learn Linux commands, file systems,
-                            permissions, networking tools and
-                            essential security concepts.
+                            Learn the Linux command line,
+                            filesystems, permissions, processes,
+                            networking and security basics.
                         </p>
 
                         <a
@@ -447,6 +593,124 @@
 
                 </article>
 
+
+                <article class="course-card">
+
+                    <div class="course-image">
+
+                        <img
+                            src="assets/images/bash-linux-automation.png"
+                            alt="Bash and Linux Automation"
+                        >
+
+                    </div>
+
+                    <div class="course-content">
+
+                        <span class="course-level">
+                            INTERMEDIATE • FREE
+                        </span>
+
+                        <h3>
+                            Bash & Linux Automation
+                        </h3>
+
+                        <p>
+                            Build Bash scripts for Linux
+                            administration, text processing
+                            and cybersecurity automation.
+                        </p>
+
+                        <a
+                            href="pages/courses.html"
+                            class="course-link"
+                        >
+                            View Course →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+                <article class="course-card">
+
+                    <div class="course-image">
+
+                        <img
+                            src="assets/images/python-cybersecurity.png"
+                            alt="Python Fundamentals for Cybersecurity"
+                        >
+
+                    </div>
+
+                    <div class="course-content">
+
+                        <span class="course-level">
+                            INTERMEDIATE • FREE
+                        </span>
+
+                        <h3>
+                            Python Fundamentals for Cybersecurity
+                        </h3>
+
+                        <p>
+                            Learn Python through files, JSON,
+                            HTTP, networking and security
+                            automation exercises.
+                        </p>
+
+                        <a
+                            href="pages/courses.html"
+                            class="course-link"
+                        >
+                            View Course →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+                <article class="course-card">
+
+                    <div class="course-image">
+
+                        <img
+                            src="assets/images/active-directory.png"
+                            alt="Active Directory Fundamentals"
+                        >
+
+                    </div>
+
+                    <div class="course-content">
+
+                        <span class="course-level">
+                            INTERMEDIATE • FREE
+                        </span>
+
+                        <h3>
+                            Active Directory Fundamentals
+                        </h3>
+
+                        <p>
+                            Learn domains, users, groups,
+                            DNS, Group Policy, LDAP, Kerberos
+                            and Windows identity fundamentals.
+                        </p>
+
+                        <a
+                            href="pages/courses.html"
+                            class="course-link"
+                        >
+                            View Course →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
             </div>
 
 
@@ -456,7 +720,7 @@
                     href="pages/courses.html"
                     class="btn-primary"
                 >
-                    View All Courses
+                    Explore All 12 Courses
                 </a>
 
             </div>
@@ -464,11 +728,646 @@
         </section>
 
 
-        <!-- ==========================================
-             PRACTICAL LABS
-        =========================================== -->
+        <!-- ==================================================
+             LEARNING PATHS
+        =================================================== -->
 
-        <section class="labs-preview" id="labs">
+        <section
+            class="learning-paths"
+            id="learning-paths"
+        >
+
+            <div class="section-heading">
+
+                <span>
+                    CHOOSE YOUR PATH
+                </span>
+
+                <h2>
+                    Cybersecurity Learning Paths
+                </h2>
+
+                <p>
+                    Start with the foundations, then progress
+                    toward automation, identity security and
+                    penetration testing.
+                </p>
+
+            </div>
+
+
+            <div class="learning-path-grid">
+
+
+                <article class="learning-path-card">
+
+                    <div class="learning-path-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+
+                    <span class="learning-path-label">
+                        FOUNDATION
+                    </span>
+
+                    <h3>
+                        Cybersecurity Foundations
+                    </h3>
+
+                    <div class="learning-path-flow">
+
+                        <span>
+                            Cybersecurity Fundamentals
+                        </span>
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                        <span>
+                            Networking Fundamentals
+                        </span>
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                        <span>
+                            Linux Fundamentals
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <article class="learning-path-card">
+
+                    <div class="learning-path-icon">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+
+                    <span class="learning-path-label">
+                        AUTOMATION
+                    </span>
+
+                    <h3>
+                        Security Automation
+                    </h3>
+
+                    <div class="learning-path-flow">
+
+                        <span>
+                            Bash & Linux Automation
+                        </span>
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                        <span>
+                            Python Fundamentals
+                        </span>
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                        <span class="pro-path-step">
+                            <i class="fa-solid fa-crown"></i>
+                            Python for Offensive Security
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <article class="learning-path-card">
+
+                    <div class="learning-path-icon">
+                        <i class="fa-solid fa-building-shield"></i>
+                    </div>
+
+                    <span class="learning-path-label">
+                        WINDOWS IDENTITY
+                    </span>
+
+                    <h3>
+                        Active Directory
+                    </h3>
+
+                    <div class="learning-path-flow">
+
+                        <span>
+                            Active Directory Fundamentals
+                        </span>
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                        <span class="pro-path-step">
+                            <i class="fa-solid fa-crown"></i>
+                            AD Security & Pentesting
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <article class="learning-path-card">
+
+                    <div class="learning-path-icon">
+                        <i class="fa-solid fa-user-secret"></i>
+                    </div>
+
+                    <span class="learning-path-label">
+                        OFFENSIVE SECURITY
+                    </span>
+
+                    <h3>
+                        Ethical Hacking
+                    </h3>
+
+                    <div class="learning-path-flow">
+
+                        <span class="pro-path-step">
+                            <i class="fa-solid fa-crown"></i>
+                            Ethical Hacking Fundamentals
+                        </span>
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                        <span class="pro-path-step">
+                            <i class="fa-solid fa-crown"></i>
+                            Web Application Security
+                        </span>
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                        <span class="pro-path-step">
+                            <i class="fa-solid fa-crown"></i>
+                            Practical Penetration Testing
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+            </div>
+
+
+            <div class="section-action">
+
+                <a
+                    href="pages/courses.html"
+                    class="btn-secondary"
+                >
+                    View Course Catalogue
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             HOW IT WORKS
+        =================================================== -->
+
+        <section
+            class="academy-process"
+            id="how-it-works"
+        >
+
+            <div class="section-heading">
+
+                <span>
+                    HOW CWS ACADEMY WORKS
+                </span>
+
+                <h2>
+                    From Learning to Practice
+                </h2>
+
+                <p>
+                    Follow a simple learning workflow designed
+                    to build understanding before practical
+                    application.
+                </p>
+
+            </div>
+
+
+            <div class="academy-process-grid">
+
+
+                <article class="academy-process-step">
+
+                    <span class="academy-step-number">
+                        01
+                    </span>
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                    <h3>
+                        Create an Account
+                    </h3>
+
+                    <p>
+                        Register free and access your
+                        personal student learning area.
+                    </p>
+
+                </article>
+
+
+                <article class="academy-process-step">
+
+                    <span class="academy-step-number">
+                        02
+                    </span>
+
+                    <i class="fa-solid fa-route"></i>
+
+                    <h3>
+                        Choose a Course
+                    </h3>
+
+                    <p>
+                        Select a learning path based on your
+                        current knowledge and career goals.
+                    </p>
+
+                </article>
+
+
+                <article class="academy-process-step">
+
+                    <span class="academy-step-number">
+                        03
+                    </span>
+
+                    <i class="fa-solid fa-book-open"></i>
+
+                    <h3>
+                        Complete Lessons
+                    </h3>
+
+                    <p>
+                        Build knowledge through structured
+                        explanations, commands and examples.
+                    </p>
+
+                </article>
+
+
+                <article class="academy-process-step">
+
+                    <span class="academy-step-number">
+                        04
+                    </span>
+
+                    <i class="fa-solid fa-flask"></i>
+
+                    <h3>
+                        Practise in Labs
+                    </h3>
+
+                    <p>
+                        Apply what you learn inside
+                        controlled and authorized environments.
+                    </p>
+
+                </article>
+
+
+                <article class="academy-process-step">
+
+                    <span class="academy-step-number">
+                        05
+                    </span>
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                    <h3>
+                        Track Progress
+                    </h3>
+
+                    <p>
+                        Monitor your completed lessons,
+                        courses, labs and assessments.
+                    </p>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             WHAT YOU WILL PRACTISE
+        =================================================== -->
+
+        <section
+            class="practice-skills"
+            id="practice-skills"
+        >
+
+            <div class="section-heading">
+
+                <span>
+                    PRACTICAL SKILLS
+                </span>
+
+                <h2>
+                    What You'll Practise
+                </h2>
+
+                <p>
+                    Build technical confidence across the
+                    technologies used in modern cybersecurity.
+                </p>
+
+            </div>
+
+
+            <div class="practice-skills-grid">
+
+
+                <article class="practice-skill-card">
+
+                    <i class="fa-solid fa-terminal"></i>
+
+                    <h3>
+                        Linux Terminal
+                    </h3>
+
+                    <p>
+                        Work with commands, files, permissions,
+                        processes and Linux networking tools.
+                    </p>
+
+                </article>
+
+
+                <article class="practice-skill-card">
+
+                    <i class="fa-brands fa-python"></i>
+
+                    <h3>
+                        Python
+                    </h3>
+
+                    <p>
+                        Build scripts for data processing,
+                        APIs, networking and automation.
+                    </p>
+
+                </article>
+
+
+                <article class="practice-skill-card">
+
+                    <i class="fa-solid fa-network-wired"></i>
+
+                    <h3>
+                        Networking
+                    </h3>
+
+                    <p>
+                        Understand TCP/IP, DNS, routing,
+                        ports, services and network traffic.
+                    </p>
+
+                </article>
+
+
+                <article class="practice-skill-card">
+
+                    <i class="fa-solid fa-building-shield"></i>
+
+                    <h3>
+                        Active Directory
+                    </h3>
+
+                    <p>
+                        Build Windows domain environments and
+                        understand enterprise identity.
+                    </p>
+
+                </article>
+
+
+                <article class="practice-skill-card">
+
+                    <i class="fa-solid fa-globe"></i>
+
+                    <h3>
+                        Web Security
+                    </h3>
+
+                    <p>
+                        Learn authentication, sessions,
+                        HTTP and application security concepts.
+                    </p>
+
+                </article>
+
+
+                <article class="practice-skill-card">
+
+                    <i class="fa-solid fa-user-secret"></i>
+
+                    <h3>
+                        Penetration Testing
+                    </h3>
+
+                    <p>
+                        Learn structured, authorized security
+                        assessment methodology and reporting.
+                    </p>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             DASHBOARD PREVIEW
+        =================================================== -->
+
+        <section
+            class="dashboard-preview"
+            id="dashboard-preview"
+        >
+
+            <div class="dashboard-preview-layout">
+
+
+                <div class="dashboard-preview-copy">
+
+                    <span class="section-kicker">
+                        YOUR LEARNING DASHBOARD
+                    </span>
+
+                    <h2>
+                        Keep Your Learning in One Place
+                    </h2>
+
+                    <p>
+                        Registered students can access courses,
+                        continue lessons, track progress and
+                        move between labs, assessments and
+                        their profile from one learning area.
+                    </p>
+
+
+                    <ul class="dashboard-feature-list">
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Course progress tracking
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Continue learning shortcuts
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Practical lab access
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Assessments and achievements
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Student profile and learning history
+                        </li>
+
+                    </ul>
+
+
+                    <a
+                        href="pages/register.html"
+                        class="btn-primary"
+                    >
+                        Create Free Account
+                    </a>
+
+                </div>
+
+
+                <div
+                    class="dashboard-preview-card"
+                    aria-label="Example CWS Academy dashboard preview"
+                >
+
+                    <div class="dashboard-preview-top">
+
+                        <div>
+
+                            <span>
+                                Welcome back
+                            </span>
+
+                            <strong>
+                                CWS Student
+                            </strong>
+
+                        </div>
+
+                        <div class="dashboard-preview-avatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-preview-stat-grid">
+
+                        <div>
+                            <strong>3</strong>
+                            <span>Courses Started</span>
+                        </div>
+
+                        <div>
+                            <strong>28</strong>
+                            <span>Lessons Completed</span>
+                        </div>
+
+                        <div>
+                            <strong>6</strong>
+                            <span>Labs</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-preview-progress">
+
+                        <div class="dashboard-preview-progress-header">
+
+                            <span>
+                                Networking Fundamentals
+                            </span>
+
+                            <strong>
+                                62%
+                            </strong>
+
+                        </div>
+
+                        <div class="dashboard-preview-progress-bar">
+
+                            <div
+                                class="dashboard-preview-progress-fill"
+                                style="width: 62%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-preview-actions">
+
+                        <span>
+                            Courses
+                        </span>
+
+                        <span>
+                            Labs
+                        </span>
+
+                        <span>
+                            Assessments
+                        </span>
+
+                        <span>
+                            Profile
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             PRACTICAL LABS
+        =================================================== -->
+
+        <section
+            class="labs-preview"
+            id="labs"
+        >
 
             <div class="labs-content">
 
@@ -482,14 +1381,15 @@
                 </h2>
 
                 <p>
-                    CWS Academy will connect learning
-                    material with practical cybersecurity
-                    laboratories and controlled environments.
+                    CWS Academy connects structured lessons
+                    with practical cybersecurity exercises,
+                    guided labs and controlled training
+                    environments.
                 </p>
 
                 <a
                     href="student/labs.html"
-                    id="exploreLabsBtn"
+                    id="labsPreviewBtn"
                     class="btn-secondary"
                     hidden
                 >
@@ -501,44 +1401,361 @@
         </section>
 
 
-        <!-- ==========================================
-             CALL TO ACTION
-        =========================================== -->
+        <!-- ==================================================
+             FREE VS PRO
+        =================================================== -->
+
+        <section
+            class="academy-access"
+            id="academy-access"
+        >
+
+            <div class="section-heading">
+
+                <span>
+                    LEARNING ACCESS
+                </span>
+
+                <h2>
+                    Start Free. Go Deeper Later.
+                </h2>
+
+                <p>
+                    Build a strong foundation with free
+                    learning paths. Advanced Pro courses
+                    and labs are being prepared.
+                </p>
+
+            </div>
+
+
+            <div class="academy-access-grid">
+
+
+                <article class="academy-access-card free-access-card">
+
+                    <span class="academy-access-badge free">
+                        FREE
+                    </span>
+
+                    <h3>
+                        CWS Academy Free
+                    </h3>
+
+                    <p>
+                        Build strong cybersecurity foundations
+                        without a paid subscription.
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Cybersecurity Fundamentals
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Networking Fundamentals
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Linux Fundamentals
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Bash & Linux Automation
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Python Fundamentals
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Active Directory Fundamentals
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            Progress Tracking
+                        </li>
+
+                    </ul>
+
+
+                    <a
+                        href="pages/register.html"
+                        class="btn-primary"
+                    >
+                        Start Free
+                    </a>
+
+                </article>
+
+
+                <article class="academy-access-card pro-access-card">
+
+                    <span class="academy-access-badge pro">
+
+                        <i class="fa-solid fa-crown"></i>
+
+                        PRO
+
+                    </span>
+
+                    <h3>
+                        CWS Academy Pro
+                    </h3>
+
+                    <p>
+                        Advanced security paths, deeper labs
+                        and capstone learning experiences are
+                        currently being prepared.
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            <i class="fa-solid fa-lock"></i>
+                            Ethical Hacking Fundamentals
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-lock"></i>
+                            Web Application Security
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-lock"></i>
+                            Python for Offensive Security
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-lock"></i>
+                            AD Security & Pentesting
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-lock"></i>
+                            Linux Privilege Escalation
+                        </li>
+
+                        <li>
+                            <i class="fa-solid fa-lock"></i>
+                            Practical Penetration Testing
+                        </li>
+
+                    </ul>
+
+
+                    <button
+                        type="button"
+                        class="btn-secondary pro-home-disabled"
+                        disabled
+                        aria-disabled="true"
+                    >
+                        <i class="fa-solid fa-lock"></i>
+                        Pro Coming Soon
+                    </button>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             FAQ
+        =================================================== -->
+
+        <section
+            class="academy-faq"
+            id="faq"
+        >
+
+            <div class="section-heading">
+
+                <span>
+                    FREQUENTLY ASKED QUESTIONS
+                </span>
+
+                <h2>
+                    CWS Academy FAQ
+                </h2>
+
+                <p>
+                    A few things to know before you start
+                    learning.
+                </p>
+
+            </div>
+
+
+            <div class="academy-faq-list">
+
+
+                <details class="academy-faq-item">
+
+                    <summary>
+                        Is CWS Academy free?
+                    </summary>
+
+                    <p>
+                        Yes. CWS Academy includes free learning
+                        paths covering cybersecurity,
+                        networking, Linux, Bash, Python and
+                        Active Directory fundamentals.
+                    </p>
+
+                </details>
+
+
+                <details class="academy-faq-item">
+
+                    <summary>
+                        Do I need cybersecurity experience?
+                    </summary>
+
+                    <p>
+                        No. Beginners can start with
+                        Cybersecurity Fundamentals before
+                        progressing into networking, Linux and
+                        intermediate technical courses.
+                    </p>
+
+                </details>
+
+
+                <details class="academy-faq-item">
+
+                    <summary>
+                        Do I need Kali Linux?
+                    </summary>
+
+                    <p>
+                        Not for every course. Individual
+                        courses explain which operating systems,
+                        virtual machines or tools are useful for
+                        their practical exercises.
+                    </p>
+
+                </details>
+
+
+                <details class="academy-faq-item">
+
+                    <summary>
+                        Are the labs legal?
+                    </summary>
+
+                    <p>
+                        CWS Academy practical exercises are
+                        intended for systems you own or
+                        environments where you have explicit
+                        authorization to test. Security testing
+                        should never be performed against
+                        unauthorized systems.
+                    </p>
+
+                </details>
+
+
+                <details class="academy-faq-item">
+
+                    <summary>
+                        Can I track my progress?
+                    </summary>
+
+                    <p>
+                        Yes. Registered students can track
+                        course and lesson progress through
+                        their CWS Academy student area.
+                    </p>
+
+                </details>
+
+
+                <details class="academy-faq-item">
+
+                    <summary>
+                        When will CWS Academy Pro launch?
+                    </summary>
+
+                    <p>
+                        Pro learning paths are currently being
+                        developed and remain disabled while
+                        advanced course content, labs and
+                        access controls are completed.
+                    </p>
+
+                </details>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             FINAL CTA
+        =================================================== -->
 
         <section class="cta">
 
             <div class="cta-content">
 
                 <h2>
-                    Ready to Start Learning?
+                    Ready to Build Your Cybersecurity Skills?
                 </h2>
 
                 <p>
-                    Begin building your cybersecurity
-                    knowledge with CWS Academy.
+                    Create a free CWS Academy account and
+                    start learning through structured courses,
+                    practical exercises and progress tracking.
                 </p>
 
-                <a
-                    href="pages/register.html"
-                    class="btn-primary"
-                >
-                    Create Your Account
-                </a>
+                <div class="hero-buttons">
+
+                    <a
+                        href="pages/register.html"
+                        class="btn-primary"
+                    >
+                        Create Free Account
+                    </a>
+
+                    <a
+                        href="pages/courses.html"
+                        class="btn-secondary"
+                    >
+                        Explore Courses
+                    </a>
+
+                </div>
 
             </div>
 
         </section>
 
+
     </main>
 
 
-    <!-- ==========================================
+    <!-- ==================================================
          FOOTER
-    =========================================== -->
+    =================================================== -->
 
     <footer class="site-footer">
 
         <div class="footer-container">
+
 
             <div class="footer-brand">
 
@@ -546,13 +1763,21 @@
                     href="index.html"
                     class="academy-logo"
                 >
-                    <span class="logo-cws">CWS</span>
-                    <span class="logo-text">Academy</span>
+
+                    <span class="logo-cws">
+                        CWS
+                    </span>
+
+                    <span class="logo-text">
+                        Academy
+                    </span>
+
                 </a>
 
                 <p>
                     Practical cybersecurity education,
-                    learning and hands-on security training.
+                    structured learning and hands-on
+                    security training.
                 </p>
 
             </div>
@@ -568,7 +1793,17 @@
                     Courses
                 </a>
 
-                
+                <a href="#learning-paths">
+                    Learning Paths
+                </a>
+
+                <a href="#how-it-works">
+                    How It Works
+                </a>
+
+                <a href="#faq">
+                    FAQ
+                </a>
 
             </div>
 
@@ -606,6 +1841,7 @@
 
             </div>
 
+
         </div>
 
 
@@ -625,29 +1861,37 @@
     </footer>
 
 
-    <!-- Main JavaScript -->
-    <script src="main.js"></script>
-    <script
-    type="module"
-    src="../js/social-auth.js"
-></script>
-<script
-    type="module"
-    src="../js/courses.js"
-></script>
-<script
-    type="module"
-    src="../js/contact.js"
-></script>
-<script
-    type="module"
-    src="js/navigation-auth.js"
-></script>
+    <!-- ==================================================
+         JAVASCRIPT
+    =================================================== -->
 
-<script
-    type="module"
-    src="../js/firebase-config.js"
-></script>
+    <script src="main.js"></script>
+
+    <script
+        type="module"
+        src="js/social-auth.js"
+    ></script>
+
+    <script
+        type="module"
+        src="js/courses.js"
+    ></script>
+
+    <script
+        type="module"
+        src="js/contact.js"
+    ></script>
+
+    <script
+        type="module"
+        src="js/navigation-auth.js"
+    ></script>
+
+    <script
+        type="module"
+        src="js/firebase-config.js"
+    ></script>
+
 
 </body>
 </html>
