@@ -1,6 +1,6 @@
 /* =========================================================
    CWS ACADEMY
-   Student Courses
+   PUBLIC COURSES PAGE
    courses.js
 ========================================================= */
 
@@ -17,300 +17,543 @@ import {
    DEBUG
 ========================================================= */
 
-console.log("CWS Academy courses.js loaded");
+const DEBUG = true;
+
+
+function log(...args) {
+
+    if (DEBUG) {
+
+        console.log(
+            "[CWS Courses]",
+            ...args
+        );
+
+    }
+
+}
+
+
+function warn(...args) {
+
+    if (DEBUG) {
+
+        console.warn(
+            "[CWS Courses]",
+            ...args
+        );
+
+    }
+
+}
+
+
+log("courses.js loaded");
 
 
 /* =========================================================
    DOM READY
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    const filterButtons =
-        document.querySelectorAll(".course-filter");
-
-    const courseCards =
-        document.querySelectorAll(".academy-course-card");
-
-    const emptyState =
-        document.querySelector(".course-empty-state");
-
-
-    console.log(
-        "Course filters:",
-        filterButtons.length
-    );
-
-    console.log(
-        "Course cards:",
-        courseCards.length
-    );
-
-
-    /* =====================================================
-       FILTER COURSES
-    ===================================================== */
-
-    function filterCourses(selectedFilter) {
-
-        let visibleCourses = 0;
-
-
-        courseCards.forEach(card => {
-
-            const courseLevel =
-                card.dataset.level;
-
-
-            const shouldShow =
-                selectedFilter === "all" ||
-                courseLevel === selectedFilter;
-
-
-            if (shouldShow) {
-
-                card.classList.remove("hidden");
-
-                visibleCourses++;
-
-            } else {
-
-                card.classList.add("hidden");
-
-            }
-
-        });
-
-
-        /* ================================================
-           EMPTY STATE
-        ================================================= */
-
-        if (emptyState) {
-
-            if (visibleCourses === 0) {
-
-                emptyState.classList.add("visible");
-
-            } else {
-
-                emptyState.classList.remove("visible");
-
-            }
-
-        }
-
-    }
-
-
-    /* =====================================================
-       FILTER BUTTON EVENTS
-    ===================================================== */
-
-    filterButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const selectedFilter =
-                button.dataset.filter || "all";
-
-
-            /* Remove active state */
-
-            filterButtons.forEach(item => {
-
-                item.classList.remove("active");
-
-            });
-
-
-            /* Activate selected filter */
-
-            button.classList.add("active");
-
-
-            /* Filter */
-
-            filterCourses(selectedFilter);
-
-
-            console.log(
-                "Course filter:",
-                selectedFilter
+        const filterButtons =
+            Array.from(
+                document.querySelectorAll(
+                    ".course-filter"
+                )
             );
 
-        });
 
-    });
-
-
-    /* =====================================================
-       INITIAL FILTER
-    ===================================================== */
-
-    filterCourses("all");
+        const courseCards =
+            Array.from(
+                document.querySelectorAll(
+                    ".academy-course-card"
+                )
+            );
 
 
-    /* =====================================================
-       COURSE ACTION BUTTONS
-    ===================================================== */
+        const emptyState =
+            document.querySelector(
+                ".course-empty-state"
+            );
 
-    const courseButtons =
-        document.querySelectorAll(
-            ".course-card-btn"
+
+        log(
+            "Course filters:",
+            filterButtons.length
         );
 
 
-    courseButtons.forEach(button => {
+        log(
+            "Course cards:",
+            courseCards.length
+        );
 
-        button.addEventListener("click", event => {
+
+        /* =================================================
+           NORMALIZE VALUE
+        ================================================== */
+
+        function normalizeValue(
+            value
+        ) {
+
+            return String(
+                value ||
+                ""
+            )
+                .trim()
+                .toLowerCase();
+
+        }
+
+
+        /* =================================================
+           COURSE MATCH
+        ================================================== */
+
+        function courseMatchesFilter(
+            card,
+            selectedFilter
+        ) {
+
+            const filter =
+                normalizeValue(
+                    selectedFilter
+                );
+
+
+            if (
+                !filter ||
+                filter === "all"
+            ) {
+
+                return true;
+
+            }
+
+
+            const courseLevel =
+                normalizeValue(
+                    card.dataset.level
+                );
+
+
+            const courseAccess =
+                normalizeValue(
+                    card.dataset.access ||
+                    "free"
+                );
+
 
             /*
-             * If the button is disabled,
-             * do nothing.
+             * Access filters.
              */
 
             if (
-                button.disabled ||
-                button.classList.contains("disabled")
+                filter === "free" ||
+                filter === "pro"
             ) {
 
-                event.preventDefault();
-
-                return;
+                return (
+                    courseAccess ===
+                    filter
+                );
 
             }
 
 
             /*
-             * If it is a normal link,
-             * allow the browser to navigate.
+             * Difficulty filters.
              */
 
-        });
+            if (
+                [
+                    "beginner",
+                    "intermediate",
+                    "advanced"
+                ].includes(
+                    filter
+                )
+            ) {
 
-    });
-
-
-    /* =====================================================
-       AUTHENTICATION
-    ===================================================== */
-
-    onAuthStateChanged(
-        auth,
-        user => {
-
-            if (user) {
-
-                console.log(
-                    "Courses page: authenticated user",
-                    user.uid
+                return (
+                    courseLevel ===
+                    filter
                 );
-
-                enableAuthenticatedCourses();
-
-            } else {
-
-                console.log(
-                    "Courses page: visitor is not authenticated"
-                );
-
-                prepareGuestCourses();
 
             }
+
+
+            return true;
 
         }
-    );
 
 
-    /* =====================================================
-       AUTHENTICATED USER
-    ===================================================== */
+        /* =================================================
+           FILTER COURSES
+        ================================================== */
 
-    function enableAuthenticatedCourses() {
+        function filterCourses(
+            selectedFilter
+        ) {
 
-        const protectedButtons =
-            document.querySelectorAll(
-                "[data-auth-required]"
+            const filter =
+                normalizeValue(
+                    selectedFilter ||
+                    "all"
+                );
+
+
+            let visibleCourses =
+                0;
+
+
+            courseCards.forEach(
+                card => {
+
+                    const shouldShow =
+                        courseMatchesFilter(
+                            card,
+                            filter
+                        );
+
+
+                    card.classList.toggle(
+                        "hidden",
+                        !shouldShow
+                    );
+
+
+                    if (shouldShow) {
+
+                        visibleCourses++;
+
+                    }
+
+                }
             );
 
 
-        protectedButtons.forEach(button => {
+            /* =============================================
+               EMPTY STATE
+            ============================================== */
 
-            button.removeAttribute("aria-disabled");
+            if (emptyState) {
 
-        });
+                emptyState.classList.toggle(
+                    "visible",
+                    visibleCourses ===
+                    0
+                );
 
-    }
+            }
 
 
-    /* =====================================================
-       GUEST USER
-    ===================================================== */
+            log(
+                "Course filter applied:",
+                {
+                    filter,
+                    visibleCourses
+                }
+            );
 
-    function prepareGuestCourses() {
+        }
 
-        const protectedLinks =
-            document.querySelectorAll(
-                "[data-auth-required]"
+
+        /* =================================================
+           FILTER BUTTON EVENTS
+        ================================================== */
+
+        filterButtons.forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const selectedFilter =
+                            normalizeValue(
+                                button.dataset.filter ||
+                                "all"
+                            );
+
+
+                        filterButtons.forEach(
+                            item => {
+
+                                const isActive =
+                                    item ===
+                                    button;
+
+
+                                item.classList.toggle(
+                                    "active",
+                                    isActive
+                                );
+
+
+                                item.setAttribute(
+                                    "aria-pressed",
+                                    String(
+                                        isActive
+                                    )
+                                );
+
+                            }
+                        );
+
+
+                        filterCourses(
+                            selectedFilter
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           INITIAL FILTER
+        ================================================== */
+
+        filterCourses(
+            "all"
+        );
+
+
+        /* =================================================
+           DISABLED COURSE ACTIONS
+        ================================================== */
+
+        const disabledCourseButtons =
+            Array.from(
+                document.querySelectorAll(
+                    ".course-start-btn.pro-disabled, " +
+                    ".course-card-btn.disabled, " +
+                    ".course-action.disabled, " +
+                    ".course-action.pro-disabled"
+                )
             );
 
 
-        protectedLinks.forEach(link => {
+        disabledCourseButtons.forEach(
+            button => {
 
-            /*
-             * Don't completely hide the course.
-             *
-             * The course catalogue remains public.
-             * Only the actual learning area requires
-             * authentication.
-             */
+                button.addEventListener(
+                    "click",
+                    event => {
 
-            link.addEventListener(
-                "click",
-                handleProtectedCourseAccess
+                        event.preventDefault();
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           AUTHENTICATION
+        ================================================== */
+
+        if (!auth) {
+
+            warn(
+                "Firebase Authentication is unavailable."
             );
 
-        });
 
-    }
-
-
-    /* =====================================================
-       PROTECTED COURSE ACCESS
-    ===================================================== */
-
-    function handleProtectedCourseAccess(event) {
-
-        event.preventDefault();
-
-
-        const destination =
-            this.getAttribute("href");
-
-
-        /*
-         * Preserve the destination so login.js
-         * can return the user to the correct page.
-         */
-
-        if (!destination) {
-
-            window.location.href =
-                "login.html";
+            prepareGuestCourses();
 
             return;
 
         }
 
 
-        const encodedDestination =
-            encodeURIComponent(destination);
+        onAuthStateChanged(
+            auth,
+            user => {
+
+                if (user) {
+
+                    log(
+                        "Courses page: authenticated user",
+                        user.uid
+                    );
 
 
-        window.location.href =
-            `login.html?redirect=${encodedDestination}`;
+                    enableAuthenticatedCourses(
+                        user
+                    );
+
+                }
+                else {
+
+                    log(
+                        "Courses page: visitor is not authenticated"
+                    );
+
+
+                    prepareGuestCourses();
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           AUTHENTICATED USER
+        ================================================== */
+
+        function enableAuthenticatedCourses(
+            user
+        ) {
+
+            const protectedButtons =
+                document.querySelectorAll(
+                    "[data-auth-required]"
+                );
+
+
+            protectedButtons.forEach(
+                button => {
+
+                    button.removeAttribute(
+                        "aria-disabled"
+                    );
+
+                }
+            );
+
+
+            /*
+             * Pro courses remain disabled even for
+             * authenticated users while Pro is paused.
+             */
+
+            document
+                .querySelectorAll(
+                    '.academy-course-card[data-access="pro"]'
+                )
+                .forEach(
+                    card => {
+
+                        card.classList.add(
+                            "pro-locked"
+                        );
+
+
+                        card.setAttribute(
+                            "aria-disabled",
+                            "true"
+                        );
+
+                    }
+                );
+
+
+            log(
+                "Authenticated course access prepared.",
+                {
+                    uid:
+                        user?.uid || null
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           GUEST USER
+        ================================================== */
+
+        function prepareGuestCourses() {
+
+            const protectedLinks =
+                document.querySelectorAll(
+                    "[data-auth-required]"
+                );
+
+
+            protectedLinks.forEach(
+                link => {
+
+                    /*
+                     * Avoid duplicate listeners if Firebase
+                     * emits more than one auth state event.
+                     */
+
+                    if (
+                        link.dataset
+                            .guestHandlerAttached ===
+                        "true"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    link.dataset
+                        .guestHandlerAttached =
+                        "true";
+
+
+                    link.addEventListener(
+                        "click",
+                        handleProtectedCourseAccess
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           PROTECTED COURSE ACCESS
+        ================================================== */
+
+        function handleProtectedCourseAccess(
+            event
+        ) {
+
+            event.preventDefault();
+
+
+            const destination =
+                this.getAttribute(
+                    "href"
+                );
+
+
+            if (!destination) {
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+            const encodedDestination =
+                encodeURIComponent(
+                    destination
+                );
+
+
+            window.location.href =
+                `login.html?redirect=${encodedDestination}`;
+
+        }
 
     }
-
-});
+);
