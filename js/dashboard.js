@@ -57,7 +57,13 @@ import {
 
     courses,
 
-    getCourse
+    getCourse,
+
+    isProCourse,
+
+    isCourseLocked,
+
+    getCourseDisplayStatus
 
 } from "../data/courses.js";
 
@@ -777,17 +783,48 @@ function getCourseStatusText(
     course
 ) {
 
-    if (
-        course.status ===
-        "available"
-    ) {
-
-        return "AVAILABLE";
-
+    if (!course) {
+        return "UNAVAILABLE";
     }
 
+    if (isProCourse(course.id)) {
+        return "PRO";
+    }
+
+    const displayStatus =
+        getCourseDisplayStatus(course.id);
+
+    if (displayStatus.key === "available") {
+        return "AVAILABLE";
+    }
 
     return "PLANNED";
+
+}
+
+
+function getCourseProState(
+    course
+) {
+
+    if (!course) {
+        return {
+            isPro: false,
+            isLocked: false
+        };
+    }
+
+    const isPro =
+        isProCourse(course.id);
+
+    const isLocked =
+        isPro &&
+        isCourseLocked(course.id);
+
+    return {
+        isPro,
+        isLocked
+    };
 
 }
 
@@ -851,20 +888,24 @@ function createCourseCard(
             course.id
         );
 
+    const {
+        isPro,
+        isLocked
+    } =
+        getCourseProState(
+            course
+        );
 
     const article =
         document.createElement(
             "article"
         );
 
-
     article.className =
         "dashboard-course-card";
 
-
     article.dataset.courseId =
         course.id;
-
 
     article.dataset.level =
         course.levelKey ||
@@ -873,13 +914,27 @@ function createCourseCard(
         )
             .toLowerCase();
 
+    article.dataset.status =
+        course.status ||
+        "planned";
 
-    /*
-       Planned courses retain the disabled
-       visual treatment.
-    */
+    article.dataset.access =
+        course.access ||
+        "free";
 
-    if (
+    if (isLocked) {
+
+        article.classList.add(
+            "pro-locked"
+        );
+
+        article.setAttribute(
+            "aria-disabled",
+            "true"
+        );
+
+    }
+    else if (
         course.status !==
         "available"
     ) {
@@ -891,15 +946,10 @@ function createCourseCard(
     }
 
 
-    /* =====================================================
-       TOP
-    ====================================================== */
-
     const top =
         document.createElement(
             "div"
         );
-
 
     top.className =
         "course-card-top";
@@ -910,19 +960,45 @@ function createCourseCard(
             "span"
         );
 
+    if (isPro) {
 
-    status.className =
-        `course-status ${
-            course.status === "available"
-                ? "available"
-                : "planned"
-        }`;
+        status.className =
+            "course-status pro";
 
+        const crown =
+            document.createElement(
+                "i"
+            );
 
-    status.textContent =
-        getCourseStatusText(
-            course
+        crown.className =
+            "fa-solid fa-crown";
+
+        status.appendChild(
+            crown
         );
+
+        status.appendChild(
+            document.createTextNode(
+                " PRO"
+            )
+        );
+
+    }
+    else {
+
+        status.className =
+            `course-status ${
+                course.status === "available"
+                    ? "available"
+                    : "planned"
+            }`;
+
+        status.textContent =
+            getCourseStatusText(
+                course
+            );
+
+    }
 
 
     const level =
@@ -930,10 +1006,8 @@ function createCourseCard(
             "span"
         );
 
-
     level.className =
         "course-level";
-
 
     level.textContent =
         String(
@@ -942,200 +1016,174 @@ function createCourseCard(
         )
             .toUpperCase();
 
-
     top.appendChild(
         status
     );
-
 
     top.appendChild(
         level
     );
 
 
-    /* =====================================================
-       ICON
-    ====================================================== */
-
     const iconContainer =
         document.createElement(
             "div"
         );
 
-
     iconContainer.className =
         "course-icon";
-
 
     const icon =
         document.createElement(
             "i"
         );
 
-
     icon.className =
         course.icon ||
         "fa-solid fa-graduation-cap";
-
 
     iconContainer.appendChild(
         icon
     );
 
 
-    /* =====================================================
-       TITLE
-    ====================================================== */
-
     const title =
         document.createElement(
             "h3"
         );
-
 
     title.textContent =
         course.title ||
         "CWS Academy Course";
 
 
-    /* =====================================================
-       DESCRIPTION
-    ====================================================== */
-
     const description =
         document.createElement(
             "p"
         );
-
 
     description.textContent =
         course.description ||
         "Course information coming soon.";
 
 
-    /* =====================================================
-       META
-    ====================================================== */
-
     const meta =
         document.createElement(
             "div"
         );
 
-
     meta.className =
         "course-meta";
 
-
     const moduleCount =
-
         Array.isArray(
             course.modules
         )
             ? course.modules.length
             : 0;
 
-
     if (
-        course.status ===
-        "available"
+        course.status === "available" ||
+        isPro
     ) {
 
         meta.appendChild(
-
             createCourseMetaItem(
-
                 "fa-solid fa-book",
-
                 `${moduleCount} Module${
                     moduleCount === 1
                         ? ""
                         : "s"
                 }`
-
             )
-
         );
-
 
         const labs =
             getTotalLabs(
                 course
             );
 
-
         if (labs > 0) {
 
             meta.appendChild(
-
                 createCourseMetaItem(
-
                     "fa-solid fa-flask",
-
                     `${labs} Lab${
                         labs === 1
                             ? ""
                             : "s"
                     }`
-
                 )
-
             );
 
         }
-
 
         const assessments =
             getTotalAssessments(
                 course
             );
 
-
         if (assessments > 0) {
 
             meta.appendChild(
-
                 createCourseMetaItem(
-
                     "fa-solid fa-bullseye",
-
                     `${assessments} Assessment${
                         assessments === 1
                             ? ""
                             : "s"
                     }`
-
                 )
-
             );
 
         }
 
-    } else {
+    }
+    else {
 
         meta.appendChild(
-
             createCourseMetaItem(
-
                 "fa-solid fa-clock",
-
                 "Planned"
-
             )
-
         );
 
     }
 
 
-    /* =====================================================
-       ACTION
-    ====================================================== */
-
     let action;
 
+    if (isLocked) {
 
-    if (
+        action =
+            document.createElement(
+                "button"
+            );
+
+        action.type =
+            "button";
+
+        action.className =
+            "course-card-btn pro-disabled";
+
+        action.disabled =
+            true;
+
+        action.setAttribute(
+            "aria-disabled",
+            "true"
+        );
+
+        action.title =
+            "CWS Academy Pro is coming soon";
+
+        action.innerHTML = `
+            <i class="fa-solid fa-lock"></i>
+            Pro Coming Soon
+        `;
+
+    }
+    else if (
         course.status ===
         "available"
     ) {
@@ -1145,35 +1193,24 @@ function createCourseCard(
                 "a"
             );
 
-
         action.className =
             "course-card-btn";
-
 
         action.href =
             buildCourseUrl(
                 course.id
             );
 
-
-        /*
-           Optional dashboard status.
-        */
-
         if (
             progress?.completed
         ) {
 
             action.innerHTML = `
-
                 Review Course
-
                 <i class="fa-solid fa-rotate-right"></i>
-
             `;
 
         }
-
         else if (
             progress?.started ||
             progress?.completedLessons
@@ -1181,46 +1218,36 @@ function createCourseCard(
         ) {
 
             action.innerHTML = `
-
                 Continue Course
-
                 <i class="fa-solid fa-arrow-right"></i>
-
             `;
 
         }
-
         else {
 
             action.innerHTML = `
-
                 View Course
-
                 <i class="fa-solid fa-arrow-right"></i>
-
             `;
 
         }
 
-    } else {
+    }
+    else {
 
         action =
             document.createElement(
                 "button"
             );
 
-
         action.type =
             "button";
-
 
         action.className =
             "course-card-btn disabled";
 
-
         action.disabled =
             true;
-
 
         action.textContent =
             "Coming Soon";
@@ -1228,39 +1255,29 @@ function createCourseCard(
     }
 
 
-    /* =====================================================
-       ASSEMBLE
-    ====================================================== */
-
     article.appendChild(
         top
     );
-
 
     article.appendChild(
         iconContainer
     );
 
-
     article.appendChild(
         title
     );
-
 
     article.appendChild(
         description
     );
 
-
     article.appendChild(
         meta
     );
 
-
     article.appendChild(
         action
     );
-
 
     return article;
 
@@ -1287,17 +1304,23 @@ function sortCoursesForDashboard(
                 */
 
                 const statusA =
-                    courseA.status ===
-                    "available"
-                        ? 0
-                        : 1;
+                    isCourseLocked(
+                        courseA.id
+                    )
+                        ? 1
+                        : courseA.status === "available"
+                            ? 0
+                            : 2;
 
 
                 const statusB =
-                    courseB.status ===
-                    "available"
-                        ? 0
-                        : 1;
+                    isCourseLocked(
+                        courseB.id
+                    )
+                        ? 1
+                        : courseB.status === "available"
+                            ? 0
+                            : 2;
 
 
                 if (
@@ -1570,8 +1593,10 @@ function findContinueCourse() {
 
 
                     return (
-                        course.status ===
-                        "available"
+                        course.status === "available" &&
+                        !isCourseLocked(
+                            course.id
+                        )
                     );
 
                 }
