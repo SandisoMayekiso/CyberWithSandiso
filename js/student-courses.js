@@ -56,7 +56,13 @@ import {
 
 import {
 
-    courses
+    courses,
+
+    isProCourse,
+
+    isCourseLocked,
+
+    getCourseDisplayStatus
 
 } from "../data/courses.js";
 
@@ -753,25 +759,52 @@ function sortCourses(
                 courseB
             ) => {
 
-
                 /*
-                   Available courses first.
+                   Free available courses first,
+                   locked Pro courses second,
+                   other planned courses last.
                 */
 
-                const statusA =
+                const rankCourse =
+                    course => {
 
-                    courseA.status ===
-                        "available"
-                        ? 0
-                        : 1;
+                        if (
+                            isProCourse(
+                                course.id
+                            ) &&
+                            isCourseLocked(
+                                course.id
+                            )
+                        ) {
+
+                            return 1;
+
+                        }
+
+                        if (
+                            course.status ===
+                            "available"
+                        ) {
+
+                            return 0;
+
+                        }
+
+                        return 2;
+
+                    };
+
+
+                const statusA =
+                    rankCourse(
+                        courseA
+                    );
 
 
                 const statusB =
-
-                    courseB.status ===
-                        "available"
-                        ? 0
-                        : 1;
+                    rankCourse(
+                        courseB
+                    );
 
 
                 if (
@@ -786,10 +819,6 @@ function sortCourses(
 
                 }
 
-
-                /*
-                   Optional order property.
-                */
 
                 const orderA =
                     Number(
@@ -818,10 +847,6 @@ function sortCourses(
                 }
 
 
-                /*
-                   Fallback alphabetical.
-                */
-
                 return String(
                     courseA.title || ""
                 )
@@ -846,20 +871,38 @@ function updateCourseCatalogSummary() {
 
     const available =
         courseCatalog.filter(
-
             course =>
+
                 course.status ===
-                "available"
+                    "available" &&
+
+                !(
+                    isProCourse(
+                        course.id
+                    ) &&
+                    isCourseLocked(
+                        course.id
+                    )
+                )
 
         ).length;
 
 
     const planned =
         courseCatalog.filter(
-
             course =>
+
                 course.status ===
-                "planned"
+                    "planned" ||
+
+                (
+                    isProCourse(
+                        course.id
+                    ) &&
+                    isCourseLocked(
+                        course.id
+                    )
+                )
 
         ).length;
 
@@ -869,7 +912,6 @@ function updateCourseCatalogSummary() {
     ) {
 
         availableCourseCount.textContent =
-
             `${available} Available`;
 
     }
@@ -880,8 +922,7 @@ function updateCourseCatalogSummary() {
     ) {
 
         plannedCourseCount.textContent =
-
-            `${planned} Planned`;
+            `${planned} Planned / Pro`;
 
     }
 
@@ -946,6 +987,25 @@ function createCourseCard(
         );
 
 
+    const isPro =
+        isProCourse(
+            course.id
+        );
+
+
+    const isLockedPro =
+        isPro &&
+        isCourseLocked(
+            course.id
+        );
+
+
+    const displayStatus =
+        getCourseDisplayStatus(
+            course.id
+        );
+
+
     const card =
         document.createElement(
             "article"
@@ -973,7 +1033,25 @@ function createCourseCard(
         "planned";
 
 
-    if (
+    card.dataset.access =
+        course.access ||
+        "free";
+
+
+    if (isLockedPro) {
+
+        card.classList.add(
+            "pro-locked"
+        );
+
+
+        card.setAttribute(
+            "aria-disabled",
+            "true"
+        );
+
+    }
+    else if (
         course.status !==
         "available"
     ) {
@@ -1005,19 +1083,53 @@ function createCourseCard(
         );
 
 
-    status.className =
-        `course-status ${
-            course.status === "available"
-                ? "available"
-                : "planned"
-        }`;
+    if (isPro) {
+
+        status.className =
+            "course-status pro";
 
 
-    status.textContent =
+        const crownIcon =
+            document.createElement(
+                "i"
+            );
 
-        course.status === "available"
-            ? "AVAILABLE"
-            : "PLANNED";
+
+        crownIcon.className =
+            "fa-solid fa-crown";
+
+
+        status.appendChild(
+            crownIcon
+        );
+
+
+        status.appendChild(
+            document.createTextNode(
+                " PRO"
+            )
+        );
+
+    }
+    else {
+
+        status.className =
+            `course-status ${
+                displayStatus.key ===
+                    "available"
+                    ? "available"
+                    : "planned"
+            }`;
+
+
+        status.textContent =
+            String(
+                displayStatus.label ||
+                "Planned"
+            )
+                .toUpperCase();
+
+    }
 
 
     const level =
@@ -1122,19 +1234,24 @@ function createCourseCard(
         "course-meta";
 
 
+    const moduleCount =
+        Array.isArray(
+            course.modules
+        )
+            ? course.modules.length
+            : 0;
+
+
+    /*
+       Pro courses remain visible as curriculum previews
+       while Pro access is temporarily disabled.
+    */
+
     if (
         course.status ===
-        "available"
+            "available" ||
+        isPro
     ) {
-
-        const moduleCount =
-
-            Array.isArray(
-                course.modules
-            )
-                ? course.modules.length
-                : 0;
-
 
         meta.appendChild(
 
@@ -1208,7 +1325,8 @@ function createCourseCard(
 
         }
 
-    } else {
+    }
+    else {
 
         meta.appendChild(
 
@@ -1230,8 +1348,9 @@ function createCourseCard(
     ====================================================== */
 
     if (
+        !isLockedPro &&
         course.status ===
-        "available" &&
+            "available" &&
         progress &&
         (
             progress.started ||
@@ -1294,16 +1413,6 @@ function createCourseCard(
         `;
 
 
-        meta.insertAdjacentElement(
-            "afterend",
-            progressWrapper
-        );
-
-
-        /*
-           We need this later when assembling.
-        */
-
         card._progressElement =
             progressWrapper;
 
@@ -1317,7 +1426,46 @@ function createCourseCard(
     let action;
 
 
-    if (
+    if (isLockedPro) {
+
+        action =
+            document.createElement(
+                "button"
+            );
+
+
+        action.type =
+            "button";
+
+
+        action.className =
+            "course-action pro-disabled";
+
+
+        action.disabled =
+            true;
+
+
+        action.setAttribute(
+            "aria-disabled",
+            "true"
+        );
+
+
+        action.title =
+            "CWS Academy Pro is coming soon";
+
+
+        action.innerHTML = `
+
+            <i class="fa-solid fa-lock"></i>
+
+            Pro Coming Soon
+
+        `;
+
+    }
+    else if (
         course.status ===
         "available"
     ) {
@@ -1351,7 +1499,6 @@ function createCourseCard(
             `;
 
         }
-
         else if (
             progress?.started ||
             progress
@@ -1368,7 +1515,6 @@ function createCourseCard(
             `;
 
         }
-
         else {
 
             action.innerHTML = `
@@ -1381,7 +1527,8 @@ function createCourseCard(
 
         }
 
-    } else {
+    }
+    else {
 
         action =
             document.createElement(
@@ -1478,6 +1625,15 @@ function matchesFilter(
     }
 
 
+    const isLockedPro =
+        isProCourse(
+            course.id
+        ) &&
+        isCourseLocked(
+            course.id
+        );
+
+
     if (
         currentFilter ===
         "available"
@@ -1485,7 +1641,8 @@ function matchesFilter(
 
         return (
             course.status ===
-            "available"
+                "available" &&
+            !isLockedPro
         );
 
     }
@@ -1498,7 +1655,8 @@ function matchesFilter(
 
         return (
             course.status ===
-            "planned"
+                "planned" ||
+            isLockedPro
         );
 
     }
