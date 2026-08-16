@@ -1,6 +1,79 @@
 /* =========================================================
    CWS ACADEMY
    PYTHON FUNDAMENTALS FOR CYBERSECURITY
+   INTERMEDIATE • FREE
+
+   Practical Python programming for cybersecurity learners.
+========================================================= */
+
+
+/* =========================================================
+   LESSON BUILDER
+========================================================= */
+
+function lesson(
+    id,
+    title,
+    duration,
+    extra = {}
+) {
+
+    return {
+
+        id,
+        title,
+        duration,
+
+        access:
+            "free",
+
+        type:
+            extra.type ||
+            "Lesson",
+
+        subtitle:
+            extra.subtitle ||
+            `Learn ${title} through practical Python examples.`,
+
+        icon:
+            extra.icon ||
+            "fa-brands fa-python",
+
+        objectives:
+            extra.objectives ||
+            [],
+
+        introduction:
+            extra.introduction ||
+            "",
+
+        body:
+            extra.body ||
+            "",
+
+        keyConcepts:
+            extra.keyConcepts ||
+            [],
+
+        commands:
+            extra.commands ||
+            [],
+
+        lab:
+            extra.lab ||
+            null,
+
+        quiz:
+            extra.quiz ||
+            []
+
+    };
+
+}
+
+
+/* =========================================================
+   COURSE
 ========================================================= */
 
 export const pythonCybersecurityFundamentals = {
@@ -12,7 +85,7 @@ export const pythonCybersecurityFundamentals = {
         "Python Fundamentals for Cybersecurity",
 
     overviewTitle:
-        "Python Fundamentals for Cybersecurity",
+        "Learn Python Through Cybersecurity",
 
     category:
         "CWS ACADEMY • PYTHON",
@@ -36,31 +109,36 @@ export const pythonCybersecurityFundamentals = {
         "Learn Python fundamentals through cybersecurity-focused examples including files, HTTP requests, data processing and simple automation.",
 
     longDescription:
-        "Python Fundamentals for Cybersecurity introduces programming concepts through practical security-oriented tasks, preparing students for later automation and offensive-security courses.",
+        "Python Fundamentals for Cybersecurity introduces programming through practical security-oriented tasks. Students learn variables, data structures, conditions, loops, functions, files, JSON, exceptions, logging, HTTP requests, networking concepts and safe automation. The course finishes with a small cybersecurity automation project designed for local or explicitly authorized lab environments.",
 
     duration:
-        "18–24 hours",
+        "18–24 Hours",
 
     objectives: [
-        "Understand core Python syntax and data types.",
 
-        "Use conditions and loops to control Python programs.",
+        "Understand Python syntax, variables and core data types.",
+        "Use lists, dictionaries and other collections.",
+        "Build decision-making logic with conditions.",
+        "Automate repetitive processing with loops.",
+        "Write reusable functions and import modules.",
+        "Read and write files safely.",
+        "Parse JSON and structured security data.",
+        "Handle errors using exceptions.",
+        "Add useful logging to automation scripts.",
+        "Understand HTTP requests and responses.",
+        "Learn basic socket and networking concepts.",
+        "Build and document a cybersecurity-focused Python automation project."
 
-        "Write reusable functions and organize code into modules.",
-
-        "Process files and structured data safely.",
-
-        "Handle errors and add practical logging to scripts.",
-
-        "Use Python to make and inspect HTTP requests.",
-
-        "Understand basic sockets and network programming concepts.",
-
-        "Build and document a simple cybersecurity-focused Python project."
     ],
 
     modules: [
+
+        /* =================================================
+           MODULE 01
+        ================================================= */
+
         {
+
             id:
                 "module-01",
 
@@ -71,96 +149,358 @@ export const pythonCybersecurityFundamentals = {
                 "Python Foundations",
 
             description:
-                "Learn Python syntax, variables, data types and execution.",
+                "Learn Python syntax, variables, data types, collections and basic program execution.",
 
             access:
                 "free",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Python and Cybersecurity",
-
-                    duration:
-                        "20 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Python is widely used for automation, data processing and security tooling."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Variables and Data Types",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Python variables can hold strings, numbers, booleans, lists and other useful data structures."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Input, Output and Formatting",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Programs read input, produce output and format information for users or logs."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                lesson(
+                    "lesson-01",
+                    "Python and Cybersecurity",
+                    "30 minutes",
+                    {
+
+                        objectives: [
+
+                            "Explain what Python is.",
+                            "Describe common cybersecurity uses for Python.",
+                            "Run Python interactively.",
+                            "Execute a Python script."
+
+                        ],
+
+                        introduction: `
+                            <h2>Why Python?</h2>
+
+                            <p>
+                                Cybersecurity professionals often need to
+                                process data, automate repetitive tasks,
+                                communicate with APIs and build small tools.
+                                Python is popular for these tasks because its
+                                syntax is readable and its ecosystem is large.
+                            </p>
+                        `,
+
+                        body: `
+                            <h2>Python as an Automation Language</h2>
+
+                            <p>
+                                Python can help with defensive analysis,
+                                reporting, file processing, API interaction,
+                                lab automation and many other legitimate
+                                security workflows.
+                            </p>
+
+                            <h2>Interactive Python</h2>
+
+                            <pre><code>python3</code></pre>
+
+                            <p>
+                                This opens the Python interpreter on many Linux
+                                systems.
+                            </p>
+
+                            <pre><code>print("Welcome to CWS Academy")</code></pre>
+
+                            <h2>Python Scripts</h2>
+
+                            <p>
+                                Python code can also be saved to a file such as
+                                <code>hello.py</code>.
+                            </p>
+
+                            <pre><code>print("CWS Academy")
+print("Python for Cybersecurity")</code></pre>
+
+                            <p>
+                                Run it with:
+                            </p>
+
+                            <pre><code>python3 hello.py</code></pre>
+
+                            <div class="lesson-callout">
+                                <div class="lesson-callout-icon">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+
+                                <div>
+                                    <strong>CWS Security Principle</strong>
+
+                                    <p>
+                                        Automation does not create
+                                        authorization. Security scripts must
+                                        only interact with systems, accounts
+                                        and data you are permitted to use.
+                                    </p>
+                                </div>
+                            </div>
+                        `,
+
+                        commands: [
+
+                            {
+                                command:
+                                    "python3 --version",
+
+                                explanation:
+                                    "Displays the installed Python 3 version."
+                            },
+
+                            {
+                                command:
+                                    "python3 hello.py",
+
+                                explanation:
+                                    "Runs a Python script named hello.py."
+                            }
+
+                        ],
+
+                        lab: {
+
+                            title:
+                                "Create Your First Python Security Script",
+
+                            objective:
+                                "Create a simple script that displays basic lab information.",
+
+                            steps: [
+
+                                "Create a file named cws_intro.py.",
+                                "Print the heading CWS Academy Python Lab.",
+                                "Print your chosen lab name.",
+                                "Print a short statement explaining what you want to automate with Python.",
+                                "Save the file.",
+                                "Run it with python3 cws_intro.py."
+
+                            ],
+
+                            successCriteria:
+                                "The Python script executes without errors and prints all requested information."
+
+                        },
+
+                        quiz: [
+
+                            {
+                                question:
+                                    "Why is Python useful in cybersecurity?",
+
+                                options: [
+
+                                    "It can only create websites.",
+                                    "It can automate and process many security-related workflows.",
+                                    "It replaces operating systems.",
+                                    "It can only run on Windows."
+
+                                ],
+
+                                answer:
+                                    1
+                            }
+
+                        ]
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-02",
+                    "Variables and Data Types",
+                    "40 minutes",
+                    {
+
+                        objectives: [
+
+                            "Create variables.",
+                            "Work with strings, integers, floats and booleans.",
+                            "Inspect data types.",
+                            "Convert between compatible types."
+
+                        ],
+
+                        body: `
+                            <h2>Variables</h2>
+
+                            <pre><code>username = "student"
+failed_logins = 3
+risk_score = 7.5
+account_locked = False</code></pre>
+
+                            <p>
+                                Python determines the data type from the value
+                                assigned to the variable.
+                            </p>
+
+                            <h2>Common Types</h2>
+
+                            <pre><code>str
+int
+float
+bool</code></pre>
+
+                            <h2>Inspecting Types</h2>
+
+                            <pre><code>print(type(username))
+print(type(failed_logins))</code></pre>
+
+                            <h2>Type Conversion</h2>
+
+                            <pre><code>port_text = "443"
+port = int(port_text)</code></pre>
+
+                            <p>
+                                Data received from users, files and network
+                                services may need validation and conversion
+                                before use.
+                            </p>
+                        `,
+
+                        keyConcepts: [
+
+                            {
+                                title:
+                                    "String",
+
+                                description:
+                                    "Text data such as usernames, hostnames and log messages."
+                            },
+
+                            {
+                                title:
+                                    "Integer",
+
+                                description:
+                                    "Whole numbers such as port numbers or event counts."
+                            },
+
+                            {
+                                title:
+                                    "Boolean",
+
+                                description:
+                                    "A True or False value useful for program decisions."
+                            }
+
+                        ],
+
+                        quiz: [
+
+                            {
+                                question:
+                                    "What type is the value 443 in Python?",
+
+                                options: [
+
+                                    "str",
+                                    "int",
+                                    "bool",
+                                    "list"
+
+                                ],
+
+                                answer:
+                                    1
+                            }
+
+                        ]
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-03",
+                    "Lists and Dictionaries",
+                    "45 minutes",
+                    {
+
+                        objectives: [
+
+                            "Store multiple values in lists.",
+                            "Access list elements.",
+                            "Store key-value data in dictionaries.",
+                            "Apply collections to cybersecurity data."
+
+                        ],
+
+                        body: `
+                            <h2>Lists</h2>
+
+                            <pre><code>ports = [22, 80, 443]
+
+print(ports[0])
+print(len(ports))</code></pre>
+
+                            <h2>Dictionaries</h2>
+
+                            <pre><code>host = {
+    "ip": "192.168.56.10",
+    "hostname": "lab-server",
+    "status": "online"
+}
+
+print(host["hostname"])</code></pre>
+
+                            <p>
+                                Dictionaries are particularly useful when
+                                processing structured security records.
+                            </p>
+
+                            <h2>Nested Data</h2>
+
+                            <pre><code>assets = [
+    {"name": "server01", "os": "Linux"},
+    {"name": "client01", "os": "Windows"}
+]</code></pre>
+                        `,
+
+                        lab: {
+
+                            title:
+                                "Build a Small Asset Inventory",
+
+                            objective:
+                                "Represent lab systems using Python dictionaries and lists.",
+
+                            steps: [
+
+                                "Create a list named assets.",
+                                "Add at least three dictionaries to the list.",
+                                "Give each asset a name, IP address and operating system.",
+                                "Print the complete list.",
+                                "Print only the name of the first asset."
+
+                            ],
+
+                            successCriteria:
+                                "The script stores and retrieves structured asset information correctly."
+
+                        }
+
+                    }
+                )
+
+            ]
+
         },
 
 
+        /* =================================================
+           MODULE 02
+        ================================================= */
+
         {
+
             id:
                 "module-02",
 
@@ -171,96 +511,167 @@ export const pythonCybersecurityFundamentals = {
                 "Conditions and Loops",
 
             description:
-                "Control program flow using conditions and repetition.",
+                "Control program behavior using conditions and repetitive processing.",
 
             access:
                 "free",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "If Statements",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Conditional statements let programs make decisions based on data."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "For Loops",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "For loops iterate through collections such as lists, files and ranges."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "While Loops",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "While loops continue processing while a condition remains true."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                lesson(
+                    "lesson-01",
+                    "If, Elif and Else",
+                    "40 minutes",
+                    {
+
+                        objectives: [
+
+                            "Create Boolean conditions.",
+                            "Use if, elif and else.",
+                            "Compare strings and numbers.",
+                            "Build simple security classification logic."
+
+                        ],
+
+                        body: `
+                            <h2>Making Decisions</h2>
+
+                            <pre><code>failed_logins = 7
+
+if failed_logins >= 10:
+    print("High")
+elif failed_logins >= 5:
+    print("Medium")
+else:
+    print("Low")</code></pre>
+
+                            <p>
+                                Indentation is part of Python syntax. Statements
+                                belonging to a condition must be indented
+                                consistently.
+                            </p>
+
+                            <h2>Comparison Operators</h2>
+
+                            <pre><code>==
+!=
+&gt;
+&lt;
+&gt;=
+&lt;=</code></pre>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-02",
+                    "For Loops",
+                    "40 minutes",
+                    {
+
+                        body: `
+                            <h2>Processing Collections</h2>
+
+                            <pre><code>ports = [22, 80, 443]
+
+for port in ports:
+    print(f"Configured port: {port}")</code></pre>
+
+                            <h2>Looping Through Dictionaries</h2>
+
+                            <pre><code>host = {
+    "name": "server01",
+    "os": "Linux"
+}
+
+for key, value in host.items():
+    print(key, value)</code></pre>
+
+                            <p>
+                                Security datasets frequently contain many
+                                records. Loops allow each record to be processed
+                                consistently.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-03",
+                    "While Loops and Loop Control",
+                    "35 minutes",
+                    {
+
+                        body: `
+                            <h2>While Loops</h2>
+
+                            <pre><code>attempt = 1
+
+while attempt &lt;= 3:
+    print(f"Attempt {attempt}")
+    attempt += 1</code></pre>
+
+                            <h2>Break and Continue</h2>
+
+                            <p>
+                                <code>break</code> exits a loop.
+                                <code>continue</code> skips to the next
+                                iteration.
+                            </p>
+
+                            <p>
+                                Always ensure that a while loop can eventually
+                                stop.
+                            </p>
+                        `,
+
+                        lab: {
+
+                            title:
+                                "Analyze Login Counts",
+
+                            objective:
+                                "Classify a harmless set of sample login-failure counts.",
+
+                            steps: [
+
+                                "Create a dictionary containing usernames and sample failed-login counts.",
+                                "Loop through the dictionary.",
+                                "Classify each count as Low, Medium or High using if statements.",
+                                "Print the username, count and classification.",
+                                "Verify that all sample users are processed."
+
+                            ],
+
+                            successCriteria:
+                                "Every sample account receives the expected classification."
+
+                        }
+
+                    }
+                )
+
+            ]
+
         },
 
 
+        /* =================================================
+           MODULE 03
+        ================================================= */
+
         {
+
             id:
                 "module-03",
 
@@ -271,96 +682,157 @@ export const pythonCybersecurityFundamentals = {
                 "Functions and Modules",
 
             description:
-                "Organize reusable code with functions and imports.",
+                "Organize reusable Python code using functions, parameters, return values and imports.",
 
             access:
                 "free",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Writing Functions",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Functions group reusable logic behind clear parameters and return values."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Scope and Return Values",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Variable scope and return values help functions communicate predictably."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Using Modules",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Modules let Python programs reuse functionality from the standard library or installed packages."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                lesson(
+                    "lesson-01",
+                    "Writing Functions",
+                    "40 minutes",
+                    {
+
+                        body: `
+                            <h2>Reusable Logic</h2>
+
+                            <pre><code>def classify_login_count(count):
+    if count >= 10:
+        return "High"
+
+    if count >= 5:
+        return "Medium"
+
+    return "Low"</code></pre>
+
+                            <p>
+                                Functions help avoid repeating the same logic
+                                throughout a program.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-02",
+                    "Parameters, Scope and Return Values",
+                    "40 minutes",
+                    {
+
+                        body: `
+                            <h2>Parameters</h2>
+
+                            <pre><code>def describe_host(name, ip):
+    return f"{name}: {ip}"
+
+result = describe_host(
+    "server01",
+    "192.168.56.10"
+)
+
+print(result)</code></pre>
+
+                            <p>
+                                Parameters provide input to a function.
+                                Return values send results back to the calling
+                                code.
+                            </p>
+
+                            <h2>Scope</h2>
+
+                            <p>
+                                Variables created inside a function are
+                                generally local to that function. Keeping data
+                                scoped appropriately makes code easier to
+                                understand.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-03",
+                    "Using Python Modules",
+                    "40 minutes",
+                    {
+
+                        body: `
+                            <h2>The Standard Library</h2>
+
+                            <pre><code>import platform
+import datetime
+
+print(platform.system())
+print(datetime.datetime.now())</code></pre>
+
+                            <p>
+                                Python includes many modules without requiring
+                                third-party packages.
+                            </p>
+
+                            <h2>Import Specific Names</h2>
+
+                            <pre><code>from pathlib import Path
+
+current = Path.cwd()
+print(current)</code></pre>
+
+                            <p>
+                                Prefer well-maintained libraries and understand
+                                why a dependency is required before adding it to
+                                a security project.
+                            </p>
+                        `,
+
+                        lab: {
+
+                            title:
+                                "Reusable Host Report Functions",
+
+                            objective:
+                                "Create functions that format basic host information.",
+
+                            steps: [
+
+                                "Import platform.",
+                                "Create a function that returns the operating system name.",
+                                "Create another function that formats a hostname and IP address.",
+                                "Call both functions.",
+                                "Print the returned values."
+
+                            ],
+
+                            successCriteria:
+                                "The program uses functions and at least one standard-library module successfully."
+
+                        }
+
+                    }
+                )
+
+            ]
+
         },
 
 
+        /* =================================================
+           MODULE 04
+        ================================================= */
+
         {
+
             id:
                 "module-04",
 
@@ -368,99 +840,168 @@ export const pythonCybersecurityFundamentals = {
                 4,
 
             title:
-                "Files and Data",
+                "Files and Security Data",
 
             description:
-                "Read, write and parse common data formats.",
+                "Read, write and process text, CSV-like data and JSON safely.",
 
             access:
                 "free",
 
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Reading and Writing Files",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Python can read and write text files for automation and analysis."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Working with JSON",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "JSON is common in APIs, logs and security tools and maps naturally to Python dictionaries and lists."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Parsing Text Data",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Structured parsing is more reliable than manually copying data between tools."
-                        }
-                    ]
-                }
-
-            ],
-
             labs:
-                1,
+                2,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                lesson(
+                    "lesson-01",
+                    "Reading and Writing Files",
+                    "45 minutes",
+                    {
+
+                        body: `
+                            <h2>Reading Text Files</h2>
+
+                            <pre><code>from pathlib import Path
+
+path = Path("sample.log")
+
+text = path.read_text(
+    encoding="utf-8"
+)
+
+print(text)</code></pre>
+
+                            <h2>Writing Reports</h2>
+
+                            <pre><code>report = Path("report.txt")
+
+report.write_text(
+    "CWS Security Report\n",
+    encoding="utf-8"
+)</code></pre>
+
+                            <p>
+                                Be careful when writing files. Overwriting an
+                                existing file may destroy useful evidence or
+                                data.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-02",
+                    "Working with JSON",
+                    "45 minutes",
+                    {
+
+                        body: `
+                            <h2>Structured Data</h2>
+
+                            <pre><code>import json
+
+data = {
+    "host": "server01",
+    "status": "online"
+}
+
+json_text = json.dumps(
+    data,
+    indent=4
+)
+
+print(json_text)</code></pre>
+
+                            <h2>Reading JSON</h2>
+
+                            <pre><code>with open(
+    "assets.json",
+    "r",
+    encoding="utf-8"
+) as file:
+    assets = json.load(file)</code></pre>
+
+                            <p>
+                                APIs and security tools frequently use JSON for
+                                structured input and output.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-03",
+                    "Parsing Security Data",
+                    "45 minutes",
+                    {
+
+                        body: `
+                            <h2>Processing Lines</h2>
+
+                            <pre><code>events = [
+    "INFO login successful",
+    "WARNING failed login",
+    "ERROR account locked"
+]
+
+for event in events:
+
+    if "failed" in event.lower():
+        print(event)</code></pre>
+
+                            <p>
+                                Small scripts can help analysts filter and
+                                summarize large amounts of text before manual
+                                review.
+                            </p>
+                        `,
+
+                        lab: {
+
+                            title:
+                                "Security Event Summary",
+
+                            objective:
+                                "Read a harmless sample log and create an event summary.",
+
+                            steps: [
+
+                                "Create a sample log file containing INFO, WARNING and ERROR records.",
+                                "Read the file using Python.",
+                                "Count each event type.",
+                                "Store the counts in a dictionary.",
+                                "Write the summary to summary.json.",
+                                "Open the JSON file and verify its contents."
+
+                            ],
+
+                            successCriteria:
+                                "The program accurately summarizes the sample log and creates valid JSON."
+
+                        }
+
+                    }
+                )
+
+            ]
+
         },
 
 
+        /* =================================================
+           MODULE 05
+        ================================================= */
+
         {
+
             id:
                 "module-05",
 
@@ -468,99 +1009,169 @@ export const pythonCybersecurityFundamentals = {
                 5,
 
             title:
-                "Exceptions and Logging",
+                "Exceptions, Validation and Logging",
 
             description:
-                "Handle errors and record useful program events.",
+                "Handle failures safely and produce useful diagnostic information.",
 
             access:
                 "free",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Exceptions",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Exceptions allow programs to handle expected failures without crashing unpredictably."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Validation",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Input validation helps prevent bad data from producing unsafe or confusing behavior."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Logging",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Logging records useful runtime information for troubleshooting and auditing."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                lesson(
+                    "lesson-01",
+                    "Exceptions",
+                    "40 minutes",
+                    {
+
+                        body: `
+                            <h2>Handling Expected Errors</h2>
+
+                            <pre><code>try:
+    port = int("443")
+    print(port)
+
+except ValueError:
+    print("Invalid port value")</code></pre>
+
+                            <p>
+                                Exception handling allows programs to respond
+                                cleanly to expected problems.
+                            </p>
+
+                            <h2>Avoid Catching Everything Blindly</h2>
+
+                            <p>
+                                Catch specific exceptions where possible.
+                                Hiding every error can make troubleshooting and
+                                security review difficult.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-02",
+                    "Input Validation",
+                    "40 minutes",
+                    {
+
+                        body: `
+                            <h2>Validate Before Use</h2>
+
+                            <pre><code>port = 443
+
+if not 1 &lt;= port &lt;= 65535:
+    raise ValueError(
+        "Port must be between 1 and 65535"
+    )</code></pre>
+
+                            <p>
+                                Scripts should define what valid input looks
+                                like instead of trusting arbitrary values.
+                            </p>
+
+                            <h2>Security Benefit</h2>
+
+                            <p>
+                                Validation reduces unexpected behavior and helps
+                                keep automation inside intended boundaries.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-03",
+                    "Logging",
+                    "40 minutes",
+                    {
+
+                        body: `
+                            <h2>Using logging</h2>
+
+                            <pre><code>import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: %(message)s"
+)
+
+logging.info(
+    "CWS analysis started"
+)</code></pre>
+
+                            <p>
+                                Logs provide useful records for troubleshooting
+                                and auditing program behavior.
+                            </p>
+
+                            <div class="lesson-callout">
+                                <div class="lesson-callout-icon">
+                                    <i class="fa-solid fa-lock"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Do Not Log Secrets</strong>
+
+                                    <p>
+                                        Passwords, API keys, authentication
+                                        tokens and other secrets should not be
+                                        written to ordinary logs.
+                                    </p>
+                                </div>
+                            </div>
+                        `,
+
+                        lab: {
+
+                            title:
+                                "Build a Validated Data Processor",
+
+                            objective:
+                                "Add validation, exception handling and logging to a small script.",
+
+                            steps: [
+
+                                "Ask the user for a numeric port value.",
+                                "Convert the input to an integer inside a try block.",
+                                "Reject values outside 1 through 65535.",
+                                "Log successful validation.",
+                                "Print a clear error for invalid input.",
+                                "Test valid text, invalid text and out-of-range values."
+
+                            ],
+
+                            successCriteria:
+                                "The script handles all tested input without an uncontrolled crash."
+
+                        }
+
+                    }
+                )
+
+            ]
+
         },
 
 
+        /* =================================================
+           MODULE 06
+        ================================================= */
+
         {
+
             id:
                 "module-06",
 
@@ -568,99 +1179,166 @@ export const pythonCybersecurityFundamentals = {
                 6,
 
             title:
-                "HTTP Requests",
+                "HTTP Requests and APIs",
 
             description:
-                "Interact with web services and APIs from Python.",
+                "Understand web requests and safely automate approved HTTP interactions.",
 
             access:
                 "free",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "HTTP with Python",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Python libraries can send HTTP requests and inspect responses for automation tasks."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Headers, Parameters and JSON",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Requests often include headers, query parameters and JSON bodies."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Safe API Automation",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Automated API interaction should respect authorization, rate limits and scope."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                lesson(
+                    "lesson-01",
+                    "HTTP Fundamentals for Python",
+                    "45 minutes",
+                    {
+
+                        body: `
+                            <h2>Requests and Responses</h2>
+
+                            <p>
+                                HTTP clients send requests to web servers and
+                                receive responses containing status codes,
+                                headers and optional body data.
+                            </p>
+
+                            <h2>Common Methods</h2>
+
+                            <pre><code>GET
+POST
+PUT
+PATCH
+DELETE</code></pre>
+
+                            <p>
+                                This course uses read-only or controlled lab
+                                examples. Later web-security courses explore
+                                application security in greater depth.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-02",
+                    "Making Requests with Python",
+                    "50 minutes",
+                    {
+
+                        body: `
+                            <h2>The requests Library</h2>
+
+                            <pre><code>import requests
+
+response = requests.get(
+    "http://127.0.0.1:8000",
+    timeout=5
+)
+
+print(response.status_code)</code></pre>
+
+                            <p>
+                                The example assumes a local web service running
+                                in your own lab.
+                            </p>
+
+                            <h2>Timeouts Matter</h2>
+
+                            <p>
+                                Network requests should generally include a
+                                timeout so a program does not wait forever for
+                                an unavailable service.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-03",
+                    "Headers, Parameters and JSON",
+                    "45 minutes",
+                    {
+
+                        body: `
+                            <h2>Inspecting Headers</h2>
+
+                            <pre><code>print(response.headers)</code></pre>
+
+                            <h2>JSON Responses</h2>
+
+                            <pre><code>data = response.json()
+print(data)</code></pre>
+
+                            <h2>Query Parameters</h2>
+
+                            <pre><code>params = {
+    "page": 1,
+    "limit": 10
+}
+
+response = requests.get(
+    "http://127.0.0.1:8000/api/events",
+    params=params,
+    timeout=5
+)</code></pre>
+
+                            <p>
+                                Only automate APIs you are authorized to access,
+                                and respect their authentication and rate
+                                limits.
+                            </p>
+                        `,
+
+                        lab: {
+
+                            title:
+                                "Local API Response Inspector",
+
+                            objective:
+                                "Build a small client for an approved local or training API.",
+
+                            steps: [
+
+                                "Choose a local training endpoint.",
+                                "Send a GET request with a timeout.",
+                                "Print the response status code.",
+                                "Print selected response headers.",
+                                "If the response is JSON, parse and display it.",
+                                "Handle connection errors cleanly."
+
+                            ],
+
+                            successCriteria:
+                                "The client reports useful response information and handles an unavailable service safely."
+
+                        }
+
+                    }
+                )
+
+            ]
+
         },
 
 
+        /* =================================================
+           MODULE 07
+        ================================================= */
+
         {
+
             id:
                 "module-07",
 
@@ -671,96 +1349,164 @@ export const pythonCybersecurityFundamentals = {
                 "Networking and Sockets",
 
             description:
-                "Understand basic socket programming and network automation.",
+                "Learn basic Python socket concepts using controlled local network exercises.",
 
             access:
                 "free",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Socket Fundamentals",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Sockets provide a programming interface for network communication."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "TCP Client Basics",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "A simple TCP client can connect to an authorized service and exchange data."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Timeouts and Error Handling",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Network programs need timeouts and error handling because remote systems may be slow or unreachable."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                lesson(
+                    "lesson-01",
+                    "Socket Fundamentals",
+                    "45 minutes",
+                    {
+
+                        body: `
+                            <h2>What Is a Socket?</h2>
+
+                            <p>
+                                A socket is a programming interface used by
+                                applications to communicate over a network.
+                            </p>
+
+                            <h2>Address and Port</h2>
+
+                            <p>
+                                Network services are commonly identified by an
+                                IP address or hostname together with a port
+                                number.
+                            </p>
+
+                            <pre><code>host = "127.0.0.1"
+port = 8000</code></pre>
+
+                            <p>
+                                <code>127.0.0.1</code> refers to the local
+                                machine, making it useful for safe introductory
+                                networking exercises.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-02",
+                    "Building a TCP Client",
+                    "50 minutes",
+                    {
+
+                        body: `
+                            <h2>Connecting to a Local Service</h2>
+
+                            <pre><code>import socket
+
+host = "127.0.0.1"
+port = 8000
+
+with socket.socket(
+    socket.AF_INET,
+    socket.SOCK_STREAM
+) as client:
+
+    client.settimeout(3)
+    client.connect(
+        (host, port)
+    )
+
+    print("Connected")</code></pre>
+
+                            <p>
+                                Only connect to services you own or are
+                                explicitly authorized to test.
+                            </p>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-03",
+                    "Timeouts and Network Error Handling",
+                    "40 minutes",
+                    {
+
+                        body: `
+                            <h2>Networks Fail</h2>
+
+                            <p>
+                                Services may be offline, blocked or slow.
+                                Reliable network programs should expect these
+                                conditions.
+                            </p>
+
+                            <pre><code>import socket
+
+try:
+    # Authorized connection logic
+    pass
+
+except socket.timeout:
+    print("Connection timed out")
+
+except ConnectionRefusedError:
+    print("Connection refused")</code></pre>
+
+                            <p>
+                                Specific error handling produces clearer
+                                results than allowing the program to terminate
+                                unexpectedly.
+                            </p>
+                        `,
+
+                        lab: {
+
+                            title:
+                                "Local Service Availability Checker",
+
+                            objective:
+                                "Check whether one explicitly selected local lab service accepts a TCP connection.",
+
+                            steps: [
+
+                                "Set the host to 127.0.0.1.",
+                                "Choose a port belonging to a service you intentionally started in your lab.",
+                                "Create a TCP socket.",
+                                "Set a short timeout.",
+                                "Attempt one connection.",
+                                "Report connected, refused or timed out.",
+                                "Close the socket cleanly."
+
+                            ],
+
+                            successCriteria:
+                                "The program correctly reports the state of the selected local service without scanning additional ports."
+
+                        }
+
+                    }
+                )
+
+            ]
+
         },
 
 
+        /* =================================================
+           MODULE 08
+        ================================================= */
+
         {
+
             id:
                 "module-08",
 
@@ -771,93 +1517,229 @@ export const pythonCybersecurityFundamentals = {
                 "Cybersecurity Automation Project",
 
             description:
-                "Build a small Python tool for an approved security workflow.",
+                "Combine Python fundamentals into a practical, defensive security automation project.",
 
             access:
                 "free",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Choose the Workflow",
-
-                    duration:
-                        "20 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Students identify a repetitive approved task that Python can simplify."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Build the Tool",
-
-                    duration:
-                        "75 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Students combine files, HTTP or networking concepts into a small tool."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Test and Document",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "free",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "The final project includes testing notes, usage instructions and limitations."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                lesson(
+                    "lesson-01",
+                    "Project Planning",
+                    "35 minutes",
+                    {
+
+                        body: `
+                            <h2>CWS Security Event Analyzer</h2>
+
+                            <p>
+                                The recommended final project is a Python
+                                program that reads a harmless sample security
+                                log, classifies events and generates a JSON
+                                report.
+                            </p>
+
+                            <h2>Project Requirements</h2>
+
+                            <ul>
+                                <li>Accept an input log filename.</li>
+                                <li>Validate that the file exists.</li>
+                                <li>Read the file safely.</li>
+                                <li>Count INFO, WARNING and ERROR events.</li>
+                                <li>Identify lines containing a selected keyword.</li>
+                                <li>Store results in a dictionary.</li>
+                                <li>Export the report as JSON.</li>
+                                <li>Log important program events.</li>
+                                <li>Handle errors cleanly.</li>
+                            </ul>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-02",
+                    "Build the Security Event Analyzer",
+                    "90 minutes",
+                    {
+
+                        body: `
+                            <h2>Suggested Program Structure</h2>
+
+                            <pre><code>from pathlib import Path
+import json
+import logging
+
+
+def analyze_log(path):
+
+    results = {
+        "info": 0,
+        "warning": 0,
+        "error": 0
+    }
+
+    for line in path.read_text(
+        encoding="utf-8"
+    ).splitlines():
+
+        upper = line.upper()
+
+        if "ERROR" in upper:
+            results["error"] += 1
+
+        elif "WARNING" in upper:
+            results["warning"] += 1
+
+        elif "INFO" in upper:
+            results["info"] += 1
+
+    return results</code></pre>
+
+                            <p>
+                                Students should extend the program themselves
+                                rather than simply submitting the example.
+                            </p>
+
+                            <h2>Output</h2>
+
+                            <pre><code>{
+    "info": 14,
+    "warning": 4,
+    "error": 2
+}</code></pre>
+                        `
+
+                    }
+                ),
+
+
+                lesson(
+                    "lesson-03",
+                    "Testing, Documentation and Assessment",
+                    "50 minutes",
+                    {
+
+                        body: `
+                            <h2>Test More Than the Happy Path</h2>
+
+                            <p>
+                                Test the analyzer with a valid log, an empty
+                                log and a missing filename.
+                            </p>
+
+                            <h2>README Requirements</h2>
+
+                            <ul>
+                                <li>Project purpose.</li>
+                                <li>Python version and dependencies.</li>
+                                <li>Usage instructions.</li>
+                                <li>Input format.</li>
+                                <li>Example output.</li>
+                                <li>Error-handling behavior.</li>
+                                <li>Security and privacy considerations.</li>
+                                <li>Future improvements.</li>
+                            </ul>
+                        `,
+
+                        lab: {
+
+                            title:
+                                "Python Cybersecurity Capstone",
+
+                            objective:
+                                "Build and document a security-event analysis tool using the concepts from the course.",
+
+                            steps: [
+
+                                "Create a harmless sample security log.",
+                                "Build the analyzer using functions.",
+                                "Validate the supplied file path.",
+                                "Count event categories.",
+                                "Export the results as JSON.",
+                                "Add useful logging without logging secrets.",
+                                "Handle missing or unreadable files.",
+                                "Test at least three scenarios.",
+                                "Create a README.",
+                                "Review the code for readability and safe behavior."
+
+                            ],
+
+                            successCriteria:
+                                "The analyzer processes the sample data correctly, handles errors and produces a documented JSON report."
+
+                        },
+
+                        quiz: [
+
+                            {
+                                question:
+                                    "What should a cybersecurity automation script do before using external input?",
+
+                                options: [
+
+                                    "Trust it automatically.",
+                                    "Validate it against the program's expected format and scope.",
+                                    "Delete it.",
+                                    "Always convert it to a password."
+
+                                ],
+
+                                answer:
+                                    1
+                            },
+
+                            {
+                                question:
+                                    "Why should network operations use timeouts?",
+
+                                options: [
+
+                                    "To make every request fail.",
+                                    "To prevent the program from waiting indefinitely for an unavailable service.",
+                                    "To disable networking.",
+                                    "Timeouts are only used for files."
+
+                                ],
+
+                                answer:
+                                    1
+                            },
+
+                            {
+                                question:
+                                    "What is the purpose of exception handling?",
+
+                                options: [
+
+                                    "To hide all programming mistakes.",
+                                    "To respond predictably to expected failure conditions.",
+                                    "To remove input validation.",
+                                    "To automatically grant administrator privileges."
+
+                                ],
+
+                                answer:
+                                    1
+                            }
+
+                        ]
+
+                    }
+                )
+
+            ]
+
         }
+
     ]
 
 };
