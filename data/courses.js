@@ -24,6 +24,21 @@ import {
 
 
 import {
+    bashLinuxAutomation
+} from "./bash-linux-automation.js";
+
+
+import {
+    pythonCybersecurityFundamentals
+} from "./python-cybersecurity-fundamentals.js";
+
+
+import {
+    activeDirectoryFundamentals
+} from "./active-directory-fundamentals.js";
+
+
+import {
     ethicalHackingFundamentals
 } from "./ethical-hacking-fundamentals.js";
 
@@ -31,6 +46,21 @@ import {
 import {
     webApplicationSecurity
 } from "./web-application-security.js";
+
+
+import {
+    pythonOffensiveSecurity
+} from "./python-offensive-security.js";
+
+
+import {
+    activeDirectorySecurityPentesting
+} from "./active-directory-security-pentesting.js";
+
+
+import {
+    linuxPrivilegeEscalation
+} from "./linux-privilege-escalation.js";
 
 
 import {
@@ -53,11 +83,29 @@ export const courses = {
     [linuxFundamentals.id]:
         linuxFundamentals,
 
+    [bashLinuxAutomation.id]:
+        bashLinuxAutomation,
+
+    [pythonCybersecurityFundamentals.id]:
+        pythonCybersecurityFundamentals,
+
+    [activeDirectoryFundamentals.id]:
+        activeDirectoryFundamentals,
+
     [ethicalHackingFundamentals.id]:
         ethicalHackingFundamentals,
 
     [webApplicationSecurity.id]:
         webApplicationSecurity,
+
+    [pythonOffensiveSecurity.id]:
+        pythonOffensiveSecurity,
+
+    [activeDirectorySecurityPentesting.id]:
+        activeDirectorySecurityPentesting,
+
+    [linuxPrivilegeEscalation.id]:
+        linuxPrivilegeEscalation,
 
     [practicalPenetrationTesting.id]:
         practicalPenetrationTesting
