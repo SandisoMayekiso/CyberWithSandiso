@@ -397,6 +397,31 @@ ul {
 }
 
 
+.btn-secondary:disabled,
+.btn-secondary[aria-disabled="true"] {
+
+    transform:
+        none;
+
+    cursor:
+        not-allowed;
+}
+
+
+.btn-secondary:disabled:hover,
+.btn-secondary[aria-disabled="true"]:hover {
+
+    transform:
+        none;
+
+    border-color:
+        var(--card-border);
+
+    background:
+        rgba(0, 255, 170, 0.05);
+}
+
+
 .btn-login {
 
     color: var(--text-secondary);
@@ -988,6 +1013,1522 @@ ul {
     margin-top: 40px;
 
     text-align: center;
+}
+
+
+
+/* =========================================================
+   11. PLATFORM STATS
+========================================================= */
+
+.academy-stats {
+
+    padding:
+        28px 0 10px;
+}
+
+
+.academy-stats-grid {
+
+    width: min(
+        calc(100% - 40px),
+        var(--max-width)
+    );
+
+    margin-inline: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 16px;
+}
+
+
+.academy-stat {
+
+    padding:
+        22px 18px;
+
+    text-align: center;
+
+    border:
+        1px solid var(--card-border);
+
+    border-radius:
+        var(--radius-md);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10, 24, 30, 0.88),
+            rgba(5, 12, 20, 0.88)
+        );
+
+    box-shadow:
+        var(--shadow);
+}
+
+
+.academy-stat strong {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color:
+        var(--accent);
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        22px;
+}
+
+
+.academy-stat span {
+
+    color:
+        var(--text-secondary);
+
+    font-size:
+        12px;
+
+    letter-spacing:
+        0.8px;
+}
+
+
+/* =========================================================
+   12. LEARNING PATHS
+========================================================= */
+
+.learning-paths {
+
+    padding:
+        100px 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            rgba(0, 255, 170, 0.018),
+            transparent
+        );
+}
+
+
+.learning-path-grid {
+
+    width: min(
+        calc(100% - 40px),
+        var(--max-width)
+    );
+
+    margin-inline: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+}
+
+
+.learning-path-card {
+
+    min-height:
+        100%;
+
+    padding:
+        28px 24px;
+
+    border:
+        1px solid var(--card-border);
+
+    border-radius:
+        var(--radius-md);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(9, 22, 30, 0.90),
+            rgba(5, 12, 20, 0.90)
+        );
+
+    box-shadow:
+        var(--shadow);
+
+    transition:
+        transform var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+
+.learning-path-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(0, 255, 170, 0.34);
+
+    box-shadow:
+        var(--shadow),
+        var(--glow);
+}
+
+
+.learning-path-icon {
+
+    width:
+        48px;
+
+    height:
+        48px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    margin-bottom:
+        18px;
+
+    border:
+        1px solid rgba(0, 255, 170, 0.18);
+
+    border-radius:
+        12px;
+
+    background:
+        var(--accent-soft);
+
+    color:
+        var(--accent);
+
+    font-size:
+        20px;
+}
+
+
+.learning-path-label {
+
+    display:
+        inline-block;
+
+    margin-bottom:
+        10px;
+
+    color:
+        var(--accent);
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        9px;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        1.5px;
+}
+
+
+.learning-path-card h3 {
+
+    margin-bottom:
+        20px;
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        18px;
+
+    line-height:
+        1.4;
+}
+
+
+.learning-path-flow {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+}
+
+
+.learning-path-flow > span {
+
+    width:
+        100%;
+
+    padding:
+        11px 12px;
+
+    text-align:
+        center;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        var(--radius-sm);
+
+    background:
+        rgba(255, 255, 255, 0.025);
+
+    color:
+        var(--text-secondary);
+
+    font-size:
+        12px;
+}
+
+
+.learning-path-flow > i {
+
+    color:
+        var(--accent);
+
+    font-size:
+        11px;
+
+    opacity:
+        0.75;
+}
+
+
+.pro-path-step {
+
+    color:
+        rgba(255, 200, 87, 0.88) !important;
+
+    border-color:
+        rgba(255, 200, 87, 0.22) !important;
+
+    background:
+        rgba(255, 200, 87, 0.045) !important;
+}
+
+
+.pro-path-step i {
+
+    margin-right:
+        5px;
+
+    color:
+        var(--warning);
+}
+
+
+/* =========================================================
+   13. HOW CWS ACADEMY WORKS
+========================================================= */
+
+.academy-process {
+
+    padding:
+        100px 0;
+}
+
+
+.academy-process-grid {
+
+    width: min(
+        calc(100% - 40px),
+        var(--max-width)
+    );
+
+    margin-inline: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 16px;
+}
+
+
+.academy-process-step {
+
+    position:
+        relative;
+
+    min-height:
+        230px;
+
+    padding:
+        26px 20px;
+
+    text-align:
+        center;
+
+    border:
+        1px solid var(--card-border);
+
+    border-radius:
+        var(--radius-md);
+
+    background:
+        var(--card-bg);
+
+    box-shadow:
+        var(--shadow);
+}
+
+
+.academy-step-number {
+
+    position:
+        absolute;
+
+    top:
+        14px;
+
+    right:
+        16px;
+
+    color:
+        rgba(255, 255, 255, 0.14);
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        20px;
+
+    font-weight:
+        800;
+}
+
+
+.academy-process-step > i {
+
+    width:
+        48px;
+
+    height:
+        48px;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    margin-bottom:
+        18px;
+
+    border-radius:
+        12px;
+
+    background:
+        var(--accent-soft);
+
+    color:
+        var(--accent);
+
+    font-size:
+        19px;
+}
+
+
+.academy-process-step h3 {
+
+    margin-bottom:
+        10px;
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        15px;
+}
+
+
+.academy-process-step p {
+
+    color:
+        var(--text-secondary);
+
+    font-size:
+        13px;
+
+    line-height:
+        1.7;
+}
+
+
+/* =========================================================
+   14. PRACTICAL SKILLS
+========================================================= */
+
+.practice-skills {
+
+    padding:
+        100px 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            rgba(0, 255, 170, 0.02),
+            transparent
+        );
+}
+
+
+.practice-skills-grid {
+
+    width: min(
+        calc(100% - 40px),
+        var(--max-width)
+    );
+
+    margin-inline: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+}
+
+
+.practice-skill-card {
+
+    padding:
+        26px 22px;
+
+    border:
+        1px solid var(--card-border);
+
+    border-radius:
+        var(--radius-md);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10, 24, 30, 0.86),
+            rgba(5, 12, 20, 0.86)
+        );
+
+    box-shadow:
+        var(--shadow);
+
+    transition:
+        transform var(--transition),
+        border-color var(--transition);
+}
+
+
+.practice-skill-card:hover {
+
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(0, 255, 170, 0.34);
+}
+
+
+.practice-skill-card > i {
+
+    width:
+        46px;
+
+    height:
+        46px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    margin-bottom:
+        18px;
+
+    border-radius:
+        12px;
+
+    background:
+        var(--accent-soft);
+
+    color:
+        var(--accent);
+
+    font-size:
+        20px;
+}
+
+
+.practice-skill-card h3 {
+
+    margin-bottom:
+        10px;
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        16px;
+}
+
+
+.practice-skill-card p {
+
+    color:
+        var(--text-secondary);
+
+    font-size:
+        13px;
+
+    line-height:
+        1.7;
+}
+
+
+/* =========================================================
+   15. DASHBOARD PREVIEW
+========================================================= */
+
+.dashboard-preview {
+
+    padding:
+        110px 0;
+}
+
+
+.dashboard-preview-layout {
+
+    width: min(
+        calc(100% - 40px),
+        var(--max-width)
+    );
+
+    margin-inline: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:
+        50px;
+
+    align-items:
+        center;
+}
+
+
+.section-kicker {
+
+    display:
+        inline-block;
+
+    margin-bottom:
+        12px;
+
+    color:
+        var(--accent);
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        10px;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        1.8px;
+}
+
+
+.dashboard-preview-copy h2 {
+
+    margin-bottom:
+        18px;
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        clamp(
+            28px,
+            4vw,
+            44px
+        );
+
+    line-height:
+        1.2;
+}
+
+
+.dashboard-preview-copy > p {
+
+    color:
+        var(--text-secondary);
+
+    font-size:
+        15px;
+
+    line-height:
+        1.8;
+}
+
+
+.dashboard-feature-list {
+
+    display:
+        grid;
+
+    gap:
+        10px;
+
+    margin:
+        24px 0 30px;
+}
+
+
+.dashboard-feature-list li {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    color:
+        var(--text-secondary);
+
+    font-size:
+        14px;
+}
+
+
+.dashboard-feature-list i {
+
+    color:
+        var(--accent);
+
+    font-size:
+        11px;
+}
+
+
+.dashboard-preview-card {
+
+    padding:
+        28px;
+
+    border:
+        1px solid rgba(0, 255, 170, 0.24);
+
+    border-radius:
+        var(--radius-lg);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10, 24, 30, 0.96),
+            rgba(5, 12, 20, 0.96)
+        );
+
+    box-shadow:
+        var(--shadow),
+        var(--glow);
+}
+
+
+.dashboard-preview-top {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+}
+
+
+.dashboard-preview-top span {
+
+    display:
+        block;
+
+    color:
+        var(--text-muted);
+
+    font-size:
+        12px;
+}
+
+
+.dashboard-preview-top strong {
+
+    display:
+        block;
+
+    margin-top:
+        3px;
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        17px;
+}
+
+
+.dashboard-preview-avatar {
+
+    width:
+        44px;
+
+    height:
+        44px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid var(--card-border);
+
+    border-radius:
+        50%;
+
+    background:
+        var(--accent-soft);
+
+    color:
+        var(--accent);
+}
+
+
+.dashboard-preview-stat-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap:
+        12px;
+
+    margin:
+        26px 0;
+}
+
+
+.dashboard-preview-stat-grid > div {
+
+    padding:
+        16px 12px;
+
+    text-align:
+        center;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        var(--radius-sm);
+
+    background:
+        rgba(255, 255, 255, 0.02);
+}
+
+
+.dashboard-preview-stat-grid strong {
+
+    display:
+        block;
+
+    color:
+        var(--accent);
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        20px;
+}
+
+
+.dashboard-preview-stat-grid span {
+
+    display:
+        block;
+
+    margin-top:
+        3px;
+
+    color:
+        var(--text-muted);
+
+    font-size:
+        10px;
+}
+
+
+.dashboard-preview-progress {
+
+    padding:
+        16px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        var(--radius-sm);
+
+    background:
+        rgba(255, 255, 255, 0.018);
+}
+
+
+.dashboard-preview-progress-header {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    margin-bottom:
+        10px;
+
+    font-size:
+        12px;
+}
+
+
+.dashboard-preview-progress-header span {
+
+    color:
+        var(--text-secondary);
+}
+
+
+.dashboard-preview-progress-header strong {
+
+    color:
+        var(--accent);
+}
+
+
+.dashboard-preview-progress-bar {
+
+    height:
+        8px;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        20px;
+
+    background:
+        rgba(255, 255, 255, 0.06);
+}
+
+
+.dashboard-preview-progress-fill {
+
+    height:
+        100%;
+
+    border-radius:
+        inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--accent-dark),
+            var(--accent)
+        );
+
+    box-shadow:
+        0 0 14px rgba(0, 255, 170, 0.20);
+}
+
+
+.dashboard-preview-actions {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:
+        8px;
+
+    margin-top:
+        16px;
+}
+
+
+.dashboard-preview-actions span {
+
+    padding:
+        8px 6px;
+
+    text-align:
+        center;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        7px;
+
+    color:
+        var(--text-muted);
+
+    font-size:
+        9px;
+}
+
+
+/* =========================================================
+   16. FREE VS PRO
+========================================================= */
+
+.academy-access {
+
+    padding:
+        100px 0;
+}
+
+
+.academy-access-grid {
+
+    width: min(
+        calc(100% - 40px),
+        900px
+    );
+
+    margin-inline: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap:
+        22px;
+}
+
+
+.academy-access-card {
+
+    padding:
+        30px;
+
+    border-radius:
+        var(--radius-lg);
+
+    box-shadow:
+        var(--shadow);
+}
+
+
+.free-access-card {
+
+    border:
+        1px solid rgba(0, 255, 170, 0.26);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(0, 255, 170, 0.055),
+            rgba(5, 12, 20, 0.92)
+        );
+}
+
+
+.pro-access-card {
+
+    border:
+        1px solid rgba(255, 200, 87, 0.20);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 200, 87, 0.035),
+            rgba(5, 12, 20, 0.94)
+        );
+
+    opacity:
+        0.84;
+}
+
+
+.academy-access-badge {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        6px;
+
+    padding:
+        6px 10px;
+
+    margin-bottom:
+        16px;
+
+    border-radius:
+        40px;
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        9px;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        1.2px;
+}
+
+
+.academy-access-badge.free {
+
+    border:
+        1px solid rgba(0, 255, 170, 0.28);
+
+    background:
+        rgba(0, 255, 170, 0.07);
+
+    color:
+        var(--accent);
+}
+
+
+.academy-access-badge.pro {
+
+    border:
+        1px solid rgba(255, 200, 87, 0.26);
+
+    background:
+        rgba(255, 200, 87, 0.07);
+
+    color:
+        var(--warning);
+}
+
+
+.academy-access-card h3 {
+
+    margin-bottom:
+        10px;
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        22px;
+}
+
+
+.academy-access-card > p {
+
+    color:
+        var(--text-secondary);
+
+    font-size:
+        14px;
+
+    line-height:
+        1.75;
+}
+
+
+.academy-access-card ul {
+
+    display:
+        grid;
+
+    gap:
+        11px;
+
+    margin:
+        24px 0 28px;
+}
+
+
+.academy-access-card li {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    color:
+        var(--text-secondary);
+
+    font-size:
+        13px;
+}
+
+
+.free-access-card li i {
+
+    color:
+        var(--accent);
+}
+
+
+.pro-access-card li i {
+
+    color:
+        var(--warning);
+}
+
+
+.pro-home-disabled {
+
+    gap:
+        8px;
+
+    cursor:
+        not-allowed;
+
+    opacity:
+        0.68;
+}
+
+
+/* =========================================================
+   17. FAQ
+========================================================= */
+
+.academy-faq {
+
+    padding:
+        100px 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            rgba(0, 255, 170, 0.018),
+            transparent
+        );
+}
+
+
+.academy-faq-list {
+
+    width: min(
+        calc(100% - 40px),
+        850px
+    );
+
+    margin-inline: auto;
+
+    display:
+        grid;
+
+    gap:
+        12px;
+}
+
+
+.academy-faq-item {
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid var(--card-border);
+
+    border-radius:
+        var(--radius-md);
+
+    background:
+        rgba(255, 255, 255, 0.018);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+
+.academy-faq-item summary {
+
+    position:
+        relative;
+
+    padding:
+        20px 50px 20px 20px;
+
+    cursor:
+        pointer;
+
+    color:
+        var(--text-primary);
+
+    font-family:
+        'Orbitron',
+        sans-serif;
+
+    font-size:
+        13px;
+
+    font-weight:
+        600;
+
+    list-style:
+        none;
+}
+
+
+.academy-faq-item summary::-webkit-details-marker {
+
+    display:
+        none;
+}
+
+
+.academy-faq-item summary::after {
+
+    content:
+        '+';
+
+    position:
+        absolute;
+
+    top:
+        50%;
+
+    right:
+        20px;
+
+    transform:
+        translateY(-50%);
+
+    color:
+        var(--accent);
+
+    font-size:
+        20px;
+}
+
+
+.academy-faq-item[open] summary::after {
+
+    content:
+        '−';
+}
+
+
+.academy-faq-item p {
+
+    padding:
+        0 20px 20px;
+
+    color:
+        var(--text-secondary);
+
+    font-size:
+        13px;
+
+    line-height:
+        1.8;
+}
+
+
+/* =========================================================
+   18. NEW HOMEPAGE RESPONSIVE RULES
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .learning-path-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .academy-process-grid {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+}
+
+
+@media (max-width: 900px) {
+
+    .academy-stats-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .practice-skills-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .dashboard-preview-layout {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            35px;
+    }
+
+
+    .academy-access-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .learning-path-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .academy-process-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .practice-skills-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .dashboard-preview-stat-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .dashboard-preview-actions {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .academy-stats-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .academy-process-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .academy-access-card,
+    .dashboard-preview-card {
+
+        padding:
+            22px 18px;
+    }
+
 }
 
 
