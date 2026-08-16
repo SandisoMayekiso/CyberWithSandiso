@@ -13,7 +13,7 @@ export const practicalPenetrationTesting = {
         "Practical Penetration Testing",
 
     category:
-        "CWS ACADEMY • PENTESTING",
+        "CWS ACADEMY • PENTESTING • PRO",
 
     level:
         "Advanced",
@@ -22,10 +22,22 @@ export const practicalPenetrationTesting = {
         "advanced",
 
     status:
-        "available",
+        "planned",
 
     access:
         "pro",
+
+    proOnly:
+        true,
+
+    locked:
+        true,
+
+    availability:
+        "pro-coming-soon",
+
+    availabilityLabel:
+        "Pro Coming Soon",
 
     icon:
         "fa-solid fa-user-secret",
