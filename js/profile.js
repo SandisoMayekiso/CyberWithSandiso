@@ -3,8 +3,9 @@
    STUDENT PROFILE
 
    Firebase Authentication
+   Firestore Profile Data
    Firestore Entitlements
-   Profile Management
+   Learning Preferences
 ========================================================= */
 
 
@@ -22,11 +23,24 @@ import {
 
 
 /* =========================================================
+   FIRESTORE
+========================================================= */
+
+import {
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+/* =========================================================
    FIREBASE CONFIG
 ========================================================= */
 
 import {
-    auth
+    auth,
+    db
 } from "./firebase-config.js";
 
 
@@ -260,9 +274,55 @@ const lessonsCompleted =
     );
 
 
+const labsCompleted =
+    document.getElementById(
+        "labsCompleted"
+    );
+
+
+const assessmentsCompleted =
+    document.getElementById(
+        "assessmentsCompleted"
+    );
+
+
 const certificatesEarned =
     document.getElementById(
         "certificatesEarned"
+    );
+
+
+/* =========================================================
+   LEARNING PREFERENCES
+========================================================= */
+
+const learningPreferencesForm =
+    document.getElementById(
+        "learningPreferencesForm"
+    );
+
+
+const learningGoalInput =
+    document.getElementById(
+        "learningGoalInput"
+    );
+
+
+const experienceLevelInput =
+    document.getElementById(
+        "experienceLevelInput"
+    );
+
+
+const learningPreferencesMessage =
+    document.getElementById(
+        "learningPreferencesMessage"
+    );
+
+
+const saveLearningPreferencesBtn =
+    document.getElementById(
+        "saveLearningPreferencesBtn"
     );
 
 
@@ -288,6 +348,18 @@ const resetPasswordBtn =
     );
 
 
+const signInMethod =
+    document.getElementById(
+        "signInMethod"
+    );
+
+
+const lastSignInAt =
+    document.getElementById(
+        "lastSignInAt"
+    );
+
+
 /* =========================================================
    STATE
 ========================================================= */
@@ -298,6 +370,10 @@ let currentUser =
 
 let currentEntitlement =
     null;
+
+
+let currentUserDocument =
+    {};
 
 
 let initialized =
@@ -347,7 +423,7 @@ function showContent() {
 
 
 /* =========================================================
-   MESSAGE
+   MESSAGE HELPERS
 ========================================================= */
 
 function showMessage(
@@ -394,6 +470,55 @@ function clearMessage() {
 
 
     profileMessage.hidden =
+        true;
+
+}
+
+
+function showPreferencesMessage(
+    message,
+    type = "info"
+) {
+
+    if (!learningPreferencesMessage) {
+
+        return;
+
+    }
+
+
+    learningPreferencesMessage.textContent =
+        message;
+
+
+    learningPreferencesMessage.className =
+        `profile-message ${type}`;
+
+
+    learningPreferencesMessage.hidden =
+        false;
+
+}
+
+
+function clearPreferencesMessage() {
+
+    if (!learningPreferencesMessage) {
+
+        return;
+
+    }
+
+
+    learningPreferencesMessage.textContent =
+        "";
+
+
+    learningPreferencesMessage.className =
+        "profile-message";
+
+
+    learningPreferencesMessage.hidden =
         true;
 
 }
@@ -506,7 +631,8 @@ function getInitials(
 ========================================================= */
 
 function formatDate(
-    value
+    value,
+    options = {}
 ) {
 
     if (!value) {
@@ -551,18 +677,41 @@ function formatDate(
     }
 
 
+    const includeTime =
+        Boolean(
+            options.includeTime
+        );
+
+
     return new Intl.DateTimeFormat(
         undefined,
-        {
-            year:
-                "numeric",
+        includeTime
+            ? {
+                year:
+                    "numeric",
 
-            month:
-                "short",
+                month:
+                    "short",
 
-            day:
-                "numeric"
-        }
+                day:
+                    "numeric",
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit"
+            }
+            : {
+                year:
+                    "numeric",
+
+                month:
+                    "short",
+
+                day:
+                    "numeric"
+            }
     ).format(
         date
     );
@@ -590,6 +739,69 @@ function getMemberSince(
 
     return formatted ||
         "—";
+
+}
+
+
+/* =========================================================
+   SIGN-IN METHOD
+========================================================= */
+
+function getSignInMethodLabel(
+    user
+) {
+
+    const providers =
+        Array.isArray(
+            user?.providerData
+        )
+            ? user.providerData
+            : [];
+
+
+    const providerIds =
+        providers
+            .map(
+                provider =>
+                    String(
+                        provider?.providerId ||
+                        ""
+                    )
+            )
+            .filter(Boolean);
+
+
+    if (
+        providerIds.includes(
+            "google.com"
+        )
+    ) {
+
+        return "Google";
+
+    }
+
+
+    if (
+        providerIds.includes(
+            "password"
+        )
+    ) {
+
+        return "Email / Password";
+
+    }
+
+
+    if (providerIds.length) {
+
+        return providerIds
+            .join(", ");
+
+    }
+
+
+    return "Email / Password";
 
 }
 
@@ -675,6 +887,31 @@ function renderUser(
             getInitials(
                 name
             );
+
+    }
+
+
+    if (signInMethod) {
+
+        signInMethod.textContent =
+            getSignInMethodLabel(
+                user
+            );
+
+    }
+
+
+    if (lastSignInAt) {
+
+        lastSignInAt.textContent =
+            formatDate(
+                user?.metadata?.lastSignInTime,
+                {
+                    includeTime:
+                        true
+                }
+            ) ||
+            "—";
 
     }
 
@@ -905,14 +1142,6 @@ function renderEntitlement() {
                 "Your account currently has CWS Academy Pro access.";
 
         }
-        else if (
-            plan === "pro"
-        ) {
-
-            currentPlanDescription.textContent =
-                "Your CWS Academy Pro subscription is currently inactive.";
-
-        }
         else {
 
             currentPlanDescription.textContent =
@@ -940,7 +1169,7 @@ function renderEntitlement() {
         else if (isPro) {
 
             currentPeriodEnd.textContent =
-                "Monthly subscription";
+                "Subscription period";
 
         }
         else {
@@ -953,27 +1182,28 @@ function renderEntitlement() {
     }
 
 
+    /*
+     * Pro upgrades are intentionally paused.
+     * Keep the profile control disabled regardless
+     * of the current entitlement.
+     */
+
     if (manageSubscriptionBtn) {
 
-        const textNode =
-            Array.from(
-                manageSubscriptionBtn.childNodes
-            )
-                .find(
-                    node =>
-                        node.nodeType ===
-                        Node.TEXT_NODE
-                );
+        manageSubscriptionBtn.disabled =
+            true;
 
 
-        if (textNode) {
+        manageSubscriptionBtn.setAttribute(
+            "aria-disabled",
+            "true"
+        );
 
-            textNode.textContent =
-                isPro
-                    ? " Manage Subscription "
-                    : " View Plans ";
 
-        }
+        manageSubscriptionBtn.innerHTML = `
+            <i class="fa-solid fa-lock"></i>
+            Pro Coming Soon
+        `;
 
     }
 
@@ -1035,8 +1265,115 @@ async function loadEntitlement(
 
 
 /* =========================================================
+   USER DOCUMENT
+========================================================= */
+
+async function loadUserDocument(
+    user
+) {
+
+    currentUserDocument =
+        {};
+
+
+    if (
+        !db ||
+        !user?.uid
+    ) {
+
+        warn(
+            "Firestore or user UID unavailable. Profile preferences will use defaults."
+        );
+
+        return currentUserDocument;
+
+    }
+
+
+    try {
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                user.uid
+            );
+
+
+        const snapshot =
+            await getDoc(
+                userRef
+            );
+
+
+        if (
+            snapshot.exists()
+        ) {
+
+            currentUserDocument =
+                snapshot.data() ||
+                {};
+
+        }
+
+
+        log(
+            "User profile document loaded.",
+            currentUserDocument
+        );
+
+    }
+    catch (err) {
+
+        error(
+            "Unable to load user profile document:",
+            err
+        );
+
+
+        currentUserDocument =
+            {};
+
+    }
+
+
+    return currentUserDocument;
+
+}
+
+
+/* =========================================================
    LEARNING SUMMARY
 ========================================================= */
+
+function toSafeCount(
+    value
+) {
+
+    const number =
+        Number(
+            value
+        );
+
+
+    if (
+        !Number.isFinite(
+            number
+        ) ||
+        number < 0
+    ) {
+
+        return 0;
+
+    }
+
+
+    return Math.floor(
+        number
+    );
+
+}
+
 
 function renderLearningSummary(
     stats = {}
@@ -1053,6 +1390,12 @@ function renderLearningSummary(
         lessonsCompleted:
             0,
 
+        labsCompleted:
+            0,
+
+        assessmentsCompleted:
+            0,
+
         certificatesEarned:
             0,
 
@@ -1065,7 +1408,9 @@ function renderLearningSummary(
 
         coursesStarted.textContent =
             String(
-                data.coursesStarted
+                toSafeCount(
+                    data.coursesStarted
+                )
             );
 
     }
@@ -1075,7 +1420,9 @@ function renderLearningSummary(
 
         coursesCompleted.textContent =
             String(
-                data.coursesCompleted
+                toSafeCount(
+                    data.coursesCompleted
+                )
             );
 
     }
@@ -1085,7 +1432,33 @@ function renderLearningSummary(
 
         lessonsCompleted.textContent =
             String(
-                data.lessonsCompleted
+                toSafeCount(
+                    data.lessonsCompleted
+                )
+            );
+
+    }
+
+
+    if (labsCompleted) {
+
+        labsCompleted.textContent =
+            String(
+                toSafeCount(
+                    data.labsCompleted
+                )
+            );
+
+    }
+
+
+    if (assessmentsCompleted) {
+
+        assessmentsCompleted.textContent =
+            String(
+                toSafeCount(
+                    data.assessmentsCompleted
+                )
             );
 
     }
@@ -1095,10 +1468,84 @@ function renderLearningSummary(
 
         certificatesEarned.textContent =
             String(
-                data.certificatesEarned
+                toSafeCount(
+                    data.certificatesEarned
+                )
             );
 
     }
+
+}
+
+
+/* =========================================================
+   RENDER SAVED LEARNING PREFERENCES
+========================================================= */
+
+function renderLearningPreferences(
+    profileData = {}
+) {
+
+    const preferences =
+        (
+            profileData?.learningPreferences &&
+            typeof profileData.learningPreferences ===
+                "object"
+        )
+            ? profileData.learningPreferences
+            : {};
+
+
+    if (learningGoalInput) {
+
+        learningGoalInput.value =
+            String(
+                preferences.learningGoal ||
+                ""
+            );
+
+    }
+
+
+    if (experienceLevelInput) {
+
+        experienceLevelInput.value =
+            String(
+                preferences.experienceLevel ||
+                ""
+            );
+
+    }
+
+
+    const selectedInterests =
+        Array.isArray(
+            preferences.interests
+        )
+            ? preferences.interests
+                .map(
+                    value =>
+                        String(
+                            value
+                        )
+                )
+            : [];
+
+
+    document
+        .querySelectorAll(
+            'input[name="interests"]'
+        )
+        .forEach(
+            input => {
+
+                input.checked =
+                    selectedInterests.includes(
+                        input.value
+                    );
+
+            }
+        );
 
 }
 
@@ -1131,6 +1578,39 @@ function setSaveLoading(
             : `
                 <i class="fa-solid fa-floppy-disk"></i>
                 Save Changes
+              `;
+
+}
+
+
+/* =========================================================
+   SAVE PREFERENCES BUTTON STATE
+========================================================= */
+
+function setPreferencesSaveLoading(
+    loading
+) {
+
+    if (!saveLearningPreferencesBtn) {
+
+        return;
+
+    }
+
+
+    saveLearningPreferencesBtn.disabled =
+        loading;
+
+
+    saveLearningPreferencesBtn.innerHTML =
+        loading
+            ? `
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                Saving...
+              `
+            : `
+                <i class="fa-solid fa-floppy-disk"></i>
+                Save Preferences
               `;
 
 }
@@ -1212,6 +1692,39 @@ async function saveProfile(
         );
 
 
+        /*
+         * Keep the Firestore user profile in sync when
+         * Firestore is available.
+         */
+
+        if (
+            db &&
+            currentUser.uid
+        ) {
+
+            await setDoc(
+                doc(
+                    db,
+                    "users",
+                    currentUser.uid
+                ),
+                {
+                    displayName,
+                    email:
+                        currentUser.email ||
+                        null,
+                    updatedAt:
+                        serverTimestamp()
+                },
+                {
+                    merge:
+                        true
+                }
+            );
+
+        }
+
+
         await currentUser.reload();
 
 
@@ -1252,6 +1765,173 @@ async function saveProfile(
     finally {
 
         setSaveLoading(
+            false
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE LEARNING PREFERENCES
+========================================================= */
+
+async function saveLearningPreferences(
+    event
+) {
+
+    event.preventDefault();
+
+
+    clearPreferencesMessage();
+
+
+    if (
+        !currentUser?.uid
+    ) {
+
+        showPreferencesMessage(
+            "Your session is no longer available. Please sign in again.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!db) {
+
+        showPreferencesMessage(
+            "Learning preferences are temporarily unavailable.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const learningGoal =
+        String(
+            learningGoalInput?.value ||
+            ""
+        )
+            .trim();
+
+
+    const experienceLevel =
+        String(
+            experienceLevelInput?.value ||
+            ""
+        )
+            .trim();
+
+
+    const interests =
+        Array.from(
+            document.querySelectorAll(
+                'input[name="interests"]:checked'
+            )
+        )
+            .map(
+                input =>
+                    input.value
+            );
+
+
+    try {
+
+        setPreferencesSaveLoading(
+            true
+        );
+
+
+        const preferences = {
+
+            learningGoal,
+
+            experienceLevel,
+
+            interests,
+
+            updatedAt:
+                serverTimestamp()
+
+        };
+
+
+        await setDoc(
+            doc(
+                db,
+                "users",
+                currentUser.uid
+            ),
+            {
+                learningPreferences:
+                    preferences,
+
+                updatedAt:
+                    serverTimestamp()
+            },
+            {
+                merge:
+                    true
+            }
+        );
+
+
+        currentUserDocument = {
+
+            ...currentUserDocument,
+
+            learningPreferences: {
+
+                learningGoal,
+
+                experienceLevel,
+
+                interests
+
+            }
+
+        };
+
+
+        showPreferencesMessage(
+            "Your learning preferences have been saved.",
+            "success"
+        );
+
+
+        log(
+            "Learning preferences saved:",
+            {
+                learningGoal,
+                experienceLevel,
+                interests
+            }
+        );
+
+    }
+    catch (err) {
+
+        error(
+            "Learning preferences save failed:",
+            err
+        );
+
+
+        showPreferencesMessage(
+            "CWS Academy could not save your learning preferences. Please try again.",
+            "error"
+        );
+
+    }
+    finally {
+
+        setPreferencesSaveLoading(
             false
         );
 
@@ -1488,6 +2168,16 @@ if (profileForm) {
 }
 
 
+if (learningPreferencesForm) {
+
+    learningPreferencesForm.addEventListener(
+        "submit",
+        saveLearningPreferences
+    );
+
+}
+
+
 if (verifyEmailBtn) {
 
     verifyEmailBtn.addEventListener(
@@ -1560,6 +2250,10 @@ else {
                     null;
 
 
+                currentUserDocument =
+                    {};
+
+
                 window.location.replace(
                     "../pages/login.html?redirect=profile"
                 );
@@ -1598,18 +2292,32 @@ else {
 
             try {
 
-                await loadEntitlement(
-                    user
+                await Promise.all([
+                    loadEntitlement(
+                        user
+                    ),
+                    loadUserDocument(
+                        user
+                    )
+                ]);
+
+
+                renderLearningPreferences(
+                    currentUserDocument
                 );
 
 
                 /*
-                 * Learning statistics are still displayed safely
-                 * at zero until the profile page is connected to
-                 * the progress/certificate collections.
+                 * Use stats from the user document if they
+                 * already exist. Otherwise display safe zeros
+                 * until the dedicated progress collections
+                 * are connected.
                  */
 
-                renderLearningSummary();
+                renderLearningSummary(
+                    currentUserDocument?.learningStats ||
+                    {}
+                );
 
 
                 showContent();
@@ -1633,7 +2341,14 @@ else {
                 };
 
 
+                currentUserDocument =
+                    {};
+
+
                 renderEntitlement();
+
+
+                renderLearningPreferences();
 
 
                 renderLearningSummary();
