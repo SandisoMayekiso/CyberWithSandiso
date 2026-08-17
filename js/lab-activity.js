@@ -857,25 +857,50 @@ function calculateCourseProgress() {
             : [];
 
 
-    let total =
-        0;
+    const requiredLessonKeys =
+        [];
+
+    const requiredActivityKeys =
+        [];
+
+    const requiredAssessmentKeys =
+        [];
 
 
     modules.forEach(
         module => {
 
-            total +=
+            const lessons =
                 Array.isArray(
                     module.lessons
                 )
-                    ? module.lessons.length
-                    : 0;
+                    ? module.lessons
+                    : [];
 
 
-            total +=
-                getModuleActivities(
-                    module
-                ).length;
+            lessons.forEach(
+                lesson => {
+
+                    requiredLessonKeys.push(
+                        `${module.id}:${lesson.id}`
+                    );
+
+                }
+            );
+
+
+            getModuleActivities(
+                module
+            )
+                .forEach(
+                    activity => {
+
+                        requiredActivityKeys.push(
+                            `${module.id}:${activity.id}`
+                        );
+
+                    }
+                );
 
 
             if (
@@ -886,8 +911,9 @@ function calculateCourseProgress() {
                 module.moduleAssessment.questions.length
             ) {
 
-                total +=
-                    1;
+                requiredAssessmentKeys.push(
+                    `${module.id}:assessment`
+                );
 
             }
 
@@ -895,14 +921,48 @@ function calculateCourseProgress() {
     );
 
 
-    if (
-        currentCourse?.finalAssessment
-    ) {
+    const requireLabs =
+        Boolean(
+            currentCourse
+                ?.completionRules
+                ?.requireRequiredLabs
+        );
 
-        total +=
-            1;
 
-    }
+    const requireAssessments =
+        currentCourse
+            ?.completionRules
+            ?.requireAllModuleAssessments !==
+        false;
+
+
+    const activities =
+        requireLabs
+            ? requiredActivityKeys
+            : [];
+
+
+    const assessments =
+        requireAssessments
+            ? requiredAssessmentKeys
+            : [];
+
+
+    const finalRequired =
+        Boolean(
+            currentCourse?.finalAssessment
+        );
+
+
+    const total =
+        requiredLessonKeys.length +
+        activities.length +
+        assessments.length +
+        (
+            finalRequired
+                ? 1
+                : 0
+        );
 
 
     if (!total) {
@@ -912,39 +972,59 @@ function calculateCourseProgress() {
     }
 
 
-    const complete =
+    const completedLessons =
+        requiredLessonKeys
+            .filter(
+                key =>
+                    currentProgress
+                        ?.completedLessons
+                        ?.includes(key)
+            )
+            .length;
+
+
+    const completedActivities =
+        activities
+            .filter(
+                key =>
+                    currentProgress
+                        ?.completedLabs
+                        ?.includes(key)
+            )
+            .length;
+
+
+    const completedAssessments =
+        assessments
+            .filter(
+                key =>
+                    currentProgress
+                        ?.completedAssessments
+                        ?.includes(key)
+            )
+            .length;
+
+
+    const finalComplete =
         (
-            currentProgress
-                ?.completedLessons
-                ?.length || 0
-        ) +
-        (
-            currentProgress
-                ?.completedLabs
-                ?.length || 0
-        ) +
-        (
-            currentProgress
-                ?.completedAssessments
-                ?.length || 0
-        ) +
-        (
+            finalRequired &&
             currentProgress
                 ?.finalAssessment
                 ?.passed
-                    ? 1
-                    : 0
-        );
-
-
-    return Math.min(
-        100,
-        Math.round(
-            (
-                complete /
-                total
-            ) * 100
         )
+            ? 1
+            : 0;
+
+
+    return Math.round(
+        (
+            completedLessons +
+            completedActivities +
+            completedAssessments +
+            finalComplete
+        ) /
+        total *
+        100
     );
 
 }
