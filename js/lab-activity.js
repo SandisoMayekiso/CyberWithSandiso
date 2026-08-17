@@ -428,6 +428,162 @@ function getActivity(
 
 
 /* =========================================================
+   CURRENT ACTIVITY INDEX
+========================================================= */
+
+function getCurrentActivityIndex() {
+
+    if (
+        !currentModule ||
+        !currentActivity
+    ) {
+
+        return -1;
+
+    }
+
+
+    const activities =
+        getModuleActivities(
+            currentModule
+        );
+
+
+    return activities.findIndex(
+        activity =>
+            activity.id ===
+            currentActivity.id
+    );
+
+}
+
+
+/* =========================================================
+   NEXT ACTIVITY
+========================================================= */
+
+function getNextActivity() {
+
+    if (
+        !currentModule ||
+        !currentActivity
+    ) {
+
+        return null;
+
+    }
+
+
+    const activities =
+        getModuleActivities(
+            currentModule
+        );
+
+
+    const index =
+        getCurrentActivityIndex();
+
+
+    if (
+        index < 0 ||
+        index >=
+            activities.length - 1
+    ) {
+
+        return null;
+
+    }
+
+
+    return activities[
+        index + 1
+    ] || null;
+
+}
+
+
+/* =========================================================
+   PREVIOUS ACTIVITY
+========================================================= */
+
+function getPreviousActivity() {
+
+    if (
+        !currentModule ||
+        !currentActivity
+    ) {
+
+        return null;
+
+    }
+
+
+    const activities =
+        getModuleActivities(
+            currentModule
+        );
+
+
+    const index =
+        getCurrentActivityIndex();
+
+
+    if (
+        index <= 0
+    ) {
+
+        return null;
+
+    }
+
+
+    return activities[
+        index - 1
+    ] || null;
+
+}
+
+
+/* =========================================================
+   BUILD ACTIVITY URL
+========================================================= */
+
+function buildActivityUrl(
+    courseId,
+    moduleId,
+    activityId
+) {
+
+    const params =
+        new URLSearchParams();
+
+
+    params.set(
+        "course",
+        courseId
+    );
+
+
+    params.set(
+        "module",
+        moduleId
+    );
+
+
+    params.set(
+        "activity",
+        activityId
+    );
+
+
+    return (
+        `lab-activity.html?${params.toString()}`
+    );
+
+}
+
+
+/* =========================================================
    ACTIVITY KEY
 ========================================================= */
 
@@ -1310,26 +1466,119 @@ function renderNavigation() {
             : [];
 
 
-    const lastLesson =
-        lessons[
-            lessons.length - 1
-        ] || null;
+    const previousActivity =
+        getPreviousActivity();
 
+
+    const nextActivity =
+        getNextActivity();
+
+
+    /*
+     * LEFT / RETURN BUTTON
+     *
+     * First activity:
+     * return to the module's final lesson.
+     *
+     * Later activities:
+     * return to the previous activity.
+     */
 
     if (
-        lastLesson &&
         returnToModuleBtn
     ) {
 
-        returnToModuleBtn.href =
-            buildLessonUrl(
-                currentCourse.id,
-                currentModule.id,
-                lastLesson.id
-            );
+        if (
+            previousActivity
+        ) {
+
+            returnToModuleBtn.href =
+                buildActivityUrl(
+                    currentCourse.id,
+                    currentModule.id,
+                    previousActivity.id
+                );
+
+
+            const span =
+                returnToModuleBtn
+                    .querySelector(
+                        "span"
+                    );
+
+
+            if (span) {
+
+                span.innerHTML = `
+
+                    <small>
+                        Previous
+                    </small>
+
+                    ${escapeHTML(
+                        previousActivity.title ||
+                        "Previous Activity"
+                    )}
+
+                `;
+
+            }
+
+        }
+        else {
+
+            const lastLesson =
+                lessons[
+                    lessons.length - 1
+                ] || null;
+
+
+            if (
+                lastLesson
+            ) {
+
+                returnToModuleBtn.href =
+                    buildLessonUrl(
+                        currentCourse.id,
+                        currentModule.id,
+                        lastLesson.id
+                    );
+
+
+                const span =
+                    returnToModuleBtn
+                        .querySelector(
+                            "span"
+                        );
+
+
+                if (span) {
+
+                    span.innerHTML = `
+
+                        <small>
+                            Return
+                        </small>
+
+                        Module Lessons
+
+                    `;
+
+                }
+
+            }
+
+        }
 
     }
 
+
+    /*
+     * RIGHT / CONTINUE BUTTON
+     *
+     * The student must complete the current activity
+     * before progression becomes available.
+     */
 
     if (
         !continueBtn
@@ -1352,6 +1601,62 @@ function renderNavigation() {
     }
 
 
+    /*
+     * If another activity exists in this module,
+     * route there first.
+     */
+
+    if (
+        nextActivity
+    ) {
+
+        continueBtn.hidden =
+            false;
+
+
+        continueBtn.href =
+            buildActivityUrl(
+                currentCourse.id,
+                currentModule.id,
+                nextActivity.id
+            );
+
+
+        const span =
+            continueBtn
+                .querySelector(
+                    "span"
+                );
+
+
+        if (span) {
+
+            span.innerHTML = `
+
+                <small>
+                    Continue
+                </small>
+
+                ${escapeHTML(
+                    nextActivity.title ||
+                    "Next Activity"
+                )}
+
+            `;
+
+        }
+
+
+        return;
+
+    }
+
+
+    /*
+     * No more activities remain.
+     * Continue to the module assessment.
+     */
+
     if (
         currentModule
             ?.moduleAssessment
@@ -1366,6 +1671,28 @@ function renderNavigation() {
                 currentCourse.id,
                 currentModule.id
             );
+
+
+        const span =
+            continueBtn
+                .querySelector(
+                    "span"
+                );
+
+
+        if (span) {
+
+            span.innerHTML = `
+
+                <small>
+                    Continue
+                </small>
+
+                Module Assessment
+
+            `;
+
+        }
 
 
         return;
