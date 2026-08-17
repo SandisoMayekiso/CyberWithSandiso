@@ -2728,7 +2728,110 @@ function renderNavigation() {
         nextLessonBtn
     ) {
 
+        /*
+         * The last lesson in a module routes to that
+         * module's assessment before the student can
+         * continue into the next module.
+         */
+
         if (
+            isLastLessonInCurrentModule() &&
+            currentModuleHasActivity()
+        ) {
+
+            const activity =
+                getFirstCurrentModuleActivity();
+
+
+            nextLessonBtn.hidden =
+                false;
+
+
+            nextLessonBtn.href =
+                buildLabActivityUrl(
+
+                    currentCourse.id,
+
+                    currentModule.id,
+
+                    activity.id
+
+                );
+
+
+            const span =
+                nextLessonBtn
+                    .querySelector(
+                        "span"
+                    );
+
+
+            if (
+                span
+            ) {
+
+                span.innerHTML = `
+
+                    <small>
+                        Next
+                    </small>
+
+                    ${escapeHTML(
+                        activity.title ||
+                        "Practical Activity"
+                    )}
+
+                `;
+
+            }
+
+        }
+
+        else if (
+            isLastLessonInCurrentModule() &&
+            currentModuleHasAssessment()
+        ) {
+
+            nextLessonBtn.hidden =
+                false;
+
+
+            nextLessonBtn.href =
+                buildModuleAssessmentUrl(
+
+                    currentCourse.id,
+
+                    currentModule.id
+
+                );
+
+
+            const span =
+                nextLessonBtn
+                    .querySelector(
+                        "span"
+                    );
+
+
+            if (
+                span
+            ) {
+
+                span.innerHTML = `
+
+                    <small>
+                        Next
+                    </small>
+
+                    Module Assessment
+
+                `;
+
+            }
+
+        }
+
+        else if (
             next
         ) {
 
@@ -2773,7 +2876,9 @@ function renderNavigation() {
 
             }
 
-        } else {
+        }
+
+        else {
 
             nextLessonBtn.hidden =
                 true;
@@ -2845,6 +2950,195 @@ function buildLessonUrl(
 
     return (
         `lesson.html?${params.toString()}`
+    );
+
+}
+
+
+/* =========================================================
+   BUILD MODULE ASSESSMENT URL
+========================================================= */
+
+function buildModuleAssessmentUrl(
+    courseId,
+    moduleId
+) {
+
+    const params =
+        new URLSearchParams();
+
+
+    params.set(
+        "course",
+        courseId
+    );
+
+
+    params.set(
+        "module",
+        moduleId
+    );
+
+
+    return (
+        `module-assessment.html?${params.toString()}`
+    );
+
+}
+
+
+/* =========================================================
+   BUILD LAB / PRACTICAL ACTIVITY URL
+========================================================= */
+
+function buildLabActivityUrl(
+    courseId,
+    moduleId,
+    activityId
+) {
+
+    const params =
+        new URLSearchParams();
+
+
+    params.set(
+        "course",
+        courseId
+    );
+
+
+    params.set(
+        "module",
+        moduleId
+    );
+
+
+    params.set(
+        "activity",
+        activityId
+    );
+
+
+    return (
+        `lab-activity.html?${params.toString()}`
+    );
+
+}
+
+
+/* =========================================================
+   GET CURRENT MODULE ACTIVITIES
+========================================================= */
+
+function getCurrentModuleActivities() {
+
+    if (!currentModule) {
+
+        return [];
+
+    }
+
+
+    return [
+        ...(
+            Array.isArray(
+                currentModule.labActivities
+            )
+                ? currentModule.labActivities
+                : []
+        ),
+
+        ...(
+            Array.isArray(
+                currentModule.practiceActivities
+            )
+                ? currentModule.practiceActivities
+                : []
+        )
+    ];
+
+}
+
+
+/* =========================================================
+   GET FIRST CURRENT MODULE ACTIVITY
+========================================================= */
+
+function getFirstCurrentModuleActivity() {
+
+    return (
+        getCurrentModuleActivities()[0] ||
+        null
+    );
+
+}
+
+
+/* =========================================================
+   CURRENT MODULE HAS ACTIVITY
+========================================================= */
+
+function currentModuleHasActivity() {
+
+    return Boolean(
+        getFirstCurrentModuleActivity()
+    );
+
+}
+
+
+/* =========================================================
+   IS LAST LESSON IN CURRENT MODULE
+========================================================= */
+
+function isLastLessonInCurrentModule() {
+
+    if (
+        !currentModule ||
+        !currentLesson ||
+        !Array.isArray(
+            currentModule.lessons
+        ) ||
+        !currentModule.lessons.length
+    ) {
+
+        return false;
+
+    }
+
+
+    const lastLesson =
+        currentModule.lessons[
+            currentModule.lessons.length - 1
+        ];
+
+
+    return (
+        lastLesson?.id ===
+        currentLesson.id
+    );
+
+}
+
+
+/* =========================================================
+   CURRENT MODULE HAS ASSESSMENT
+========================================================= */
+
+function currentModuleHasAssessment() {
+
+    return Boolean(
+        currentModule
+            ?.moduleAssessment &&
+        Array.isArray(
+            currentModule
+                .moduleAssessment
+                .questions
+        ) &&
+        currentModule
+            .moduleAssessment
+            .questions
+            .length
     );
 
 }
