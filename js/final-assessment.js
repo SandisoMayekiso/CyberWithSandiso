@@ -1769,7 +1769,7 @@ async function logout() {
 
 
         window.location.replace(
-            "login.html"
+            "../pages/login.html"
         );
 
     }
@@ -1843,7 +1843,7 @@ logoutBtn
 if (!auth) {
 
     window.location.replace(
-        "login.html"
+        "../pages/login.html"
     );
 
 }
@@ -1863,7 +1863,7 @@ else {
 
                 window.location.replace(
 
-                    `login.html?redirect=final-assessment` +
+                    `../pages/login.html?redirect=final-assessment` +
 
                     `&course=${encodeURIComponent(
                         courseId
