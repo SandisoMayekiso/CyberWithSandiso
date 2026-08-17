@@ -1079,13 +1079,162 @@ async function saveProgress() {
 
 
 /* =========================================================
+   COURSE PROGRESS REQUIREMENTS
+========================================================= */
+
+function getCourseProgressRequirements() {
+
+    const requiredLessonKeys =
+        [];
+
+    const requiredActivityKeys =
+        [];
+
+    const requiredAssessmentKeys =
+        [];
+
+
+    const modules =
+        Array.isArray(
+            currentCourse?.modules
+        )
+            ? currentCourse.modules
+            : [];
+
+
+    modules.forEach(
+        module => {
+
+            const lessons =
+                Array.isArray(
+                    module.lessons
+                )
+                    ? module.lessons
+                    : [];
+
+
+            lessons.forEach(
+                lesson => {
+
+                    requiredLessonKeys.push(
+                        `${module.id}:${lesson.id}`
+                    );
+
+                }
+            );
+
+
+            const activities = [
+                ...(
+                    Array.isArray(
+                        module.labActivities
+                    )
+                        ? module.labActivities
+                        : []
+                ),
+                ...(
+                    Array.isArray(
+                        module.practiceActivities
+                    )
+                        ? module.practiceActivities
+                        : []
+                )
+            ];
+
+
+            activities.forEach(
+                activity => {
+
+                    requiredActivityKeys.push(
+                        `${module.id}:${activity.id}`
+                    );
+
+                }
+            );
+
+
+            if (
+                module.moduleAssessment &&
+                Array.isArray(
+                    module.moduleAssessment.questions
+                ) &&
+                module.moduleAssessment.questions.length
+            ) {
+
+                requiredAssessmentKeys.push(
+                    `${module.id}:assessment`
+                );
+
+            }
+
+        }
+    );
+
+
+    return {
+
+        requiredLessonKeys,
+
+        requiredActivityKeys,
+
+        requiredAssessmentKeys,
+
+        finalRequired:
+            Boolean(
+                currentCourse?.finalAssessment
+            )
+
+    };
+
+}
+
+
+/* =========================================================
    CALCULATE COURSE PROGRESS
 ========================================================= */
 
 function calculateCourseProgress() {
 
+    const requirements =
+        getCourseProgressRequirements();
+
+
+    const requireLabs =
+        Boolean(
+            currentCourse
+                ?.completionRules
+                ?.requireRequiredLabs
+        );
+
+
+    const requireAssessments =
+        currentCourse
+            ?.completionRules
+            ?.requireAllModuleAssessments !==
+        false;
+
+
+    const requiredActivities =
+        requireLabs
+            ? requirements.requiredActivityKeys
+            : [];
+
+
+    const requiredAssessments =
+        requireAssessments
+            ? requirements.requiredAssessmentKeys
+            : [];
+
+
     const total =
-        getTotalLessons();
+        requirements.requiredLessonKeys.length +
+        requiredActivities.length +
+        requiredAssessments.length +
+        (
+            requirements.finalRequired
+                ? 1
+                : 0
+        );
 
 
     if (!total) {
@@ -1095,25 +1244,59 @@ function calculateCourseProgress() {
     }
 
 
-    const completed =
-        currentProgress
-            ?.completedLessons
-            ?.length || 0;
+    const completedLessonCount =
+        requirements.requiredLessonKeys
+            .filter(
+                key =>
+                    currentProgress
+                        ?.completedLessons
+                        ?.includes(key)
+            )
+            .length;
 
 
-    return Math.min(
+    const completedActivityCount =
+        requiredActivities
+            .filter(
+                key =>
+                    currentProgress
+                        ?.completedLabs
+                        ?.includes(key)
+            )
+            .length;
 
-        100,
 
-        Math.round(
+    const completedAssessmentCount =
+        requiredAssessments
+            .filter(
+                key =>
+                    currentProgress
+                        ?.completedAssessments
+                        ?.includes(key)
+            )
+            .length;
 
-            (
-                completed /
-                total
-            ) * 100
 
+    const finalCount =
+        (
+            requirements.finalRequired &&
+            currentProgress
+                ?.finalAssessment
+                ?.passed
         )
+            ? 1
+            : 0;
 
+
+    return Math.round(
+        (
+            completedLessonCount +
+            completedActivityCount +
+            completedAssessmentCount +
+            finalCount
+        ) /
+        total *
+        100
     );
 
 }
@@ -1212,7 +1395,7 @@ function updateCourseProgressUI() {
 
         courseProgressText.textContent =
 
-            `${completed} of ${total} lessons completed in ${currentCourse.title}.`;
+            `${completed} of ${total} lessons completed. Course progress also includes required activities and assessments.`;
 
     }
 
@@ -1220,7 +1403,9 @@ function updateCourseProgressUI() {
 
         courseProgressText.textContent =
 
-            `${currentCourse.title} completed. Congratulations!`;
+            currentProgress.completed
+                ? `${currentCourse.title} completed. Congratulations!`
+                : `All lessons are complete. Finish the remaining required activities and assessments to complete ${currentCourse.title}.`;
 
     }
 
@@ -2604,7 +2789,15 @@ async function completeLesson() {
 
     currentProgress.completed =
         currentProgress
-            .progressPercent === 100;
+            .progressPercent === 100 &&
+        (
+            !currentCourse?.finalAssessment ||
+            Boolean(
+                currentProgress
+                    ?.finalAssessment
+                    ?.passed
+            )
+        );
 
 
     updateCourseProgressUI();
