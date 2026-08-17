@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CWS Academy module assessment"
+    >
+
+    <title>CWS Academy | Module Assessment</title>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <!-- Main CWS Styles -->
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <!-- Lesson Shared Styles -->
+    <link
+        rel="stylesheet"
+        href="../css/lesson.css"
+    >
+
+    <!-- Assessment Styles -->
+    <link
+        rel="stylesheet"
+        href="../css/module-assessment.css"
+    >
+
+</head>
+
+
+<body class="lesson-page-body assessment-page-body">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="lesson-header">
+
+        <div class="lesson-header-inner">
+
+            <a
+                href="courses.html"
+                class="lesson-brand"
+            >
+
+                <span class="lesson-brand-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </span>
+
+                <span>
+                    <strong>CWS</strong>
+                    <small>ACADEMY</small>
+                </span>
+
+            </a>
+
+
+            <div class="lesson-header-course">
+
+                <span
+                    id="headerCourseCategory"
+                    class="lesson-header-category"
+                >
+                    CYBERSECURITY
+                </span>
+
+                <strong id="headerCourseTitle">
+                    Course
+                </strong>
+
+            </div>
+
+
+            <div class="lesson-header-actions">
+
+                <span
+                    id="studentName"
+                    class="lesson-student-name"
+                >
+                    Student
+                </span>
+
+                <a
+                    href="profile.html"
+                    class="lesson-profile-btn"
+                >
+                    <i class="fa-solid fa-user"></i>
+                    <span>Profile</span>
+                </a>
+
+                <button
+                    type="button"
+                    id="logoutBtn"
+                    class="lesson-logout-btn"
+                >
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    <section
+        id="assessmentLoading"
+        class="lesson-loading"
+    >
+
+        <div class="lesson-loading-spinner">
+            <i class="fa-solid fa-clipboard-check"></i>
+        </div>
+
+        <h2>Loading assessment...</h2>
+
+        <p>
+            Preparing your CWS Academy module assessment.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         NOT FOUND
+    ====================================================== -->
+
+    <section
+        id="assessmentNotFound"
+        class="lesson-not-found"
+        hidden
+    >
+
+        <div class="lesson-not-found-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <h1>Assessment Not Found</h1>
+
+        <p id="assessmentNotFoundMessage">
+            The requested module assessment could not be found.
+        </p>
+
+        <a
+            href="courses.html"
+            class="lesson-primary-btn"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Courses
+        </a>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main
+        id="assessmentContent"
+        class="lesson-main assessment-main"
+        hidden
+    >
+
+
+        <!-- =================================================
+             BREADCRUMB
+        ================================================== -->
+
+        <nav
+            class="lesson-breadcrumb"
+            aria-label="Breadcrumb"
+        >
+
+            <a href="../index.html">
+                <i class="fa-solid fa-house"></i>
+                Home
+            </a>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+            <a
+                id="courseBreadcrumbLink"
+                href="#"
+            >
+                Course
+            </a>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+            <span id="moduleBreadcrumb">
+                Module
+            </span>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+            <span>
+                Assessment
+            </span>
+
+        </nav>
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="lesson-hero assessment-hero">
+
+            <div class="lesson-hero-content">
+
+                <div class="lesson-badges">
+
+                    <span
+                        id="moduleBadge"
+                        class="lesson-module-badge"
+                    >
+                        MODULE 01
+                    </span>
+
+                    <span class="lesson-type-badge">
+                        ASSESSMENT
+                    </span>
+
+                </div>
+
+
+                <span
+                    id="assessmentCategory"
+                    class="dashboard-label"
+                >
+                    CWS ACADEMY
+                </span>
+
+
+                <h1 id="assessmentTitle">
+                    Module Assessment
+                </h1>
+
+
+                <p id="assessmentDescription">
+                    Test your understanding before continuing.
+                </p>
+
+
+                <div class="lesson-meta">
+
+                    <span>
+                        <i class="fa-solid fa-percent"></i>
+                        Pass mark:
+                        <strong id="passingScoreMeta">70%</strong>
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-list-check"></i>
+                        <strong id="questionCountMeta">0</strong>
+                        questions
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-rotate"></i>
+                        Retakes allowed
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="lesson-hero-icon">
+                <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PROGRESS SUMMARY
+        ================================================== -->
+
+        <section class="assessment-summary-grid">
+
+            <article class="assessment-summary-card">
+
+                <span class="dashboard-label">
+                    BEST SCORE
+                </span>
+
+                <strong id="bestScore">
+                    —
+                </strong>
+
+                <p>
+                    Your highest recorded score for this module.
+                </p>
+
+            </article>
+
+
+            <article class="assessment-summary-card">
+
+                <span class="dashboard-label">
+                    STATUS
+                </span>
+
+                <strong id="assessmentStatus">
+                    Not attempted
+                </strong>
+
+                <p id="assessmentStatusText">
+                    Complete the assessment to unlock progression.
+                </p>
+
+            </article>
+
+
+            <article class="assessment-summary-card">
+
+                <span class="dashboard-label">
+                    COURSE PROGRESS
+                </span>
+
+                <strong id="courseProgressPercent">
+                    0%
+                </strong>
+
+                <p id="courseProgressText">
+                    Progress is calculated from lessons, labs and assessments.
+                </p>
+
+            </article>
+
+        </section>
+
+
+        <!-- =================================================
+             ASSESSMENT CARD
+        ================================================== -->
+
+        <section class="assessment-layout">
+
+            <article class="assessment-card">
+
+                <div class="assessment-instructions">
+
+                    <div class="lesson-section-icon">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            INSTRUCTIONS
+                        </span>
+
+                        <h2>
+                            Before you begin
+                        </h2>
+
+                        <p>
+                            Answer every question and submit your assessment.
+                            You need to reach the required passing score before
+                            this module assessment is marked complete.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="moduleAssessmentForm">
+
+                    <div
+                        id="assessmentQuestions"
+                        class="assessment-questions"
+                    ></div>
+
+
+                    <button
+                        type="submit"
+                        id="submitAssessmentBtn"
+                        class="lesson-primary-btn assessment-submit-btn"
+                    >
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Submit Assessment
+                    </button>
+
+                </form>
+
+
+                <div
+                    id="assessmentResult"
+                    class="assessment-result"
+                    hidden
+                    aria-live="polite"
+                ></div>
+
+            </article>
+
+        </section>
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <section class="assessment-navigation-card">
+
+            <a
+                href="#"
+                id="returnToModuleBtn"
+                class="lesson-secondary-btn"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+
+                <span>
+                    <small>Return</small>
+                    Module Lessons
+                </span>
+            </a>
+
+
+            <a
+                href="#"
+                id="continueBtn"
+                class="lesson-primary-btn"
+                hidden
+            >
+
+                <span>
+                    <small>Continue</small>
+                    Next Module
+                </span>
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="../js/module-assessment.js"
+    ></script>
+
+</body>
+</html>

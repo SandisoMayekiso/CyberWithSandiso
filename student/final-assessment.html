@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CWS Academy final course assessment"
+    >
+
+    <title>CWS Academy | Final Assessment</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/lesson.css">
+    <link rel="stylesheet" href="../css/module-assessment.css">
+    <link rel="stylesheet" href="../css/final-assessment.css">
+
+</head>
+
+
+<body class="lesson-page-body final-assessment-page-body">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="lesson-header">
+
+        <div class="lesson-header-inner">
+
+            <a
+                href="courses.html"
+                class="lesson-brand"
+            >
+
+                <span class="lesson-brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </span>
+
+                <span>
+                    <strong>CWS</strong>
+                    <small>ACADEMY</small>
+                </span>
+
+            </a>
+
+
+            <div class="lesson-header-course">
+
+                <span
+                    id="headerCourseCategory"
+                    class="lesson-header-category"
+                >
+                    CWS ACADEMY
+                </span>
+
+                <strong id="headerCourseTitle">
+                    Course
+                </strong>
+
+            </div>
+
+
+            <div class="lesson-header-actions">
+
+                <span
+                    id="studentName"
+                    class="lesson-student-name"
+                >
+                    Student
+                </span>
+
+                <a
+                    href="profile.html"
+                    class="lesson-profile-btn"
+                >
+                    <i class="fa-solid fa-user"></i>
+                    <span>Profile</span>
+                </a>
+
+                <button
+                    type="button"
+                    id="logoutBtn"
+                    class="lesson-logout-btn"
+                >
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    <section
+        id="finalLoading"
+        class="lesson-loading"
+    >
+
+        <div class="lesson-loading-spinner">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+
+        <h2>Loading final assessment...</h2>
+
+        <p>
+            Preparing your CWS Academy final assessment.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         NOT FOUND
+    ====================================================== -->
+
+    <section
+        id="finalNotFound"
+        class="lesson-not-found"
+        hidden
+    >
+
+        <div class="lesson-not-found-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <h1>Final Assessment Not Found</h1>
+
+        <p id="finalNotFoundMessage">
+            The requested final assessment could not be found.
+        </p>
+
+        <a
+            href="courses.html"
+            class="lesson-primary-btn"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Courses
+        </a>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main
+        id="finalContent"
+        class="lesson-main assessment-main"
+        hidden
+    >
+
+        <!-- BREADCRUMB -->
+
+        <nav
+            class="lesson-breadcrumb"
+            aria-label="Breadcrumb"
+        >
+
+            <a href="../index.html">
+                <i class="fa-solid fa-house"></i>
+                Home
+            </a>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+            <a
+                id="courseBreadcrumbLink"
+                href="#"
+            >
+                Course
+            </a>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+            <span>
+                Final Assessment
+            </span>
+
+        </nav>
+
+
+        <!-- HERO -->
+
+        <section class="lesson-hero assessment-hero final-hero">
+
+            <div class="lesson-hero-content">
+
+                <div class="lesson-badges">
+
+                    <span class="lesson-module-badge">
+                        COURSE FINAL
+                    </span>
+
+                    <span class="lesson-type-badge">
+                        FINAL ASSESSMENT
+                    </span>
+
+                </div>
+
+
+                <span
+                    id="assessmentCategory"
+                    class="dashboard-label"
+                >
+                    CWS ACADEMY
+                </span>
+
+
+                <h1 id="assessmentTitle">
+                    Final Assessment
+                </h1>
+
+
+                <p id="assessmentDescription">
+                    Demonstrate your understanding of the full course.
+                </p>
+
+
+                <div class="lesson-meta">
+
+                    <span>
+                        <i class="fa-solid fa-percent"></i>
+                        Pass mark:
+                        <strong id="passingScoreMeta">75%</strong>
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-list-check"></i>
+                        <strong id="questionCountMeta">0</strong>
+                        questions
+                    </span>
+
+                    <span>
+                        <i class="fa-regular fa-clock"></i>
+                        <strong id="assessmentDurationMeta">
+                            45–60 minutes
+                        </strong>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="lesson-hero-icon">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+
+        </section>
+
+
+        <!-- SUMMARY -->
+
+        <section class="assessment-summary-grid">
+
+            <article class="assessment-summary-card">
+
+                <span class="dashboard-label">
+                    BEST SCORE
+                </span>
+
+                <strong id="bestScore">
+                    —
+                </strong>
+
+                <p>
+                    Highest recorded final-assessment score.
+                </p>
+
+            </article>
+
+
+            <article class="assessment-summary-card">
+
+                <span class="dashboard-label">
+                    STATUS
+                </span>
+
+                <strong id="assessmentStatus">
+                    Not attempted
+                </strong>
+
+                <p id="assessmentStatusText">
+                    Complete all required course work first.
+                </p>
+
+            </article>
+
+
+            <article class="assessment-summary-card">
+
+                <span class="dashboard-label">
+                    COURSE PROGRESS
+                </span>
+
+                <strong id="courseProgressPercent">
+                    0%
+                </strong>
+
+                <p id="courseProgressText">
+                    Complete the course requirements to finish.
+                </p>
+
+            </article>
+
+        </section>
+
+
+        <!-- ELIGIBILITY -->
+
+        <section
+            id="eligibilityCard"
+            class="final-eligibility-card"
+        >
+
+            <i class="fa-solid fa-lock"></i>
+
+            <div>
+
+                <span class="dashboard-label">
+                    FINAL ASSESSMENT ACCESS
+                </span>
+
+                <h2 id="eligibilityTitle">
+                    Complete the course requirements first
+                </h2>
+
+                <p id="eligibilityText">
+                    Lessons, required activities and module assessments must
+                    be complete before the final assessment can be submitted.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ASSESSMENT -->
+
+        <section class="assessment-layout">
+
+            <article class="assessment-card">
+
+                <div class="assessment-instructions">
+
+                    <div class="lesson-section-icon">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            FINAL ASSESSMENT
+                        </span>
+
+                        <h2>
+                            Demonstrate your course knowledge
+                        </h2>
+
+                        <p>
+                            Answer every question. You may retry the final
+                            assessment if the course allows it. Your highest
+                            score is retained.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="finalAssessmentForm">
+
+                    <div
+                        id="assessmentQuestions"
+                        class="assessment-questions"
+                    ></div>
+
+
+                    <button
+                        type="submit"
+                        id="submitAssessmentBtn"
+                        class="lesson-primary-btn assessment-submit-btn"
+                    >
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Submit Final Assessment
+                    </button>
+
+                </form>
+
+
+                <div
+                    id="assessmentResult"
+                    class="assessment-result"
+                    hidden
+                    aria-live="polite"
+                ></div>
+
+            </article>
+
+        </section>
+
+
+        <!-- COURSE COMPLETE -->
+
+        <section
+            id="courseCompleteCard"
+            class="course-complete-card"
+            hidden
+        >
+
+            <div class="course-complete-icon">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+
+            <div>
+
+                <span class="dashboard-label">
+                    COURSE COMPLETE
+                </span>
+
+                <h2 id="courseCompleteTitle">
+                    Congratulations!
+                </h2>
+
+                <p id="courseCompleteText">
+                    You have successfully completed this CWS Academy course.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- NAVIGATION -->
+
+        <section class="assessment-navigation-card">
+
+            <a
+                href="#"
+                id="returnToCourseBtn"
+                class="lesson-secondary-btn"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+
+                <span>
+                    <small>Return</small>
+                    Course Details
+                </span>
+            </a>
+
+
+            <a
+                href="courses.html"
+                id="finishBtn"
+                class="lesson-primary-btn"
+                hidden
+            >
+
+                <span>
+                    <small>Finished</small>
+                    Back to Courses
+                </span>
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </section>
+
+
+    </main>
+
+
+    <script
+        type="module"
+        src="../js/final-assessment.js"
+    ></script>
+
+</body>
+</html>
