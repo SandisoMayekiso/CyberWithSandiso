@@ -2462,7 +2462,58 @@ function renderNavigation() {
         nextLessonBtn
     ) {
 
+        /*
+         * If this is the final lesson in the current module
+         * and the module defines an assessment, route the
+         * student to the module assessment before allowing
+         * progression into the next module.
+         */
+
         if (
+            isLastLessonInCurrentModule() &&
+            currentModuleHasAssessment()
+        ) {
+
+            nextLessonBtn.hidden =
+                false;
+
+
+            nextLessonBtn.href =
+                buildModuleAssessmentUrl(
+
+                    currentCourse.id,
+
+                    currentModule.id
+
+                );
+
+
+            const span =
+                nextLessonBtn
+                    .querySelector(
+                        "span"
+                    );
+
+
+            if (
+                span
+            ) {
+
+                span.innerHTML = `
+
+                    <small>
+                        Next
+                    </small>
+
+                    Module Assessment
+
+                `;
+
+            }
+
+        }
+
+        else if (
             next
         ) {
 
@@ -2507,7 +2558,9 @@ function renderNavigation() {
 
             }
 
-        } else {
+        }
+
+        else {
 
             nextLessonBtn.hidden =
                 true;
@@ -2579,6 +2632,95 @@ function buildLessonUrl(
 
     return (
         `lesson.html?${params.toString()}`
+    );
+
+}
+
+
+/* =========================================================
+   BUILD MODULE ASSESSMENT URL
+========================================================= */
+
+function buildModuleAssessmentUrl(
+    courseId,
+    moduleId
+) {
+
+    const params =
+        new URLSearchParams();
+
+
+    params.set(
+        "course",
+        courseId
+    );
+
+
+    params.set(
+        "module",
+        moduleId
+    );
+
+
+    return (
+        `module-assessment.html?${params.toString()}`
+    );
+
+}
+
+
+/* =========================================================
+   IS LAST LESSON IN CURRENT MODULE
+========================================================= */
+
+function isLastLessonInCurrentModule() {
+
+    if (
+        !currentModule ||
+        !currentLesson ||
+        !Array.isArray(
+            currentModule.lessons
+        ) ||
+        !currentModule.lessons.length
+    ) {
+
+        return false;
+
+    }
+
+
+    const lastLesson =
+        currentModule.lessons[
+            currentModule.lessons.length - 1
+        ];
+
+
+    return (
+        lastLesson?.id ===
+        currentLesson.id
+    );
+
+}
+
+
+/* =========================================================
+   CURRENT MODULE HAS ASSESSMENT
+========================================================= */
+
+function currentModuleHasAssessment() {
+
+    return Boolean(
+        currentModule
+            ?.moduleAssessment &&
+        Array.isArray(
+            currentModule
+                .moduleAssessment
+                .questions
+        ) &&
+        currentModule
+            .moduleAssessment
+            .questions
+            .length
     );
 
 }
