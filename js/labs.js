@@ -1,8 +1,10 @@
 /* =========================================================
    CWS ACADEMY
-   LABORATORY PAGE
-   Authentication + Filtering + Search + Modal
+   LABS CONTROLLER
+   Dynamic Course Activities + Firestore Progress
 ========================================================= */
+
+"use strict";
 
 import {
     onAuthStateChanged,
@@ -10,19 +12,22 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
-    auth
+    collection,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+    auth,
+    db
 } from "./firebase-config.js";
 
-
-/* =========================================================
-   DEBUG
-========================================================= */
-
-console.log("CWS Academy labs.js loaded");
+import {
+    courses
+} from "../data/courses.js";
 
 
 /* =========================================================
-   ELEMENTS
+   DOM
 ========================================================= */
 
 const labsGrid =
@@ -34,11 +39,11 @@ const labSearch =
 const labFilters =
     document.querySelectorAll(".lab-filter");
 
-const labCards =
-    document.querySelectorAll(".lab-card");
-
 const noLabsMessage =
     document.getElementById("noLabsMessage");
+
+const labCount =
+    document.getElementById("labCount");
 
 const studentName =
     document.getElementById("studentName");
@@ -51,9 +56,6 @@ const sidebarToggle =
 
 const studentSidebar =
     document.getElementById("studentSidebar");
-
-
-/* Modal */
 
 const labModal =
     document.getElementById("labModal");
@@ -78,182 +80,714 @@ const launchLabBtn =
 
 
 /* =========================================================
-   CURRENT FILTER
+   STATE
 ========================================================= */
 
+let currentUser = null;
 let currentFilter = "all";
-
+let progressMap = new Map();
+let labItems = [];
 let selectedLab = null;
+let initialized = false;
 
 
 /* =========================================================
-   LAB INFORMATION
+   HELPERS
 ========================================================= */
 
-const labs = {
+function escapeHTML(value) {
 
-    "network-recon": {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
-        title: "Network Reconnaissance",
-
-        description:
-            "Learn the fundamentals of network discovery and host identification in a controlled laboratory environment.",
-
-        level: "Beginner",
-
-        duration: "30 min"
-
-    },
+}
 
 
-    "linux-security": {
+function getAllCourses() {
 
-        title: "Linux Security Fundamentals",
+    return courses
+        ? Object.values(courses)
+        : [];
 
-        description:
-            "Practice Linux command-line fundamentals, permissions, filesystems and basic security operations.",
-
-        level: "Beginner",
-
-        duration: "35 min"
-
-    },
+}
 
 
-    "web-security": {
+function getUserName(user) {
 
-        title: "Web Security Fundamentals",
+    if (user?.displayName?.trim()) {
+        return user.displayName.trim();
+    }
 
-        description:
-            "Explore HTTP communication, authentication, sessions and common web security concepts in a controlled environment.",
+    if (user?.email?.includes("@")) {
 
-        level: "Intermediate",
-
-        duration: "45 min"
-
-    },
-
-
-    "service-enumeration": {
-
-        title: "Service Enumeration",
-
-        description:
-            "Learn how security professionals identify services and understand the information exposed by a target system.",
-
-        level: "Intermediate",
-
-        duration: "45 min"
+        return user.email
+            .split("@")[0]
+            .replace(/[._-]+/g, " ")
+            .trim()
+            .split(" ")
+            .map(
+                word =>
+                    word.charAt(0).toUpperCase() +
+                    word.slice(1)
+            )
+            .join(" ");
 
     }
 
-};
+    return "Student";
+
+}
+
+
+function normalizeProgress(
+    courseId,
+    data = {}
+) {
+
+    return {
+
+        courseId,
+
+        completedLessons:
+            Array.isArray(data.completedLessons)
+                ? data.completedLessons
+                : [],
+
+        completedLabs:
+            Array.isArray(data.completedLabs)
+                ? data.completedLabs
+                : [],
+
+        completedAssessments:
+            Array.isArray(data.completedAssessments)
+                ? data.completedAssessments
+                : [],
+
+        finalAssessment:
+            (
+                data.finalAssessment &&
+                typeof data.finalAssessment === "object"
+            )
+                ? data.finalAssessment
+                : {
+                    score: 0,
+                    bestScore: 0,
+                    passed: false
+                },
+
+        started:
+            Boolean(data.started),
+
+        completed:
+            Boolean(data.completed),
+
+        updatedAt:
+            data.updatedAt || null
+
+    };
+
+}
+
+
+function getModuleActivities(module) {
+
+    return [
+        ...(
+            Array.isArray(module?.labActivities)
+                ? module.labActivities
+                : []
+        ),
+        ...(
+            Array.isArray(module?.practiceActivities)
+                ? module.practiceActivities
+                : []
+        )
+    ];
+
+}
+
+
+function areModuleLessonsComplete(
+    module,
+    progress
+) {
+
+    const lessons =
+        Array.isArray(module?.lessons)
+            ? module.lessons
+            : [];
+
+    return lessons.every(
+        lesson =>
+            progress.completedLessons.includes(
+                `${module.id}:${lesson.id}`
+            )
+    );
+
+}
 
 
 /* =========================================================
-   AUTHENTICATION GUARD
+   LOAD FIRESTORE PROGRESS
 ========================================================= */
 
-onAuthStateChanged(auth, (user) => {
+async function loadProgress() {
 
-    console.log(
-        "Labs authentication state:",
-        user
-            ? `Authenticated (${user.uid})`
-            : "Not authenticated"
-    );
+    progressMap = new Map();
 
-
-    if (!user) {
-
-        /*
-         * The user attempted to access a protected page
-         * without being authenticated.
-         */
-
-        window.location.replace(
-            "../pages/login.html?redirect=labs"
-        );
-
+    if (!db || !currentUser) {
         return;
     }
 
+    try {
 
-    /*
-     * User is authenticated.
-     * Populate their display name.
-     */
+        const ref =
+            collection(
+                db,
+                "users",
+                currentUser.uid,
+                "courseProgress"
+            );
 
-    if (studentName) {
+        const snapshot =
+            await getDocs(ref);
 
-        const displayName =
-            user.displayName ||
-            user.email ||
-            "Student";
+        snapshot.forEach(
+            item => {
 
-        studentName.textContent =
-            displayName;
+                progressMap.set(
+                    item.id,
+                    normalizeProgress(
+                        item.id,
+                        item.data()
+                    )
+                );
+
+            }
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "[CWS Labs] Failed to load progress:",
+            error
+        );
 
     }
 
-});
+}
 
 
 /* =========================================================
-   FILTER LABS
+   BUILD ACTIVITY CATALOGUE
+========================================================= */
+
+function buildLabItems() {
+
+    labItems = [];
+
+    getAllCourses()
+        .filter(
+            course =>
+                course?.status === "available"
+        )
+        .forEach(
+            course => {
+
+                const progress =
+                    progressMap.get(course.id) ||
+                    normalizeProgress(course.id);
+
+                const modules =
+                    Array.isArray(course.modules)
+                        ? course.modules
+                        : [];
+
+                modules.forEach(
+                    (
+                        module,
+                        moduleIndex
+                    ) => {
+
+                        const activities =
+                            getModuleActivities(module);
+
+                        activities.forEach(
+                            (
+                                activity,
+                                activityIndex
+                            ) => {
+
+                                const key =
+                                    `${module.id}:${activity.id}`;
+
+                                const completed =
+                                    progress.completedLabs
+                                        .includes(key);
+
+                                const moduleLessonsComplete =
+                                    areModuleLessonsComplete(
+                                        module,
+                                        progress
+                                    );
+
+                                const previousActivityKeys =
+                                    activities
+                                        .slice(
+                                            0,
+                                            activityIndex
+                                        )
+                                        .map(
+                                            item =>
+                                                `${module.id}:${item.id}`
+                                        );
+
+                                const previousActivitiesComplete =
+                                    previousActivityKeys.every(
+                                        itemKey =>
+                                            progress.completedLabs
+                                                .includes(itemKey)
+                                    );
+
+                                const unlocked =
+                                    completed ||
+                                    (
+                                        moduleLessonsComplete &&
+                                        previousActivitiesComplete
+                                    );
+
+                                const isLab =
+                                    Array.isArray(
+                                        module.labActivities
+                                    ) &&
+                                    module.labActivities
+                                        .includes(activity);
+
+                                const type =
+                                    isLab
+                                        ? "Lab"
+                                        : "Practical Activity";
+
+                                const level =
+                                    String(
+                                        activity.level ||
+                                        course.level ||
+                                        "Beginner"
+                                    );
+
+                                const category =
+                                    activity.category ||
+                                    module.title ||
+                                    course.title;
+
+                                const description =
+                                    activity.description ||
+                                    activity.objective ||
+                                    (
+                                        Array.isArray(
+                                            activity.instructions
+                                        ) &&
+                                        activity.instructions.length
+                                            ? activity.instructions[0]
+                                            : `Complete this ${type.toLowerCase()} as part of ${module.title}.`
+                                    );
+
+                                const duration =
+                                    activity.duration ||
+                                    activity.estimatedTime ||
+                                    "15–30 min";
+
+                                labItems.push({
+
+                                    key,
+
+                                    courseId:
+                                        course.id,
+
+                                    courseTitle:
+                                        course.title,
+
+                                    courseIcon:
+                                        course.icon,
+
+                                    moduleId:
+                                        module.id,
+
+                                    moduleTitle:
+                                        module.title,
+
+                                    moduleIndex,
+
+                                    activityId:
+                                        activity.id,
+
+                                    title:
+                                        activity.title ||
+                                        `${module.title} ${type}`,
+
+                                    description,
+
+                                    duration,
+
+                                    level,
+
+                                    category,
+
+                                    type,
+
+                                    completed,
+
+                                    unlocked,
+
+                                    href:
+                                        `lab-activity.html?course=${encodeURIComponent(
+                                            course.id
+                                        )}&module=${encodeURIComponent(
+                                            module.id
+                                        )}&activity=${encodeURIComponent(
+                                            activity.id
+                                        )}`
+
+                                });
+
+                            }
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   STARTED-COURSE FILTER
+========================================================= */
+
+function isCourseStarted(courseId) {
+
+    const progress =
+        progressMap.get(courseId);
+
+    return Boolean(
+        progress &&
+        (
+            progress.started ||
+            progress.completedLessons.length ||
+            progress.completedLabs.length ||
+            progress.completedAssessments.length ||
+            progress.finalAssessment?.passed
+        )
+    );
+
+}
+
+
+/*
+ * Show activities only for courses the student has started.
+ * This prevents future-course activities from appearing as
+ * unexplained locked cards before the student enters a course.
+ */
+function getVisibleCatalogue() {
+
+    return labItems.filter(
+        item =>
+            isCourseStarted(
+                item.courseId
+            )
+    );
+
+}
+
+
+/* =========================================================
+   CARD HELPERS
+========================================================= */
+
+function getLevelClass(level) {
+
+    const normalized =
+        String(level)
+            .toLowerCase();
+
+    if (
+        normalized.includes(
+            "advanced"
+        )
+    ) {
+        return "advanced";
+    }
+
+    if (
+        normalized.includes(
+            "intermediate"
+        )
+    ) {
+        return "intermediate";
+    }
+
+    return "beginner";
+
+}
+
+
+function createLabCard(item) {
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+    const levelClass =
+        getLevelClass(
+            item.level
+        );
+
+    card.className =
+        "dashboard-lab-card lab-card";
+
+    card.dataset.level =
+        levelClass;
+
+    card.dataset.search =
+        [
+            item.title,
+            item.description,
+            item.courseTitle,
+            item.moduleTitle,
+            item.category,
+            item.type
+        ]
+            .join(" ")
+            .toLowerCase();
+
+    const status =
+        item.completed
+            ? "COMPLETED"
+            : item.unlocked
+                ? "AVAILABLE"
+                : "LOCKED";
+
+    const statusClass =
+        item.completed
+            ? "completed"
+            : item.unlocked
+                ? "available"
+                : "planned";
+
+    card.innerHTML = `
+
+        <div class="lab-card-top">
+
+            <span class="lab-level ${levelClass}">
+                ${escapeHTML(
+                    item.level.toUpperCase()
+                )}
+            </span>
+
+            <span class="lab-status ${statusClass}">
+                ${status}
+            </span>
+
+        </div>
+
+
+        <div class="lab-icon">
+
+            <i class="${escapeHTML(
+                item.courseIcon ||
+                "fa-solid fa-flask"
+            )}"></i>
+
+        </div>
+
+
+        <span class="lab-category">
+            ${escapeHTML(
+                item.category
+            )}
+        </span>
+
+
+        <h3>
+            ${escapeHTML(
+                item.title
+            )}
+        </h3>
+
+
+        <p>
+            ${escapeHTML(
+                item.description
+            )}
+        </p>
+
+
+        <div class="lab-meta">
+
+            <span>
+                <i class="fa-regular fa-clock"></i>
+                ${escapeHTML(
+                    item.duration
+                )}
+            </span>
+
+            <span>
+                <i class="fa-solid fa-book-open"></i>
+                ${escapeHTML(
+                    item.courseTitle
+                )}
+            </span>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="lab-start-btn ${
+                item.unlocked
+                    ? ""
+                    : "disabled"
+            }"
+            data-lab-key="${escapeHTML(
+                item.key
+            )}"
+            ${
+                item.unlocked
+                    ? ""
+                    : "disabled"
+            }
+        >
+
+            ${
+                item.completed
+                    ? "Review Activity"
+                    : item.unlocked
+                        ? "Start Activity"
+                        : "Locked"
+            }
+
+            <i class="fa-solid ${
+                item.unlocked
+                    ? "fa-arrow-right"
+                    : "fa-lock"
+            }"></i>
+
+        </button>
+
+    `;
+
+    return card;
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderLabs() {
+
+    if (!labsGrid) {
+        return;
+    }
+
+    labsGrid.innerHTML = "";
+
+    const catalogue =
+        getVisibleCatalogue();
+
+    catalogue.forEach(
+        item => {
+
+            labsGrid.appendChild(
+                createLabCard(item)
+            );
+
+        }
+    );
+
+    filterLabs();
+
+}
+
+
+/* =========================================================
+   FILTER + SEARCH
 ========================================================= */
 
 function filterLabs() {
+
+    if (!labsGrid) {
+        return;
+    }
+
+    const cards =
+        labsGrid.querySelectorAll(
+            ".lab-card"
+        );
 
     const searchTerm =
         (labSearch?.value || "")
             .trim()
             .toLowerCase();
 
-
     let visibleCount = 0;
 
+    cards.forEach(
+        card => {
 
-    labCards.forEach(card => {
+            const level =
+                card.dataset.level ||
+                "";
 
-        const level =
-            card.dataset.level || "";
+            const searchableText =
+                card.dataset.search ||
+                "";
 
-        const searchableText =
-            card.dataset.search || "";
+            const matchesFilter =
+                currentFilter === "all" ||
+                level === currentFilter;
 
+            const matchesSearch =
+                !searchTerm ||
+                searchableText.includes(
+                    searchTerm
+                );
 
-        const matchesFilter =
-            currentFilter === "all" ||
-            level === currentFilter;
+            const visible =
+                matchesFilter &&
+                matchesSearch;
 
+            card.classList.toggle(
+                "hidden",
+                !visible
+            );
 
-        const matchesSearch =
-            !searchTerm ||
-            searchableText
-                .toLowerCase()
-                .includes(searchTerm);
-
-
-        const shouldShow =
-            matchesFilter &&
-            matchesSearch;
-
-
-        if (shouldShow) {
-
-            card.classList.remove("hidden");
-
-            visibleCount++;
-
-        } else {
-
-            card.classList.add("hidden");
+            if (visible) {
+                visibleCount++;
+            }
 
         }
+    );
 
-    });
+    if (labCount) {
 
+        labCount.textContent =
+            `${visibleCount} ${
+                visibleCount === 1
+                    ? "Activity"
+                    : "Activities"
+            }`;
+
+    }
 
     if (noLabsMessage) {
 
@@ -265,105 +799,92 @@ function filterLabs() {
 }
 
 
-/* =========================================================
-   FILTER BUTTONS
-========================================================= */
+labFilters.forEach(
+    button => {
 
-labFilters.forEach(button => {
+        button.addEventListener(
+            "click",
+            () => {
 
-    button.addEventListener("click", () => {
+                currentFilter =
+                    button.dataset.filter ||
+                    "all";
 
-        currentFilter =
-            button.dataset.filter || "all";
+                labFilters.forEach(
+                    item =>
+                        item.classList.remove(
+                            "active"
+                        )
+                );
 
+                button.classList.add(
+                    "active"
+                );
 
-        labFilters.forEach(item => {
+                filterLabs();
 
-            item.classList.remove("active");
-
-        });
-
-
-        button.classList.add("active");
-
-
-        filterLabs();
-
-    });
-
-});
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-if (labSearch) {
-
-    labSearch.addEventListener(
-        "input",
-        filterLabs
-    );
-
-}
-
-
-/* =========================================================
-   OPEN LAB MODAL
-========================================================= */
-
-function openLabModal(labId) {
-
-    const lab =
-        labs[labId];
-
-
-    if (!lab) {
-
-        console.warn(
-            "Unknown lab:",
-            labId
+            }
         );
 
+    }
+);
+
+
+labSearch?.addEventListener(
+    "input",
+    filterLabs
+);
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openLabModal(key) {
+
+    const item =
+        labItems.find(
+            lab =>
+                lab.key === key
+        );
+
+    if (
+        !item ||
+        !item.unlocked
+    ) {
         return;
     }
 
-
-    selectedLab =
-        labId;
-
+    selectedLab = item;
 
     if (labModalTitle) {
-
         labModalTitle.textContent =
-            lab.title;
-
+            item.title;
     }
-
 
     if (labModalDescription) {
-
         labModalDescription.textContent =
-            lab.description;
-
+            item.description;
     }
-
 
     if (labModalLevel) {
-
         labModalLevel.textContent =
-            lab.level;
-
+            item.level;
     }
-
 
     if (labModalDuration) {
-
         labModalDuration.textContent =
-            lab.duration;
-
+            item.duration;
     }
 
+    if (launchLabBtn) {
+
+        launchLabBtn.innerHTML =
+            item.completed
+                ? 'Review Activity <i class="fa-solid fa-arrow-right"></i>'
+                : 'Enter Activity <i class="fa-solid fa-arrow-right"></i>';
+
+    }
 
     if (labModal) {
 
@@ -383,16 +904,11 @@ function openLabModal(labId) {
 }
 
 
-/* =========================================================
-   CLOSE LAB MODAL
-========================================================= */
-
 function closeModal() {
 
     if (!labModal) {
         return;
     }
-
 
     labModal.hidden = true;
 
@@ -405,69 +921,32 @@ function closeModal() {
         "modal-open"
     );
 
-
     selectedLab = null;
 
 }
 
 
-/* =========================================================
-   LAB BUTTONS
-========================================================= */
+closeLabModal?.addEventListener(
+    "click",
+    closeModal
+);
+
 
 document
-    .querySelectorAll(".lab-start-btn:not(.disabled)")
-    .forEach(button => {
+    .querySelectorAll(
+        "[data-close-modal]"
+    )
+    .forEach(
+        element => {
 
-        button.addEventListener(
-            "click",
-            () => {
+            element.addEventListener(
+                "click",
+                closeModal
+            );
 
-                const labId =
-                    button.dataset.lab;
-
-
-                openLabModal(labId);
-
-            }
-        );
-
-    });
-
-
-/* =========================================================
-   CLOSE BUTTON
-========================================================= */
-
-if (closeLabModal) {
-
-    closeLabModal.addEventListener(
-        "click",
-        closeModal
+        }
     );
 
-}
-
-
-/* =========================================================
-   CLOSE BY CLICKING OVERLAY
-========================================================= */
-
-document
-    .querySelectorAll("[data-close-modal]")
-    .forEach(element => {
-
-        element.addEventListener(
-            "click",
-            closeModal
-        );
-
-    });
-
-
-/* =========================================================
-   ESCAPE KEY
-========================================================= */
 
 document.addEventListener(
     "keydown",
@@ -478,9 +957,7 @@ document.addEventListener(
             labModal &&
             !labModal.hidden
         ) {
-
             closeModal();
-
         }
 
     }
@@ -488,92 +965,87 @@ document.addEventListener(
 
 
 /* =========================================================
-   ENTER LAB
+   DYNAMIC CARD ACTIONS
 ========================================================= */
 
-if (launchLabBtn) {
+document.addEventListener(
+    "click",
+    event => {
 
-    launchLabBtn.addEventListener(
-        "click",
-        () => {
-
-            if (!selectedLab) {
-                return;
-            }
-
-
-            /*
-             * For now the lab interface isn't built yet.
-             *
-             * We deliberately do NOT redirect to a nonexistent
-             * page. This can later become:
-             *
-             * student/lab.html?lab=network-recon
-             */
-
-            alert(
-                "This laboratory is being prepared. The practical lab environment will be connected here next."
+        const button =
+            event.target.closest(
+                "[data-lab-key]"
             );
 
+        if (
+            !button ||
+            button.disabled
+        ) {
+            return;
         }
-    );
 
-}
+        openLabModal(
+            button.dataset.labKey
+        );
+
+    }
+);
+
+
+launchLabBtn?.addEventListener(
+    "click",
+    () => {
+
+        if (!selectedLab) {
+            return;
+        }
+
+        window.location.href =
+            selectedLab.href;
+
+    }
+);
 
 
 /* =========================================================
    LOGOUT
 ========================================================= */
 
-if (logoutBtn) {
+async function logout() {
 
-    logoutBtn.addEventListener(
-        "click",
-        async () => {
+    try {
 
-            try {
-
-                logoutBtn.disabled =
-                    true;
-
-                logoutBtn.textContent =
-                    "Signing out...";
-
-
-                await signOut(auth);
-
-
-                /*
-                 * Auth state listener will also
-                 * protect the page.
-                 */
-
-                window.location.replace(
-                    "../pages/login.html"
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "CWS Academy logout error:",
-                    error
-                );
-
-
-                logoutBtn.disabled =
-                    false;
-
-                logoutBtn.innerHTML =
-                    '<i class="fa-solid fa-right-from-bracket"></i>' +
-                    '<span>Sign Out</span>';
-
-            }
-
+        if (logoutBtn) {
+            logoutBtn.disabled = true;
         }
-    );
+
+        await signOut(auth);
+
+        window.location.replace(
+            "../pages/login.html"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "[CWS Labs] Logout failed:",
+            error
+        );
+
+        if (logoutBtn) {
+            logoutBtn.disabled = false;
+        }
+
+    }
 
 }
+
+
+logoutBtn?.addEventListener(
+    "click",
+    logout
+);
 
 
 /* =========================================================
@@ -589,15 +1061,14 @@ if (
         "click",
         () => {
 
-            const isOpen =
+            const open =
                 studentSidebar.classList.toggle(
                     "open"
                 );
 
-
             sidebarToggle.setAttribute(
                 "aria-expanded",
-                String(isOpen)
+                String(open)
             );
 
         }
@@ -606,43 +1077,89 @@ if (
 }
 
 
-/* =========================================================
-   CLOSE MOBILE SIDEBAR AFTER NAVIGATION
-========================================================= */
-
 document
-    .querySelectorAll(".student-nav-link")
-    .forEach(link => {
+    .querySelectorAll(
+        ".student-nav-link"
+    )
+    .forEach(
+        link => {
 
-        link.addEventListener(
-            "click",
-            () => {
+            link.addEventListener(
+                "click",
+                () => {
 
-                if (studentSidebar) {
-
-                    studentSidebar.classList.remove(
-                        "open"
-                    );
+                    studentSidebar
+                        ?.classList.remove(
+                            "open"
+                        );
 
                 }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+async function initializeLabsPage() {
+
+    await loadProgress();
+
+    buildLabItems();
+
+    renderLabs();
+
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+if (!auth) {
+
+    window.location.replace(
+        "../pages/login.html"
+    );
+
+}
+else {
+
+    onAuthStateChanged(
+        auth,
+        async user => {
+
+            if (!user) {
+
+                window.location.replace(
+                    "../pages/login.html?redirect=labs"
+                );
+
+                return;
 
             }
-        );
 
-    });
+            currentUser = user;
 
+            if (studentName) {
 
-/* =========================================================
-   INITIAL FILTER
-========================================================= */
+                studentName.textContent =
+                    getUserName(user);
 
-filterLabs();
+            }
 
+            if (initialized) {
+                return;
+            }
 
-/* =========================================================
-   COMPLETE
-========================================================= */
+            initialized = true;
 
-console.log(
-    "CWS Academy labs.js initialization complete."
-);
+            await initializeLabsPage();
+
+        }
+    );
+
+}
