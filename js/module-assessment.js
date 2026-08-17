@@ -1953,7 +1953,9 @@ function renderNavigation() {
         getNextModule();
 
 
-    if (nextModule) {
+    if (
+        nextModule
+    ) {
 
         const nextLesson =
             getFirstLesson(
@@ -1961,7 +1963,9 @@ function renderNavigation() {
             );
 
 
-        if (nextLesson) {
+        if (
+            nextLesson
+        ) {
 
             continueBtn.hidden =
                 false;
