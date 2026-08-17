@@ -1,0 +1,213 @@
+/* =========================================================
+   CWS ACADEMY
+   FINAL ASSESSMENT
+========================================================= */
+
+
+.final-hero {
+
+    margin-bottom:
+        28px;
+
+}
+
+
+.final-eligibility-card {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        auto minmax(0,1fr);
+
+    gap:
+        16px;
+
+    padding:
+        22px;
+
+    margin-bottom:
+        28px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        var(--radius-lg);
+
+    background:
+        var(--bg-card);
+
+}
+
+
+.final-eligibility-card > i {
+
+    width:
+        44px;
+
+    height:
+        44px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        10px;
+
+    color:
+        var(--text-muted);
+
+}
+
+
+.final-eligibility-card.eligible {
+
+    border-color:
+        var(--red-border);
+
+    background:
+        var(--red-soft);
+
+}
+
+
+.final-eligibility-card.eligible > i {
+
+    border-color:
+        var(--red-border);
+
+    color:
+        var(--red);
+
+}
+
+
+.final-eligibility-card h2 {
+
+    margin:
+        5px 0 8px;
+
+}
+
+
+.final-eligibility-card p {
+
+    margin:
+        0;
+
+    color:
+        var(--text-soft);
+
+    line-height:
+        1.65;
+
+}
+
+
+.course-complete-card {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        auto minmax(0,1fr);
+
+    gap:
+        18px;
+
+    align-items:
+        center;
+
+    padding:
+        26px;
+
+    margin-bottom:
+        28px;
+
+    border:
+        1px solid rgba(67,209,123,0.35);
+
+    border-radius:
+        var(--radius-lg);
+
+    background:
+        rgba(67,209,123,0.07);
+
+}
+
+
+.course-complete-icon {
+
+    width:
+        56px;
+
+    height:
+        56px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        14px;
+
+    background:
+        rgba(67,209,123,0.10);
+
+    color:
+        var(--green, #43d17b);
+
+    font-size:
+        1.3rem;
+
+}
+
+
+.course-complete-card h2 {
+
+    margin:
+        5px 0 8px;
+
+}
+
+
+.course-complete-card p {
+
+    margin:
+        0;
+
+    color:
+        var(--text-soft);
+
+    line-height:
+        1.65;
+
+}
+
+
+@media (max-width: 650px) {
+
+    .final-eligibility-card,
+    .course-complete-card {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
