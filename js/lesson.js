@@ -795,6 +795,9 @@ function getDefaultProgress() {
         completedLessons:
             [],
 
+        passedLessonQuizzes:
+            {},
+
         completedLabs:
             [],
 
@@ -845,6 +848,15 @@ function normalizeProgress(
             )
                 ? progress.completedLessons
                 : [],
+
+        passedLessonQuizzes:
+            (
+                progress.passedLessonQuizzes &&
+                typeof progress.passedLessonQuizzes ===
+                    "object"
+            )
+                ? progress.passedLessonQuizzes
+                : {},
 
         completedLabs:
             Array.isArray(
@@ -1851,7 +1863,7 @@ function renderQuiz() {
    QUIZ SUBMIT
 ========================================================= */
 
-function handleQuizSubmit(
+async function handleQuizSubmit(
     event
 ) {
 
@@ -1921,9 +1933,16 @@ function handleQuizSubmit(
         );
 
 
+    await saveLessonQuizResult(
+        percentage
+    );
+
+
     if (
         !quizResult
     ) {
+
+        updateCompletionUI();
 
         return;
 
@@ -1950,12 +1969,13 @@ function handleQuizSubmit(
         quizResult.innerHTML = `
 
             <strong>
-                Excellent work!
+                Knowledge check passed!
             </strong>
 
             <p>
                 You scored ${score}/${quiz.length}
                 (${percentage}%).
+                You can now mark this lesson complete.
             </p>
 
         `;
@@ -1976,12 +1996,16 @@ function handleQuizSubmit(
             <p>
                 You scored ${score}/${quiz.length}
                 (${percentage}%).
-                Review the lesson and try again.
+                You need at least 70% before this lesson
+                can be marked complete.
             </p>
 
         `;
 
     }
+
+
+    updateCompletionUI();
 
 }
 
@@ -2181,6 +2205,166 @@ function isLessonCompleted() {
 
 
 /* =========================================================
+   LESSON QUIZ KEY
+========================================================= */
+
+function getCurrentLessonQuizKey() {
+
+    if (
+        !currentModule ||
+        !currentLesson
+    ) {
+
+        return "";
+
+    }
+
+
+    return buildLessonKey(
+        currentModule.id,
+        currentLesson.id
+    );
+
+}
+
+
+/* =========================================================
+   LESSON HAS QUIZ
+========================================================= */
+
+function currentLessonHasQuiz() {
+
+    return Boolean(
+        Array.isArray(
+            currentLesson?.quiz
+        ) &&
+        currentLesson.quiz.length
+    );
+
+}
+
+
+/* =========================================================
+   LESSON QUIZ PASSED
+========================================================= */
+
+function hasPassedCurrentLessonQuiz() {
+
+    /*
+     * Lessons without a quiz should not be blocked.
+     */
+
+    if (
+        !currentLessonHasQuiz()
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        !currentProgress
+    ) {
+
+        return false;
+
+    }
+
+
+    const quizKey =
+        getCurrentLessonQuizKey();
+
+
+    if (!quizKey) {
+
+        return false;
+
+    }
+
+
+    return Boolean(
+        currentProgress
+            .passedLessonQuizzes
+            ?.[quizKey]
+            ?.passed
+    );
+
+}
+
+
+/* =========================================================
+   SAVE LESSON QUIZ RESULT
+========================================================= */
+
+async function saveLessonQuizResult(
+    percentage
+) {
+
+    if (
+        !currentProgress ||
+        !currentModule ||
+        !currentLesson
+    ) {
+
+        return;
+
+    }
+
+
+    const quizKey =
+        getCurrentLessonQuizKey();
+
+
+    if (!quizKey) {
+
+        return;
+
+    }
+
+
+    const previous =
+        currentProgress
+            .passedLessonQuizzes
+            ?.[quizKey] || {};
+
+
+    const previousBest =
+        Number(
+            previous.bestScore
+        ) || 0;
+
+
+    const passed =
+        percentage >= 70;
+
+
+    currentProgress
+        .passedLessonQuizzes[
+            quizKey
+        ] = {
+
+            bestScore:
+                Math.max(
+                    previousBest,
+                    percentage
+                ),
+
+            passed:
+                Boolean(
+                    previous.passed ||
+                    passed
+                )
+
+        };
+
+
+    await saveProgress();
+
+}
+
+
+/* =========================================================
    COMPLETION UI
 ========================================================= */
 
@@ -2228,6 +2412,37 @@ function updateCompletionUI() {
     );
 
 
+    const quizRequired =
+        currentLessonHasQuiz();
+
+
+    const quizPassed =
+        hasPassedCurrentLessonQuiz();
+
+
+    if (
+        quizRequired &&
+        !quizPassed
+    ) {
+
+        completeLessonBtn.innerHTML = `
+
+            <i class="fa-solid fa-lock"></i>
+
+            Pass Knowledge Check First
+
+        `;
+
+
+        completeLessonBtn.disabled =
+            true;
+
+
+        return;
+
+    }
+
+
     completeLessonBtn.innerHTML = `
 
         <i class="fa-solid fa-check"></i>
@@ -2266,6 +2481,57 @@ async function completeLesson() {
 
         currentProgress =
             getDefaultProgress();
+
+    }
+
+
+    /*
+     * Hard gate: a lesson with a knowledge check
+     * cannot be completed until the quiz has been passed.
+     */
+
+    if (
+        currentLessonHasQuiz() &&
+        !hasPassedCurrentLessonQuiz()
+    ) {
+
+        if (
+            quizResult
+        ) {
+
+            quizResult.hidden =
+                false;
+
+
+            quizResult.className =
+                "quiz-result failed";
+
+
+            quizResult.innerHTML = `
+
+                <strong>
+                    Knowledge check required.
+                </strong>
+
+                <p>
+                    Score at least 70% on the knowledge check
+                    before marking this lesson complete.
+                </p>
+
+            `;
+
+
+            quizResult.scrollIntoView({
+                behavior:
+                    "smooth",
+                block:
+                    "nearest"
+            });
+
+        }
+
+
+        return;
 
     }
 
@@ -2462,58 +2728,7 @@ function renderNavigation() {
         nextLessonBtn
     ) {
 
-        /*
-         * If this is the final lesson in the current module
-         * and the module defines an assessment, route the
-         * student to the module assessment before allowing
-         * progression into the next module.
-         */
-
         if (
-            isLastLessonInCurrentModule() &&
-            currentModuleHasAssessment()
-        ) {
-
-            nextLessonBtn.hidden =
-                false;
-
-
-            nextLessonBtn.href =
-                buildModuleAssessmentUrl(
-
-                    currentCourse.id,
-
-                    currentModule.id
-
-                );
-
-
-            const span =
-                nextLessonBtn
-                    .querySelector(
-                        "span"
-                    );
-
-
-            if (
-                span
-            ) {
-
-                span.innerHTML = `
-
-                    <small>
-                        Next
-                    </small>
-
-                    Module Assessment
-
-                `;
-
-            }
-
-        }
-
-        else if (
             next
         ) {
 
@@ -2558,9 +2773,7 @@ function renderNavigation() {
 
             }
 
-        }
-
-        else {
+        } else {
 
             nextLessonBtn.hidden =
                 true;
@@ -2632,95 +2845,6 @@ function buildLessonUrl(
 
     return (
         `lesson.html?${params.toString()}`
-    );
-
-}
-
-
-/* =========================================================
-   BUILD MODULE ASSESSMENT URL
-========================================================= */
-
-function buildModuleAssessmentUrl(
-    courseId,
-    moduleId
-) {
-
-    const params =
-        new URLSearchParams();
-
-
-    params.set(
-        "course",
-        courseId
-    );
-
-
-    params.set(
-        "module",
-        moduleId
-    );
-
-
-    return (
-        `module-assessment.html?${params.toString()}`
-    );
-
-}
-
-
-/* =========================================================
-   IS LAST LESSON IN CURRENT MODULE
-========================================================= */
-
-function isLastLessonInCurrentModule() {
-
-    if (
-        !currentModule ||
-        !currentLesson ||
-        !Array.isArray(
-            currentModule.lessons
-        ) ||
-        !currentModule.lessons.length
-    ) {
-
-        return false;
-
-    }
-
-
-    const lastLesson =
-        currentModule.lessons[
-            currentModule.lessons.length - 1
-        ];
-
-
-    return (
-        lastLesson?.id ===
-        currentLesson.id
-    );
-
-}
-
-
-/* =========================================================
-   CURRENT MODULE HAS ASSESSMENT
-========================================================= */
-
-function currentModuleHasAssessment() {
-
-    return Boolean(
-        currentModule
-            ?.moduleAssessment &&
-        Array.isArray(
-            currentModule
-                .moduleAssessment
-                .questions
-        ) &&
-        currentModule
-            .moduleAssessment
-            .questions
-            .length
     );
 
 }
