@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CWS Academy practical cybersecurity activity"
+    >
+
+    <title>CWS Academy | Practical Activity</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/lesson.css">
+    <link rel="stylesheet" href="../css/lab-activity.css">
+
+</head>
+
+
+<body class="lesson-page-body lab-activity-page-body">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="lesson-header">
+
+        <div class="lesson-header-inner">
+
+            <a
+                href="courses.html"
+                class="lesson-brand"
+            >
+
+                <span class="lesson-brand-icon">
+                    <i class="fa-solid fa-flask"></i>
+                </span>
+
+                <span>
+                    <strong>CWS</strong>
+                    <small>ACADEMY</small>
+                </span>
+
+            </a>
+
+
+            <div class="lesson-header-course">
+
+                <span
+                    id="headerCourseCategory"
+                    class="lesson-header-category"
+                >
+                    CWS ACADEMY
+                </span>
+
+                <strong id="headerCourseTitle">
+                    Course
+                </strong>
+
+            </div>
+
+
+            <div class="lesson-header-actions">
+
+                <span
+                    id="studentName"
+                    class="lesson-student-name"
+                >
+                    Student
+                </span>
+
+                <a
+                    href="profile.html"
+                    class="lesson-profile-btn"
+                >
+                    <i class="fa-solid fa-user"></i>
+                    <span>Profile</span>
+                </a>
+
+                <button
+                    type="button"
+                    id="logoutBtn"
+                    class="lesson-logout-btn"
+                >
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    <section
+        id="activityLoading"
+        class="lesson-loading"
+    >
+
+        <div class="lesson-loading-spinner">
+            <i class="fa-solid fa-flask"></i>
+        </div>
+
+        <h2>Loading activity...</h2>
+
+        <p>
+            Preparing your practical learning environment.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         NOT FOUND
+    ====================================================== -->
+
+    <section
+        id="activityNotFound"
+        class="lesson-not-found"
+        hidden
+    >
+
+        <div class="lesson-not-found-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <h1>Activity Not Found</h1>
+
+        <p id="activityNotFoundMessage">
+            The requested practical activity could not be found.
+        </p>
+
+        <a
+            href="courses.html"
+            class="lesson-primary-btn"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Courses
+        </a>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main
+        id="activityContent"
+        class="lesson-main activity-main"
+        hidden
+    >
+
+
+        <!-- BREADCRUMB -->
+
+        <nav
+            class="lesson-breadcrumb"
+            aria-label="Breadcrumb"
+        >
+
+            <a href="../index.html">
+                <i class="fa-solid fa-house"></i>
+                Home
+            </a>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+            <a
+                id="courseBreadcrumbLink"
+                href="#"
+            >
+                Course
+            </a>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+            <span id="moduleBreadcrumb">
+                Module
+            </span>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+            <span id="activityBreadcrumb">
+                Activity
+            </span>
+
+        </nav>
+
+
+        <!-- HERO -->
+
+        <section class="lesson-hero activity-hero">
+
+            <div class="lesson-hero-content">
+
+                <div class="lesson-badges">
+
+                    <span
+                        id="moduleBadge"
+                        class="lesson-module-badge"
+                    >
+                        MODULE 01
+                    </span>
+
+                    <span
+                        id="activityTypeBadge"
+                        class="lesson-type-badge"
+                    >
+                        PRACTICAL ACTIVITY
+                    </span>
+
+                </div>
+
+
+                <span
+                    id="activityCategory"
+                    class="dashboard-label"
+                >
+                    CWS ACADEMY
+                </span>
+
+
+                <h1 id="activityTitle">
+                    Practical Activity
+                </h1>
+
+
+                <p id="activityObjective">
+                    Apply what you learned in a controlled exercise.
+                </p>
+
+
+                <div class="lesson-meta">
+
+                    <span id="activityDuration">
+                        <i class="fa-regular fa-clock"></i>
+                        20 minutes
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-shield-halved"></i>
+                        Controlled learning
+                    </span>
+
+                    <span id="activityStatusMeta">
+                        <i class="fa-regular fa-circle"></i>
+                        Not completed
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="lesson-hero-icon">
+                <i class="fa-solid fa-flask"></i>
+            </div>
+
+        </section>
+
+
+        <!-- AUTHORIZED USE NOTICE -->
+
+        <section class="activity-safety-card">
+
+            <i class="fa-solid fa-scale-balanced"></i>
+
+            <div>
+
+                <span class="dashboard-label">
+                    AUTHORIZED LEARNING ONLY
+                </span>
+
+                <h2>
+                    Use this activity only in approved training environments.
+                </h2>
+
+                <p>
+                    CWS Academy practical exercises are for learning, testing
+                    and authorized security practice. Do not scan, probe,
+                    access or test third-party systems without explicit
+                    permission.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACTIVITY LAYOUT -->
+
+        <section class="activity-layout">
+
+            <article class="activity-card">
+
+                <div class="activity-card-heading">
+
+                    <span class="dashboard-label">
+                        OBJECTIVE
+                    </span>
+
+                    <h2>
+                        What you need to achieve
+                    </h2>
+
+                </div>
+
+
+                <p
+                    id="activityObjectiveText"
+                    class="activity-objective-text"
+                ></p>
+
+
+                <div class="activity-section">
+
+                    <span class="dashboard-label">
+                        INSTRUCTIONS
+                    </span>
+
+                    <h2>
+                        Follow these steps
+                    </h2>
+
+                    <ol
+                        id="activityInstructions"
+                        class="activity-step-list"
+                    ></ol>
+
+                </div>
+
+
+                <div
+                    id="reflectionSection"
+                    class="activity-section"
+                >
+
+                    <span class="dashboard-label">
+                        REFLECTION
+                    </span>
+
+                    <h2>
+                        Think about your results
+                    </h2>
+
+                    <div
+                        id="reflectionQuestions"
+                        class="activity-reflection-list"
+                    ></div>
+
+                </div>
+
+
+                <div class="activity-completion-panel">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            ACTIVITY COMPLETION
+                        </span>
+
+                        <h2 id="activityCompletionTitle">
+                            Ready to complete this activity?
+                        </h2>
+
+                        <p id="activityCompletionText">
+                            Complete the instructions and reflection before
+                            marking the activity finished.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="completeActivityBtn"
+                        class="lesson-primary-btn"
+                    >
+                        <i class="fa-solid fa-check"></i>
+                        Mark Activity Complete
+                    </button>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- NAVIGATION -->
+
+        <section class="assessment-navigation-card">
+
+            <a
+                href="#"
+                id="returnToModuleBtn"
+                class="lesson-secondary-btn"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                <span>
+                    <small>Return</small>
+                    Module Lessons
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                id="continueBtn"
+                class="lesson-primary-btn"
+                hidden
+            >
+
+                <span>
+                    <small>Continue</small>
+                    Module Assessment
+                </span>
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </section>
+
+
+    </main>
+
+
+    <script
+        type="module"
+        src="../js/lab-activity.js"
+    ></script>
+
+</body>
+</html>
