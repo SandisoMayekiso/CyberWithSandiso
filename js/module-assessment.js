@@ -995,6 +995,84 @@ function areModuleLessonsComplete() {
 }
 
 
+/* =========================================================
+   MODULE ACTIVITY KEYS
+========================================================= */
+
+function getModuleActivityKeys(
+    module
+) {
+
+    const activities = [
+        ...(
+            Array.isArray(
+                module?.labActivities
+            )
+                ? module.labActivities
+                : []
+        ),
+        ...(
+            Array.isArray(
+                module?.practiceActivities
+            )
+                ? module.practiceActivities
+                : []
+        )
+    ];
+
+
+    return activities.map(
+        activity =>
+            `${module.id}:${activity.id}`
+    );
+
+}
+
+
+/* =========================================================
+   MODULE ACTIVITIES COMPLETE
+========================================================= */
+
+function areModuleActivitiesComplete() {
+
+    const requireLabs =
+        Boolean(
+            currentCourse
+                ?.completionRules
+                ?.requireRequiredLabs
+        );
+
+
+    if (!requireLabs) {
+
+        return true;
+
+    }
+
+
+    const required =
+        getModuleActivityKeys(
+            currentModule
+        );
+
+
+    if (!required.length) {
+
+        return true;
+
+    }
+
+
+    return required.every(
+        key =>
+            currentProgress
+                ?.completedLabs
+                ?.includes(key)
+    );
+
+}
+
+
 /*
  * For now, labs/practice activities are tracked separately.
  * Once lab.html is connected, this can become a strict gate
@@ -1003,7 +1081,10 @@ function areModuleLessonsComplete() {
 
 function canTakeCurrentAssessment() {
 
-    return areModuleLessonsComplete();
+    return (
+        areModuleLessonsComplete() &&
+        areModuleActivitiesComplete()
+    );
 
 }
 
@@ -1562,9 +1643,9 @@ async function submitAssessment(
             </strong>
 
             <p>
-                All lessons in ${escapeHTML(
+                Complete all required lessons and practical activities in ${escapeHTML(
                     currentModule.title
-                )} must be completed before this assessment can be submitted.
+                )} before this assessment can be submitted.
             </p>
 
         `;
