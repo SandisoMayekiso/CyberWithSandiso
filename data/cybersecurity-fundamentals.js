@@ -54,6 +54,52 @@ function buildLesson({ id, title, duration = "25 minutes", subtitle, icon = "fa-
     };
 }
 
+
+
+/* =========================================================
+   MODULE ASSESSMENT BUILDER
+========================================================= */
+
+function buildModuleAssessment({
+    title,
+    passingScore = 70,
+    questions = []
+}) {
+    return {
+        title,
+        type: "Module Assessment",
+        passingScore,
+        allowRetry: true,
+        showResults: true,
+        questions
+    };
+}
+
+
+/* =========================================================
+   PRACTICAL ACTIVITY BUILDER
+========================================================= */
+
+function buildLabActivity({
+    id,
+    title,
+    type = "Guided Activity",
+    duration = "20 minutes",
+    objective,
+    instructions = [],
+    reflection = []
+}) {
+    return {
+        id,
+        title,
+        type,
+        duration,
+        objective,
+        instructions,
+        reflection
+    };
+}
+
 export const cybersecurityFundamentals = {
     id: "cybersecurity-fundamentals",
     title: "Cybersecurity Fundamentals",
@@ -67,6 +113,23 @@ export const cybersecurityFundamentals = {
     description: "Build a strong foundation in cybersecurity concepts, threats, vulnerabilities, security controls and ethical security practices.",
     longDescription: "Cybersecurity Fundamentals introduces the core concepts students need before progressing into networking, Linux, defensive security, ethical hacking and penetration testing. Each lesson develops the ideas in depth and connects them to realistic defensive and risk-management decisions.",
     duration: "25–35 Hours",
+    estimatedLessons: 44,
+    certificateEligible: true,
+    completionRules: {
+        minimumLessonCompletion: 100,
+        minimumModuleAssessmentScore: 70,
+        finalAssessmentPassingScore: 75,
+        requireAllModuleAssessments: true,
+        requireRequiredLabs: true
+    },
+    progression: {
+        unlockMode: "sequential",
+        allowLessonReview: true,
+        allowAssessmentRetry: true,
+        trackLessonCompletion: true,
+        trackAssessmentScores: true,
+        trackLabCompletion: true
+    },
     objectives: [
         "Understand core cybersecurity principles and how they guide security decisions.",
         "Explain confidentiality, integrity and availability using practical examples.",
@@ -82,6 +145,81 @@ export const cybersecurityFundamentals = {
         {
             id: "module-01", number: 1, title: "Introduction to Cybersecurity",
             description: "Understand cybersecurity, digital assets, threats, vulnerabilities and the role of security professionals.", labs: 0, assessments: 1,
+
+            practiceActivities: [
+                buildLabActivity({
+                    id: "activity-01",
+                    title: "Identify Assets and Security Concerns",
+                    duration: "20 minutes",
+                    objective: "Practice identifying assets, threats and likely security concerns in a small organization.",
+                    instructions: [
+                        "Imagine a small online retailer with staff laptops, customer accounts, a website, email and cloud storage.",
+                        "List at least five digital or business assets that need protection.",
+                        "For each asset, identify one realistic threat or failure scenario.",
+                        "Describe one security control that could reduce the risk."
+                    ],
+                    reflection: [
+                        "Which asset would cause the greatest business impact if it became unavailable?",
+                        "Which asset contains the most sensitive information?",
+                        "Which risks depend more on people and process than on technology?"
+                    ]
+                })
+            ],
+            moduleAssessment: buildModuleAssessment({
+                title: "Module 1 Assessment — Introduction to Cybersecurity",
+                questions: [
+                    {
+                        question: "Which statement best describes cybersecurity?",
+                        options: [
+                            "Installing antivirus software on every computer",
+                            "Protecting information, systems, networks and services using people, process and technology",
+                            "Blocking all external network traffic",
+                            "Preventing employees from using the Internet"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "Which of the following is an asset?",
+                        options: [
+                            "A customer database",
+                            "Only a physical server",
+                            "Only information classified as secret",
+                            "Only software purchased by the organization"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Why is cybersecurity considered continuous risk management?",
+                        options: [
+                            "Security controls never need updates",
+                            "Threats, systems, users and vulnerabilities change over time",
+                            "Only large companies experience cyber incidents",
+                            "Security is completed after the first vulnerability scan"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What is the most important requirement before performing security testing?",
+                        options: [
+                            "Owning Kali Linux",
+                            "Finding a vulnerability",
+                            "Explicit authorization and defined scope",
+                            "Using only open-source tools"
+                        ],
+                        answer: 2
+                    },
+                    {
+                        question: "Which role is primarily offensive-security focused?",
+                        options: [
+                            "Penetration tester",
+                            "Payroll administrator",
+                            "Database customer",
+                            "Marketing analyst"
+                        ],
+                        answer: 0
+                    }
+                ]
+            }),
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "What Is Cybersecurity?", duration: "20 minutes", icon: "fa-solid fa-shield-halved",
@@ -120,6 +258,60 @@ export const cybersecurityFundamentals = {
         {
             id: "module-02", number: 2, title: "The CIA Triad",
             description: "Learn confidentiality, integrity and availability.", labs: 0, assessments: 1,
+
+            practiceActivities: [
+                buildLabActivity({
+                    id: "activity-01",
+                    title: "CIA Triad Scenario Analysis",
+                    duration: "20 minutes",
+                    objective: "Classify realistic incidents according to confidentiality, integrity and availability.",
+                    instructions: [
+                        "Review five hypothetical security incidents.",
+                        "Decide whether each incident primarily affects confidentiality, integrity, availability or more than one objective.",
+                        "Explain your reasoning.",
+                        "Suggest one control that could reduce the impact."
+                    ],
+                    reflection: [
+                        "Which incidents affected more than one part of the CIA Triad?",
+                        "Can a control improve one security objective while negatively affecting another?"
+                    ]
+                })
+            ],
+            moduleAssessment: buildModuleAssessment({
+                title: "Module 2 Assessment — The CIA Triad",
+                questions: [
+                    {
+                        question: "Which security objective is primarily concerned with preventing unauthorized disclosure?",
+                        options: ["Integrity", "Availability", "Confidentiality", "Resilience"],
+                        answer: 2
+                    },
+                    {
+                        question: "Which control can help verify file integrity?",
+                        options: ["Cryptographic hash", "Load balancer", "Password hint", "Screen lock"],
+                        answer: 0
+                    },
+                    {
+                        question: "A customer portal is offline for several hours. Which CIA objective is primarily affected?",
+                        options: ["Confidentiality", "Availability", "Integrity", "Non-repudiation"],
+                        answer: 1
+                    },
+                    {
+                        question: "Unauthorized modification of payroll records primarily affects:",
+                        options: ["Integrity", "Availability", "Confidentiality", "Redundancy"],
+                        answer: 0
+                    },
+                    {
+                        question: "Why is the CIA Triad useful?",
+                        options: [
+                            "It replaces all security frameworks",
+                            "It provides a model for identifying what security objective an incident or control affects",
+                            "It guarantees secure software",
+                            "It applies only to classified government data"
+                        ],
+                        answer: 1
+                    }
+                ]
+            }),
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "Introduction to the CIA Triad", duration: "20 minutes", icon: "fa-solid fa-lock",
@@ -158,6 +350,75 @@ export const cybersecurityFundamentals = {
         {
             id: "module-03", number: 3, title: "Threats and Attack Types",
             description: "Explore malware, social engineering and common cyber attacks.", labs: 1, assessments: 1,
+
+            labActivities: [
+                buildLabActivity({
+                    id: "lab-01",
+                    title: "Threat Classification Lab",
+                    duration: "30 minutes",
+                    objective: "Classify common attack scenarios and identify defensive controls without performing any real-world attack activity.",
+                    instructions: [
+                        "Review scenarios involving phishing, malware, denial of service and credential theft.",
+                        "Identify the threat technique in each scenario.",
+                        "Identify the weakness or condition that could allow the attack to succeed.",
+                        "Recommend one preventive and one detective control for each scenario."
+                    ],
+                    reflection: [
+                        "Which attacks depend heavily on human behavior?",
+                        "Which controls would reduce more than one threat type?"
+                    ]
+                })
+            ],
+            moduleAssessment: buildModuleAssessment({
+                title: "Module 3 Assessment — Threats and Attack Types",
+                questions: [
+                    {
+                        question: "What is the main difference between a threat and a vulnerability?",
+                        options: [
+                            "A threat is potential harm; a vulnerability is a weakness that may enable harm",
+                            "They mean exactly the same thing",
+                            "A vulnerability is always malicious",
+                            "A threat only exists after exploitation"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Which attack relies primarily on manipulating human behavior?",
+                        options: ["Phishing", "Disk encryption", "Load balancing", "Patch management"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is ransomware designed to commonly do?",
+                        options: [
+                            "Improve system performance",
+                            "Encrypt or deny access to data for extortion",
+                            "Replace firewalls",
+                            "Verify software integrity"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "What distinguishes a distributed denial-of-service attack?",
+                        options: [
+                            "It always steals passwords",
+                            "It uses multiple systems or traffic sources against a target",
+                            "It only affects wireless networks",
+                            "It requires physical access"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "Why do defenders study threat actors?",
+                        options: [
+                            "To understand likely motivations, capabilities and techniques",
+                            "To eliminate the need for patching",
+                            "To predict every future attack exactly",
+                            "To avoid monitoring systems"
+                        ],
+                        answer: 0
+                    }
+                ]
+            }),
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "Understanding Cyber Threats", duration: "25 minutes", icon: "fa-solid fa-bug",
@@ -204,6 +465,70 @@ export const cybersecurityFundamentals = {
         {
             id: "module-04", number: 4, title: "Vulnerabilities and Risk",
             description: "Understand vulnerabilities, exploits and cybersecurity risk.", labs: 1, assessments: 1,
+
+            labActivities: [
+                buildLabActivity({
+                    id: "lab-01",
+                    title: "Risk Prioritization Exercise",
+                    duration: "35 minutes",
+                    objective: "Compare vulnerabilities using exposure, likelihood and business impact.",
+                    instructions: [
+                        "Review several fictional vulnerability findings affecting different assets.",
+                        "Rate the likely business impact of each finding.",
+                        "Consider whether the vulnerable service is exposed and whether compensating controls exist.",
+                        "Rank the findings in remediation order and justify your decisions."
+                    ],
+                    reflection: [
+                        "Did the highest technical severity always equal the highest business priority?",
+                        "How did asset value and exposure change your decisions?"
+                    ]
+                })
+            ],
+            moduleAssessment: buildModuleAssessment({
+                title: "Module 4 Assessment — Vulnerabilities and Risk",
+                questions: [
+                    {
+                        question: "What is a vulnerability?",
+                        options: [
+                            "A weakness that could contribute to compromise",
+                            "Any security product",
+                            "A confirmed attacker",
+                            "A completed incident report"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Which statement about exploits is correct?",
+                        options: [
+                            "Every vulnerability has a reliable public exploit",
+                            "An exploit is a technique or code that takes advantage of a vulnerability",
+                            "Exploits are always malware",
+                            "Exploitation is required to calculate risk"
+                        ],
+                        answer: 1
+                    },
+                    {
+                        question: "Risk analysis commonly considers:",
+                        options: ["Likelihood and impact", "Only CVSS score", "Only asset price", "Only attacker location"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which is a risk-treatment option?",
+                        options: ["Mitigation", "Enumeration", "Compilation", "Obfuscation"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is residual risk?",
+                        options: [
+                            "Risk that remains after controls are applied",
+                            "Risk that has never been identified",
+                            "Only physical-security risk",
+                            "A vulnerability with no CVE"
+                        ],
+                        answer: 0
+                    }
+                ]
+            }),
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "Understanding Vulnerabilities", duration: "30 minutes", icon: "fa-solid fa-triangle-exclamation",
@@ -242,6 +567,60 @@ export const cybersecurityFundamentals = {
         {
             id: "module-05", number: 5, title: "Security Controls",
             description: "Understand technical, administrative and physical security controls.", labs: 1, assessments: 1,
+
+            labActivities: [
+                buildLabActivity({
+                    id: "lab-01",
+                    title: "Defense-in-Depth Control Mapping",
+                    duration: "30 minutes",
+                    objective: "Map preventive, detective, corrective and recovery controls to a realistic business scenario.",
+                    instructions: [
+                        "Choose a fictional organization that uses email, laptops, cloud storage and a customer-facing website.",
+                        "Identify at least two administrative, technical and physical controls.",
+                        "Classify each control by its primary function.",
+                        "Explain how the controls overlap to create defense in depth."
+                    ],
+                    reflection: [
+                        "What happens if one preventive control fails?",
+                        "Which controls provide evidence for investigation?"
+                    ]
+                })
+            ],
+            moduleAssessment: buildModuleAssessment({
+                title: "Module 5 Assessment — Security Controls",
+                questions: [
+                    {
+                        question: "Which is a technical security control?",
+                        options: ["Firewall", "Security policy", "Background check", "Visitor logbook"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which is an administrative control?",
+                        options: ["Security-awareness policy", "Disk encryption", "Door lock", "Network switch"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which is a physical control?",
+                        options: ["Secure server-room lock", "MFA", "Password standard", "EDR agent"],
+                        answer: 0
+                    },
+                    {
+                        question: "What does defense in depth mean?",
+                        options: [
+                            "Using multiple independent security layers",
+                            "Using only one strong firewall",
+                            "Disabling monitoring",
+                            "Giving all users administrator privileges"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "A detective control is designed primarily to:",
+                        options: ["Identify suspicious or unwanted activity", "Guarantee prevention", "Remove all business risk", "Replace incident response"],
+                        answer: 0
+                    }
+                ]
+            }),
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "Introduction to Security Controls", duration: "25 minutes", icon: "fa-solid fa-shield-halved",
@@ -280,6 +659,60 @@ export const cybersecurityFundamentals = {
         {
             id: "module-06", number: 6, title: "Authentication and Access Control",
             description: "Learn authentication, authorization, MFA and least privilege.", labs: 1, assessments: 1,
+
+            labActivities: [
+                buildLabActivity({
+                    id: "lab-01",
+                    title: "Access Control Design Exercise",
+                    duration: "35 minutes",
+                    objective: "Design a simple RBAC and least-privilege model for a fictional organization.",
+                    instructions: [
+                        "Create roles for Help Desk, Finance, Developer and Administrator.",
+                        "List the minimum systems or actions each role requires.",
+                        "Identify which roles should require MFA.",
+                        "Identify permissions that should never be granted to every employee."
+                    ],
+                    reflection: [
+                        "Where could excessive privilege create the greatest impact?",
+                        "How would you review access after an employee changes roles?"
+                    ]
+                })
+            ],
+            moduleAssessment: buildModuleAssessment({
+                title: "Module 6 Assessment — Authentication and Access Control",
+                questions: [
+                    {
+                        question: "Authentication answers which question?",
+                        options: ["Who are you?", "What ports are open?", "What is the CVSS score?", "Where is the backup?"],
+                        answer: 0
+                    },
+                    {
+                        question: "Authorization determines:",
+                        options: ["What an identity is allowed to do", "Whether a password is encrypted", "Whether DNS works", "How a packet is routed"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which combination represents two different authentication factors?",
+                        options: ["Password and security key", "Password and PIN", "Two passwords", "Two security questions"],
+                        answer: 0
+                    },
+                    {
+                        question: "Least privilege means:",
+                        options: [
+                            "Granting only the access required for legitimate work",
+                            "Giving every user administrator access",
+                            "Removing all user accounts",
+                            "Allowing access permanently after first approval"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "RBAC assigns permissions primarily through:",
+                        options: ["Defined roles", "IP addresses only", "File hashes", "Random selection"],
+                        answer: 0
+                    }
+                ]
+            }),
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "Authentication", duration: "30 minutes", icon: "fa-solid fa-user-shield",
@@ -326,6 +759,71 @@ export const cybersecurityFundamentals = {
         {
             id: "module-07", number: 7, title: "Network Security Fundamentals",
             description: "Understand network security controls and traffic protection.", labs: 1, assessments: 1,
+
+            labActivities: [
+                buildLabActivity({
+                    id: "lab-01",
+                    title: "Network Security Architecture Exercise",
+                    duration: "40 minutes",
+                    objective: "Design a basic segmented network and identify where common security controls belong.",
+                    instructions: [
+                        "Sketch a small network containing user devices, a public web server, internal servers and an administration network.",
+                        "Decide which systems should communicate with each other.",
+                        "Identify where firewall rules or segmentation boundaries should be enforced.",
+                        "Identify where monitoring would provide useful visibility."
+                    ],
+                    reflection: [
+                        "Which communication paths are necessary for business operations?",
+                        "Which paths should be denied by default?",
+                        "How does segmentation reduce lateral movement?"
+                    ]
+                })
+            ],
+            moduleAssessment: buildModuleAssessment({
+                title: "Module 7 Assessment — Network Security Fundamentals",
+                questions: [
+                    {
+                        question: "What is the primary purpose of a firewall?",
+                        options: ["Control network traffic according to rules", "Create user passwords", "Encrypt every stored file", "Replace backups"],
+                        answer: 0
+                    },
+                    {
+                        question: "What is a key difference between IDS and IPS?",
+                        options: [
+                            "IPS can take automated blocking action while IDS primarily detects and alerts",
+                            "IDS always encrypts traffic",
+                            "IPS only works on laptops",
+                            "There is no difference"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Why is network segmentation useful?",
+                        options: [
+                            "It limits unnecessary trust and lateral movement",
+                            "It removes the need for authentication",
+                            "It makes every port public",
+                            "It disables logging"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Which protocol is generally preferred over Telnet for remote administration?",
+                        options: ["SSH", "HTTP", "FTP", "ARP"],
+                        answer: 0
+                    },
+                    {
+                        question: "Why are firewall logs useful?",
+                        options: [
+                            "They can provide evidence of blocked or unexpected network activity",
+                            "They guarantee that no attack occurred",
+                            "They replace network diagrams",
+                            "They eliminate false positives"
+                        ],
+                        answer: 0
+                    }
+                ]
+            }),
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "Network Security Basics", duration: "30 minutes", icon: "fa-solid fa-network-wired",
@@ -372,6 +870,55 @@ export const cybersecurityFundamentals = {
         {
             id: "module-08", number: 8, title: "Endpoint and System Security",
             description: "Explore system hardening, patching and endpoint protection.", labs: 0, assessments: 1,
+
+            practiceActivities: [
+                buildLabActivity({
+                    id: "activity-01",
+                    title: "Endpoint Hardening Checklist",
+                    duration: "30 minutes",
+                    objective: "Create a defensible endpoint-hardening checklist for a workstation.",
+                    instructions: [
+                        "List unnecessary services or software that should be reviewed.",
+                        "Identify patching, firewall, encryption and endpoint-protection requirements.",
+                        "Identify which events should be logged or monitored.",
+                        "Explain how the checklist should be reviewed over time."
+                    ],
+                    reflection: [
+                        "Which hardening changes reduce attack surface?",
+                        "Which controls improve detection rather than prevention?"
+                    ]
+                })
+            ],
+            moduleAssessment: buildModuleAssessment({
+                title: "Module 8 Assessment — Endpoint and System Security",
+                questions: [
+                    {
+                        question: "What is the goal of system hardening?",
+                        options: ["Reduce unnecessary attack surface", "Install as much software as possible", "Disable all logging", "Give users more privileges"],
+                        answer: 0
+                    },
+                    {
+                        question: "Why is asset inventory important for patch management?",
+                        options: ["You cannot reliably patch systems you do not know exist", "It replaces testing", "It encrypts patches", "It prevents all vulnerabilities"],
+                        answer: 0
+                    },
+                    {
+                        question: "What does EDR primarily provide?",
+                        options: ["Endpoint visibility, detection and response capabilities", "Physical door access", "Only password storage", "DNS hosting"],
+                        answer: 0
+                    },
+                    {
+                        question: "When a critical patch cannot be applied immediately, organizations may use:",
+                        options: ["Compensating controls", "No controls", "Shared administrator passwords", "Disabled backups"],
+                        answer: 0
+                    },
+                    {
+                        question: "Why should hardening baselines be periodically validated?",
+                        options: ["Configurations can drift as systems change", "Baselines never change", "Validation weakens security", "Only new computers need security"],
+                        answer: 0
+                    }
+                ]
+            }),
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "Endpoint Security", duration: "30 minutes", icon: "fa-solid fa-laptop-shield",
@@ -410,6 +957,65 @@ export const cybersecurityFundamentals = {
         {
             id: "module-09", number: 9, title: "Security Policies and Ethics",
             description: "Understand policies, acceptable use and ethical security practice.", labs: 0, assessments: 1,
+
+            practiceActivities: [
+                buildLabActivity({
+                    id: "activity-01",
+                    title: "Responsible Disclosure Scenario",
+                    duration: "25 minutes",
+                    objective: "Practice making ethical decisions after discovering a vulnerability.",
+                    instructions: [
+                        "Read a scenario where a researcher notices a possible weakness on a public website.",
+                        "Identify which actions would stay within responsible and ethical boundaries.",
+                        "Draft a short vulnerability report containing only necessary evidence.",
+                        "Explain when testing should stop."
+                    ],
+                    reflection: [
+                        "Why does discovering a weakness not automatically grant permission to exploit it?",
+                        "What information should be protected when reporting security issues?"
+                    ]
+                })
+            ],
+            moduleAssessment: buildModuleAssessment({
+                title: "Module 9 Assessment — Security Policies and Ethics",
+                questions: [
+                    {
+                        question: "What is the purpose of a security policy?",
+                        options: ["Define organizational security expectations and requirements", "Exploit vulnerabilities", "Replace technical controls", "Publish passwords"],
+                        answer: 0
+                    },
+                    {
+                        question: "An Acceptable Use Policy primarily explains:",
+                        options: ["Permitted and prohibited use of organizational resources", "How to write malware", "How routers forward packets", "How to calculate hashes"],
+                        answer: 0
+                    },
+                    {
+                        question: "What should a researcher do after finding a vulnerability without authorization to exploit it?",
+                        options: [
+                            "Avoid causing further harm and follow the organization's disclosure process",
+                            "Immediately extract sensitive data",
+                            "Publish credentials",
+                            "Continue testing until administrator access is obtained"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Which is a core cybersecurity ethics principle?",
+                        options: ["Authorization", "Maximum disruption", "Hidden scope", "Unrestricted data collection"],
+                        answer: 0
+                    },
+                    {
+                        question: "Why are scope and permission important in security testing?",
+                        options: [
+                            "They define what activity is authorized",
+                            "They make vulnerabilities more severe",
+                            "They replace reporting",
+                            "They guarantee no technical risk"
+                        ],
+                        answer: 0
+                    }
+                ]
+            }),
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "Security Policies", duration: "25 minutes", icon: "fa-solid fa-shield-halved",
@@ -448,6 +1054,62 @@ export const cybersecurityFundamentals = {
         {
             id: "module-10", number: 10, title: "Cybersecurity Foundations Review",
             description: "Review core concepts and complete the final assessment.", labs: 0, assessments: 1,
+
+            practiceActivities: [
+                buildLabActivity({
+                    id: "activity-01",
+                    title: "Foundation Scenario Challenge",
+                    duration: "45 minutes",
+                    objective: "Apply multiple cybersecurity concepts to one realistic incident scenario.",
+                    instructions: [
+                        "Review a fictional incident involving phishing, credential compromise and access to an internal system.",
+                        "Identify affected assets, threats, vulnerabilities and CIA objectives.",
+                        "Recommend preventive, detective and recovery controls.",
+                        "Explain how MFA, least privilege, segmentation, logging and incident response could change the outcome."
+                    ],
+                    reflection: [
+                        "Which single control would have reduced the attacker's opportunities most?",
+                        "Which control would have helped investigators understand what happened?",
+                        "What residual risk would remain after your recommendations?"
+                    ]
+                })
+            ],
+            moduleAssessment: buildModuleAssessment({
+                title: "Module 10 Assessment — Cybersecurity Foundations Review",
+                passingScore: 75,
+                questions: [
+                    {
+                        question: "Which sequence best represents basic security reasoning?",
+                        options: [
+                            "Identify assets, threats and vulnerabilities, assess risk, then select controls",
+                            "Install tools first and identify assets later",
+                            "Exploit every weakness before documenting it",
+                            "Ignore business impact"
+                        ],
+                        answer: 0
+                    },
+                    {
+                        question: "Which control most directly reduces the impact of stolen passwords?",
+                        options: ["MFA", "A larger monitor", "HTTP", "Unrestricted administrator access"],
+                        answer: 0
+                    },
+                    {
+                        question: "Which control can limit lateral movement after one workstation is compromised?",
+                        options: ["Network segmentation", "Shared passwords", "Disabling logs", "Allow-all firewall rules"],
+                        answer: 0
+                    },
+                    {
+                        question: "Why are backups important in security?",
+                        options: ["They support recovery and availability", "They prevent all phishing", "They replace access control", "They automatically patch systems"],
+                        answer: 0
+                    },
+                    {
+                        question: "What makes professional penetration testing legitimate?",
+                        options: ["Authorization, scope, controlled testing and reporting", "Finding any public IP address", "Using open-source tools", "Remaining anonymous"],
+                        answer: 0
+                    }
+                ]
+            }),
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "Security Principles Review", duration: "30 minutes", icon: "fa-solid fa-clipboard-check",
@@ -491,5 +1153,138 @@ export const cybersecurityFundamentals = {
                 }),
             ]
         },
-    ]
+    ],
+
+    finalAssessment: {
+        id: "final-assessment",
+        title: "Cybersecurity Fundamentals Final Assessment",
+        type: "Final Assessment",
+        duration: "45–60 minutes",
+        passingScore: 75,
+        allowRetry: true,
+        description: "A scenario-focused assessment covering the major concepts taught across all ten modules.",
+        questions: [
+            {
+                question: "A database containing customer records is exposed to an unauthorized user. Which CIA objective is primarily affected?",
+                options: ["Availability", "Confidentiality", "Integrity", "Redundancy"],
+                answer: 1
+            },
+            {
+                question: "An attacker changes bank-account details in a payment system. Which CIA objective is primarily affected?",
+                options: ["Integrity", "Availability", "Confidentiality", "Scalability"],
+                answer: 0
+            },
+            {
+                question: "Which statement best describes cybersecurity risk?",
+                options: [
+                    "Potential harm when threats affect assets through vulnerabilities",
+                    "The number of security tools installed",
+                    "Only vulnerabilities with public exploits",
+                    "Only financial loss"
+                ],
+                answer: 0
+            },
+            {
+                question: "Which is the strongest example of defense in depth?",
+                options: [
+                    "MFA, least privilege, endpoint monitoring and network segmentation working together",
+                    "One shared administrator password",
+                    "One firewall with an allow-all rule",
+                    "Disabling logs to improve performance"
+                ],
+                answer: 0
+            },
+            {
+                question: "What does least privilege reduce?",
+                options: [
+                    "The permissions available to a compromised or misused identity",
+                    "The need for all authentication",
+                    "The number of network protocols",
+                    "The need for backups"
+                ],
+                answer: 0
+            },
+            {
+                question: "A vulnerability scanner reports a critical finding. What should happen next?",
+                options: [
+                    "Validate and prioritize it using asset context, exposure and impact",
+                    "Assume immediate full compromise",
+                    "Delete the affected server",
+                    "Ignore it until an incident occurs"
+                ],
+                answer: 0
+            },
+            {
+                question: "Which control is most directly associated with detecting suspicious endpoint behavior?",
+                options: ["EDR", "Door lock", "Acceptable Use Policy", "Load balancer"],
+                answer: 0
+            },
+            {
+                question: "Which practice helps reduce lateral movement?",
+                options: ["Network segmentation", "Shared credentials", "Open management ports", "Allow-all access lists"],
+                answer: 0
+            },
+            {
+                question: "Why does MFA improve account security?",
+                options: [
+                    "A stolen password alone may no longer be sufficient for access",
+                    "It guarantees accounts can never be compromised",
+                    "It replaces authorization",
+                    "It removes the need for secure recovery"
+                ],
+                answer: 0
+            },
+            {
+                question: "What is the correct ethical approach to testing a system?",
+                options: [
+                    "Test only systems you own or are explicitly authorized to assess",
+                    "Test any public system as long as no data is deleted",
+                    "Continue until administrator access is gained",
+                    "Avoid documenting scope"
+                ],
+                answer: 0
+            },
+            {
+                question: "Which is an example of a detective control?",
+                options: ["Security monitoring and alerting", "A policy requiring strong passwords", "A locked server-room door", "A backup generator"],
+                answer: 0
+            },
+            {
+                question: "Which risk-treatment approach removes the activity creating the risk?",
+                options: ["Avoidance", "Acceptance", "Detection", "Enumeration"],
+                answer: 0
+            },
+            {
+                question: "Why are secure protocols such as SSH preferred over Telnet?",
+                options: [
+                    "They provide stronger protection for communication and credentials",
+                    "They remove the need for authentication",
+                    "They work without networks",
+                    "They automatically patch endpoints"
+                ],
+                answer: 0
+            },
+            {
+                question: "Why is patch management a lifecycle rather than a one-time task?",
+                options: [
+                    "New vulnerabilities, systems and software changes continually appear",
+                    "Patches never need testing",
+                    "Only servers need updates",
+                    "Patching eliminates every other security requirement"
+                ],
+                answer: 0
+            },
+            {
+                question: "What should a professional security report include?",
+                options: [
+                    "Evidence, impact, affected scope and practical remediation",
+                    "Only exploit screenshots",
+                    "Only tool output",
+                    "Unverified assumptions"
+                ],
+                answer: 0
+            }
+        ]
+    }
+
 };
