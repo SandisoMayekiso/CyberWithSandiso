@@ -1,0 +1,403 @@
+/* =========================================================
+   CWS ACADEMY
+   PRACTICAL ACTIVITY / LAB
+========================================================= */
+
+
+.activity-hero {
+
+    margin-bottom:
+        28px;
+
+}
+
+
+.activity-safety-card {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        auto minmax(0,1fr);
+
+    gap:
+        16px;
+
+    padding:
+        22px;
+
+    margin-bottom:
+        28px;
+
+    border:
+        1px solid var(--red-border);
+
+    border-radius:
+        var(--radius-lg);
+
+    background:
+        var(--red-soft);
+
+}
+
+
+.activity-safety-card > i {
+
+    width:
+        42px;
+
+    height:
+        42px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid var(--red-border);
+
+    border-radius:
+        10px;
+
+    color:
+        var(--red);
+
+}
+
+
+.activity-safety-card h2 {
+
+    margin:
+        5px 0 8px;
+
+}
+
+
+.activity-safety-card p {
+
+    margin:
+        0;
+
+    color:
+        var(--text-soft);
+
+    line-height:
+        1.7;
+
+}
+
+
+.activity-layout {
+
+    margin-bottom:
+        28px;
+
+}
+
+
+.activity-card {
+
+    padding:
+        28px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        var(--radius-lg);
+
+    background:
+        var(--bg-card);
+
+}
+
+
+.activity-card-heading {
+
+    margin-bottom:
+        12px;
+
+}
+
+
+.activity-card-heading h2 {
+
+    margin:
+        4px 0 0;
+
+}
+
+
+.activity-objective-text {
+
+    margin:
+        0;
+
+    color:
+        var(--text-soft);
+
+    line-height:
+        1.75;
+
+}
+
+
+.activity-section {
+
+    padding-top:
+        28px;
+
+    margin-top:
+        28px;
+
+    border-top:
+        1px solid var(--border);
+
+}
+
+
+.activity-section h2 {
+
+    margin:
+        5px 0 18px;
+
+}
+
+
+.activity-step-list {
+
+    display:
+        grid;
+
+    gap:
+        12px;
+
+    margin:
+        0;
+
+    padding:
+        0;
+
+    list-style:
+        none;
+
+    counter-reset:
+        activity-step;
+
+}
+
+
+.activity-step-list li {
+
+    position:
+        relative;
+
+    padding:
+        16px 16px 16px 56px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(255,255,255,0.015);
+
+    color:
+        var(--text-soft);
+
+    line-height:
+        1.65;
+
+    counter-increment:
+        activity-step;
+
+}
+
+
+.activity-step-list li::before {
+
+    content:
+        counter(
+            activity-step,
+            decimal-leading-zero
+        );
+
+    position:
+        absolute;
+
+    left:
+        16px;
+
+    top:
+        17px;
+
+    color:
+        var(--red);
+
+    font-size:
+        0.72rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.activity-reflection-list {
+
+    display:
+        grid;
+
+    gap:
+        10px;
+
+}
+
+
+.activity-reflection-item {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        34px minmax(0,1fr);
+
+    gap:
+        10px;
+
+    align-items:
+        start;
+
+    padding:
+        13px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(255,255,255,0.012);
+
+}
+
+
+.activity-reflection-item span {
+
+    color:
+        var(--red);
+
+    font-size:
+        0.7rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.activity-reflection-item p {
+
+    margin:
+        0;
+
+    color:
+        var(--text-soft);
+
+    line-height:
+        1.6;
+
+}
+
+
+.activity-completion-panel {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    padding-top:
+        28px;
+
+    margin-top:
+        28px;
+
+    border-top:
+        1px solid var(--border);
+
+}
+
+
+.activity-completion-panel h2 {
+
+    margin:
+        5px 0 8px;
+
+}
+
+
+.activity-completion-panel p {
+
+    margin:
+        0;
+
+    color:
+        var(--text-soft);
+
+}
+
+
+@media (max-width: 700px) {
+
+    .activity-safety-card {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .activity-card {
+
+        padding:
+            20px;
+
+    }
+
+
+    .activity-completion-panel {
+
+        flex-direction:
+            column;
+
+        align-items:
+            stretch;
+
+    }
+
+
+    .activity-completion-panel
+    .lesson-primary-btn {
+
+        width:
+            100%;
+
+    }
+
+}
