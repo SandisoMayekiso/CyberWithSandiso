@@ -429,42 +429,14 @@ function getTotalLessons(course) {
 
 function getTotalLabs(course) {
 
-    if (
-
-        !course ||
-
-        !Array.isArray(
-            course.modules
-        )
-
-    ) {
-
+    if (!course || !Array.isArray(course.modules)) {
         return 0;
-
     }
 
-
     return course.modules.reduce(
-
-        (
-            total,
-            module
-        ) => {
-
-            return (
-
-                total +
-
-                Number(
-                    module.labs || 0
-                )
-
-            );
-
-        },
-
+        (total, module) =>
+            total + getModuleActivities(module).length,
         0
-
     );
 
 }
@@ -474,47 +446,162 @@ function getTotalLabs(course) {
    TOTAL ASSESSMENTS
 ========================================================= */
 
-function getTotalAssessments(
-    course
-) {
+function getTotalAssessments(course) {
 
-    if (
-
-        !course ||
-
-        !Array.isArray(
-            course.modules
-        )
-
-    ) {
-
+    if (!course || !Array.isArray(course.modules)) {
         return 0;
-
     }
 
+    const moduleAssessments =
+        course.modules.filter(
+            module =>
+                module.moduleAssessment &&
+                Array.isArray(module.moduleAssessment.questions) &&
+                module.moduleAssessment.questions.length
+        ).length;
 
-    return course.modules.reduce(
+    return (
+        moduleAssessments +
+        (course.finalAssessment ? 1 : 0)
+    );
 
-        (
-            total,
-            module
-        ) => {
+}
 
-            return (
 
-                total +
 
-                Number(
-                    module.assessments ||
-                    0
-                )
+function getModuleActivities(module) {
 
+    return [
+        ...(
+            Array.isArray(module?.labActivities)
+                ? module.labActivities
+                : []
+        ),
+        ...(
+            Array.isArray(module?.practiceActivities)
+                ? module.practiceActivities
+                : []
+        )
+    ];
+
+}
+
+
+function getCourseRequirements(course) {
+
+    const lessonKeys = [];
+    const activityKeys = [];
+    const assessmentKeys = [];
+
+    const modules =
+        Array.isArray(course?.modules)
+            ? course.modules
+            : [];
+
+    modules.forEach(module => {
+
+        const lessons =
+            Array.isArray(module.lessons)
+                ? module.lessons
+                : [];
+
+        lessons.forEach(lesson => {
+            lessonKeys.push(
+                `${module.id}:${lesson.id}`
             );
+        });
 
-        },
+        getModuleActivities(module)
+            .forEach(activity => {
+                activityKeys.push(
+                    `${module.id}:${activity.id}`
+                );
+            });
 
-        0
+        if (
+            module.moduleAssessment &&
+            Array.isArray(module.moduleAssessment.questions) &&
+            module.moduleAssessment.questions.length
+        ) {
+            assessmentKeys.push(
+                `${module.id}:assessment`
+            );
+        }
 
+    });
+
+    return {
+        lessonKeys,
+        activityKeys:
+            course?.completionRules?.requireRequiredLabs
+                ? activityKeys
+                : [],
+        assessmentKeys:
+            course?.completionRules?.requireAllModuleAssessments === false
+                ? []
+                : assessmentKeys,
+        finalRequired:
+            Boolean(course?.finalAssessment)
+    };
+
+}
+
+
+function calculateUnifiedProgress(course, progress) {
+
+    if (!course || !progress) {
+        return 0;
+    }
+
+    const requirements =
+        getCourseRequirements(course);
+
+    const total =
+        requirements.lessonKeys.length +
+        requirements.activityKeys.length +
+        requirements.assessmentKeys.length +
+        (requirements.finalRequired ? 1 : 0);
+
+    if (!total) {
+        return 0;
+    }
+
+    const completedLessons =
+        requirements.lessonKeys.filter(
+            key =>
+                progress.completedLessons?.includes(key)
+        ).length;
+
+    const completedActivities =
+        requirements.activityKeys.filter(
+            key =>
+                progress.completedLabs?.includes(key)
+        ).length;
+
+    const completedAssessments =
+        requirements.assessmentKeys.filter(
+            key =>
+                progress.completedAssessments?.includes(key)
+        ).length;
+
+    const finalCompleted =
+        requirements.finalRequired &&
+        progress.finalAssessment?.passed
+            ? 1
+            : 0;
+
+    return Math.min(
+        100,
+        Math.round(
+            (
+                completedLessons +
+                completedActivities +
+                completedAssessments +
+                finalCompleted
+            ) /
+            total *
+            100
+        )
     );
 
 }
@@ -580,6 +667,192 @@ function buildLessonUrl(
     return (
         `lesson.html?${params.toString()}`
     );
+
+}
+
+
+
+function buildLabActivityUrl(
+    courseId,
+    moduleId,
+    activityId
+) {
+
+    const params =
+        new URLSearchParams();
+
+    params.set("course", courseId);
+    params.set("module", moduleId);
+    params.set("activity", activityId);
+
+    return `lab-activity.html?${params.toString()}`;
+
+}
+
+
+function buildModuleAssessmentUrl(
+    courseId,
+    moduleId
+) {
+
+    const params =
+        new URLSearchParams();
+
+    params.set("course", courseId);
+    params.set("module", moduleId);
+
+    return `module-assessment.html?${params.toString()}`;
+
+}
+
+
+function buildFinalAssessmentUrl(
+    courseId
+) {
+
+    const params =
+        new URLSearchParams();
+
+    params.set("course", courseId);
+
+    return `final-assessment.html?${params.toString()}`;
+
+}
+
+
+function findNextLearningTarget(
+    course,
+    progress
+) {
+
+    const modules =
+        Array.isArray(course?.modules)
+            ? course.modules
+            : [];
+
+    const requireLabs =
+        Boolean(
+            course?.completionRules
+                ?.requireRequiredLabs
+        );
+
+    const requireAssessments =
+        course?.completionRules
+            ?.requireAllModuleAssessments !== false;
+
+    for (const module of modules) {
+
+        const lessons =
+            Array.isArray(module.lessons)
+                ? module.lessons
+                : [];
+
+        for (const lesson of lessons) {
+
+            const key =
+                `${module.id}:${lesson.id}`;
+
+            if (
+                !progress.completedLessons
+                    ?.includes(key)
+            ) {
+                return {
+                    type: "lesson",
+                    module,
+                    item: lesson,
+                    url: buildLessonUrl(
+                        course.id,
+                        module.id,
+                        lesson.id
+                    )
+                };
+            }
+
+        }
+
+        if (requireLabs) {
+
+            const activities =
+                getModuleActivities(module);
+
+            for (const activity of activities) {
+
+                const key =
+                    `${module.id}:${activity.id}`;
+
+                if (
+                    !progress.completedLabs
+                        ?.includes(key)
+                ) {
+                    return {
+                        type: "activity",
+                        module,
+                        item: activity,
+                        url: buildLabActivityUrl(
+                            course.id,
+                            module.id,
+                            activity.id
+                        )
+                    };
+                }
+
+            }
+
+        }
+
+        const hasAssessment =
+            module.moduleAssessment &&
+            Array.isArray(module.moduleAssessment.questions) &&
+            module.moduleAssessment.questions.length;
+
+        if (
+            requireAssessments &&
+            hasAssessment &&
+            !progress.completedAssessments
+                ?.includes(
+                    `${module.id}:assessment`
+                )
+        ) {
+            return {
+                type: "assessment",
+                module,
+                item: module.moduleAssessment,
+                url: buildModuleAssessmentUrl(
+                    course.id,
+                    module.id
+                )
+            };
+        }
+
+    }
+
+    if (
+        course?.finalAssessment &&
+        !progress.finalAssessment?.passed
+    ) {
+        return {
+            type: "final",
+            module:
+                modules[modules.length - 1] || null,
+            item:
+                course.finalAssessment,
+            url:
+                buildFinalAssessmentUrl(
+                    course.id
+                )
+        };
+    }
+
+    return {
+        type: "complete",
+        module:
+            modules[modules.length - 1] || null,
+        item: null,
+        url:
+            buildCourseUrl(
+                course.id
+            )
+    };
 
 }
 
@@ -668,6 +941,27 @@ function normalizeProgress(
 
             Boolean(
                 data.completed
+            ),
+
+        assessmentScores:
+            data.assessmentScores &&
+            typeof data.assessmentScores === "object"
+                ? data.assessmentScores
+                : {},
+
+        finalAssessment:
+            data.finalAssessment &&
+            typeof data.finalAssessment === "object"
+                ? data.finalAssessment
+                : {
+                    score: 0,
+                    bestScore: 0,
+                    passed: false
+                },
+
+        certificateEligible:
+            Boolean(
+                data.certificateEligible
             ),
 
         updatedAt:
@@ -1718,213 +2012,106 @@ function renderEmptyContinueLearning() {
 
 function setupContinueLearning() {
 
-    if (
-        !continueLearningContainer
-    ) {
-
+    if (!continueLearningContainer) {
         return;
-
     }
-
 
     const progress =
         findContinueCourse();
 
-
     if (!progress) {
-
         renderEmptyContinueLearning();
-
         return;
-
     }
-
 
     const course =
         getCourse(
             progress.courseId
         );
 
-
     if (!course) {
-
         renderEmptyContinueLearning();
-
         return;
-
     }
 
-
-    /*
-       Find the saved module.
-    */
-
-    let module =
-        course.modules?.find(
-            item =>
-                item.id ===
-                progress.currentModule
+    const percentage =
+        calculateUnifiedProgress(
+            course,
+            progress
         );
 
-
-    /*
-       Fall back to first module.
-    */
-
-    if (!module) {
-
-        module =
-            course.modules?.[0] ||
-            null;
-
-    }
-
-
-    /*
-       Find current lesson.
-    */
-
-    let lesson =
-        module?.lessons?.find(
-            item =>
-                item.id ===
-                progress.currentLesson
+    const target =
+        findNextLearningTarget(
+            course,
+            progress
         );
-
-
-    /*
-       Fall back to first lesson.
-    */
-
-    if (!lesson) {
-
-        lesson =
-            module?.lessons?.[0] ||
-            null;
-
-    }
-
-
-    const totalLessons =
-        getTotalLessons(
-            course
-        );
-
-
-    const completedLessons =
-        progress.completedLessons
-            ?.length || 0;
-
-
-    let percentage =
-        Number(
-            progress.progressPercent ||
-            0
-        );
-
-
-    /*
-       Calculate if saved percentage is
-       unavailable or stale.
-    */
-
-    if (
-        totalLessons > 0
-    ) {
-
-        percentage =
-            Math.min(
-
-                100,
-
-                Math.round(
-
-                    (
-                        completedLessons /
-                        totalLessons
-                    ) * 100
-
-                )
-
-            );
-
-    }
-
-
-    const targetUrl =
-
-        module &&
-        lesson
-
-            ? buildLessonUrl(
-
-                course.id,
-
-                module.id,
-
-                lesson.id
-
-            )
-
-            : buildCourseUrl(
-                course.id
-            );
-
 
     const iconClass =
         course.icon ||
         "fa-solid fa-graduation-cap";
 
+    const completed =
+        target.type === "complete" ||
+        progress.completed;
+
+    const labels = {
+        lesson: "NEXT LESSON",
+        activity: "PRACTICAL ACTIVITY",
+        assessment: "MODULE ASSESSMENT",
+        final: "FINAL ASSESSMENT",
+        complete: "COURSE COMPLETED"
+    };
+
+    const targetTitle =
+        target.type === "lesson"
+            ? target.item?.title
+            : target.type === "activity"
+                ? target.item?.title || "Practical Activity"
+                : target.type === "assessment"
+                    ? `${target.module?.title || "Module"} Assessment`
+                    : target.type === "final"
+                        ? "Final Assessment"
+                        : "Course Complete";
 
     const buttonText =
-        progress.completed
+        completed
             ? "Review Course"
-            : "Continue Learning";
-
+            : target.type === "final"
+                ? "Take Final Assessment"
+                : target.type === "assessment"
+                    ? "Take Assessment"
+                    : target.type === "activity"
+                        ? "Continue to Activity"
+                        : "Continue Learning";
 
     continueLearningContainer.innerHTML = `
 
         <div class="continue-icon">
-
             <i class="${iconClass}"></i>
-
         </div>
-
 
         <div class="continue-content">
 
             <span class="dashboard-label">
-                ${progress.completed
-                    ? "COURSE COMPLETED"
-                    : "IN PROGRESS"}
+                ${labels[target.type] || "IN PROGRESS"}
             </span>
 
             <h3>
-                ${escapeHTML(
-                    course.title
-                )}
+                ${escapeHTML(course.title)}
             </h3>
 
             <p>
-
                 ${
-                    module
-                        ? escapeHTML(
-                            module.title
-                        )
-                        : "Continue your course"
+                    target.module
+                        ? escapeHTML(target.module.title)
+                        : "Course progress"
                 }
-
                 ${
-                    lesson
-                        ? ` • ${escapeHTML(
-                            lesson.title
-                        )}`
+                    targetTitle
+                        ? ` • ${escapeHTML(targetTitle)}`
                         : ""
                 }
-
             </p>
-
 
             <div class="dashboard-continue-progress">
 
@@ -1936,12 +2123,10 @@ function setupContinueLearning() {
                     aria-valuemax="100"
                     aria-valuenow="${percentage}"
                 >
-
                     <div
                         class="dashboard-continue-progress-fill"
-                        style="width: ${percentage}%"
+                        style="width: ${percentage}%;"
                     ></div>
-
                 </div>
 
                 <span>
@@ -1950,16 +2135,12 @@ function setupContinueLearning() {
 
             </div>
 
-
             <a
-                href="${targetUrl}"
+                href="${target.url}"
                 class="text-link"
             >
-
                 ${buttonText}
-
                 <i class="fa-solid fa-arrow-right"></i>
-
             </a>
 
         </div>
