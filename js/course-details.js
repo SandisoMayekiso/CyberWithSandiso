@@ -626,42 +626,14 @@ function getTotalLessons(course) {
 
 function getTotalLabs(course) {
 
-    if (
-
-        !course ||
-
-        !Array.isArray(
-            course.modules
-        )
-
-    ) {
-
+    if (!course || !Array.isArray(course.modules)) {
         return 0;
-
     }
 
-
     return course.modules.reduce(
-
-        (
-            total,
-            module
-        ) => {
-
-            return (
-
-                total +
-
-                Number(
-                    module.labs || 0
-                )
-
-            );
-
-        },
-
+        (total, module) =>
+            total + getModuleActivities(module).length,
         0
-
     );
 
 }
@@ -671,46 +643,162 @@ function getTotalLabs(course) {
    TOTAL ASSESSMENTS
 ========================================================= */
 
-function getTotalAssessments(
-    course
-) {
+function getTotalAssessments(course) {
 
-    if (
-
-        !course ||
-
-        !Array.isArray(
-            course.modules
-        )
-
-    ) {
-
+    if (!course || !Array.isArray(course.modules)) {
         return 0;
-
     }
 
+    const moduleAssessments =
+        course.modules.filter(
+            module =>
+                module.moduleAssessment &&
+                Array.isArray(module.moduleAssessment.questions) &&
+                module.moduleAssessment.questions.length
+        ).length;
 
-    return course.modules.reduce(
+    return (
+        moduleAssessments +
+        (course.finalAssessment ? 1 : 0)
+    );
 
-        (
-            total,
-            module
-        ) => {
+}
 
-            return (
 
-                total +
 
-                Number(
-                    module.assessments || 0
-                )
+function getModuleActivities(module) {
 
+    return [
+        ...(
+            Array.isArray(module?.labActivities)
+                ? module.labActivities
+                : []
+        ),
+        ...(
+            Array.isArray(module?.practiceActivities)
+                ? module.practiceActivities
+                : []
+        )
+    ];
+
+}
+
+
+function getCourseRequirements(course) {
+
+    const lessonKeys = [];
+    const activityKeys = [];
+    const assessmentKeys = [];
+
+    const modules =
+        Array.isArray(course?.modules)
+            ? course.modules
+            : [];
+
+    modules.forEach(module => {
+
+        const lessons =
+            Array.isArray(module.lessons)
+                ? module.lessons
+                : [];
+
+        lessons.forEach(lesson => {
+            lessonKeys.push(
+                `${module.id}:${lesson.id}`
             );
+        });
 
-        },
+        getModuleActivities(module)
+            .forEach(activity => {
+                activityKeys.push(
+                    `${module.id}:${activity.id}`
+                );
+            });
 
-        0
+        if (
+            module.moduleAssessment &&
+            Array.isArray(module.moduleAssessment.questions) &&
+            module.moduleAssessment.questions.length
+        ) {
+            assessmentKeys.push(
+                `${module.id}:assessment`
+            );
+        }
 
+    });
+
+    return {
+        lessonKeys,
+        activityKeys:
+            course?.completionRules?.requireRequiredLabs
+                ? activityKeys
+                : [],
+        assessmentKeys:
+            course?.completionRules?.requireAllModuleAssessments === false
+                ? []
+                : assessmentKeys,
+        finalRequired:
+            Boolean(course?.finalAssessment)
+    };
+
+}
+
+
+function calculateUnifiedProgress(course, progress) {
+
+    if (!course || !progress) {
+        return 0;
+    }
+
+    const requirements =
+        getCourseRequirements(course);
+
+    const total =
+        requirements.lessonKeys.length +
+        requirements.activityKeys.length +
+        requirements.assessmentKeys.length +
+        (requirements.finalRequired ? 1 : 0);
+
+    if (!total) {
+        return 0;
+    }
+
+    const completedLessons =
+        requirements.lessonKeys.filter(
+            key =>
+                progress.completedLessons?.includes(key)
+        ).length;
+
+    const completedActivities =
+        requirements.activityKeys.filter(
+            key =>
+                progress.completedLabs?.includes(key)
+        ).length;
+
+    const completedAssessments =
+        requirements.assessmentKeys.filter(
+            key =>
+                progress.completedAssessments?.includes(key)
+        ).length;
+
+    const finalCompleted =
+        requirements.finalRequired &&
+        progress.finalAssessment?.passed
+            ? 1
+            : 0;
+
+    return Math.min(
+        100,
+        Math.round(
+            (
+                completedLessons +
+                completedActivities +
+                completedAssessments +
+                finalCompleted
+            ) /
+            total *
+            100
+        )
     );
 
 }
@@ -853,7 +941,28 @@ function normalizeProgress(
                 progress.completedAssessments
             )
                 ? progress.completedAssessments
-                : []
+                : [],
+
+        assessmentScores:
+            progress.assessmentScores &&
+            typeof progress.assessmentScores === "object"
+                ? progress.assessmentScores
+                : {},
+
+        finalAssessment:
+            progress.finalAssessment &&
+            typeof progress.finalAssessment === "object"
+                ? progress.finalAssessment
+                : {
+                    score: 0,
+                    bestScore: 0,
+                    passed: false
+                },
+
+        certificateEligible:
+            Boolean(
+                progress.certificateEligible
+            )
 
     };
 
@@ -1057,52 +1166,9 @@ async function saveProgress() {
 
 function calculateProgress() {
 
-    if (
-
-        !currentCourse ||
-
-        !currentProgress
-
-    ) {
-
-        return 0;
-
-    }
-
-
-    const total =
-        getTotalLessons(
-            currentCourse
-        );
-
-
-    if (!total) {
-
-        return 0;
-
-    }
-
-
-    const completed =
-
+    return calculateUnifiedProgress(
+        currentCourse,
         currentProgress
-            .completedLessons
-            .length;
-
-
-    return Math.min(
-
-        100,
-
-        Math.round(
-
-            (
-                completed /
-                total
-            ) * 100
-
-        )
-
     );
 
 }
@@ -1186,112 +1252,144 @@ function updateStartCourseButton() {
 
 function updateProgressUI() {
 
-    if (
-
-        !currentProgress ||
-
-        !currentCourse
-
-    ) {
-
+    if (!currentProgress || !currentCourse) {
         return;
-
     }
-
 
     const percent =
         calculateProgress();
 
-
     currentProgress.progressPercent =
         percent;
 
+    const finalRequired =
+        Boolean(
+            currentCourse.finalAssessment
+        );
+
+    const finalPassed =
+        Boolean(
+            currentProgress.finalAssessment?.passed
+        );
 
     currentProgress.completed =
-        percent === 100;
+        percent === 100 &&
+        (
+            !finalRequired ||
+            finalPassed
+        );
 
+    currentProgress.certificateEligible =
+        Boolean(
+            currentProgress.completed &&
+            (
+                !finalRequired ||
+                finalPassed
+            )
+        );
 
     if (courseProgressPercent) {
-
         courseProgressPercent.textContent =
             `${percent}%`;
-
     }
-
 
     if (courseProgressFill) {
-
         courseProgressFill.style.width =
             `${percent}%`;
-
     }
 
-
     const progressBar =
-
         document.querySelector(
             ".course-progress-bar"
         );
 
-
     if (progressBar) {
-
         progressBar.setAttribute(
             "aria-valuenow",
             String(percent)
         );
-
     }
 
-
-    const completed =
-        currentProgress
-            .completedLessons
-            .length;
-
-
-    const total =
-        getTotalLessons(
+    const requirements =
+        getCourseRequirements(
             currentCourse
         );
 
+    const completedLessons =
+        requirements.lessonKeys.filter(
+            key =>
+                currentProgress.completedLessons
+                    ?.includes(key)
+        ).length;
+
+    const completedLabs =
+        requirements.activityKeys.filter(
+            key =>
+                currentProgress.completedLabs
+                    ?.includes(key)
+        ).length;
+
+    const completedAssessments =
+        requirements.assessmentKeys.filter(
+            key =>
+                currentProgress.completedAssessments
+                    ?.includes(key)
+        ).length;
 
     if (courseProgressText) {
 
         if (percent === 0) {
-
             courseProgressText.textContent =
-
                 `Start your first lesson to begin making progress through ${currentCourse.title}.`;
-
         }
-
-        else if (percent < 100) {
-
+        else if (currentProgress.completed) {
             courseProgressText.textContent =
-
-                `${completed} of ${total} lessons completed in ${currentCourse.title}. Keep going.`;
-
+                `${currentCourse.title} completed. All required lessons, practical activities and assessments are complete.`;
         }
-
         else {
+            const parts = [
+                `${completedLessons}/${requirements.lessonKeys.length} lessons`
+            ];
+
+            if (requirements.activityKeys.length) {
+                parts.push(
+                    `${completedLabs}/${requirements.activityKeys.length} practical activities`
+                );
+            }
+
+            if (requirements.assessmentKeys.length) {
+                parts.push(
+                    `${completedAssessments}/${requirements.assessmentKeys.length} module assessments`
+                );
+            }
+
+            if (finalRequired) {
+                parts.push(
+                    finalPassed
+                        ? "final assessment passed"
+                        : "final assessment pending"
+                );
+            }
 
             courseProgressText.textContent =
-
-                `${currentCourse.title} completed. Congratulations!`;
-
+                `${parts.join(" • ")}.`;
         }
-
     }
-
 
     if (courseCompletionSection) {
-
         courseCompletionSection.hidden =
-            percent !== 100;
-
+            !currentProgress.completed;
     }
 
+    if (
+        courseCompletionText &&
+        currentProgress.completed
+    ) {
+        courseCompletionText.textContent =
+            currentProgress.certificateEligible
+                ? `You have completed ${currentCourse.title} and are eligible for its course certificate.`
+                : `You have completed ${currentCourse.title}.`;
+    }
 
     updateStartCourseButton();
 
@@ -1429,36 +1527,64 @@ function isLessonCompleted(
    MODULE COMPLETION
 ========================================================= */
 
-function isModuleCompleted(
-    module
-) {
+function isModuleCompleted(module) {
 
-    if (
-
-        !module ||
-
-        !Array.isArray(
-            module.lessons
-        ) ||
-
-        !module.lessons.length ||
-
-        !currentProgress
-
-    ) {
-
+    if (!module || !currentProgress) {
         return false;
-
     }
 
+    const lessons =
+        Array.isArray(module.lessons)
+            ? module.lessons
+            : [];
 
-    return module.lessons.every(
-        lesson =>
+    const lessonsComplete =
+        lessons.every(
+            lesson =>
+                isLessonCompleted(
+                    module.id,
+                    lesson.id
+                )
+        );
 
-            isLessonCompleted(
-                module.id,
-                lesson.id
-            )
+    const requireLabs =
+        Boolean(
+            currentCourse?.completionRules
+                ?.requireRequiredLabs
+        );
+
+    const activities =
+        requireLabs
+            ? getModuleActivities(module)
+            : [];
+
+    const activitiesComplete =
+        activities.every(
+            activity =>
+                currentProgress.completedLabs
+                    ?.includes(
+                        `${module.id}:${activity.id}`
+                    )
+        );
+
+    const requiresAssessment =
+        currentCourse?.completionRules
+            ?.requireAllModuleAssessments !== false &&
+        module.moduleAssessment &&
+        Array.isArray(module.moduleAssessment.questions) &&
+        module.moduleAssessment.questions.length;
+
+    const assessmentComplete =
+        !requiresAssessment ||
+        currentProgress.completedAssessments
+            ?.includes(
+                `${module.id}:assessment`
+            );
+
+    return (
+        lessonsComplete &&
+        activitiesComplete &&
+        assessmentComplete
     );
 
 }
@@ -1991,8 +2117,18 @@ function renderModules(
                 );
 
 
+                const firstActivity =
+                    getModuleActivities(module)[0];
+
+                if (firstActivity) {
+                    params.set(
+                        "activity",
+                        firstActivity.id
+                    );
+                }
+
                 lab.href =
-                    `labs.html?${params.toString()}`;
+                    `lab-activity.html?${params.toString()}`;
 
 
                 lab.className =
@@ -2070,7 +2206,7 @@ function renderModules(
 
 
                 assessment.href =
-                    `assessments.html?${params.toString()}`;
+                    `module-assessment.html?${params.toString()}`;
 
 
                 assessment.className =
