@@ -485,3 +485,118 @@
     }
 
 }
+
+/* =========================================================
+   CERTIFICATE ACTION BUTTONS
+   Ensure download / print / share controls remain visible
+========================================================= */
+
+.certificate-page-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 30px;
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+.certificate-actions {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.certificate-action {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    min-height: 44px;
+    padding: 11px 18px;
+
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.certificate-action.primary {
+    background: #c81d25;
+    border-color: #c81d25;
+    color: #ffffff;
+}
+
+.certificate-action.primary:hover {
+    background: #e32636;
+    border-color: #e32636;
+}
+
+.certificate-action.secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.certificate-action.secondary:hover {
+    background: rgba(255, 255, 255, 0.10);
+}
+
+#downloadPdfBtn,
+#printPdfBtn,
+#copyVerificationBtn,
+#linkedinShareBtn {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+#downloadPdfBtn:disabled,
+#printPdfBtn:disabled {
+    opacity: 0.55 !important;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .certificate-page-heading {
+        flex-direction: column;
+    }
+
+    .certificate-actions {
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .certificate-actions {
+        display: grid !important;
+        grid-template-columns: 1fr;
+    }
+
+    .certificate-action {
+        width: 100%;
+    }
+
+}
