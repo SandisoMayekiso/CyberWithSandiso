@@ -1,0 +1,31 @@
+// =========================================================
+// CWS ACADEMY CERTIFICATE VERIFICATION RULES
+// Merge these into your existing Firestore rules.
+// =========================================================
+//
+// IMPORTANT:
+// These rules protect public reads and basic ownership, but
+// browser-issued certificates are not as strong as credentials
+// issued by a trusted Cloud Function/Admin SDK.
+//
+// Production recommendation:
+// - Disable client create/update on certificateVerifications.
+// - Issue verification docs only from a Firebase Cloud Function.
+// =========================================================
+
+match /certificateVerifications/{credentialId} {
+
+  // Employers/recruiters need public read access.
+  allow read: if true;
+
+  // Interim GitHub Pages implementation:
+  // authenticated users can create a verification document
+  // only for their own uid.
+  allow create: if request.auth != null
+                && request.resource.data.userId == request.auth.uid
+                && request.resource.data.credentialId == credentialId
+                && request.resource.data.status == "active";
+
+  // Prevent students changing/revoking a credential after issuance.
+  allow update, delete: if false;
+}
