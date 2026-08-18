@@ -12,6 +12,47 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/certificate-view.css">
     <link rel="stylesheet" href="../css/cws-assistant.css">
+
+<style>
+@media print {
+
+    body.certificate-print-mode {
+        background: #ffffff !important;
+    }
+
+    body.certificate-print-mode .student-header,
+    body.certificate-print-mode .certificate-page-heading,
+    body.certificate-print-mode .certificate-verification-panel,
+    body.certificate-print-mode #cwsAssistant,
+    body.certificate-print-mode .student-footer {
+        display: none !important;
+    }
+
+    body.certificate-print-mode .certificate-view-main,
+    body.certificate-print-mode #certificateContent {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    body.certificate-print-mode .cws-certificate {
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 8mm;
+    }
+}
+</style>
+
 </head>
 
 <body class="student-page certificate-view-page">
@@ -73,9 +114,24 @@
             </div>
 
             <div class="certificate-actions">
-                <button type="button" id="downloadPdfBtn" class="certificate-action primary">
+                <button
+                    type="button"
+                    id="downloadPdfBtn"
+                    class="certificate-action primary"
+                    title="Download certificate as PDF"
+                >
                     <i class="fa-solid fa-file-pdf"></i>
                     Download PDF
+                </button>
+
+                <button
+                    type="button"
+                    id="printPdfBtn"
+                    class="certificate-action secondary"
+                    title="Open the browser print dialog and choose Save as PDF"
+                >
+                    <i class="fa-solid fa-print"></i>
+                    Print / Save as PDF
                 </button>
 
                 <button type="button" id="copyVerificationBtn" class="certificate-action secondary">
@@ -207,7 +263,7 @@
 
 <script
     src="https://unpkg.com/jspdf@4.2.1/dist/jspdf.umd.min.js"
-    onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/jspdf@4.2.1/dist/jspdf.umd.min.js';"
+    onerror="this.onerror=function(){this.onerror=null;this.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';};this.src='https://cdn.jsdelivr.net/npm/jspdf@4.2.1/dist/jspdf.umd.min.js';"
 ></script>
 <script src="https://unpkg.com/qrcode@1.5.4/build/qrcode.js"></script>
 <script type="module" src="../js/certificate-view.js"></script>
