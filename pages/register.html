@@ -5,35 +5,22 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="description"
-        content="Create your CWS Academy student account."
-    >
+    <meta name="description" content="Create your CWS Academy student account.">
 
     <title>Create Account | CWS Academy</title>
 
-
-    <!-- =====================================================
-         SITE STYLES
-    ====================================================== -->
-
     <link
         rel="stylesheet"
-        href="../css/style.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
-    <link
-        rel="stylesheet"
-        href="../css/auth.css"
-    >
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="../css/cws-assistant.css">
 
 </head>
-
 
 <body>
 
@@ -41,60 +28,30 @@
 
         <div class="auth-container">
 
-
-            <!-- =================================================
-                 BRAND
-            ================================================== -->
-
             <div class="auth-brand">
 
-                <a
-                    href="../index.html"
-                    class="academy-logo"
-                >
-
-                    <span class="logo-cws">
-                        CWS
-                    </span>
-
-                    <span class="logo-text">
-                        Academy
-                    </span>
-
+                <a href="../index.html" class="academy-logo">
+                    <span class="logo-cws">CWS</span>
+                    <span class="logo-text">Academy</span>
                 </a>
 
             </div>
 
 
-            <!-- =================================================
-                 REGISTER CARD
-            ================================================== -->
-
             <section class="auth-card register-card">
 
                 <div class="auth-header">
 
-                    <span class="auth-label">
-                        CWS ACADEMY
-                    </span>
+                    <span class="auth-label">CWS ACADEMY</span>
 
-                    <h1>
-                        Create Your Account
-                    </h1>
+                    <h1>Create Your Account</h1>
 
                     <p>
-                        Join CWS Academy and start building
-                        your cybersecurity skills.
+                        Join CWS Academy and start building your cybersecurity skills.
                     </p>
 
                 </div>
 
-
-                <!-- =================================================
-                     REGISTRATION MESSAGE
-
-                     register.js expects #authMessage
-                ================================================== -->
 
                 <div
                     id="authMessage"
@@ -105,17 +62,7 @@
                 ></div>
 
 
-                <!-- =================================================
-                     REGISTRATION FORM
-                ================================================== -->
-
-                <form
-                    id="registerForm"
-                    class="auth-form"
-                >
-
-
-                    <!-- NAME -->
+                <form id="registerForm" class="auth-form">
 
                     <div class="form-group">
 
@@ -135,8 +82,6 @@
                     </div>
 
 
-                    <!-- EMAIL -->
-
                     <div class="form-group">
 
                         <label for="registerEmail">
@@ -155,8 +100,6 @@
                     </div>
 
 
-                    <!-- PASSWORD -->
-
                     <div class="form-group">
 
                         <label for="registerPassword">
@@ -174,14 +117,11 @@
                         >
 
                         <small>
-                            Password must contain at least
-                            8 characters.
+                            Password must contain at least 8 characters.
                         </small>
 
                     </div>
 
-
-                    <!-- CONFIRM PASSWORD -->
 
                     <div class="form-group">
 
@@ -202,8 +142,6 @@
                     </div>
 
 
-                    <!-- TERMS -->
-
                     <label class="terms-check">
 
                         <input
@@ -215,22 +153,13 @@
 
                         <span>
                             I agree to the CWS Academy
-
-                            <a href="#">
-                                Terms of Use
-                            </a>
-
+                            <a href="#">Terms of Use</a>
                             and
-
-                            <a href="#">
-                                Privacy Policy
-                            </a>.
+                            <a href="#">Privacy Policy</a>.
                         </span>
 
                     </label>
 
-
-                    <!-- SUBMIT -->
 
                     <button
                         type="submit"
@@ -243,15 +172,10 @@
                 </form>
 
 
-                <!-- =================================================
-                     LOGIN
-                ================================================== -->
-
                 <div class="auth-switch">
 
                     <p>
                         Already have an account?
-
                         <a href="login.html">
                             Sign in
                         </a>
@@ -259,34 +183,26 @@
 
                 </div>
 
-
             </section>
 
 
-            <!-- =================================================
-                 RETURN HOME
-            ================================================== -->
-
-            <a
-                href="../index.html"
-                class="back-home"
-            >
+            <a href="../index.html" class="back-home">
                 ← Back to CWS Academy
             </a>
-
 
         </div>
 
     </main>
 
 
-    <!-- =====================================================
-         FIREBASE REGISTRATION
-    ====================================================== -->
-
     <script
         type="module"
         src="../js/register.js"
+    ></script>
+
+    <script
+        type="module"
+        src="../js/cws-assistant.js"
     ></script>
 
 </body>
