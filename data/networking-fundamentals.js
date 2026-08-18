@@ -120,7 +120,7 @@ export const networkingFundamentals = {
     ],
 
     modules: [
-        {
+                {
             id:
                 "module-01",
 
@@ -131,7 +131,7 @@ export const networkingFundamentals = {
                 "Networking Foundations",
 
             description:
-                "Understand computer networks, network types, networking devices and communication models.",
+                "Understand what networks are, why they exist, how devices communicate, the roles of common network devices and how layered models explain network communication.",
 
             labs:
                 0,
@@ -144,157 +144,552 @@ export const networkingFundamentals = {
                 lesson(
                     "lesson-01",
                     "What Is a Computer Network?",
-                    "30 minutes",
+                    "45 minutes",
                     {
                         subtitle:
-                            "Understand how devices connect and exchange information across a network.",
+                            "Learn what a network is, why networks exist, how devices exchange information and why networking knowledge is essential in cybersecurity.",
 
                         objectives: [
-                            "Define a computer network.",
-                            "Identify common network components.",
-                            "Distinguish clients from servers.",
-                            "Explain why networking knowledge matters in cybersecurity."
+                            "Define a computer network in plain language.",
+                            "Explain why networks are used in homes and organizations.",
+                            "Identify common network components and resources.",
+                            "Distinguish clients, servers, peers and network services.",
+                            "Describe a simple end-to-end communication example.",
+                            "Explain why understanding normal network traffic matters in cybersecurity."
                         ],
 
                         introduction: `
                             <h2>What Is a Computer Network?</h2>
 
                             <p>
-                                A computer network is a collection of devices that can exchange information using agreed communication rules called protocols.
+                                A <strong>computer network</strong> is a group of devices that are connected so they can exchange information and share services or resources.
+                                The devices may be computers, phones, servers, printers, cameras, routers, switches, virtual machines, cloud systems or many other types of equipment.
                             </p>
 
                             <p>
-                                Networks range from two devices on a small home LAN to global infrastructures connecting millions of systems. The same fundamental ideas—addressing, forwarding, protocols and services—appear at every scale.
-                            </p>
-                        `,
-
-                        body: `
-                            <h2>Why Networks Exist</h2>
-
-                            <p>
-                                Networks allow users and applications to share files, printers, Internet access, databases, authentication services and many other resources. Communication normally involves multiple layers: an application creates data, the operating system prepares it for transmission, networking hardware forwards it, and the destination reverses the process.
+                                For communication to work, the devices must follow agreed rules. These rules are called <strong>protocols</strong>.
+                                Protocols define things such as how devices identify one another, how data is formatted, how a connection is created and what should happen when information is lost or arrives incorrectly.
                             </p>
 
                             <div class="lesson-callout">
                                 <div class="lesson-callout-icon">
                                     <i class="fa-solid fa-lightbulb"></i>
                                 </div>
+
                                 <div>
-                                    <strong>Example</strong>
-                                    <p>When you open a website, your browser may use DNS to learn the server address, TCP to establish a connection, TLS to protect the session and HTTP to request the page.</p>
+                                    <strong>Simple idea</strong>
+                                    <p>
+                                        A network is similar to a transport system. Devices are destinations, addresses identify where information should go, network devices help move the information and protocols define the rules everyone follows.
+                                    </p>
                                 </div>
                             </div>
+                        `,
+
+                        body: `
+                            <h2>Why Do Networks Exist?</h2>
+
+                            <p>
+                                Without networks, each computer would operate mainly as an isolated system. Moving information between devices would require manual methods such as removable storage.
+                                Networks allow systems to communicate automatically and make shared services possible.
+                            </p>
+
+                            <p>
+                                Common reasons for building networks include:
+                            </p>
+
+                            <ul>
+                                <li>Sharing Internet access.</li>
+                                <li>Accessing websites and cloud applications.</li>
+                                <li>Sending email and instant messages.</li>
+                                <li>Sharing files and folders.</li>
+                                <li>Accessing printers and other shared devices.</li>
+                                <li>Connecting users to business applications and databases.</li>
+                                <li>Providing centralized authentication and identity services.</li>
+                                <li>Backing up information to servers or cloud platforms.</li>
+                                <li>Supporting monitoring, security and remote administration.</li>
+                            </ul>
+
+                            <h2>What Is Actually Being Shared?</h2>
+
+                            <p>
+                                When people say that devices are communicating, they are really exchanging <strong>data</strong>.
+                                That data may represent a web page, an image, a password authentication request, a video stream, a file, a DNS query or almost any other digital information.
+                            </p>
+
+                            <p>
+                                The data does not normally travel across a network as one large block. Networking protocols divide, identify, transport and rebuild information using structured units such as frames, packets and segments.
+                                Later modules will explain these units in more detail.
+                            </p>
+
+                            <h2>Common Network Components</h2>
+
+                            <p>
+                                A basic network usually contains several types of components:
+                            </p>
+
+                            <pre class="lesson-code-block">End devices
+  Laptop
+  Desktop
+  Smartphone
+  Server
+  Printer
+
+Network devices
+  Switch
+  Router
+  Wireless access point
+  Firewall
+
+Communication media
+  Ethernet cable
+  Fibre
+  Wi-Fi / radio
+
+Network services
+  DNS
+  DHCP
+  Web
+  Email
+  Authentication</pre>
+
+                            <p>
+                                <strong>End devices</strong> create or consume information. <strong>Network devices</strong> help move or control that information.
+                                <strong>Communication media</strong> provide the physical or wireless path, while <strong>network services</strong> provide useful functions to users and applications.
+                            </p>
 
                             <h2>Clients and Servers</h2>
 
                             <p>
-                                A client requests a service. A server listens for requests and provides a service. The same device can act as both depending on the software it is running. For example, a laptop is usually a client when browsing the web, but it can become a server if it hosts an SSH or web service.
+                                A <strong>client</strong> requests a service. A <strong>server</strong> provides a service.
+                                These words describe roles rather than necessarily describing special hardware.
+                            </p>
+
+                            <div class="lesson-callout">
+                                <div class="lesson-callout-icon">
+                                    <i class="fa-solid fa-laptop"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Example</strong>
+                                    <p>
+                                        When your browser requests a web page, the browser acts as a client and the web server responds with the requested content.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p>
+                                A single computer can perform both roles. Your laptop is normally a client when browsing the Internet, but if you start a web server or SSH service on the laptop, it can also provide services to other devices.
+                            </p>
+
+                            <h2>Peer-to-Peer Communication</h2>
+
+                            <p>
+                                Not every network follows a strict client-server design. In a <strong>peer-to-peer</strong> model, systems may communicate more directly and each system may both request and provide resources.
+                                Small file-sharing environments are a common example.
+                            </p>
+
+                            <h2>How Does a Website Request Travel?</h2>
+
+                            <p>
+                                Consider a student opening <code>https://academy.example.com</code> in a browser.
+                                Many networking technologies work together before the page appears.
+                            </p>
+
+                            <pre class="lesson-code-block">1. User enters academy.example.com
+2. DNS helps find the server IP address
+3. The computer decides whether the destination is local or remote
+4. Local network information is prepared
+5. A switch forwards local Ethernet traffic
+6. A router forwards traffic toward remote networks
+7. TCP can establish a reliable connection
+8. TLS can protect the session
+9. HTTP carries the web request and response
+10. The browser displays the returned content</pre>
+
+                            <p>
+                                The important point is that networking is not one single protocol. Multiple technologies cooperate, with each one solving a specific part of the communication problem.
+                            </p>
+
+                            <pre class="lesson-code-block">Laptop
+   |
+   v
+Switch
+   |
+   v
+Router / Firewall
+   |
+   v
+Internet
+   |
+   v
+Web Server</pre>
+
+                            <h2>What Happens If One Part Fails?</h2>
+
+                            <p>
+                                A network problem can appear at many points. For example:
+                            </p>
+
+                            <ul>
+                                <li>A damaged cable may prevent the device from connecting at all.</li>
+                                <li>An incorrect IP address may prevent communication with other networks.</li>
+                                <li>A DNS problem may allow an IP address to work while a hostname fails.</li>
+                                <li>A firewall may intentionally block a connection.</li>
+                                <li>The remote server may be offline even though the network itself is working.</li>
+                            </ul>
+
+                            <p>
+                                Good troubleshooting therefore starts by identifying <em>which part of communication is failing</em> instead of randomly changing settings.
                             </p>
 
                             <h2>Cybersecurity Perspective</h2>
 
                             <p>
-                                Security teams need to understand normal communication before they can recognize abnormal communication. Unexpected outbound connections, unusual listening services or communication between systems that normally never interact can be important indicators during an investigation.
+                                Cybersecurity professionals must understand what normal communication looks like before they can recognize abnormal communication.
+                                A security analyst may investigate unusual outbound connections, unexpected listening services, unknown remote IP addresses or traffic between systems that normally should not communicate.
                             </p>
 
-                            <pre class="lesson-code-block">Client -> Switch -> Router -> Internet -> Web Server
-       local LAN        routed networks</pre>
+                            <p>
+                                A penetration tester also needs networking knowledge because security testing depends on understanding addresses, ports, protocols, routing and network boundaries.
+                                Tools alone are not enough if the tester does not understand what the tool is observing.
+                            </p>
+
+                            <div class="lesson-callout">
+                                <div class="lesson-callout-icon">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Security example</strong>
+                                    <p>
+                                        If a workstation suddenly creates repeated connections to an unfamiliar external server every 30 seconds, an analyst needs networking knowledge to determine the destination, protocol, port and possible purpose of the communication.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <h2>Lesson Recap</h2>
+
+                            <ul>
+                                <li>A network allows connected devices to exchange information.</li>
+                                <li>Protocols define the rules used for communication.</li>
+                                <li>Clients request services and servers provide them.</li>
+                                <li>Switches, routers and other devices help move or control traffic.</li>
+                                <li>Multiple protocols normally work together during one user action.</li>
+                                <li>Cybersecurity analysis depends on understanding normal network behaviour.</li>
+                            </ul>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Now that you understand what a network is and why networks exist, the next lesson explains different network types such as LANs, WANs, WLANs, VPNs and VLANs.
+                            </p>
                         `,
 
                         keyConcepts: [
                             {
                                 title: "Network",
-                                description: "Connected devices that exchange information."
+                                description: "A collection of connected devices that exchange information and share services or resources."
                             },
                             {
                                 title: "Protocol",
-                                description: "A defined set of communication rules."
+                                description: "A defined set of rules that systems follow when communicating."
                             },
                             {
                                 title: "Client",
-                                description: "A system or application requesting a service."
+                                description: "A system or application that requests a service."
                             },
                             {
                                 title: "Server",
-                                description: "A system or application providing a service."
+                                description: "A system or application that provides a service."
+                            },
+                            {
+                                title: "Network Service",
+                                description: "A function made available over a network, such as DNS, web, email or authentication."
+                            },
+                            {
+                                title: "Peer-to-Peer",
+                                description: "A communication model where systems may both request and provide resources directly."
                             }
                         ],
 
                         quiz: [
                             {
                                 question:
-                                    "What is a primary purpose of a computer network?",
-
+                                    "Why are computer networks used?",
                                 options: [
-                                    "To prevent devices from communicating",
-                                    "To allow devices to communicate and share resources",
-                                    "To replace operating systems",
-                                    "To remove the need for protocols"
+                                    "To isolate every device permanently",
+                                    "To allow devices to communicate and share services or resources",
+                                    "To remove the need for applications",
+                                    "To make protocols unnecessary"
                                 ],
-
+                                answer:
+                                    1
+                            },
+                            {
+                                question:
+                                    "Which statement best describes a protocol?",
+                                options: [
+                                    "A physical network cable",
+                                    "A set of rules used for communication",
+                                    "A type of computer monitor",
+                                    "A replacement for an IP address"
+                                ],
+                                answer:
+                                    1
+                            },
+                            {
+                                question:
+                                    "A browser requests a web page from a remote system. Which role is the browser performing?",
+                                options: [
+                                    "Router",
+                                    "Server",
+                                    "Client",
+                                    "Firewall"
+                                ],
+                                answer:
+                                    2
+                            },
+                            {
+                                question:
+                                    "A user can reach a website by IP address but not by hostname. Which service should be investigated first?",
+                                options: [
+                                    "DNS",
+                                    "Printer sharing",
+                                    "Bluetooth",
+                                    "Display settings"
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Why is understanding normal network communication important in cybersecurity?",
+                                options: [
+                                    "Because every network connection is malicious",
+                                    "Because security professionals need a baseline to recognize unusual or suspicious behaviour",
+                                    "Because networking removes the need for endpoint security",
+                                    "Because all attacks happen only at the physical layer"
+                                ],
                                 answer:
                                     1
                             }
                         ]
-
                     }
                 ),
 
                 lesson(
                     "lesson-02",
                     "LAN, WAN and Network Types",
-                    "30 minutes",
+                    "45 minutes",
                     {
                         subtitle:
-                            "Compare common network types and understand where security boundaries may exist.",
+                            "Understand common network types, why they exist, how their scope differs and how network boundaries affect security.",
 
                         objectives: [
-                            "Define LAN and WAN.",
-                            "Recognize WLAN, PAN and VPN concepts.",
-                            "Understand the difference between physical and logical network boundaries.",
-                            "Relate network scope to security controls."
+                            "Define LAN, WLAN, WAN, PAN, VPN and VLAN.",
+                            "Explain why organizations use different network types.",
+                            "Distinguish geographic scope from logical segmentation.",
+                            "Describe how traffic moves between local and remote networks.",
+                            "Explain how network segmentation can reduce security risk.",
+                            "Interpret simple network examples using the correct terminology."
                         ],
 
                         introduction: `
-                            <h2>LAN, WAN and Network Types</h2>
+                            <h2>Why Do We Classify Networks?</h2>
 
                             <p>
-                                Networks are commonly described according to their geographic scope, ownership or purpose. These labels help engineers and security professionals reason about where systems are located and how traffic moves between them.
+                                Networks can be described according to their size, geographic scope, technology or purpose.
+                                Terms such as <strong>LAN</strong>, <strong>WAN</strong>, <strong>WLAN</strong>, <strong>VPN</strong> and <strong>VLAN</strong> help administrators quickly describe how systems are connected.
                             </p>
 
                             <p>
-                                The boundaries between network types are also useful security boundaries. Traffic crossing from an internal LAN to the Internet, for example, commonly passes through routers, firewalls or other inspection points.
+                                These terms are also useful in cybersecurity because boundaries between networks are often places where security controls are applied.
+                                For example, traffic leaving an internal company network for the Internet may pass through a firewall, proxy or monitoring system.
                             </p>
                         `,
 
                         body: `
-                            <h2>Local Area Networks</h2>
+                            <h2>Local Area Network — LAN</h2>
 
                             <p>
-                                A LAN connects devices within a limited area such as a home, office, classroom or data centre. Ethernet switches and wireless access points are common LAN technologies. Devices on the same LAN may communicate directly at Layer 2 when they are in the same broadcast domain.
+                                A <strong>Local Area Network</strong> connects devices within a relatively limited area such as a home, office, classroom, branch, floor or data centre.
+                            </p>
+
+                            <p>
+                                LANs commonly use Ethernet switches and wireless access points.
+                                Devices on the same Layer 2 network may be able to exchange Ethernet frames directly without sending the traffic to a router.
                             </p>
 
                             <pre class="lesson-code-block">Office LAN
-PC-1 --\
-PC-2 ---- Switch ---- Router ---- Internet
-Printer -/</pre>
 
-                            <h2>Wide Area Networks</h2>
+PC-1 --------\
+PC-2 --------- Switch ------- Router ------- Internet
+Printer -----/
+Server ------/</pre>
 
                             <p>
-                                A WAN connects networks across larger distances. Organizations may use leased circuits, MPLS, SD-WAN, site-to-site VPNs or public Internet links to interconnect offices. The Internet itself is the largest example of interconnected networks.
+                                In this example, the switch connects devices inside the local network. The router provides a path from the local network to other networks.
                             </p>
 
-                            <h2>Other Useful Terms</h2>
+                            <h2>Wireless LAN — WLAN</h2>
 
                             <p>
-                                A WLAN is a wireless LAN. A PAN connects devices over a very short range, such as Bluetooth devices. A VPN creates a protected logical connection across another network. A VLAN logically separates Layer 2 broadcast domains even when devices share physical switching infrastructure.
+                                A <strong>WLAN</strong> is a Local Area Network that uses wireless technology such as Wi-Fi for client connectivity.
+                                The wireless access point normally bridges wireless devices into the broader local network.
                             </p>
 
-                            <h2>Security Example</h2>
+                            <pre class="lesson-code-block">Laptop )))
+Phone  )))  Wireless AP ---- Switch ---- Router
+Tablet )))</pre>
 
                             <p>
-                                A flat network where every device can reach every other device increases the potential impact of a compromise. Separating users, servers, management systems and guest devices into different network segments can reduce unnecessary communication paths.
+                                Wireless communication introduces additional security considerations because the signal travels through the air.
+                                Organizations therefore use encryption, authentication and controlled wireless configuration to protect access.
+                            </p>
+
+                            <h2>Wide Area Network — WAN</h2>
+
+                            <p>
+                                A <strong>Wide Area Network</strong> connects networks across larger geographic distances.
+                                An organization with offices in Cape Town, Johannesburg and Durban may use WAN technologies to connect the branch networks.
+                            </p>
+
+                            <p>
+                                WAN connectivity can be provided through technologies such as leased circuits, MPLS, SD-WAN, site-to-site VPNs or encrypted connections over the public Internet.
+                            </p>
+
+                            <pre class="lesson-code-block">Cape Town LAN
+      |
+      v
+   WAN / VPN
+      |
+      +---------------- Johannesburg LAN
+      |
+      +---------------- Durban LAN</pre>
+
+                            <h2>Personal Area Network — PAN</h2>
+
+                            <p>
+                                A <strong>Personal Area Network</strong> covers a very short range around a person.
+                                Bluetooth connections between a phone, smartwatch, keyboard or headphones are common examples.
+                            </p>
+
+                            <p>
+                                Although PANs are small, they still have security considerations such as device pairing, discoverability and unauthorized connection attempts.
+                            </p>
+
+                            <h2>Virtual Private Network — VPN</h2>
+
+                            <p>
+                                A <strong>VPN</strong> creates a protected logical connection across another network.
+                                It allows users or sites to exchange traffic through an encrypted tunnel even when the underlying transport is the public Internet.
+                            </p>
+
+                            <h3>Remote-access VPN example</h3>
+
+                            <pre class="lesson-code-block">Employee Laptop
+      |
+      | encrypted VPN tunnel
+      v
+Internet
+      |
+      v
+Company VPN Gateway
+      |
+      v
+Internal Resources</pre>
+
+                            <p>
+                                The employee may physically be at home, but after authentication the VPN can provide controlled access to internal company resources.
+                            </p>
+
+                            <h2>Virtual LAN — VLAN</h2>
+
+                            <p>
+                                A <strong>VLAN</strong> is different from a VPN.
+                                A VLAN logically separates Layer 2 broadcast domains on switching infrastructure.
+                                Multiple VLANs may use the same physical switches while remaining logically separated.
+                            </p>
+
+                            <pre class="lesson-code-block">Physical switch
+
+Ports 1-8   -> VLAN 10 Users
+Ports 9-12  -> VLAN 20 Servers
+Ports 13-16 -> VLAN 30 Guest</pre>
+
+                            <p>
+                                Devices in different VLANs normally require routing to communicate.
+                                This provides an opportunity to apply firewall rules or access-control policies between segments.
+                            </p>
+
+                            <h2>Physical vs Logical Boundaries</h2>
+
+                            <p>
+                                A physical boundary is based on actual infrastructure or location.
+                                A logical boundary is created by configuration.
+                            </p>
+
+                            <p>
+                                Two computers may sit next to each other and connect to the same switch but belong to different VLANs.
+                                Their physical distance is small, yet their logical network separation may require traffic to pass through a router or firewall.
+                            </p>
+
+                            <h2>Why Segmentation Matters</h2>
+
+                            <p>
+                                A <strong>flat network</strong> gives many devices broad ability to communicate with one another.
+                                If one device is compromised, an attacker may have more opportunities to reach other systems.
+                            </p>
+
+                            <p>
+                                Segmentation can separate:
+                            </p>
+
+                            <ul>
+                                <li>User workstations.</li>
+                                <li>Servers.</li>
+                                <li>Administrative systems.</li>
+                                <li>Guest Wi-Fi.</li>
+                                <li>IoT devices.</li>
+                                <li>Development and production environments.</li>
+                            </ul>
+
+                            <div class="lesson-callout">
+                                <div class="lesson-callout-icon">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Security example</strong>
+                                    <p>
+                                        Guest Wi-Fi users should normally not be able to directly reach payroll servers or domain controllers. Placing guests in a separate network and applying restrictive routing or firewall rules reduces unnecessary exposure.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <h2>Troubleshooting Example</h2>
+
+                            <p>
+                                Suppose a user can communicate with computers in the same VLAN but cannot reach a server in another VLAN.
+                                This tells you that local Layer 2 communication may be functioning while inter-VLAN routing, firewall policy or the remote network may require investigation.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <ul>
+                                <li>A LAN covers a local area.</li>
+                                <li>A WLAN is a wireless LAN.</li>
+                                <li>A WAN connects networks across larger distances.</li>
+                                <li>A PAN covers a very short personal range.</li>
+                                <li>A VPN creates a protected logical tunnel.</li>
+                                <li>A VLAN creates logical Layer 2 separation.</li>
+                                <li>Segmentation can reduce unnecessary communication paths and limit exposure.</li>
+                            </ul>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Now that you can identify different network types, the next lesson explains the devices that move and control traffic inside and between those networks.
                             </p>
                         `,
 
@@ -304,209 +699,789 @@ Printer -/</pre>
                                 description: "A network covering a relatively small local area."
                             },
                             {
+                                title: "WLAN",
+                                description: "A wireless Local Area Network."
+                            },
+                            {
                                 title: "WAN",
                                 description: "A network connecting locations across larger distances."
                             },
                             {
+                                title: "PAN",
+                                description: "A very short-range network around a person or device."
+                            },
+                            {
                                 title: "VPN",
-                                description: "A protected logical connection across another network."
+                                description: "A protected logical connection carried across another network."
                             },
                             {
                                 title: "VLAN",
-                                description: "A logical Layer 2 network segment."
+                                description: "A logical Layer 2 network segment on switching infrastructure."
+                            },
+                            {
+                                title: "Segmentation",
+                                description: "Dividing a network into controlled areas to manage communication and reduce exposure."
                             }
                         ],
 
                         quiz: [
                             {
                                 question:
-                                    "Which network type typically covers a single office or building?",
-
+                                    "Which network type normally connects devices inside a single office or building?",
                                 options: [
                                     "LAN",
                                     "WAN",
-                                    "Internet",
-                                    "Autonomous System"
+                                    "PAN only",
+                                    "Internet backbone"
                                 ],
-
                                 answer:
                                     0
+                            },
+                            {
+                                question:
+                                    "What is the main difference between a VLAN and a VPN?",
+                                options: [
+                                    "There is no difference",
+                                    "A VLAN creates logical Layer 2 segmentation, while a VPN creates a protected connection across another network",
+                                    "A VPN works only inside a switch",
+                                    "A VLAN always encrypts Internet traffic"
+                                ],
+                                answer:
+                                    1
+                            },
+                            {
+                                question:
+                                    "Why might an organization place guest Wi-Fi in a separate network?",
+                                options: [
+                                    "To give guests direct access to internal servers",
+                                    "To reduce unnecessary access between guest devices and internal systems",
+                                    "To remove the need for authentication",
+                                    "To make all devices part of one flat network"
+                                ],
+                                answer:
+                                    1
+                            },
+                            {
+                                question:
+                                    "Two systems are connected to the same physical switch but belong to different VLANs. What normally allows them to communicate?",
+                                options: [
+                                    "Routing between the VLANs",
+                                    "A keyboard",
+                                    "A DNS TXT record",
+                                    "A monitor"
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "A company connects branch-office networks in different cities. Which term best describes the larger interconnection?",
+                                options: [
+                                    "PAN",
+                                    "WAN",
+                                    "Loopback",
+                                    "Broadcast address"
+                                ],
+                                answer:
+                                    1
                             }
                         ]
-
                     }
                 ),
 
                 lesson(
                     "lesson-03",
                     "Routers, Switches and Network Devices",
-                    "30 minutes",
+                    "50 minutes",
                     {
                         subtitle:
-                            "Understand the roles of common networking devices and where they operate.",
+                            "Understand why switches, routers, access points, firewalls, proxies and other devices exist and how each device handles network traffic.",
 
                         objectives: [
-                            "Explain what a switch does.",
-                            "Explain what a router does.",
-                            "Recognize access points, firewalls and gateways.",
-                            "Understand why different devices make different forwarding decisions."
+                            "Explain why switches are used inside Ethernet networks.",
+                            "Explain how a switch learns and forwards using MAC addresses.",
+                            "Explain why routers are needed between IP networks.",
+                            "Describe basic routing-table decision making.",
+                            "Recognize the roles of access points, firewalls, proxies and load balancers.",
+                            "Identify where security monitoring and control can be applied.",
+                            "Distinguish Layer 2 forwarding from Layer 3 routing."
                         ],
 
                         introduction: `
-                            <h2>Routers, Switches and Network Devices</h2>
+                            <h2>Why Do Networks Need Specialized Devices?</h2>
 
                             <p>
-                                Networks depend on specialized devices that move, filter or inspect traffic. Two of the most important are switches and routers, but modern environments also contain access points, firewalls, load balancers, proxies and security appliances.
+                                End devices cannot efficiently communicate across large environments without infrastructure that helps move, direct and control traffic.
+                                Network devices perform different jobs depending on the type of information they examine and the decision they need to make.
                             </p>
 
                             <p>
-                                Understanding the role of each device makes troubleshooting easier and helps security professionals identify where traffic can be monitored or controlled.
+                                A switch usually helps devices communicate inside a local Ethernet network.
+                                A router helps traffic move between IP networks.
+                                A firewall controls permitted communication according to security policy.
+                            </p>
+
+                            <p>
+                                Understanding these roles helps you answer an important troubleshooting question:
+                                <strong>Which device should be responsible for this part of the communication?</strong>
                             </p>
                         `,
 
                         body: `
-                            <h2>Switches</h2>
+                            <h2>Switches — Connecting Devices Inside a LAN</h2>
 
                             <p>
-                                A traditional Ethernet switch forwards frames primarily using destination MAC addresses. It learns which MAC addresses are reachable through which switch ports and stores this information in a MAC address table. Switches are commonly associated with Layer 2 of the OSI model.
+                                An Ethernet <strong>switch</strong> connects devices inside a Layer 2 network.
+                                It normally forwards Ethernet frames based on the destination <strong>MAC address</strong>.
                             </p>
 
-                            <pre class="lesson-code-block">MAC table example
-00:11:22:AA:BB:01 -> Gi0/1
-00:11:22:AA:BB:02 -> Gi0/2</pre>
-
-                            <h2>Routers</h2>
-
                             <p>
-                                A router forwards packets between IP networks. It examines the destination IP address, consults its routing table and chooses an appropriate next hop or outgoing interface. Routers separate Layer 2 broadcast domains and are associated primarily with OSI Layer 3.
+                                A switch learns by examining the source MAC address of frames arriving on its ports.
+                                It stores these learned addresses in a MAC address table.
                             </p>
 
-                            <pre class="lesson-code-block">Destination        Next hop
-192.168.20.0/24   10.0.0.2
-0.0.0.0/0         10.0.0.1</pre>
+                            <pre class="lesson-code-block">Example MAC table
 
-                            <h2>Other Devices</h2>
+MAC Address          Switch Port
+00:11:22:AA:BB:01    Gi0/1
+00:11:22:AA:BB:02    Gi0/2
+00:11:22:AA:BB:03    Gi0/3</pre>
+
+                            <h3>Worked example</h3>
 
                             <p>
-                                Wireless access points bridge wireless clients into a network. Firewalls enforce traffic policy. Proxies communicate on behalf of clients or servers. Load balancers distribute connections across multiple backend systems. A gateway is a general term for a device or service that enables communication between different environments.
+                                PC-A is connected to port Gi0/1 and PC-B is connected to Gi0/2.
+                                When PC-A sends a frame, the switch learns that PC-A's source MAC address is reachable through Gi0/1.
                             </p>
 
-                            <h2>Security Perspective</h2>
+                            <p>
+                                If the switch already knows PC-B's destination MAC address, it can forward the frame only toward Gi0/2 instead of sending it out every port.
+                            </p>
+
+                            <pre class="lesson-code-block">PC-A
+  |
+Gi0/1
+  |
+Switch ------- Gi0/2 ------- PC-B
+  |
+Gi0/3
+  |
+Printer</pre>
+
+                            <h2>What If the Switch Does Not Know the Destination?</h2>
 
                             <p>
-                                A firewall can block unwanted traffic, but it cannot automatically compensate for insecure services that are intentionally allowed. Security therefore depends on layered controls across endpoints, applications, identity systems and the network.
+                                If the destination MAC address is unknown, the switch may flood the frame through relevant ports in the same VLAN, except the port on which it arrived.
+                                Once the destination responds, the switch can learn its location.
+                            </p>
+
+                            <p>
+                                Broadcast traffic is also forwarded through the broadcast domain according to VLAN boundaries.
+                                This is one reason VLAN design matters.
+                            </p>
+
+                            <h2>Routers — Connecting IP Networks</h2>
+
+                            <p>
+                                A <strong>router</strong> forwards IP packets between different networks.
+                                Instead of choosing a destination based primarily on a MAC address, the router examines the destination IP address and consults a <strong>routing table</strong>.
+                            </p>
+
+                            <pre class="lesson-code-block">Example routing table
+
+Destination         Next Hop / Interface
+192.168.10.0/24     directly connected
+192.168.20.0/24     10.0.0.2
+10.50.0.0/16        10.0.0.3
+0.0.0.0/0           10.0.0.1</pre>
+
+                            <p>
+                                The route <code>0.0.0.0/0</code> is commonly used as a default route.
+                                It can be used when no more specific route matches the destination.
+                            </p>
+
+                            <h3>Why a router is needed</h3>
+
+                            <pre class="lesson-code-block">192.168.10.0/24
+PC-A 192.168.10.20
+        |
+        v
+      Router
+        |
+        v
+192.168.20.0/24
+Server 192.168.20.50</pre>
+
+                            <p>
+                                PC-A and the server belong to different IP networks.
+                                PC-A therefore sends remote traffic toward its default gateway, and the router determines how to reach the destination network.
+                            </p>
+
+                            <h2>Switch vs Router</h2>
+
+                            <pre class="lesson-code-block">Switch
+- Primarily Layer 2
+- Uses MAC addresses for Ethernet forwarding
+- Connects devices in local Layer 2 networks
+- Maintains a MAC address table
+
+Router
+- Primarily Layer 3
+- Uses IP addresses for packet forwarding
+- Connects different IP networks
+- Maintains a routing table</pre>
+
+                            <p>
+                                Modern network equipment can combine these functions. A multilayer switch, for example, can perform both switching and routing.
+                                The concepts remain important even when one physical device performs multiple roles.
+                            </p>
+
+                            <h2>Wireless Access Points</h2>
+
+                            <p>
+                                A <strong>wireless access point</strong> allows wireless clients to join a network using Wi-Fi.
+                                It commonly bridges wireless traffic into a wired Ethernet network.
+                            </p>
+
+                            <p>
+                                Security settings such as WPA2 or WPA3, authentication, guest isolation and management access are important because wireless signals extend beyond physical cables.
+                            </p>
+
+                            <h2>Firewalls</h2>
+
+                            <p>
+                                A <strong>firewall</strong> enforces policy about which traffic should be allowed or blocked.
+                                Depending on the firewall, decisions can consider source and destination IP addresses, ports, protocols, connection state, applications, users or other context.
+                            </p>
+
+                            <pre class="lesson-code-block">Example policy idea
+
+ALLOW users -> web servers TCP 443
+ALLOW admins -> management network SSH
+DENY guest network -> internal servers
+DENY unexpected inbound traffic</pre>
+
+                            <p>
+                                A firewall is an important security control, but it does not make insecure applications safe.
+                                If an organization intentionally allows HTTPS to a vulnerable web application, the firewall cannot automatically fix flaws inside that application.
+                            </p>
+
+                            <h2>Proxies</h2>
+
+                            <p>
+                                A <strong>proxy</strong> communicates on behalf of another system.
+                                A forward proxy may represent clients when they access external services.
+                                A reverse proxy may sit in front of servers and receive requests before passing them to backend applications.
+                            </p>
+
+                            <pre class="lesson-code-block">Forward proxy
+User -> Proxy -> Internet
+
+Reverse proxy
+Internet -> Reverse Proxy -> Web Server</pre>
+
+                            <p>
+                                Proxies can provide logging, filtering, access control, caching or security inspection depending on the design.
+                            </p>
+
+                            <h2>Load Balancers</h2>
+
+                            <p>
+                                A <strong>load balancer</strong> distributes traffic across multiple backend systems.
+                                This improves availability and allows applications to handle more demand.
+                            </p>
+
+                            <pre class="lesson-code-block">Clients
+   |
+   v
+Load Balancer
+ |    |    |
+ v    v    v
+Web1 Web2 Web3</pre>
+
+                            <h2>Gateway</h2>
+
+                            <p>
+                                The word <strong>gateway</strong> can have several meanings.
+                                In ordinary IP networking, the <strong>default gateway</strong> is the router a host uses to reach destinations outside its local subnet.
+                            </p>
+
+                            <p>
+                                More generally, a gateway may be a device or service that enables communication between different networks, protocols or environments.
+                            </p>
+
+                            <h2>Security Monitoring Points</h2>
+
+                            <p>
+                                Network infrastructure provides useful places to monitor communication.
+                                Firewalls, routers, proxies, DNS servers and switches may generate logs or telemetry that help security teams understand what systems are doing.
+                            </p>
+
+                            <div class="lesson-callout">
+                                <div class="lesson-callout-icon">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Investigation example</strong>
+                                    <p>
+                                        A firewall log shows a workstation repeatedly connecting to an unknown external IP on an unusual port. The analyst can correlate the firewall event with endpoint logs, DNS history and proxy records to determine whether the traffic is expected.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <h2>Troubleshooting Example</h2>
+
+                            <p>
+                                A user can reach devices in the same subnet but cannot reach any external network.
+                                Local switching may therefore be working. The next checks might include the user's default gateway, router availability, routing table, firewall policy or upstream connectivity.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <ul>
+                                <li>Switches forward Ethernet traffic primarily using MAC addresses.</li>
+                                <li>Routers forward IP traffic between networks using routing information.</li>
+                                <li>Access points connect wireless clients.</li>
+                                <li>Firewalls enforce traffic policy.</li>
+                                <li>Proxies communicate on behalf of clients or servers.</li>
+                                <li>Load balancers distribute connections across backend systems.</li>
+                                <li>Infrastructure devices are valuable sources of security telemetry.</li>
+                            </ul>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                You now know the roles of common network devices. The next lesson introduces the OSI and TCP/IP models, which provide a structured way to understand how these devices and protocols work together.
                             </p>
                         `,
 
                         keyConcepts: [
                             {
                                 title: "Switch",
-                                description: "Forwards Ethernet frames within a Layer 2 network."
+                                description: "A device that forwards Ethernet frames within Layer 2 networks using MAC-address information."
+                            },
+                            {
+                                title: "MAC Address Table",
+                                description: "A table a switch uses to associate learned MAC addresses with switch ports."
                             },
                             {
                                 title: "Router",
-                                description: "Forwards IP packets between networks."
+                                description: "A device that forwards IP packets between networks using routing information."
+                            },
+                            {
+                                title: "Routing Table",
+                                description: "A set of routes used to determine how destinations can be reached."
                             },
                             {
                                 title: "Firewall",
-                                description: "Enforces rules controlling permitted traffic."
+                                description: "A security control that allows or blocks traffic according to policy."
                             },
                             {
                                 title: "Access Point",
-                                description: "Connects wireless devices to a network."
+                                description: "A device that connects wireless clients to a network."
+                            },
+                            {
+                                title: "Proxy",
+                                description: "A service that communicates on behalf of a client or server."
+                            },
+                            {
+                                title: "Load Balancer",
+                                description: "A device or service that distributes traffic across multiple backend systems."
                             }
                         ],
 
                         quiz: [
                             {
                                 question:
-                                    "Which device primarily forwards packets between different IP networks?",
-
+                                    "What information does a traditional Ethernet switch primarily use to forward a frame?",
                                 options: [
-                                    "Switch",
-                                    "Router",
-                                    "Wireless client",
-                                    "DNS resolver"
+                                    "Destination MAC address",
+                                    "DNS domain name",
+                                    "Username",
+                                    "File extension"
                                 ],
-
                                 answer:
-                                    1
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which device is primarily responsible for forwarding packets between different IP networks?",
+                                options: [
+                                    "Router",
+                                    "Keyboard",
+                                    "Monitor",
+                                    "Wireless client"
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "A host needs to reach a destination outside its local subnet. Where does it normally send the traffic first?",
+                                options: [
+                                    "Its default gateway",
+                                    "Its own loopback interface only",
+                                    "A random switch port",
+                                    "The DNS TXT record"
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which device or service commonly distributes incoming client connections across several backend servers?",
+                                options: [
+                                    "Load balancer",
+                                    "Mouse",
+                                    "PAN",
+                                    "Subnet mask"
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Why can firewall logs be useful to a security analyst?",
+                                options: [
+                                    "They can show communication decisions and connection details",
+                                    "They always identify the human attacker with certainty",
+                                    "They replace all endpoint logs",
+                                    "They remove the need to understand networking"
+                                ],
+                                answer:
+                                    0
                             }
                         ]
-
                     }
                 ),
 
                 lesson(
                     "lesson-04",
                     "OSI and TCP/IP Models",
-                    "35 minutes",
+                    "55 minutes",
                     {
                         subtitle:
-                            "Use layered networking models to understand how protocols work together.",
+                            "Understand why layered models exist, what each layer is responsible for, how encapsulation works and how layers help with troubleshooting and security analysis.",
 
                         objectives: [
-                            "Name the seven OSI layers.",
-                            "Understand the four-layer TCP/IP model.",
-                            "Map common protocols to approximate layers.",
-                            "Use layering to troubleshoot network problems."
+                            "Explain why networking uses layered models.",
+                            "Name and describe the seven OSI layers.",
+                            "Describe the common four-layer TCP/IP model.",
+                            "Map common protocols and technologies to approximate layers.",
+                            "Explain encapsulation and decapsulation.",
+                            "Distinguish frames, packets, segments and application data.",
+                            "Use layered reasoning to troubleshoot network problems.",
+                            "Explain how packet captures expose information from multiple layers."
                         ],
 
                         introduction: `
-                            <h2>OSI and TCP/IP Models</h2>
+                            <h2>Why Do We Need Networking Models?</h2>
 
                             <p>
-                                Layered models divide complex network communication into smaller functions. The OSI model is commonly used for learning and troubleshooting, while the TCP/IP model more closely reflects the Internet protocol suite used in real networks.
+                                Network communication is complex. A single web request may involve Ethernet or Wi-Fi, IP, TCP, TLS, HTTP and DNS.
+                                Trying to understand all of these technologies as one large process would be difficult.
                             </p>
 
                             <p>
-                                A packet capture often exposes several layers at once: an Ethernet header, an IP header, a TCP or UDP header and application data. Thinking in layers helps explain the purpose of each part.
+                                Layered models divide communication into smaller responsibilities.
+                                Each layer focuses on a particular problem and interacts with the layers above and below it.
                             </p>
+
+                            <p>
+                                Two models are especially useful:
+                            </p>
+
+                            <ul>
+                                <li>The <strong>OSI model</strong>, commonly used for learning, discussion and troubleshooting.</li>
+                                <li>The <strong>TCP/IP model</strong>, which more closely represents the protocol suite used by modern Internet networks.</li>
+                            </ul>
                         `,
 
                         body: `
                             <h2>The OSI Model</h2>
 
                             <p>
-                                The seven OSI layers are Physical, Data Link, Network, Transport, Session, Presentation and Application. Real protocols do not always fit perfectly into only one layer, but the model provides a useful vocabulary for discussing communication.
+                                The Open Systems Interconnection model contains seven conceptual layers.
+                                Real technologies do not always fit perfectly into one layer, but the model gives engineers and security professionals a shared vocabulary.
                             </p>
 
-                            <pre class="lesson-code-block">7 Application
-6 Presentation
-5 Session
-4 Transport
-3 Network
-2 Data Link
-1 Physical</pre>
+                            <pre class="lesson-code-block">Layer 7  Application
+Layer 6  Presentation
+Layer 5  Session
+Layer 4  Transport
+Layer 3  Network
+Layer 2  Data Link
+Layer 1  Physical</pre>
+
+                            <h2>Layer 1 — Physical</h2>
+
+                            <p>
+                                The Physical layer concerns the transmission of raw bits through physical or radio media.
+                                Examples include cables, fibre, connectors, electrical signalling and radio transmission.
+                            </p>
+
+                            <p>
+                                Questions at this layer include:
+                            </p>
+
+                            <ul>
+                                <li>Is the cable connected?</li>
+                                <li>Is the network interface active?</li>
+                                <li>Is there a wireless signal?</li>
+                                <li>Is the link operating at the expected speed?</li>
+                            </ul>
+
+                            <h2>Layer 2 — Data Link</h2>
+
+                            <p>
+                                The Data Link layer handles local network communication over technologies such as Ethernet.
+                                MAC addresses, Ethernet frames, switching and VLANs are commonly discussed here.
+                            </p>
+
+                            <pre class="lesson-code-block">Ethernet frame idea
+
+[Destination MAC]
+[Source MAC]
+[Type]
+[Payload]
+[Error-checking information]</pre>
+
+                            <h2>Layer 3 — Network</h2>
+
+                            <p>
+                                The Network layer handles logical addressing and communication between networks.
+                                IP addressing and routing are the major concepts.
+                            </p>
+
+                            <p>
+                                Routers examine destination IP information and select paths toward remote networks.
+                            </p>
+
+                            <h2>Layer 4 — Transport</h2>
+
+                            <p>
+                                The Transport layer supports communication between applications on hosts.
+                                TCP and UDP are common transport protocols.
+                            </p>
+
+                            <p>
+                                Ports help identify which application or service should receive traffic.
+                                TCP additionally provides mechanisms for connection-oriented and reliable delivery.
+                            </p>
+
+                            <h2>Layer 5 — Session</h2>
+
+                            <p>
+                                The Session layer conceptually describes the establishment, management and termination of communication sessions between applications.
+                                In real TCP/IP implementations, session responsibilities are often handled by applications or supporting libraries rather than one distinct protocol layer.
+                            </p>
+
+                            <h2>Layer 6 — Presentation</h2>
+
+                            <p>
+                                The Presentation layer describes how information may be formatted, encoded, compressed or encrypted for applications.
+                                Modern protocol stacks often handle these functions inside application protocols or libraries.
+                            </p>
+
+                            <h2>Layer 7 — Application</h2>
+
+                            <p>
+                                The Application layer is closest to the user-facing software and application services.
+                                Protocols such as HTTP, DNS, SMTP and SSH are commonly discussed at this layer.
+                            </p>
 
                             <h2>The TCP/IP Model</h2>
 
                             <p>
-                                A common TCP/IP model uses Application, Transport, Internet and Network Access layers. HTTP and DNS are application-layer protocols, TCP and UDP are transport protocols, IP operates at the Internet layer, and Ethernet or Wi-Fi provide network access.
+                                A common four-layer TCP/IP model groups networking functions differently:
                             </p>
 
-                            <pre class="lesson-code-block">Application      HTTP / DNS / SSH
-Transport        TCP / UDP
-Internet         IP / ICMP
-Network Access   Ethernet / Wi-Fi</pre>
+                            <pre class="lesson-code-block">TCP/IP Layer       Examples
+
+Application        HTTP, HTTPS, DNS, SSH, SMTP
+Transport          TCP, UDP
+Internet           IP, ICMP
+Network Access     Ethernet, Wi-Fi</pre>
+
+                            <p>
+                                The upper three OSI layers—Application, Presentation and Session—are commonly grouped into the TCP/IP Application layer.
+                            </p>
+
+                            <h2>OSI and TCP/IP Mapping</h2>
+
+                            <pre class="lesson-code-block">OSI                         TCP/IP
+
+7 Application    \
+6 Presentation    >-------> Application
+5 Session        /
+
+4 Transport      ---------> Transport
+
+3 Network        ---------> Internet
+
+2 Data Link      \
+1 Physical        >-------> Network Access</pre>
 
                             <h2>Encapsulation</h2>
 
                             <p>
-                                As application data moves down the stack, protocols add headers containing control information. At the destination, those headers are processed in reverse. This process is often called encapsulation and decapsulation.
+                                When an application sends data, each networking layer can add information needed for its own function.
+                                This process is called <strong>encapsulation</strong>.
                             </p>
 
-                            <h2>Troubleshooting Example</h2>
+                            <h3>Example: sending an HTTPS request</h3>
+
+                            <pre class="lesson-code-block">Application data
+      |
+      v
+TCP adds transport information
+      |
+      v
+IP adds source and destination IP information
+      |
+      v
+Ethernet adds local MAC-address information
+      |
+      v
+Bits are transmitted through the medium</pre>
 
                             <p>
-                                If a host has no physical link, debugging HTTP is premature. If IP connectivity works but a hostname does not resolve, investigate DNS. Layered reasoning prevents random troubleshooting.
+                                The destination performs the reverse process, interpreting and removing the relevant information as data moves upward through the stack.
+                                This is called <strong>decapsulation</strong>.
+                            </p>
+
+                            <h2>Frames, Packets and Segments</h2>
+
+                            <p>
+                                Different layers use different names for protocol data units.
+                                Terminology varies slightly depending on context, but a useful beginner mapping is:
+                            </p>
+
+                            <pre class="lesson-code-block">Layer 7-5  Data
+Layer 4    TCP segment / UDP datagram
+Layer 3    IP packet
+Layer 2    Ethernet frame
+Layer 1    Bits</pre>
+
+                            <h2>Worked Example: Opening a Website</h2>
+
+                            <p>
+                                Suppose a user opens <code>https://example.com</code>.
+                                The browser creates application data. TCP may manage the transport connection. IP identifies source and destination networks.
+                                Ethernet or Wi-Fi handles the local link.
+                            </p>
+
+                            <pre class="lesson-code-block">HTTP/TLS data
+   inside
+TCP segment
+   inside
+IP packet
+   inside
+Ethernet frame</pre>
+
+                            <p>
+                                A packet capture may display all of these layers together.
+                                That is why tools such as Wireshark show separate sections for Ethernet, IP, TCP and application protocols.
+                            </p>
+
+                            <h2>Why MAC Addresses Change but IP Addresses Can Remain</h2>
+
+                            <p>
+                                Layer 2 information is used for local delivery on each network segment.
+                                As a packet crosses routers, the local Ethernet frame is removed and replaced for the next link.
+                            </p>
+
+                            <p>
+                                The source and destination IP addresses normally remain associated with the end-to-end conversation unless translation such as NAT changes them.
+                                The local source and destination MAC addresses can change at each routed hop.
+                            </p>
+
+                            <h2>Troubleshooting with Layers</h2>
+
+                            <p>
+                                Layered reasoning helps prevent random troubleshooting.
+                            </p>
+
+                            <h3>Scenario 1 — no link</h3>
+
+                            <p>
+                                If the Ethernet cable is disconnected and the interface reports no link, there is little value troubleshooting DNS first.
+                                Start with the Physical layer.
+                            </p>
+
+                            <h3>Scenario 2 — local IP works, hostname fails</h3>
+
+                            <p>
+                                If a server responds when addressed by IP but not by hostname, lower-layer connectivity may be working.
+                                DNS at the application layer becomes a strong suspect.
+                            </p>
+
+                            <h3>Scenario 3 — destination network unreachable</h3>
+
+                            <p>
+                                If local communication works but remote networks cannot be reached, investigate Layer 3 settings such as IP address, subnet mask, default gateway and routing.
+                            </p>
+
+                            <h3>Scenario 4 — connection reaches server but application fails</h3>
+
+                            <p>
+                                If TCP connectivity succeeds but the application returns an error, the issue may be at the application or service layer rather than basic network transport.
+                            </p>
+
+                            <h2>Cybersecurity Perspective</h2>
+
+                            <p>
+                                Attackers and defenders both interact with multiple network layers.
+                                Security controls and attacks therefore cannot be understood from only one layer.
+                            </p>
+
+                            <ul>
+                                <li>MAC-address and ARP behaviour relates to local Layer 2 networking.</li>
+                                <li>IP routing and filtering involve Layer 3.</li>
+                                <li>TCP and UDP ports are Transport-layer concepts.</li>
+                                <li>DNS, HTTP and SSH are Application-layer protocols.</li>
+                            </ul>
+
+                            <p>
+                                Packet analysis becomes much easier once a student can identify which fields belong to which layer.
+                            </p>
+
+                            <div class="lesson-callout">
+                                <div class="lesson-callout-icon">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Security analysis example</strong>
+                                    <p>
+                                        In Wireshark, an analyst may inspect an Ethernet source MAC address, an IP destination, a TCP destination port and an HTTP request inside the same captured communication. Layering explains why all of those fields appear together.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <h2>Lesson Recap</h2>
+
+                            <ul>
+                                <li>Layered models divide networking into smaller responsibilities.</li>
+                                <li>The OSI model has seven conceptual layers.</li>
+                                <li>The common TCP/IP model uses four broader layers.</li>
+                                <li>Encapsulation adds protocol information as data moves down the stack.</li>
+                                <li>Decapsulation processes that information at the destination.</li>
+                                <li>Layered thinking improves troubleshooting and packet analysis.</li>
+                            </ul>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                With the networking foundation established, the next module moves into IPv4 addressing—how devices are identified, how network and host portions are determined and how systems decide whether a destination is local or remote.
                             </p>
                         `,
 
                         keyConcepts: [
                             {
                                 title: "OSI Model",
-                                description: "A seven-layer conceptual networking model."
+                                description: "A seven-layer conceptual model used to describe network communication."
                             },
                             {
                                 title: "TCP/IP Model",
@@ -514,11 +1489,27 @@ Network Access   Ethernet / Wi-Fi</pre>
                             },
                             {
                                 title: "Encapsulation",
-                                description: "Adding protocol information as data moves down the networking stack."
+                                description: "The process of adding protocol information as data moves down the network stack."
                             },
                             {
                                 title: "Decapsulation",
-                                description: "Processing and removing protocol information at the destination."
+                                description: "The process of interpreting and removing protocol information as data moves up the destination stack."
+                            },
+                            {
+                                title: "Frame",
+                                description: "A Layer 2 unit of communication, such as an Ethernet frame."
+                            },
+                            {
+                                title: "Packet",
+                                description: "A Layer 3 unit of communication, commonly an IP packet."
+                            },
+                            {
+                                title: "Segment",
+                                description: "A common term for a TCP transport-layer unit."
+                            },
+                            {
+                                title: "Layered Troubleshooting",
+                                description: "Diagnosing network problems by identifying which communication layer is failing."
                             }
                         ],
 
@@ -526,26 +1517,68 @@ Network Access   Ethernet / Wi-Fi</pre>
                             {
                                 question:
                                     "At which OSI layer is IP primarily associated?",
-
                                 options: [
+                                    "Physical",
                                     "Data Link",
-                                    "Transport",
                                     "Network",
                                     "Application"
                                 ],
-
                                 answer:
                                     2
+                            },
+                            {
+                                question:
+                                    "Which protocols belong primarily to the Transport layer?",
+                                options: [
+                                    "TCP and UDP",
+                                    "HTTP and DNS",
+                                    "Ethernet and Wi-Fi",
+                                    "ARP and MAC only"
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "What is encapsulation?",
+                                options: [
+                                    "Removing every network header before transmission",
+                                    "Adding protocol information as data moves down the networking stack",
+                                    "Deleting application data",
+                                    "Replacing all IP addresses with MAC addresses"
+                                ],
+                                answer:
+                                    1
+                            },
+                            {
+                                question:
+                                    "A host can reach a server by IP address but not by hostname. Which area should be investigated first?",
+                                options: [
+                                    "DNS / Application layer",
+                                    "Physical cable only",
+                                    "Monitor settings",
+                                    "Keyboard driver"
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Why can Ethernet MAC addresses change as traffic crosses routers while end-to-end IP addresses often remain the same?",
+                                options: [
+                                    "Because Layer 2 addressing is local to each link while IP provides Layer 3 addressing across networks",
+                                    "Because IP addresses exist only inside switches",
+                                    "Because routers never inspect IP packets",
+                                    "Because MAC addresses are application-layer names"
+                                ],
+                                answer:
+                                    0
                             }
                         ]
-
                     }
                 )
-
             ]
-
         },
-
 
         {
             id:
