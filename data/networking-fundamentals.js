@@ -5977,7 +5977,7 @@ Linux:   ping -c 4 192.168.1.1</pre>
                             <h2>Worked Example</h2>
 
                             <p>
-                                If `ping 8.8.8.8` works but `ping example.com` fails to resolve the name, basic IP connectivity may be working while DNS is not. If both fail, investigate lower layers and routing.
+                                If <code>ping 8.8.8.8</code> works but <code>ping example.com</code> fails to resolve the name, basic IP connectivity may be working while DNS is not. If both fail, investigate lower layers and routing.
                             </p>
 
                             <h2>Cybersecurity Relevance</h2>
@@ -7739,7 +7739,7 @@ Linux:   ip route</pre>
                             <h2>Troubleshooting / Investigation Example</h2>
 
                             <p>
-                                If an IP works but a hostname does not, compare local resolver configuration, cached answers, authoritative records and query responses. Test with `nslookup` or `dig` rather than guessing.
+                                If an IP works but a hostname does not, compare local resolver configuration, cached answers, authoritative records and query responses. Test with <code>nslookup</code> or <code>dig</code> rather than guessing.
                             </p>
 
                             <h2>Lesson Recap</h2>
@@ -7915,7 +7915,7 @@ dig example.com MX</pre>
                             <h2>Worked Example</h2>
 
                             <p>
-                                A company may publish `www` as an A record, mail routing with MX, SPF information inside TXT records and authoritative server names with NS records. Each record answers a different question.
+                                A company may publish <code>www</code> as an A record, mail routing with MX, SPF information inside TXT records and authoritative server names with NS records. Each record answers a different question.
                             </p>
 
                             <h2>Cybersecurity Relevance</h2>
@@ -8790,7 +8790,7 @@ Content-Type: text/html</pre>
                             <h2>Worked Example</h2>
 
                             <p>
-                                A browser requests `/courses` from a web server. The server may return `200 OK` with HTML. A request for a missing resource may return `404 Not Found`.
+                                A browser requests <code>/courses</code> from a web server. The server may return <code>200 OK</code> with HTML. A request for a missing resource may return <code>404 Not Found</code>.
                             </p>
 
                             <h2>Cybersecurity Relevance</h2>
@@ -8984,7 +8984,7 @@ Set-Cookie: session=abc123; Secure; HttpOnly</pre>
                             <h2>Worked Example</h2>
 
                             <p>
-                                A request `GET /login HTTP/1.1` with `Host: academy.example.com` asks for the login resource. A response `HTTP/1.1 200 OK` with `Content-Type: text/html` tells the client how to interpret the returned body.
+                                A request <code>GET /login HTTP/1.1</code> with <code>Host: academy.example.com</code> asks for the login resource. A response <code>HTTP/1.1 200 OK</code> with <code>Content-Type: text/html</code> tells the client how to interpret the returned body.
                             </p>
 
                             <h2>Cybersecurity Relevance</h2>
@@ -9175,7 +9175,7 @@ DELETE /users/42</pre>
                             <h2>Worked Example</h2>
 
                             <p>
-                                `GET /profile` may return 200. Accessing a protected page without authentication may return 401 or redirect to login. A non-existent path may return 404, while an application crash can produce 500.
+                                <code>GET /profile</code> may return 200. Accessing a protected page without authentication may return 401 or redirect to login. A non-existent path may return 404, while an application crash can produce 500.
                             </p>
 
                             <h2>Cybersecurity Relevance</h2>
@@ -9363,7 +9363,7 @@ Encrypted HTTP traffic follows</pre>
                             <h2>Worked Example</h2>
 
                             <p>
-                                When a browser connects to `https://example.com`, it verifies that the certificate is valid for the hostname and chains to a trusted certificate authority. After the handshake, HTTP content is encrypted inside TLS records.
+                                When a browser connects to <code>https://example.com</code>, it verifies that the certificate is valid for the hostname and chains to a trusted certificate authority. After the handshake, HTTP content is encrypted inside TLS records.
                             </p>
 
                             <h2>Cybersecurity Relevance</h2>
