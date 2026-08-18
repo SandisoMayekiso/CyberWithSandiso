@@ -138,6 +138,12 @@ const downloadPdfBtn =
         "downloadPdfBtn"
     );
 
+
+const printPdfBtn =
+    document.getElementById(
+        "printPdfBtn"
+    );
+
 const copyVerificationBtn =
     document.getElementById(
         "copyVerificationBtn"
@@ -248,6 +254,35 @@ function showContent() {
     if (certificateContent) {
         certificateContent.hidden =
             false;
+    }
+
+
+    /*
+     * Always reset certificate action buttons when a valid
+     * certificate has finished loading. This prevents a stale
+     * disabled state from making PDF download appear unavailable.
+     */
+
+    if (downloadPdfBtn) {
+
+        downloadPdfBtn.disabled =
+            false;
+
+        downloadPdfBtn.removeAttribute(
+            "aria-disabled"
+        );
+
+        downloadPdfBtn.title =
+            "Download certificate as PDF";
+
+    }
+
+
+    if (printPdfBtn) {
+
+        printPdfBtn.disabled =
+            false;
+
     }
 
 }
@@ -1267,6 +1302,82 @@ function safeFileName(value) {
    DOWNLOAD PDF
 ========================================================= */
 
+function getJsPdfConstructor() {
+
+    const namespace =
+        window.jspdf;
+
+
+    if (
+        namespace &&
+        typeof namespace.jsPDF ===
+            "function"
+    ) {
+
+        return namespace.jsPDF;
+
+    }
+
+
+    if (
+        typeof window.jsPDF ===
+            "function"
+    ) {
+
+        return window.jsPDF;
+
+    }
+
+
+    return null;
+
+}
+
+
+function printCertificateAsPdf() {
+
+    if (
+        !currentCourse ||
+        !currentProgress
+    ) {
+
+        alert(
+            "The certificate is not ready yet."
+        );
+
+        return;
+    }
+
+
+    document.body.classList.add(
+        "certificate-print-mode"
+    );
+
+
+    window.setTimeout(
+        () => {
+
+            window.print();
+
+
+            window.setTimeout(
+                () => {
+
+                    document.body.classList.remove(
+                        "certificate-print-mode"
+                    );
+
+                },
+                300
+            );
+
+        },
+        80
+    );
+
+}
+
+
 async function downloadCertificatePdf() {
 
     if (
@@ -1282,25 +1393,35 @@ async function downloadCertificatePdf() {
     }
 
 
-    const jsPdfNamespace =
-        window.jspdf;
+    const JsPDF =
+        getJsPdfConstructor();
 
 
-    if (
-        !jsPdfNamespace ||
-        typeof jsPdfNamespace.jsPDF !==
-            "function"
-    ) {
+    if (!JsPDF) {
 
         console.error(
             "[CWS Certificate] jsPDF is unavailable.",
-            window.jspdf
+            {
+                jspdf:
+                    window.jspdf,
+                jsPDF:
+                    window.jsPDF
+            }
         );
 
 
-        alert(
-            "The PDF generator did not load. Please refresh the page and try again."
-        );
+        const usePrint =
+            window.confirm(
+                "The direct PDF generator is unavailable in this browser. Would you like to open the browser Print dialog so you can choose “Save as PDF” instead?"
+            );
+
+
+        if (usePrint) {
+
+            printCertificateAsPdf();
+
+        }
+
 
         return;
     }
@@ -1325,14 +1446,8 @@ async function downloadCertificatePdf() {
 
     try {
 
-        const {
-            jsPDF
-        } =
-            jsPdfNamespace;
-
-
         const pdf =
-            new jsPDF({
+            new JsPDF({
                 orientation:
                     "landscape",
 
@@ -2344,6 +2459,13 @@ downloadPdfBtn
     ?.addEventListener(
         "click",
         downloadCertificatePdf
+    );
+
+
+printPdfBtn
+    ?.addEventListener(
+        "click",
+        printCertificateAsPdf
     );
 
 
