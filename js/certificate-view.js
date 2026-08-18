@@ -1,112 +1,272 @@
 /* =========================================================
    CWS ACADEMY
-   CERTIFICATE VIEW + PDF
+   CERTIFICATE VIEW CONTROLLER
+   File: js/certificate-view.js
 ========================================================= */
 
 "use strict";
 
+
+/* =========================================================
+   FIREBASE AUTH
+========================================================= */
+
 import {
     onAuthStateChanged,
     signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+} from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+/* =========================================================
+   FIRESTORE
+========================================================= */
 
 import {
     doc,
     getDoc
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+} from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
 
 import {
     auth,
     db
 } from "./firebase-config.js";
 
-import {
-    getCourse
-} from "../data/courses.js";
+
+/* =========================================================
+   COURSE REGISTRY
+========================================================= */
+
+/*
+ * Import the complete course-registry namespace instead of
+ * assuming a specific named export.
+ *
+ * This prevents certificate.html from failing if courses.js
+ * exports getCourse() but not a variable literally named
+ * "courses".
+ */
+
+import * as CourseRegistry
+from "../data/courses.js";
 
 
-let currentUser = null;
-let currentCourse = null;
-let currentProgress = null;
-let credentialId = "";
-let verificationUrl = "";
-let initialized = false;
-
+/* =========================================================
+   DOM
+========================================================= */
 
 const studentName =
-    document.getElementById("studentName");
+    document.getElementById(
+        "studentName"
+    );
 
 const logoutBtn =
-    document.getElementById("logoutBtn");
+    document.getElementById(
+        "logoutBtn"
+    );
 
-const loading =
-    document.getElementById("certificateLoading");
 
-const errorBox =
-    document.getElementById("certificateError");
+const certificateLoading =
+    document.getElementById(
+        "certificateLoading"
+    );
 
-const errorText =
-    document.getElementById("certificateErrorText");
+const certificateError =
+    document.getElementById(
+        "certificateError"
+    );
 
-const content =
-    document.getElementById("certificateContent");
+const certificateErrorText =
+    document.getElementById(
+        "certificateErrorText"
+    );
+
+const certificateContent =
+    document.getElementById(
+        "certificateContent"
+    );
+
 
 const certificateStudent =
-    document.getElementById("certificateStudent");
+    document.getElementById(
+        "certificateStudent"
+    );
 
 const certificateCourse =
-    document.getElementById("certificateCourse");
+    document.getElementById(
+        "certificateCourse"
+    );
 
 const certificateDescription =
-    document.getElementById("certificateDescription");
+    document.getElementById(
+        "certificateDescription"
+    );
 
 const certificateScore =
-    document.getElementById("certificateScore");
+    document.getElementById(
+        "certificateScore"
+    );
 
 const certificateDate =
-    document.getElementById("certificateDate");
+    document.getElementById(
+        "certificateDate"
+    );
 
 const certificateCredential =
-    document.getElementById("certificateCredential");
+    document.getElementById(
+        "certificateCredential"
+    );
 
 const certificateVerifyUrl =
-    document.getElementById("certificateVerifyUrl");
+    document.getElementById(
+        "certificateVerifyUrl"
+    );
 
 const certificateQr =
-    document.getElementById("certificateQr");
+    document.getElementById(
+        "certificateQr"
+    );
+
 
 const downloadPdfBtn =
-    document.getElementById("downloadPdfBtn");
+    document.getElementById(
+        "downloadPdfBtn"
+    );
 
 const copyVerificationBtn =
-    document.getElementById("copyVerificationBtn");
+    document.getElementById(
+        "copyVerificationBtn"
+    );
 
 const linkedinShareBtn =
-    document.getElementById("linkedinShareBtn");
+    document.getElementById(
+        "linkedinShareBtn"
+    );
 
 const openVerificationBtn =
-    document.getElementById("openVerificationBtn");
+    document.getElementById(
+        "openVerificationBtn"
+    );
 
 
-function escapeFileName(value) {
+/* =========================================================
+   STATE
+========================================================= */
 
-    return String(value || "certificate")
-        .trim()
-        .replace(/[^a-z0-9_-]+/gi, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "")
-        .toLowerCase();
+let currentUser =
+    null;
+
+let currentCourse =
+    null;
+
+let currentProgress =
+    null;
+
+let currentCredentialId =
+    "";
+
+let currentVerificationUrl =
+    "";
+
+let initialized =
+    false;
+
+
+/* =========================================================
+   PAGE STATE
+========================================================= */
+
+function showLoading() {
+
+    if (certificateLoading) {
+        certificateLoading.hidden =
+            false;
+    }
+
+
+    if (certificateError) {
+        certificateError.hidden =
+            true;
+    }
+
+
+    if (certificateContent) {
+        certificateContent.hidden =
+            true;
+    }
 
 }
 
 
-function getCourseId() {
+function showError(message) {
 
-    return (
+    if (certificateLoading) {
+        certificateLoading.hidden =
+            true;
+    }
+
+
+    if (certificateContent) {
+        certificateContent.hidden =
+            true;
+    }
+
+
+    if (certificateErrorText) {
+        certificateErrorText.textContent =
+            message;
+    }
+
+
+    if (certificateError) {
+        certificateError.hidden =
+            false;
+    }
+
+}
+
+
+function showContent() {
+
+    if (certificateLoading) {
+        certificateLoading.hidden =
+            true;
+    }
+
+
+    if (certificateError) {
+        certificateError.hidden =
+            true;
+    }
+
+
+    if (certificateContent) {
+        certificateContent.hidden =
+            false;
+    }
+
+}
+
+
+/* =========================================================
+   URL
+========================================================= */
+
+function getCourseIdFromUrl() {
+
+    const params =
         new URLSearchParams(
             window.location.search
-        )
-            .get("course") ||
+        );
+
+
+    return String(
+        params.get("course") ||
         ""
     )
         .trim()
@@ -115,86 +275,389 @@ function getCourseId() {
 }
 
 
+/* =========================================================
+   USER NAME
+========================================================= */
+
 function getUserName(user) {
 
-    if (user?.displayName?.trim()) {
+    if (
+        typeof user?.displayName ===
+            "string" &&
+        user.displayName.trim()
+    ) {
+
         return user.displayName.trim();
-    }
-
-    if (user?.email?.includes("@")) {
-
-        return user.email
-            .split("@")[0]
-            .replace(/[._-]+/g, " ")
-            .trim()
-            .split(" ")
-            .map(
-                word =>
-                    word.charAt(0).toUpperCase() +
-                    word.slice(1)
-            )
-            .join(" ");
 
     }
+
+
+    if (
+        typeof user?.email ===
+            "string" &&
+        user.email.includes("@")
+    ) {
+
+        const raw =
+            user.email
+                .split("@")[0]
+                .replace(
+                    /[._-]+/g,
+                    " "
+                )
+                .trim();
+
+
+        if (raw) {
+
+            return raw
+                .split(" ")
+                .map(
+                    word =>
+                        word
+                            .charAt(0)
+                            .toUpperCase() +
+                        word.slice(1)
+                )
+                .join(" ");
+
+        }
+
+    }
+
 
     return "Student";
 
 }
 
 
-function showError(message) {
+/* =========================================================
+   COURSE LOOKUP
+========================================================= */
 
-    loading.hidden = true;
-    content.hidden = true;
+function normalizeCourseCollection(value) {
 
-    errorText.textContent = message;
-    errorBox.hidden = false;
+    if (
+        Array.isArray(value)
+    ) {
+
+        return value.filter(
+            course =>
+                course &&
+                typeof course ===
+                    "object"
+        );
+
+    }
+
+
+    if (
+        value &&
+        typeof value ===
+            "object"
+    ) {
+
+        return Object.values(value)
+            .filter(
+                course =>
+                    course &&
+                    typeof course ===
+                        "object"
+            );
+
+    }
+
+
+    return [];
 
 }
 
 
-function formatDate(value) {
+function getCourseById(courseId) {
 
-    if (!value) {
-        return "Completion recorded";
+    if (!courseId) {
+        return null;
     }
 
-    let date = null;
 
-    if (
-        typeof value.toDate === "function"
-    ) {
-        date = value.toDate();
-    }
-    else if (
-        typeof value.seconds === "number"
-    ) {
-        date = new Date(
-            value.seconds * 1000
-        );
-    }
-    else {
-        date = new Date(value);
-    }
+    /*
+     * Preferred registry function.
+     */
 
     if (
-        !date ||
-        Number.isNaN(date.getTime())
+        typeof CourseRegistry
+            .getCourse ===
+        "function"
     ) {
-        return "Completion recorded";
-    }
 
-    return date.toLocaleDateString(
-        undefined,
-        {
-            year: "numeric",
-            month: "long",
-            day: "numeric"
+        try {
+
+            const course =
+                CourseRegistry
+                    .getCourse(
+                        courseId
+                    );
+
+
+            if (course) {
+                return course;
+            }
+
         }
+        catch (error) {
+
+            console.warn(
+                "[CWS Certificate] getCourse() failed:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Known collection export names.
+     */
+
+    const candidates = [
+
+        CourseRegistry.courses,
+
+        CourseRegistry.COURSES,
+
+        CourseRegistry.courseRegistry,
+
+        CourseRegistry.COURSE_REGISTRY,
+
+        CourseRegistry.allCourses
+
+    ];
+
+
+    for (
+        const candidate of
+        candidates
+    ) {
+
+        const courses =
+            normalizeCourseCollection(
+                candidate
+            );
+
+
+        const match =
+            courses.find(
+                course =>
+                    String(
+                        course?.id ||
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase() ===
+                    courseId
+            );
+
+
+        if (match) {
+            return match;
+        }
+
+    }
+
+
+    /*
+     * Final fallback:
+     * inspect all registry exports.
+     */
+
+    for (
+        const value of
+        Object.values(
+            CourseRegistry
+        )
+    ) {
+
+        const courses =
+            normalizeCourseCollection(
+                value
+            );
+
+
+        const match =
+            courses.find(
+                course =>
+                    String(
+                        course?.id ||
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase() ===
+                    courseId
+            );
+
+
+        if (match) {
+            return match;
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================================================
+   PROGRESS NORMALIZATION
+========================================================= */
+
+function normalizeProgress(
+    data = {}
+) {
+
+    return {
+
+        completedLessons:
+            Array.isArray(
+                data.completedLessons
+            )
+                ? data.completedLessons
+                : [],
+
+        completedLabs:
+            Array.isArray(
+                data.completedLabs
+            )
+                ? data.completedLabs
+                : [],
+
+        completedAssessments:
+            Array.isArray(
+                data.completedAssessments
+            )
+                ? data.completedAssessments
+                : [],
+
+        finalAssessment:
+            (
+                data.finalAssessment &&
+                typeof data.finalAssessment ===
+                    "object"
+            )
+                ? data.finalAssessment
+                : {
+                    score: 0,
+                    bestScore: 0,
+                    passed: false
+                },
+
+        completed:
+            Boolean(
+                data.completed
+            ),
+
+        certificateEligible:
+            Boolean(
+                data.certificateEligible
+            ),
+
+        certificate:
+            (
+                data.certificate &&
+                typeof data.certificate ===
+                    "object"
+            )
+                ? data.certificate
+                : {},
+
+        completedAt:
+            data.completedAt ||
+            null,
+
+        updatedAt:
+            data.updatedAt ||
+            null
+
+    };
+
+}
+
+
+/* =========================================================
+   LOAD COURSE PROGRESS
+========================================================= */
+
+async function loadCourseProgress(
+    courseId
+) {
+
+    if (
+        !db ||
+        !currentUser
+    ) {
+
+        return null;
+
+    }
+
+
+    const ref =
+        doc(
+            db,
+            "users",
+            currentUser.uid,
+            "courseProgress",
+            courseId
+        );
+
+
+    const snapshot =
+        await getDoc(
+            ref
+        );
+
+
+    if (
+        !snapshot.exists()
+    ) {
+
+        return null;
+
+    }
+
+
+    return normalizeProgress(
+        snapshot.data()
     );
 
 }
 
+
+/* =========================================================
+   CERTIFICATE ELIGIBILITY
+========================================================= */
+
+function certificateWasEarned(
+    progress
+) {
+
+    return Boolean(
+        progress &&
+        (
+            progress.completed ||
+            progress
+                .certificateEligible
+        )
+    );
+
+}
+
+
+/* =========================================================
+   CREDENTIAL ID
+========================================================= */
 
 function buildFallbackCredentialId(
     courseId,
@@ -202,136 +665,184 @@ function buildFallbackCredentialId(
 ) {
 
     const coursePart =
-        courseId
-            .replace(/[^a-z0-9]/gi, "")
-            .slice(0, 8)
+        String(
+            courseId ||
+            "COURSE"
+        )
+            .replace(
+                /[^a-z0-9]/gi,
+                ""
+            )
+            .slice(
+                0,
+                8
+            )
             .toUpperCase();
+
 
     const userPart =
-        uid
-            .replace(/[^a-z0-9]/gi, "")
-            .slice(0, 8)
+        String(
+            uid ||
+            "STUDENT"
+        )
+            .replace(
+                /[^a-z0-9]/gi,
+                ""
+            )
+            .slice(
+                0,
+                8
+            )
             .toUpperCase();
 
-    return `CWS-${coursePart}-${userPart}`;
+
+    return (
+        `CWS-${coursePart}-${userPart}`
+    );
 
 }
 
 
-async function loadCertificate() {
+function getCredentialId() {
 
-    const courseId =
-        getCourseId();
+    const stored =
+        currentProgress
+            ?.certificate
+            ?.credentialId;
 
-    if (!courseId) {
-        showError(
-            "The certificate URL is missing the course parameter."
-        );
-        return;
-    }
 
-    currentCourse =
-        getCourse(courseId);
+    if (
+        typeof stored ===
+            "string" &&
+        stored.trim()
+    ) {
 
-    if (!currentCourse) {
-        showError(
-            "The requested course does not exist."
-        );
-        return;
-    }
-
-    try {
-
-        const ref =
-            doc(
-                db,
-                "users",
-                currentUser.uid,
-                "courseProgress",
-                courseId
-            );
-
-        const snapshot =
-            await getDoc(ref);
-
-        if (!snapshot.exists()) {
-            showError(
-                "No completion record exists for this course."
-            );
-            return;
-        }
-
-        currentProgress =
-            snapshot.data();
-
-        if (
-            !currentProgress.completed &&
-            !currentProgress.certificateEligible
-        ) {
-            showError(
-                "This certificate has not been earned yet."
-            );
-            return;
-        }
-
-        credentialId =
-            currentProgress
-                ?.certificate
-                ?.credentialId ||
-            buildFallbackCredentialId(
-                courseId,
-                currentUser.uid
-            );
-
-        const verifyPath =
-            `../pages/verify-certificate.html?credential=${encodeURIComponent(
-                credentialId
-            )}`;
-
-        verificationUrl =
-            new URL(
-                verifyPath,
-                window.location.href
-            ).href;
-
-        renderCertificate();
+        return stored
+            .trim()
+            .toUpperCase();
 
     }
-    catch (error) {
 
-        console.error(
-            "[CWS Certificate] Load failed:",
-            error
-        );
 
-        showError(
-            "The certificate could not be loaded."
-        );
+    /*
+     * Older completion documents may pre-date automatic
+     * certificate issuance. Give them a deterministic
+     * display ID rather than breaking the page.
+     */
 
-    }
+    return buildFallbackCredentialId(
+        currentCourse.id,
+        currentUser.uid
+    );
 
 }
 
 
-async function renderCertificate() {
+/* =========================================================
+   DATE
+========================================================= */
 
-    const name =
-        getUserName(
-            currentUser
+function toDate(value) {
+
+    if (!value) {
+        return null;
+    }
+
+
+    if (
+        typeof value.toDate ===
+            "function"
+    ) {
+
+        return value.toDate();
+
+    }
+
+
+    if (
+        typeof value.seconds ===
+            "number"
+    ) {
+
+        return new Date(
+            value.seconds *
+            1000
         );
 
-    studentName.textContent =
-        name;
+    }
 
-    certificateStudent.textContent =
-        name;
 
-    certificateCourse.textContent =
-        currentCourse.title;
+    const date =
+        new Date(value);
 
-    certificateDescription.textContent =
-        currentCourse.description ||
-        "CWS Academy course completion.";
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return null;
+
+    }
+
+
+    return date;
+
+}
+
+
+function getIssueDateValue() {
+
+    return (
+        currentProgress
+            ?.certificate
+            ?.issuedAt ||
+        currentProgress
+            ?.completedAt ||
+        currentProgress
+            ?.updatedAt ||
+        null
+    );
+
+}
+
+
+function formatDate(value) {
+
+    const date =
+        toDate(value);
+
+
+    if (!date) {
+
+        return "Completion recorded";
+
+    }
+
+
+    return date.toLocaleDateString(
+        undefined,
+        {
+            year:
+                "numeric",
+
+            month:
+                "long",
+
+            day:
+                "numeric"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FINAL SCORE
+========================================================= */
+
+function getFinalScore() {
 
     const score =
         Number(
@@ -344,77 +855,454 @@ async function renderCertificate() {
             0
         );
 
-    certificateScore.textContent =
-        score > 0
-            ? `${score}%`
-            : "Passed";
 
-    certificateDate.textContent =
-        formatDate(
-            currentProgress
-                ?.certificate
-                ?.issuedAt ||
-            currentProgress
-                ?.completedAt ||
-            currentProgress
-                ?.updatedAt
-        );
-
-    certificateCredential.textContent =
-        credentialId;
-
-    certificateVerifyUrl.textContent =
-        verificationUrl;
-
-    openVerificationBtn.href =
-        verificationUrl;
-
-    const shareText =
-        `I completed ${currentCourse.title} with CWS Academy. Credential: ${credentialId}`;
-
-    linkedinShareBtn.href =
-        `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-            verificationUrl
-        )}`;
-
-    if (
-        window.QRCode &&
-        certificateQr
-    ) {
-
-        await window.QRCode.toCanvas(
-            certificateQr,
-            verificationUrl,
-            {
-                width: 130,
-                margin: 1,
-                errorCorrectionLevel: "M"
-            }
-        );
-
-    }
-
-    loading.hidden = true;
-    errorBox.hidden = true;
-    content.hidden = false;
+    return Number.isFinite(score)
+        ? score
+        : 0;
 
 }
 
 
-async function downloadCertificatePdf() {
+/* =========================================================
+   VERIFICATION URL
+========================================================= */
 
-    if (
-        !window.jspdf?.jsPDF
-    ) {
+function buildVerificationUrl(
+    credentialId
+) {
 
-        alert(
-            "The PDF library did not load. Please refresh and try again."
-        );
+    const relative =
+        `../pages/verify-certificate.html?credential=${encodeURIComponent(
+            credentialId
+        )}`;
 
+
+    return new URL(
+        relative,
+        window.location.href
+    )
+        .href;
+
+}
+
+
+/* =========================================================
+   QR CODE
+========================================================= */
+
+async function renderQrCode() {
+
+    if (!certificateQr) {
         return;
     }
 
-    downloadPdfBtn.disabled = true;
+
+    /*
+     * qrcode may not load if the CDN is blocked.
+     * Do not allow that to break the certificate page.
+     */
+
+    if (
+        !window.QRCode ||
+        typeof window.QRCode
+            .toCanvas !==
+        "function"
+    ) {
+
+        console.warn(
+            "[CWS Certificate] QR library unavailable."
+        );
+
+
+        const context =
+            certificateQr
+                .getContext(
+                    "2d"
+                );
+
+
+        if (context) {
+
+            context.fillStyle =
+                "#ffffff";
+
+            context.fillRect(
+                0,
+                0,
+                certificateQr.width,
+                certificateQr.height
+            );
+
+
+            context.fillStyle =
+                "#111111";
+
+            context.font =
+                "12px sans-serif";
+
+            context.textAlign =
+                "center";
+
+
+            context.fillText(
+                "QR unavailable",
+                certificateQr.width /
+                    2,
+                certificateQr.height /
+                    2
+            );
+
+        }
+
+
+        return;
+
+    }
+
+
+    try {
+
+        await window.QRCode.toCanvas(
+            certificateQr,
+            currentVerificationUrl,
+            {
+                width:
+                    130,
+
+                margin:
+                    1,
+
+                errorCorrectionLevel:
+                    "M"
+            }
+        );
+
+    }
+    catch (error) {
+
+        console.warn(
+            "[CWS Certificate] QR generation failed:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER CERTIFICATE
+========================================================= */
+
+async function renderCertificate() {
+
+    const name =
+        getUserName(
+            currentUser
+        );
+
+
+    currentCredentialId =
+        getCredentialId();
+
+
+    currentVerificationUrl =
+        buildVerificationUrl(
+            currentCredentialId
+        );
+
+
+    if (studentName) {
+
+        studentName.textContent =
+            name;
+
+    }
+
+
+    if (certificateStudent) {
+
+        certificateStudent.textContent =
+            name;
+
+    }
+
+
+    if (certificateCourse) {
+
+        certificateCourse.textContent =
+            currentCourse.title ||
+            "CWS Academy Course";
+
+    }
+
+
+    if (certificateDescription) {
+
+        certificateDescription.textContent =
+            currentCourse.description ||
+            "CWS Academy course completion.";
+
+    }
+
+
+    const score =
+        getFinalScore();
+
+
+    if (certificateScore) {
+
+        certificateScore.textContent =
+            score > 0
+                ? `${score}%`
+                : "Passed";
+
+    }
+
+
+    if (certificateDate) {
+
+        certificateDate.textContent =
+            formatDate(
+                getIssueDateValue()
+            );
+
+    }
+
+
+    if (certificateCredential) {
+
+        certificateCredential.textContent =
+            currentCredentialId;
+
+    }
+
+
+    if (certificateVerifyUrl) {
+
+        certificateVerifyUrl.textContent =
+            currentVerificationUrl;
+
+    }
+
+
+    if (openVerificationBtn) {
+
+        openVerificationBtn.href =
+            currentVerificationUrl;
+
+    }
+
+
+    if (linkedinShareBtn) {
+
+        linkedinShareBtn.href =
+            `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                currentVerificationUrl
+            )}`;
+
+    }
+
+
+    await renderQrCode();
+
+
+    document.title =
+        `${currentCourse.title} Certificate | CWS Academy`;
+
+
+    showContent();
+
+}
+
+
+/* =========================================================
+   LOAD CERTIFICATE PAGE
+========================================================= */
+
+async function loadCertificatePage() {
+
+    showLoading();
+
+
+    const courseId =
+        getCourseIdFromUrl();
+
+
+    if (!courseId) {
+
+        showError(
+            "The certificate URL is missing the course parameter."
+        );
+
+
+        return;
+
+    }
+
+
+    currentCourse =
+        getCourseById(
+            courseId
+        );
+
+
+    if (!currentCourse) {
+
+        showError(
+            "The requested course could not be found in the CWS Academy course registry."
+        );
+
+
+        return;
+
+    }
+
+
+    try {
+
+        currentProgress =
+            await loadCourseProgress(
+                courseId
+            );
+
+    }
+    catch (error) {
+
+        console.error(
+            "[CWS Certificate] Firestore load failed:",
+            error
+        );
+
+
+        showError(
+            "CWS Academy could not read your course completion record."
+        );
+
+
+        return;
+
+    }
+
+
+    if (!currentProgress) {
+
+        showError(
+            "No course progress record exists for this certificate."
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        !certificateWasEarned(
+            currentProgress
+        )
+    ) {
+
+        showError(
+            "This certificate has not been earned yet. Complete the required course pathway first."
+        );
+
+
+        return;
+
+    }
+
+
+    try {
+
+        await renderCertificate();
+
+    }
+    catch (error) {
+
+        console.error(
+            "[CWS Certificate] Rendering failed:",
+            error
+        );
+
+
+        showError(
+            "The certificate data was found, but the certificate could not be displayed."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FILE NAME
+========================================================= */
+
+function safeFileName(value) {
+
+    return String(
+        value ||
+        "certificate"
+    )
+        .trim()
+        .replace(
+            /[^a-z0-9_-]+/gi,
+            "-"
+        )
+        .replace(
+            /-+/g,
+            "-"
+        )
+        .replace(
+            /^-|-$/g,
+            ""
+        )
+        .toLowerCase();
+
+}
+
+
+/* =========================================================
+   DOWNLOAD PDF
+========================================================= */
+
+async function downloadCertificatePdf() {
+
+    if (
+        !window.jspdf ||
+        typeof window.jspdf
+            .jsPDF !==
+        "function"
+    ) {
+
+        alert(
+            "The PDF generator did not load. Please refresh the page and try again."
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        !currentCourse ||
+        !currentProgress
+    ) {
+
+        return;
+
+    }
+
+
+    if (downloadPdfBtn) {
+
+        downloadPdfBtn.disabled =
+            true;
+
+    }
+
 
     try {
 
@@ -423,29 +1311,42 @@ async function downloadCertificatePdf() {
         } =
             window.jspdf;
 
+
         const pdf =
             new jsPDF({
-                orientation: "landscape",
-                unit: "mm",
-                format: "a4"
+                orientation:
+                    "landscape",
+
+                unit:
+                    "mm",
+
+                format:
+                    "a4"
             });
 
+
         const width =
-            pdf.internal.pageSize
+            pdf.internal
+                .pageSize
                 .getWidth();
 
+
         const height =
-            pdf.internal.pageSize
+            pdf.internal
+                .pageSize
                 .getHeight();
+
 
         /*
          * Background
          */
+
         pdf.setFillColor(
-            11,
-            11,
-            11
+            10,
+            10,
+            10
         );
+
 
         pdf.rect(
             0,
@@ -455,16 +1356,22 @@ async function downloadCertificatePdf() {
             "F"
         );
 
+
         /*
          * Borders
          */
+
         pdf.setDrawColor(
-            155,
-            20,
-            20
+            160,
+            24,
+            24
         );
 
-        pdf.setLineWidth(0.8);
+
+        pdf.setLineWidth(
+            0.8
+        );
+
 
         pdf.rect(
             7,
@@ -473,13 +1380,18 @@ async function downloadCertificatePdf() {
             height - 14
         );
 
+
         pdf.setDrawColor(
             65,
             65,
             65
         );
 
-        pdf.setLineWidth(0.25);
+
+        pdf.setLineWidth(
+            0.25
+        );
+
 
         pdf.rect(
             10,
@@ -488,21 +1400,28 @@ async function downloadCertificatePdf() {
             height - 20
         );
 
+
         /*
          * Brand
          */
+
         pdf.setTextColor(
             220,
             48,
             48
         );
 
+
         pdf.setFont(
             "helvetica",
             "bold"
         );
 
-        pdf.setFontSize(17);
+
+        pdf.setFontSize(
+            17
+        );
+
 
         pdf.text(
             "CWS ACADEMY",
@@ -510,13 +1429,18 @@ async function downloadCertificatePdf() {
             24
         );
 
+
         pdf.setTextColor(
             155,
             155,
             155
         );
 
-        pdf.setFontSize(8);
+
+        pdf.setFontSize(
+            8
+        );
+
 
         pdf.text(
             "CyberWithSandiso",
@@ -524,42 +1448,56 @@ async function downloadCertificatePdf() {
             30
         );
 
+
         pdf.setTextColor(
             92,
             210,
             137
         );
 
-        pdf.setFontSize(9);
+
+        pdf.setFontSize(
+            9
+        );
+
 
         pdf.text(
             "VERIFIED ACHIEVEMENT",
             width - 20,
             24,
             {
-                align: "right"
+                align:
+                    "right"
             }
         );
 
+
         /*
-         * Main title
+         * Main certificate
          */
+
         pdf.setTextColor(
             211,
             37,
             37
         );
 
-        pdf.setFontSize(10);
+
+        pdf.setFontSize(
+            10
+        );
+
 
         pdf.text(
             "CERTIFICATE OF COMPLETION",
             width / 2,
             49,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
+
 
         pdf.setTextColor(
             184,
@@ -567,21 +1505,28 @@ async function downloadCertificatePdf() {
             184
         );
 
+
         pdf.setFont(
             "helvetica",
             "normal"
         );
 
-        pdf.setFontSize(11);
+
+        pdf.setFontSize(
+            11
+        );
+
 
         pdf.text(
             "This certificate is proudly awarded to",
             width / 2,
             62,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
+
 
         pdf.setTextColor(
             248,
@@ -589,12 +1534,17 @@ async function downloadCertificatePdf() {
             248
         );
 
+
         pdf.setFont(
             "times",
             "normal"
         );
 
-        pdf.setFontSize(29);
+
+        pdf.setFontSize(
+            29
+        );
+
 
         pdf.text(
             getUserName(
@@ -603,15 +1553,18 @@ async function downloadCertificatePdf() {
             width / 2,
             79,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
+
 
         pdf.setDrawColor(
             175,
             26,
             26
         );
+
 
         pdf.line(
             width / 2 - 48,
@@ -620,27 +1573,35 @@ async function downloadCertificatePdf() {
             85
         );
 
+
         pdf.setTextColor(
             184,
             184,
             184
         );
 
+
         pdf.setFont(
             "helvetica",
             "normal"
         );
 
-        pdf.setFontSize(11);
+
+        pdf.setFontSize(
+            11
+        );
+
 
         pdf.text(
             "for successfully completing",
             width / 2,
             98,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
+
 
         pdf.setTextColor(
             248,
@@ -648,88 +1609,87 @@ async function downloadCertificatePdf() {
             248
         );
 
+
         pdf.setFont(
             "helvetica",
             "bold"
         );
 
-        pdf.setFontSize(22);
 
-        const courseTitle =
+        pdf.setFontSize(
+            22
+        );
+
+
+        const titleLines =
             pdf.splitTextToSize(
-                currentCourse.title
+                String(
+                    currentCourse.title ||
+                    "CWS ACADEMY COURSE"
+                )
                     .toUpperCase(),
-                180
+                185
             );
 
+
         pdf.text(
-            courseTitle,
+            titleLines,
             width / 2,
             112,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
 
+
         pdf.setTextColor(
-            165,
-            165,
-            165
+            160,
+            160,
+            160
         );
+
 
         pdf.setFont(
             "helvetica",
             "normal"
         );
 
-        pdf.setFontSize(9);
 
-        const description =
+        pdf.setFontSize(
+            8.5
+        );
+
+
+        const descriptionLines =
             pdf.splitTextToSize(
                 currentCourse.description ||
                 "CWS Academy course completion.",
                 170
             );
 
+
         pdf.text(
-            description,
+            descriptionLines,
             width / 2,
             128,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
+
 
         /*
          * Detail row
          */
-        const finalScore =
-            Number(
-                currentProgress
-                    ?.finalAssessment
-                    ?.bestScore ??
-                currentProgress
-                    ?.finalAssessment
-                    ?.score ??
-                0
-            );
-
-        const issueDate =
-            formatDate(
-                currentProgress
-                    ?.certificate
-                    ?.issuedAt ||
-                currentProgress
-                    ?.completedAt ||
-                currentProgress
-                    ?.updatedAt
-            );
 
         pdf.setDrawColor(
             55,
             55,
             55
         );
+
 
         pdf.line(
             25,
@@ -738,6 +1698,7 @@ async function downloadCertificatePdf() {
             151
         );
 
+
         pdf.line(
             25,
             169,
@@ -745,25 +1706,47 @@ async function downloadCertificatePdf() {
             169
         );
 
+
         const centers = [
+
             width * 0.25,
+
             width * 0.50,
+
             width * 0.75
+
         ];
+
 
         const labels = [
+
             "FINAL ASSESSMENT",
+
             "ISSUED",
+
             "CREDENTIAL ID"
+
         ];
 
+
+        const score =
+            getFinalScore();
+
+
         const values = [
-            finalScore > 0
-                ? `${finalScore}%`
+
+            score > 0
+                ? `${score}%`
                 : "PASSED",
-            issueDate,
-            credentialId
+
+            formatDate(
+                getIssueDateValue()
+            ),
+
+            currentCredentialId
+
         ];
+
 
         labels.forEach(
             (
@@ -777,21 +1760,28 @@ async function downloadCertificatePdf() {
                     125
                 );
 
+
                 pdf.setFont(
                     "helvetica",
                     "bold"
                 );
 
-                pdf.setFontSize(6.5);
+
+                pdf.setFontSize(
+                    6.5
+                );
+
 
                 pdf.text(
                     label,
                     centers[index],
                     158,
                     {
-                        align: "center"
+                        align:
+                            "center"
                     }
                 );
+
 
                 pdf.setTextColor(
                     235,
@@ -799,66 +1789,101 @@ async function downloadCertificatePdf() {
                     235
                 );
 
-                pdf.setFontSize(8);
+
+                pdf.setFontSize(
+                    8
+                );
+
 
                 pdf.text(
-                    values[index],
+                    String(
+                        values[index]
+                    ),
                     centers[index],
                     164,
                     {
-                        align: "center"
+                        align:
+                            "center"
                     }
                 );
 
             }
         );
 
+
         /*
          * QR Code
          */
-        if (certificateQr) {
 
-            const qrImage =
-                certificateQr.toDataURL(
-                    "image/png"
+        if (
+            certificateQr &&
+            currentVerificationUrl
+        ) {
+
+            try {
+
+                const qrImage =
+                    certificateQr
+                        .toDataURL(
+                            "image/png"
+                        );
+
+
+                pdf.addImage(
+                    qrImage,
+                    "PNG",
+                    width / 2 - 13,
+                    174,
+                    26,
+                    26
                 );
 
-            pdf.addImage(
-                qrImage,
-                "PNG",
-                width / 2 - 13,
-                174,
-                26,
-                26
-            );
 
-            pdf.setTextColor(
-                130,
-                130,
-                130
-            );
+                pdf.setTextColor(
+                    130,
+                    130,
+                    130
+                );
 
-            pdf.setFontSize(6.5);
 
-            pdf.text(
-                "SCAN TO VERIFY",
-                width / 2,
-                204,
-                {
-                    align: "center"
-                }
-            );
+                pdf.setFontSize(
+                    6.5
+                );
+
+
+                pdf.text(
+                    "SCAN TO VERIFY",
+                    width / 2,
+                    204,
+                    {
+                        align:
+                            "center"
+                    }
+                );
+
+            }
+            catch (error) {
+
+                console.warn(
+                    "[CWS Certificate] QR image could not be added to PDF:",
+                    error
+                );
+
+            }
 
         }
 
+
         /*
-         * Signature + verification
+         * Signature
          */
+
         pdf.setDrawColor(
             110,
             110,
             110
         );
+
 
         pdf.line(
             23,
@@ -867,22 +1892,29 @@ async function downloadCertificatePdf() {
             190
         );
 
+
         pdf.setTextColor(
             235,
             235,
             235
         );
 
-        pdf.setFontSize(8);
+
+        pdf.setFontSize(
+            8
+        );
+
 
         pdf.text(
             "CyberWithSandiso",
             49.5,
             195,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
+
 
         pdf.setTextColor(
             125,
@@ -890,16 +1922,26 @@ async function downloadCertificatePdf() {
             125
         );
 
-        pdf.setFontSize(6.5);
+
+        pdf.setFontSize(
+            6.5
+        );
+
 
         pdf.text(
             "CWS Academy",
             49.5,
             199,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
+
+
+        /*
+         * Verification
+         */
 
         pdf.setTextColor(
             216,
@@ -907,21 +1949,28 @@ async function downloadCertificatePdf() {
             40
         );
 
+
         pdf.setFont(
             "helvetica",
             "bold"
         );
 
-        pdf.setFontSize(7);
+
+        pdf.setFontSize(
+            7
+        );
+
 
         pdf.text(
             "CWS ACADEMY VERIFIED",
             width - 23,
             191,
             {
-                align: "right"
+                align:
+                    "right"
             }
         );
+
 
         pdf.setTextColor(
             125,
@@ -929,32 +1978,45 @@ async function downloadCertificatePdf() {
             125
         );
 
+
         pdf.setFont(
             "helvetica",
             "normal"
         );
 
-        pdf.setFontSize(5.8);
+
+        pdf.setFontSize(
+            5.7
+        );
+
 
         const verifyLines =
             pdf.splitTextToSize(
-                verificationUrl,
-                70
+                currentVerificationUrl,
+                72
             );
+
 
         pdf.text(
             verifyLines,
             width - 23,
             196,
             {
-                align: "right"
+                align:
+                    "right"
             }
         );
 
+
+        /*
+         * Save
+         */
+
         const fileName =
-            `${escapeFileName(
+            `${safeFileName(
                 currentCourse.title
             )}-cws-certificate.pdf`;
+
 
         pdf.save(
             fileName
@@ -968,49 +2030,87 @@ async function downloadCertificatePdf() {
             error
         );
 
+
         alert(
-            "The PDF could not be generated. Please try again."
+            "The certificate PDF could not be generated. Please try again."
         );
 
     }
     finally {
 
-        downloadPdfBtn.disabled =
-            false;
+        if (downloadPdfBtn) {
+
+            downloadPdfBtn.disabled =
+                false;
+
+        }
 
     }
 
 }
 
+
+/* =========================================================
+   COPY VERIFICATION LINK
+========================================================= */
 
 async function copyVerificationLink() {
 
-    try {
+    if (
+        !currentVerificationUrl
+    ) {
 
-        await navigator.clipboard.writeText(
-            verificationUrl
-        );
-
-        const original =
-            copyVerificationBtn.innerHTML;
-
-        copyVerificationBtn.innerHTML =
-            '<i class="fa-solid fa-check"></i> Copied';
-
-        setTimeout(
-            () => {
-                copyVerificationBtn.innerHTML =
-                    original;
-            },
-            1800
-        );
+        return;
 
     }
-    catch {
+
+
+    try {
+
+        await navigator.clipboard
+            .writeText(
+                currentVerificationUrl
+            );
+
+
+        if (
+            copyVerificationBtn
+        ) {
+
+            const original =
+                copyVerificationBtn
+                    .innerHTML;
+
+
+            copyVerificationBtn.innerHTML =
+                '<i class="fa-solid fa-check"></i> Copied';
+
+
+            window.setTimeout(
+                () => {
+
+                    copyVerificationBtn
+                        .innerHTML =
+                        original;
+
+                },
+                1600
+            );
+
+        }
+
+    }
+    catch (error) {
+
+        console.warn(
+            "[CWS Certificate] Clipboard unavailable:",
+            error
+        );
+
 
         window.prompt(
             "Copy this verification link:",
-            verificationUrl
+            currentVerificationUrl
         );
 
     }
@@ -1018,32 +2118,80 @@ async function copyVerificationLink() {
 }
 
 
+/* =========================================================
+   LOGOUT
+========================================================= */
+
 async function logout() {
 
-    await signOut(auth);
+    try {
 
-    window.location.replace(
-        "../pages/login.html"
-    );
+        if (logoutBtn) {
+
+            logoutBtn.disabled =
+                true;
+
+        }
+
+
+        await signOut(
+            auth
+        );
+
+
+        window.location.replace(
+            "../pages/login.html"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "[CWS Certificate] Logout failed:",
+            error
+        );
+
+
+        if (logoutBtn) {
+
+            logoutBtn.disabled =
+                false;
+
+        }
+
+    }
 
 }
 
 
-downloadPdfBtn?.addEventListener(
-    "click",
-    downloadCertificatePdf
-);
+/* =========================================================
+   EVENTS
+========================================================= */
 
-copyVerificationBtn?.addEventListener(
-    "click",
-    copyVerificationLink
-);
+downloadPdfBtn
+    ?.addEventListener(
+        "click",
+        downloadCertificatePdf
+    );
 
-logoutBtn?.addEventListener(
-    "click",
-    logout
-);
 
+copyVerificationBtn
+    ?.addEventListener(
+        "click",
+        copyVerificationLink
+    );
+
+
+logoutBtn
+    ?.addEventListener(
+        "click",
+        logout
+    );
+
+
+/* =========================================================
+   AUTH
+========================================================= */
 
 if (!auth) {
 
@@ -1060,23 +2208,67 @@ else {
 
             if (!user) {
 
+                const courseId =
+                    getCourseIdFromUrl();
+
+
                 window.location.replace(
-                    "../pages/login.html?redirect=certificate"
+                    "../pages/login.html" +
+                    "?redirect=certificate" +
+                    `&course=${encodeURIComponent(
+                        courseId
+                    )}`
                 );
 
+
                 return;
 
             }
 
-            currentUser = user;
+
+            currentUser =
+                user;
+
+
+            if (studentName) {
+
+                studentName.textContent =
+                    getUserName(
+                        user
+                    );
+
+            }
+
 
             if (initialized) {
+
                 return;
+
             }
 
-            initialized = true;
 
-            await loadCertificate();
+            initialized =
+                true;
+
+
+            try {
+
+                await loadCertificatePage();
+
+            }
+            catch (error) {
+
+                console.error(
+                    "[CWS Certificate] Initialization failed:",
+                    error
+                );
+
+
+                showError(
+                    "An unexpected error occurred while loading the certificate."
+                );
+
+            }
 
         }
     );
