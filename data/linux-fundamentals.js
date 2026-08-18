@@ -34,6 +34,60 @@ function buildParagraphs(paragraphs = []) {
 
 function buildSections(sections = []) {
 
+    const inferWhyItMatters = (section = {}) => {
+        if (section.why) {
+            return section.why;
+        }
+
+        if (section.note) {
+            return section.note;
+        }
+
+        return `Understanding ${section.heading || "this concept"} helps you reason about Linux behavior instead of memorizing commands. In administration and cybersecurity, that makes troubleshooting, configuration review and security analysis more accurate.`;
+    };
+
+    const inferExampleExplanation = (section = {}) => {
+        if (section.exampleExplanation) {
+            return section.exampleExplanation;
+        }
+
+        if (section.demo) {
+            return `Read the example from left to right. Identify the command, any options, the target being inspected or changed, and the result you expect. Run examples only in a system or lab you are authorized to use, then compare the real output with the explanation in the lesson.`;
+        }
+
+        return "";
+    };
+
+    const inferCommonMistakes = (section = {}) => {
+        if (Array.isArray(section.commonMistakes) && section.commonMistakes.length) {
+            return section.commonMistakes;
+        }
+
+        return [
+            `Memorizing ${section.heading || "the topic"} without understanding what problem it solves.`,
+            "Running a command without checking the current user, path, target, permissions or expected effect.",
+            "Treating one command result as complete proof instead of checking surrounding context."
+        ];
+    };
+
+    const inferTroubleshooting = (section = {}) => {
+        if (Array.isArray(section.troubleshooting) && section.troubleshooting.length) {
+            return section.troubleshooting;
+        }
+
+        return [
+            "Read the exact error message before changing anything.",
+            "Confirm your current user, working directory and permissions.",
+            "Check command syntax with --help or the relevant man page.",
+            "Verify the result with a separate read-only command whenever possible."
+        ];
+    };
+
+    const buildList = (items = []) =>
+        items
+            .map(item => `<li>${escapeLessonText(item)}</li>`)
+            .join("");
+
     return sections
         .map(
             section => {
@@ -46,11 +100,43 @@ function buildSections(sections = []) {
                 const demo =
                     section.demo
                         ? `
-                            <pre class="lesson-code-block">${escapeLessonText(
-                                section.demo
-                            )}</pre>
+                            <div class="lesson-example">
+                                <h3>
+                                    <i class="fa-solid fa-terminal"></i>
+                                    Practical Example
+                                </h3>
+
+                                <pre class="lesson-code-block">${escapeLessonText(
+                                    section.demo
+                                )}</pre>
+
+                                <div class="lesson-example-explanation">
+                                    <strong>How to read this example</strong>
+                                    <p>
+                                        ${escapeLessonText(
+                                            inferExampleExplanation(section)
+                                        )}
+                                    </p>
+                                </div>
+                            </div>
                         `
                         : "";
+
+                const why =
+                    `
+                        <div class="lesson-why">
+                            <h3>
+                                <i class="fa-solid fa-circle-question"></i>
+                                Why does this matter?
+                            </h3>
+
+                            <p>
+                                ${escapeLessonText(
+                                    inferWhyItMatters(section)
+                                )}
+                            </p>
+                        </div>
+                    `;
 
                 const note =
                     section.note
@@ -58,7 +144,7 @@ function buildSections(sections = []) {
                             <div class="lesson-callout">
 
                                 <div class="lesson-callout-icon">
-                                    <i class="fa-solid fa-lightbulb"></i>
+                                    <i class="fa-solid fa-shield-halved"></i>
                                 </div>
 
                                 <div>
@@ -82,18 +168,60 @@ function buildSections(sections = []) {
                         `
                         : "";
 
+                const mistakes =
+                    `
+                        <div class="lesson-deep-dive lesson-mistakes">
+                            <h3>
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Common Mistakes
+                            </h3>
+
+                            <ul>
+                                ${buildList(
+                                    inferCommonMistakes(section)
+                                )}
+                            </ul>
+                        </div>
+                    `;
+
+                const troubleshooting =
+                    `
+                        <div class="lesson-deep-dive lesson-troubleshooting">
+                            <h3>
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                                Troubleshooting Approach
+                            </h3>
+
+                            <ol>
+                                ${buildList(
+                                    inferTroubleshooting(section)
+                                )}
+                            </ol>
+                        </div>
+                    `;
+
                 return `
-                    <h2>
-                        ${escapeLessonText(
-                            section.heading
-                        )}
-                    </h2>
+                    <section class="lesson-topic">
 
-                    ${paragraphs}
+                        <h2>
+                            ${escapeLessonText(
+                                section.heading
+                            )}
+                        </h2>
 
-                    ${demo}
+                        ${paragraphs}
 
-                    ${note}
+                        ${why}
+
+                        ${demo}
+
+                        ${note}
+
+                        ${mistakes}
+
+                        ${troubleshooting}
+
+                    </section>
                 `;
 
             }
@@ -156,6 +284,22 @@ function lesson(
             data.keyConcepts ||
             [],
 
+        practice: {
+            title:
+                data.practice?.title ||
+                "Check Your Understanding",
+
+            instructions:
+                data.practice?.instructions ||
+                [
+                    `Explain ${title} in your own words without looking at the lesson.`,
+                    "Run or review the lesson examples in an authorized Linux lab.",
+                    "Predict the result before executing each command.",
+                    "Verify the result with a read-only command and explain what changed.",
+                    "Write down one cybersecurity use case and one common mistake related to this lesson."
+                ]
+        },
+
         quiz:
             data.quiz ||
             []
@@ -202,10 +346,26 @@ export const linuxFundamentals = {
         "Learn the Linux command line, filesystem, permissions, processes, networking utilities and security fundamentals.",
 
     longDescription:
-        "Linux Fundamentals introduces students to Linux administration from a cybersecurity perspective. Students learn how Linux is structured, how to navigate and manipulate the filesystem, how users and permissions work, how to inspect processes and services, how to troubleshoot networking, how to manage software, how to automate tasks with Bash and how to apply fundamental Linux security practices.",
+        "Linux Fundamentals teaches Linux administration from first principles and a cybersecurity perspective. Every topic is designed to explain what the concept is, why it exists, how it works, how to use it, what output to expect, where it appears in real systems, common mistakes, troubleshooting approaches and its security relevance. Students learn how Linux is structured, how to navigate and manipulate the filesystem, how users and permissions work, how to inspect processes and services, how to troubleshoot networking, how to manage software, how to automate tasks with Bash and how to apply fundamental Linux security practices.",
 
     duration:
-        "30–40 Hours",
+        "45–60 Hours",
+
+    learningStandard:
+        "Deep Explanation • Examples • Security Context • Troubleshooting • Practice",
+
+    lessonMethod: [
+        "What the concept is",
+        "Why the concept exists",
+        "How it works",
+        "Commands and syntax",
+        "Practical examples",
+        "Expected interpretation",
+        "Cybersecurity relevance",
+        "Common mistakes",
+        "Troubleshooting",
+        "Knowledge check and practice"
+    ],
 
     objectives: [
 
