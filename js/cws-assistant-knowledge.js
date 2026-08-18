@@ -1,6 +1,6 @@
 /* =========================================================
    CWS ACADEMY
-   ASSISTANT KNOWLEDGE BASE
+   ASSISTANT KNOWLEDGE BASE V2
    File: js/cws-assistant-knowledge.js
 ========================================================= */
 
@@ -18,12 +18,12 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "free learning"
         ],
         answer:
-            "CWS Academy offers free learning paths focused on cybersecurity foundations. You can browse all free courses from the Courses page using the Free filter.",
+            "CWS Academy offers free learning paths focused on cybersecurity foundations. Use the Free filter on the Courses page to see them.",
         action: {
             label: "View Free Courses",
             publicPath: "pages/courses.html?filter=free",
             nestedPublicPath: "courses.html?filter=free",
-            studentPath: "../pages/courses.html?filter=free"
+            studentPath: "student-courses.html"
         }
     },
 
@@ -57,7 +57,7 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "subscription"
         ],
         answer:
-            "The Free plan costs nothing. CWS Pro pricing is not active yet and is currently shown as Coming Soon on the Free vs Pro page.",
+            "The Free plan costs nothing. CWS Pro pricing is not active yet and is currently shown as Coming Soon.",
         action: {
             label: "View Free vs Pro",
             publicPath: "pages/pricing.html",
@@ -75,7 +75,7 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "available courses"
         ],
         answer:
-            "You can browse all public CWS Academy courses from the Courses page. Free and Pro courses can be filtered separately.",
+            "You can browse all CWS Academy learning paths from the Courses area. Free and Pro courses are separated by access level.",
         action: {
             label: "Browse Courses",
             publicPath: "pages/courses.html",
@@ -94,7 +94,7 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "hands on"
         ],
         answer:
-            "Labs and practical activities are available inside the student area. Activities unlock based on course progress and prerequisites.",
+            "Labs and practical activities are available inside the student area. Some activities unlock only after prerequisite lessons are complete.",
         action: {
             label: "Open Labs",
             publicPath: "pages/login.html?redirect=labs",
@@ -114,7 +114,7 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "exam"
         ],
         answer:
-            "CWS Academy uses lesson quizzes, module assessments and final assessments to measure progress. Some assessments only unlock after required lessons and practical activities are completed.",
+            "CWS Academy uses lesson knowledge checks, module assessments and final assessments to measure understanding and course progress.",
         action: {
             label: "Open Assessments",
             publicPath: "pages/login.html?redirect=assessments",
@@ -133,7 +133,7 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "track progress"
         ],
         answer:
-            "Signed-in students can track completed lessons, labs, assessments and overall course completion from the Progress page.",
+            "Signed-in students can track completed lessons, labs, assessments and overall course progress from the Progress page.",
         action: {
             label: "View Progress",
             publicPath: "pages/login.html?redirect=progress",
@@ -152,7 +152,7 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "pdf certificate"
         ],
         answer:
-            "Earned course certificates are available from the student Certificates page. Verified CWS credentials may include an issue date, credential ID, QR verification and downloadable PDF.",
+            "Earned course certificates appear in the student Certificates area after the required course pathway and final assessment are completed.",
         action: {
             label: "Open Certificates",
             publicPath: "pages/login.html?redirect=certificates",
@@ -168,11 +168,10 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "verify credential",
             "credential id",
             "qr code",
-            "certificate verification",
-            "employer verify"
+            "certificate verification"
         ],
         answer:
-            "CWS Academy credentials can be checked using the public verification page. Enter the credential ID from the certificate or scan its QR code.",
+            "CWS Academy credentials can be checked using the public verification page by entering the credential ID or scanning the certificate QR code.",
         action: {
             label: "Verify Credential",
             publicPath: "pages/verify-certificate.html",
@@ -205,11 +204,10 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "register",
             "registration",
             "create account",
-            "sign up",
-            "new account"
+            "sign up"
         ],
         answer:
-            "Registration is free. Create a CWS Academy account to access student learning features such as lessons, labs, assessments and progress tracking.",
+            "Registration is free. Create a CWS Academy account to access student learning features.",
         action: {
             label: "Create Account",
             publicPath: "pages/register.html",
@@ -228,29 +226,12 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "cannot login"
         ],
         answer:
-            "If you forgot your password, use the Forgot Password page to request a reset link for your account.",
+            "Use the Forgot Password page to request a password reset link for your account.",
         action: {
             label: "Reset Password",
             publicPath: "pages/forgot-password.html",
             nestedPublicPath: "forgot-password.html",
             studentPath: "../pages/forgot-password.html"
-        }
-    },
-
-    {
-        id: "dashboard",
-        keywords: [
-            "dashboard",
-            "student dashboard",
-            "home dashboard"
-        ],
-        answer:
-            "The student Dashboard is your main learning hub for courses, progress, assessments, labs and certificates.",
-        action: {
-            label: "Open Dashboard",
-            publicPath: "pages/login.html?redirect=dashboard",
-            nestedPublicPath: "login.html?redirect=dashboard",
-            studentPath: "dashboard.html"
         }
     },
 
@@ -265,7 +246,7 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "cannot open course"
         ],
         answer:
-            "A course or activity can be locked because it is a CWS Pro course that is not yet available, or because required lessons, labs or assessments must be completed first.",
+            "A course or activity may be locked because it requires earlier lessons, labs or assessments, or because it belongs to CWS Pro.",
         action: {
             label: "View Courses",
             publicPath: "pages/courses.html",
@@ -280,34 +261,15 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
             "contact",
             "support",
             "help email",
-            "contact cws",
-            "contact support"
+            "contact cws"
         ],
         answer:
-            "For questions that the assistant cannot resolve, you can use the public Contact page to reach CWS Academy.",
+            "If the assistant cannot resolve your issue, use the Contact page to reach CWS Academy.",
         action: {
             label: "Contact CWS",
             publicPath: "pages/contact.html",
             nestedPublicPath: "contact.html",
             studentPath: "../pages/contact.html"
-        }
-    },
-
-    {
-        id: "about",
-        keywords: [
-            "about",
-            "what is cws",
-            "what is cws academy",
-            "cyberwithsandiso"
-        ],
-        answer:
-            "CWS Academy is part of the CyberWithSandiso ecosystem and focuses on practical cybersecurity education, structured learning and hands-on security training.",
-        action: {
-            label: "About CWS Academy",
-            publicPath: "pages/about.html",
-            nestedPublicPath: "about.html",
-            studentPath: "../pages/about.html"
         }
     }
 
@@ -316,19 +278,19 @@ export const CWS_ASSISTANT_KNOWLEDGE = [
 
 export const CWS_ASSISTANT_QUICK_ACTIONS = [
     {
-        label: "Courses",
-        query: "What courses are available?"
+        label: "Next Step",
+        query: "What should I do next?"
+    },
+    {
+        label: "I'm Stuck",
+        query: "I'm stuck. What should I do?"
+    },
+    {
+        label: "Progress",
+        query: "Where can I see my progress?"
     },
     {
         label: "Free vs Pro",
         query: "What is the difference between Free and Pro?"
-    },
-    {
-        label: "Labs",
-        query: "How do labs work?"
-    },
-    {
-        label: "Certificates",
-        query: "How do certificates work?"
     }
 ];
