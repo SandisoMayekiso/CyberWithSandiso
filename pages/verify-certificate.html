@@ -5,44 +5,26 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="description"
-        content="Verify a CWS Academy certificate credential."
-    >
+    <meta name="description" content="Verify a CWS Academy certificate credential.">
 
-    <meta
-        name="author"
-        content="CyberWithSandiso"
-    >
+    <meta name="author" content="CyberWithSandiso">
 
     <title>Verify Credential | CWS Academy</title>
-
 
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
-    <link
-        rel="stylesheet"
-        href="../css/style.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="../css/verify-certificate.css"
-    >
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/verify-certificate.css">
+    <link rel="stylesheet" href="../css/cws-assistant.css">
 
 </head>
 
-
 <body class="verification-page">
-
 
 <header class="verification-header">
 
@@ -55,15 +37,8 @@
         <i class="fa-solid fa-shield-halved"></i>
 
         <span>
-
-            <strong>
-                CWS ACADEMY
-            </strong>
-
-            <small>
-                CyberWithSandiso
-            </small>
-
+            <strong>CWS ACADEMY</strong>
+            <small>CyberWithSandiso</small>
         </span>
 
     </a>
@@ -72,7 +47,6 @@
 
 
 <main class="verification-main">
-
 
     <section class="verification-hero">
 
@@ -118,11 +92,8 @@
                     type="submit"
                     id="verifyCredentialBtn"
                 >
-
                     <i class="fa-solid fa-magnifying-glass"></i>
-
                     Verify
-
                 </button>
 
             </div>
@@ -149,9 +120,7 @@
 
         <i class="fa-solid fa-spinner fa-spin"></i>
 
-        <h2>
-            Checking credential...
-        </h2>
+        <h2>Checking credential...</h2>
 
         <p>
             Looking for a matching CWS Academy verification record.
@@ -174,13 +143,9 @@
 
         <div>
 
-            <span>
-                NOT VERIFIED
-            </span>
+            <span>NOT VERIFIED</span>
 
-            <h2>
-                Credential not found
-            </h2>
+            <h2>Credential not found</h2>
 
             <p id="verificationNotFoundText">
                 No active CWS Academy verification record was found for this
@@ -206,9 +171,7 @@
 
         <div class="verification-result-content">
 
-            <span>
-                VERIFIED CREDENTIAL
-            </span>
+            <span>VERIFIED CREDENTIAL</span>
 
             <h2 id="verifiedCourse">
                 Course
@@ -279,7 +242,6 @@
 
     </section>
 
-
 </main>
 
 
@@ -298,6 +260,11 @@
     src="../js/verify-certificate.js"
 ></script>
 
+<script
+    type="module"
+    src="../js/cws-assistant.js"
+></script>
 
 </body>
+
 </html>
