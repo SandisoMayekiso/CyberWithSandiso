@@ -761,18 +761,17 @@ function createCertificateCard(
 
             <div class="certificate-card-actions">
 
-                <button
-                    type="button"
-                    class="certificate-view-btn"
-                    data-certificate-id="${escapeHTML(
+                <a
+                    href="certificate.html?course=${encodeURIComponent(
                         certificate.id
                     )}"
+                    class="certificate-view-btn"
                 >
 
                     <i class="fa-solid fa-eye"></i>
                     View Certificate
 
-                </button>
+                </a>
 
             </div>
 
@@ -922,16 +921,15 @@ function createUpcomingCertificateCard(
         ${
             path.earned
                 ? `
-                    <button
-                        type="button"
-                        class="certificate-view-btn"
-                        data-certificate-id="${escapeHTML(
+                    <a
+                        href="certificate.html?course=${encodeURIComponent(
                             path.id
                         )}"
+                        class="certificate-view-btn"
                     >
                         <i class="fa-solid fa-certificate"></i>
                         View Earned Certificate
-                    </button>
+                    </a>
                   `
                 : path.status !== "Planned"
                     ? `
