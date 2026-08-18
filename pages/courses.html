@@ -95,8 +95,15 @@
                     <a
                         href="courses.html"
                         class="active"
+                        aria-current="page"
                     >
                         Courses
+                    </a>
+                </li>
+
+                <li>
+                    <a href="pricing.html">
+                        Free vs Pro
                     </a>
                 </li>
 
@@ -196,6 +203,25 @@
                     concepts to practical security skills.
                 </p>
 
+                <div class="courses-hero-actions">
+
+                    <a
+                        href="register.html"
+                        class="btn-primary"
+                    >
+                        Start Learning Free
+                    </a>
+
+                    <a
+                        href="pricing.html"
+                        class="btn-secondary courses-pro-compare-btn"
+                    >
+                        <i class="fa-solid fa-crown"></i>
+                        Compare Free & Pro
+                    </a>
+
+                </div>
+
             </div>
 
         </section>
@@ -282,6 +308,43 @@
                 >
                     Advanced
                 </button>
+
+            </div>
+
+
+            <div class="course-access-info">
+
+                <div class="course-access-info-copy">
+
+                    <span class="course-access-info-icon">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Free or Pro?
+                        </strong>
+
+                        <p>
+                            Free courses build your foundations.
+                            CWS Pro adds deeper hands-on labs,
+                            advanced assessments, portfolio-ready
+                            projects and verified credentials.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="pricing.html"
+                    class="course-access-info-link"
+                >
+                    Compare Free & Pro
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
 
             </div>
 
@@ -1322,6 +1385,23 @@
 
             </div>
 
+
+            <div
+                class="course-empty-state"
+                aria-live="polite"
+            >
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <h3>
+                    No courses found
+                </h3>
+
+                <p>
+                    No courses currently match this filter.
+                </p>
+
+            </div>
+
         </section>
 
 
@@ -1363,6 +1443,14 @@
                         class="btn-secondary"
                     >
                         Sign In
+                    </a>
+
+                    <a
+                        href="pricing.html"
+                        class="btn-secondary courses-pro-compare-btn"
+                    >
+                        <i class="fa-solid fa-crown"></i>
+                        Compare Free & Pro
                     </a>
 
                 </div>
@@ -1417,6 +1505,10 @@
 
                 <a href="courses.html">
                     Courses
+                </a>
+
+                <a href="pricing.html">
+                    Free vs Pro
                 </a>
 
                 <a
@@ -1501,6 +1593,7 @@
     ></script>
 
     <script
+        type="module"
         src="../js/courses.js"
     ></script>
 
