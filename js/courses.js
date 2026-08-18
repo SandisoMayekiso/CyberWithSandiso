@@ -17,7 +17,7 @@ import {
    DEBUG
 ========================================================= */
 
-const DEBUG = true;
+const DEBUG = false;
 
 
 function log(...args) {
@@ -107,6 +107,80 @@ document.addEventListener(
             )
                 .trim()
                 .toLowerCase();
+
+        }
+
+
+        /* =================================================
+           INITIAL FILTER FROM URL
+        ================================================== */
+
+        function getInitialFilter() {
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+
+            const requested =
+                normalizeValue(
+                    params.get("filter")
+                );
+
+
+            const allowed = [
+                "all",
+                "free",
+                "pro",
+                "beginner",
+                "intermediate",
+                "advanced"
+            ];
+
+
+            return allowed.includes(
+                requested
+            )
+                ? requested
+                : "all";
+
+        }
+
+
+        function setActiveFilterButton(
+            filter
+        ) {
+
+            filterButtons.forEach(
+                button => {
+
+                    const buttonFilter =
+                        normalizeValue(
+                            button.dataset.filter
+                        );
+
+
+                    const isActive =
+                        buttonFilter ===
+                        filter;
+
+
+                    button.classList.toggle(
+                        "active",
+                        isActive
+                    );
+
+
+                    button.setAttribute(
+                        "aria-pressed",
+                        String(
+                            isActive
+                        )
+                    );
+
+                }
+            );
 
         }
 
@@ -311,6 +385,51 @@ document.addEventListener(
                             selectedFilter
                         );
 
+
+                        try {
+
+                            const url =
+                                new URL(
+                                    window.location.href
+                                );
+
+
+                            if (
+                                selectedFilter ===
+                                "all"
+                            ) {
+
+                                url.searchParams.delete(
+                                    "filter"
+                                );
+
+                            }
+                            else {
+
+                                url.searchParams.set(
+                                    "filter",
+                                    selectedFilter
+                                );
+
+                            }
+
+
+                            window.history.replaceState(
+                                {},
+                                "",
+                                url
+                            );
+
+                        }
+                        catch (error) {
+
+                            warn(
+                                "Could not update course filter URL.",
+                                error
+                            );
+
+                        }
+
                     }
                 );
 
@@ -322,8 +441,17 @@ document.addEventListener(
            INITIAL FILTER
         ================================================== */
 
+        const initialFilter =
+            getInitialFilter();
+
+
+        setActiveFilterButton(
+            initialFilter
+        );
+
+
         filterCourses(
-            "all"
+            initialFilter
         );
 
 
