@@ -1418,6 +1418,175 @@ function updateUI() {
 }
 
 
+
+/* =========================================================
+   CERTIFICATE CREDENTIAL ID
+========================================================= */
+
+function generateCredentialId(
+    courseId,
+    uid
+) {
+
+    const coursePart =
+        String(courseId)
+            .replace(/[^a-z0-9]/gi, "")
+            .slice(0, 8)
+            .toUpperCase();
+
+
+    const userPart =
+        String(uid)
+            .replace(/[^a-z0-9]/gi, "")
+            .slice(0, 6)
+            .toUpperCase();
+
+
+    const randomPart =
+        crypto.getRandomValues(
+            new Uint32Array(1)
+        )[0]
+            .toString(16)
+            .slice(0, 6)
+            .toUpperCase();
+
+
+    return (
+        `CWS-${coursePart}-${userPart}-${randomPart}`
+    );
+
+}
+
+
+/* =========================================================
+   ISSUE CERTIFICATE RECORD
+========================================================= */
+
+async function issueCertificateRecord(
+    finalScore
+) {
+
+    if (
+        !db ||
+        !currentUser ||
+        !currentCourse
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        !currentProgress.completed ||
+        !currentProgress.certificateEligible
+    ) {
+
+        return;
+
+    }
+
+
+    let credentialId =
+        currentProgress
+            ?.certificate
+            ?.credentialId ||
+        "";
+
+
+    if (!credentialId) {
+
+        credentialId =
+            generateCredentialId(
+                currentCourse.id,
+                currentUser.uid
+            );
+
+    }
+
+
+    const issuedAt =
+        serverTimestamp();
+
+
+    currentProgress.certificate = {
+
+        credentialId,
+
+        issued:
+            true,
+
+        issuedAt
+
+    };
+
+
+    currentProgress.completedAt =
+        currentProgress.completedAt ||
+        issuedAt;
+
+
+    /*
+     * Save certificate metadata back into the user's
+     * private courseProgress document.
+     */
+
+    await saveProgress();
+
+
+    /*
+     * Public verification record.
+     *
+     * IMPORTANT:
+     * This client-side write works for the current GitHub Pages
+     * architecture, but production-grade credentials should be
+     * issued by a trusted Firebase Cloud Function/Admin SDK.
+     */
+
+    await setDoc(
+        doc(
+            db,
+            "certificateVerifications",
+            credentialId
+        ),
+        {
+            credentialId,
+
+            userId:
+                currentUser.uid,
+
+            studentName:
+                getUserName(
+                    currentUser
+                ),
+
+            courseId:
+                currentCourse.id,
+
+            courseTitle:
+                currentCourse.title,
+
+            finalScore:
+                Number(
+                    finalScore || 0
+                ),
+
+            issuedAt,
+
+            status:
+                "active"
+        },
+        {
+            merge: true
+        }
+    );
+
+
+    return credentialId;
+
+}
+
+
 /* =========================================================
    SUBMIT
 ========================================================= */
@@ -1591,6 +1760,33 @@ async function submitFinalAssessment(
 
 
     await saveProgress();
+
+
+    if (
+        currentProgress
+            .finalAssessment
+            .passed
+    ) {
+
+        try {
+
+            await issueCertificateRecord(
+                currentProgress
+                    .finalAssessment
+                    .bestScore
+            );
+
+        }
+        catch (certificateError) {
+
+            console.error(
+                "[CWS Final] Certificate issuance failed:",
+                certificateError
+            );
+
+        }
+
+    }
 
 
     assessmentResult.hidden =
@@ -1769,7 +1965,7 @@ async function logout() {
 
 
         window.location.replace(
-            "../pages/login.html"
+            "login.html"
         );
 
     }
@@ -1843,7 +2039,7 @@ logoutBtn
 if (!auth) {
 
     window.location.replace(
-        "../pages/login.html"
+        "login.html"
     );
 
 }
@@ -1863,7 +2059,7 @@ else {
 
                 window.location.replace(
 
-                    `../pages/login.html?redirect=final-assessment` +
+                    `login.html?redirect=final-assessment` +
 
                     `&course=${encodeURIComponent(
                         courseId
