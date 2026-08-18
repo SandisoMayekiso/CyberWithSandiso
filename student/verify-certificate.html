@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Verify a CWS Academy certificate credential."
+    >
+
+    <title>Verify Credential | CWS Academy</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/verify-certificate.css"
+    >
+</head>
+
+<body class="verification-page">
+
+<header class="verification-header">
+
+    <a
+        href="../index.html"
+        class="verification-brand"
+    >
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <span>
+            <strong>CWS ACADEMY</strong>
+            <small>CyberWithSandiso</small>
+        </span>
+    </a>
+
+</header>
+
+
+<main class="verification-main">
+
+    <section class="verification-hero">
+
+        <span class="verification-eyebrow">
+            PUBLIC CREDENTIAL VERIFICATION
+        </span>
+
+        <h1>
+            Verify a CWS Academy Certificate
+        </h1>
+
+        <p>
+            Enter a credential ID or use a certificate's QR code to confirm
+            that a CWS Academy achievement record exists.
+        </p>
+
+
+        <form
+            id="verificationForm"
+            class="verification-form"
+        >
+
+            <label for="credentialInput">
+                Credential ID
+            </label>
+
+            <div class="verification-input-row">
+
+                <input
+                    type="text"
+                    id="credentialInput"
+                    autocomplete="off"
+                    placeholder="CWS-CYBER-XXXXXXXX"
+                    required
+                >
+
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Verify
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <section
+        id="verificationLoading"
+        class="verification-state"
+        hidden
+    >
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <h2>Checking credential...</h2>
+    </section>
+
+
+    <section
+        id="verificationNotFound"
+        class="verification-result invalid"
+        hidden
+    >
+
+        <div class="verification-result-icon">
+            <i class="fa-solid fa-circle-xmark"></i>
+        </div>
+
+        <div>
+            <span>NOT VERIFIED</span>
+            <h2>Credential not found</h2>
+            <p>
+                No active CWS Academy verification record was found for this
+                credential ID.
+            </p>
+        </div>
+
+    </section>
+
+
+    <section
+        id="verificationResult"
+        class="verification-result valid"
+        hidden
+    >
+
+        <div class="verification-result-icon">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+
+        <div class="verification-result-content">
+
+            <span>
+                VERIFIED CREDENTIAL
+            </span>
+
+            <h2 id="verifiedCourse">
+                Course
+            </h2>
+
+            <p>
+                This credential matches a CWS Academy course-completion record.
+            </p>
+
+
+            <div class="verification-grid">
+
+                <div>
+                    <small>LEARNER</small>
+                    <strong id="verifiedStudent">—</strong>
+                </div>
+
+                <div>
+                    <small>COURSE</small>
+                    <strong id="verifiedCourseField">—</strong>
+                </div>
+
+                <div>
+                    <small>ISSUED</small>
+                    <strong id="verifiedDate">—</strong>
+                </div>
+
+                <div>
+                    <small>CREDENTIAL ID</small>
+                    <strong id="verifiedCredential">—</strong>
+                </div>
+
+                <div>
+                    <small>FINAL ASSESSMENT</small>
+                    <strong id="verifiedScore">—</strong>
+                </div>
+
+                <div>
+                    <small>STATUS</small>
+                    <strong id="verifiedStatus">Verified</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="verification-info">
+
+        <i class="fa-solid fa-circle-info"></i>
+
+        <p>
+            Verification confirms that the credential exists in the CWS Academy
+            verification database. Credential security should be backed by
+            server-side certificate issuance in production.
+        </p>
+
+    </section>
+
+</main>
+
+
+<script
+    type="module"
+    src="../js/verify-certificate.js"
+></script>
+
+</body>
+</html>
