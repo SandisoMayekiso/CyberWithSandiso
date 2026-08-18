@@ -1270,36 +1270,55 @@ function safeFileName(value) {
 async function downloadCertificatePdf() {
 
     if (
-        !window.jspdf ||
-        typeof window.jspdf
-            .jsPDF !==
-        "function"
+        !currentCourse ||
+        !currentProgress
     ) {
+
+        alert(
+            "The certificate is not ready yet. Please wait for it to finish loading."
+        );
+
+        return;
+    }
+
+
+    const jsPdfNamespace =
+        window.jspdf;
+
+
+    if (
+        !jsPdfNamespace ||
+        typeof jsPdfNamespace.jsPDF !==
+            "function"
+    ) {
+
+        console.error(
+            "[CWS Certificate] jsPDF is unavailable.",
+            window.jspdf
+        );
+
 
         alert(
             "The PDF generator did not load. Please refresh the page and try again."
         );
 
-
         return;
-
     }
 
 
-    if (
-        !currentCourse ||
-        !currentProgress
-    ) {
-
-        return;
-
-    }
+    const originalButtonHtml =
+        downloadPdfBtn
+            ?.innerHTML;
 
 
     if (downloadPdfBtn) {
 
         downloadPdfBtn.disabled =
             true;
+
+
+        downloadPdfBtn.innerHTML =
+            '<i class="fa-solid fa-circle-notch fa-spin"></i> Preparing PDF...';
 
     }
 
@@ -1309,7 +1328,7 @@ async function downloadCertificatePdf() {
         const {
             jsPDF
         } =
-            window.jspdf;
+            jsPdfNamespace;
 
 
         const pdf =
@@ -1321,7 +1340,10 @@ async function downloadCertificatePdf() {
                     "mm",
 
                 format:
-                    "a4"
+                    "a4",
+
+                compress:
+                    true
             });
 
 
@@ -1338,7 +1360,7 @@ async function downloadCertificatePdf() {
 
 
         /*
-         * Background
+         * BACKGROUND
          */
 
         pdf.setFillColor(
@@ -1358,7 +1380,7 @@ async function downloadCertificatePdf() {
 
 
         /*
-         * Borders
+         * BORDERS
          */
 
         pdf.setDrawColor(
@@ -1402,7 +1424,7 @@ async function downloadCertificatePdf() {
 
 
         /*
-         * Brand
+         * BRAND
          */
 
         pdf.setTextColor(
@@ -1473,7 +1495,7 @@ async function downloadCertificatePdf() {
 
 
         /*
-         * Main certificate
+         * CERTIFICATE HEADING
          */
 
         pdf.setTextColor(
@@ -1528,6 +1550,17 @@ async function downloadCertificatePdf() {
         );
 
 
+        /*
+         * STUDENT NAME
+         */
+
+        const learnerName =
+            getUserName(
+                currentUser
+            ) ||
+            "Student";
+
+
         pdf.setTextColor(
             248,
             248,
@@ -1546,10 +1579,17 @@ async function downloadCertificatePdf() {
         );
 
 
+        const learnerLines =
+            pdf.splitTextToSize(
+                String(
+                    learnerName
+                ),
+                190
+            );
+
+
         pdf.text(
-            getUserName(
-                currentUser
-            ),
+            learnerLines,
             width / 2,
             79,
             {
@@ -1603,6 +1643,10 @@ async function downloadCertificatePdf() {
         );
 
 
+        /*
+         * COURSE TITLE
+         */
+
         pdf.setTextColor(
             248,
             248,
@@ -1643,6 +1687,10 @@ async function downloadCertificatePdf() {
         );
 
 
+        /*
+         * COURSE DESCRIPTION
+         */
+
         pdf.setTextColor(
             160,
             160,
@@ -1663,8 +1711,10 @@ async function downloadCertificatePdf() {
 
         const descriptionLines =
             pdf.splitTextToSize(
-                currentCourse.description ||
-                "CWS Academy course completion.",
+                String(
+                    currentCourse.description ||
+                    "CWS Academy course completion."
+                ),
                 170
             );
 
@@ -1681,7 +1731,7 @@ async function downloadCertificatePdf() {
 
 
         /*
-         * Detail row
+         * DETAIL ROW
          */
 
         pdf.setDrawColor(
@@ -1708,24 +1758,16 @@ async function downloadCertificatePdf() {
 
 
         const centers = [
-
             width * 0.25,
-
             width * 0.50,
-
             width * 0.75
-
         ];
 
 
         const labels = [
-
             "FINAL ASSESSMENT",
-
             "ISSUED",
-
             "CREDENTIAL ID"
-
         ];
 
 
@@ -1734,7 +1776,6 @@ async function downloadCertificatePdf() {
 
 
         const values = [
-
             score > 0
                 ? `${score}%`
                 : "PASSED",
@@ -1743,8 +1784,8 @@ async function downloadCertificatePdf() {
                 getIssueDateValue()
             ),
 
-            currentCredentialId
-
+            currentCredentialId ||
+            "CWS-CREDENTIAL"
         ];
 
 
@@ -1795,10 +1836,17 @@ async function downloadCertificatePdf() {
                 );
 
 
+                const valueLines =
+                    pdf.splitTextToSize(
+                        String(
+                            values[index]
+                        ),
+                        66
+                    );
+
+
                 pdf.text(
-                    String(
-                        values[index]
-                    ),
+                    valueLines,
                     centers[index],
                     164,
                     {
@@ -1812,7 +1860,7 @@ async function downloadCertificatePdf() {
 
 
         /*
-         * QR Code
+         * QR CODE
          */
 
         if (
@@ -1829,37 +1877,46 @@ async function downloadCertificatePdf() {
                         );
 
 
-                pdf.addImage(
-                    qrImage,
-                    "PNG",
-                    width / 2 - 13,
-                    174,
-                    26,
-                    26
-                );
+                if (
+                    qrImage &&
+                    qrImage.startsWith(
+                        "data:image/png"
+                    )
+                ) {
+
+                    pdf.addImage(
+                        qrImage,
+                        "PNG",
+                        width / 2 - 13,
+                        174,
+                        26,
+                        26
+                    );
 
 
-                pdf.setTextColor(
-                    130,
-                    130,
-                    130
-                );
+                    pdf.setTextColor(
+                        130,
+                        130,
+                        130
+                    );
 
 
-                pdf.setFontSize(
-                    6.5
-                );
+                    pdf.setFontSize(
+                        6.5
+                    );
 
 
-                pdf.text(
-                    "SCAN TO VERIFY",
-                    width / 2,
-                    204,
-                    {
-                        align:
-                            "center"
-                    }
-                );
+                    pdf.text(
+                        "SCAN TO VERIFY",
+                        width / 2,
+                        204,
+                        {
+                            align:
+                                "center"
+                        }
+                    );
+
+                }
 
             }
             catch (error) {
@@ -1875,7 +1932,7 @@ async function downloadCertificatePdf() {
 
 
         /*
-         * Signature
+         * SIGNATURE
          */
 
         pdf.setDrawColor(
@@ -1940,7 +1997,7 @@ async function downloadCertificatePdf() {
 
 
         /*
-         * Verification
+         * VERIFICATION
          */
 
         pdf.setTextColor(
@@ -1990,35 +2047,140 @@ async function downloadCertificatePdf() {
         );
 
 
-        const verifyLines =
-            pdf.splitTextToSize(
-                currentVerificationUrl,
-                72
+        if (
+            currentVerificationUrl
+        ) {
+
+            const verifyLines =
+                pdf.splitTextToSize(
+                    currentVerificationUrl,
+                    72
+                );
+
+
+            pdf.text(
+                verifyLines,
+                width - 23,
+                196,
+                {
+                    align:
+                        "right"
+                }
             );
 
-
-        pdf.text(
-            verifyLines,
-            width - 23,
-            196,
-            {
-                align:
-                    "right"
-            }
-        );
+        }
 
 
         /*
-         * Save
+         * DOWNLOAD
+         *
+         * First try the standard jsPDF save method.
+         * If the browser blocks or fails that method, create a
+         * Blob URL and trigger a normal anchor download.
          */
 
         const fileName =
             `${safeFileName(
                 currentCourse.title
-            )}-cws-certificate.pdf`;
+            ) || "cws-course"}-cws-certificate.pdf`;
 
 
-        pdf.save(
+        let downloaded =
+            false;
+
+
+        try {
+
+            pdf.save(
+                fileName
+            );
+
+
+            downloaded =
+                true;
+
+        }
+        catch (saveError) {
+
+            console.warn(
+                "[CWS Certificate] pdf.save() failed. Trying Blob download.",
+                saveError
+            );
+
+        }
+
+
+        if (!downloaded) {
+
+            const blob =
+                pdf.output(
+                    "blob"
+                );
+
+
+            if (
+                !(blob instanceof Blob) ||
+                blob.size === 0
+            ) {
+
+                throw new Error(
+                    "The generated PDF Blob is empty."
+                );
+
+            }
+
+
+            const objectUrl =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.href =
+                objectUrl;
+
+
+            link.download =
+                fileName;
+
+
+            link.style.display =
+                "none";
+
+
+            document.body.appendChild(
+                link
+            );
+
+
+            link.click();
+
+
+            link.remove();
+
+
+            window.setTimeout(
+                () => {
+
+                    URL.revokeObjectURL(
+                        objectUrl
+                    );
+
+                },
+                1500
+            );
+
+        }
+
+
+        console.info(
+            "[CWS Certificate] PDF download requested:",
             fileName
         );
 
@@ -2032,7 +2194,7 @@ async function downloadCertificatePdf() {
 
 
         alert(
-            "The certificate PDF could not be generated. Please try again."
+            "The certificate PDF could not be generated. Open the browser console for details, then try again."
         );
 
     }
@@ -2042,6 +2204,16 @@ async function downloadCertificatePdf() {
 
             downloadPdfBtn.disabled =
                 false;
+
+
+            if (
+                originalButtonHtml
+            ) {
+
+                downloadPdfBtn.innerHTML =
+                    originalButtonHtml;
+
+            }
 
         }
 
