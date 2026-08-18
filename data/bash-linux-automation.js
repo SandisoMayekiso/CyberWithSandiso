@@ -63,6 +63,46 @@ function lesson(
             extra.lab ||
             null,
 
+        whyItMatters:
+            extra.whyItMatters ||
+            `Understanding ${title} helps you move from running isolated Linux commands to building Bash automation that is predictable, reusable and safe.`,
+
+        commonMistakes:
+            extra.commonMistakes ||
+            [
+                "Copying commands into a script without understanding their input, output or exit status.",
+                "Failing to quote variable expansions when values may contain spaces or special characters.",
+                "Trusting arguments, filenames, paths or command output without validating them first.",
+                "Automating a destructive action before testing the workflow with read-only or sample data."
+            ],
+
+        troubleshooting:
+            extra.troubleshooting ||
+            [
+                "Run the failing command by itself before debugging the entire script.",
+                "Inspect the previous command exit status with echo $?.",
+                "Print or trace variable values to confirm that the script received the data you expected.",
+                "Check quoting, paths, permissions and wildcard expansion.",
+                "Reduce the script to the smallest failing example, correct it and then rebuild the workflow.",
+                "Test both successful and failure conditions before considering the automation complete."
+            ],
+
+        practice:
+            extra.practice ||
+            {
+                title:
+                    "Apply What You Learned",
+
+                steps: [
+                    `Explain ${title} in your own words.`,
+                    "Recreate one example without copying the lesson.",
+                    "Predict the command or script output before running it.",
+                    "Change one variable, argument or condition and explain why the result changes.",
+                    "Describe one Linux administration or defensive cybersecurity task where the concept would be useful.",
+                    "Test one incorrect or unexpected input and explain how the script should respond."
+                ]
+            },
+
         quiz:
             extra.quiz ||
             []
@@ -106,13 +146,35 @@ export const bashLinuxAutomation = {
         "fa-solid fa-terminal",
 
     description:
-        "Build practical Bash scripting skills for Linux administration, repetitive security tasks, file processing and automation workflows.",
+        "Build Bash scripting skills from first principles through deep explanations, worked examples, Linux administration, text processing, troubleshooting and safe defensive cybersecurity automation.",
 
     longDescription:
-        "Bash & Linux Automation teaches students how to move beyond running individual Linux commands and begin building reliable scripts. The course covers shell fundamentals, variables, arguments, conditions, loops, text-processing tools, processes, networking, cybersecurity automation and a final scripting project. Practical activities are designed for local systems and authorized lab environments.",
+        "Bash & Linux Automation teaches students how to move from individual Linux commands to understandable, testable and reliable scripts using a structured what, why, how and practice approach. Students learn how Bash interprets commands, how quoting and expansion affect data, how exit codes control workflows, how conditions and loops make decisions, how grep, sed and awk process text, and how scripts can inspect processes and networking information safely. Cybersecurity examples emphasize defensive automation, explicit scope, validation, predictable behavior and documentation. The course finishes with a complete read-only Linux security health-reporting project for local or explicitly authorized lab environments.",
 
     duration:
-        "18–24 Hours",
+        "35–45 Hours",
+
+    learningStandard:
+        "Deep Explanation • Worked Examples • Linux Context • Security Context • Troubleshooting • Practice",
+
+    lessonMethod: [
+        "What the Bash or Linux concept is",
+        "Why the concept exists",
+        "How Bash interprets or executes it",
+        "Syntax and command structure",
+        "Worked Linux example",
+        "Expected output and interpretation",
+        "Defensive cybersecurity relevance",
+        "Common mistakes and unsafe assumptions",
+        "Troubleshooting",
+        "Hands-on practice and knowledge check"
+    ],
+
+    learningEnvironment:
+        "Use a local Linux or Kali Linux lab, sample files and systems you own or are explicitly authorized to administer or assess.",
+
+    curriculumNote:
+        "Students should understand every command and script component before automating it. Free-course automation remains focused on foundations, administration and defensive read-only workflows; deeper assessment automation belongs in later Pro training.",
 
     objectives: [
 
