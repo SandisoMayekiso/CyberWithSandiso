@@ -5,45 +5,19 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="description"
-        content="Sign in to your CWS Academy student account."
-    >
+    <meta name="description" content="Sign in to your CWS Academy student account.">
 
     <title>Login | CWS Academy</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <!-- =====================================================
-         FONT AWESOME
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    >
-
-
-    <!-- =====================================================
-         SITE STYLES
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="../css/style.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="../css/auth.css"
-    >
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="../css/cws-assistant.css">
 
 </head>
-
 
 <body>
 
@@ -51,60 +25,30 @@
 
         <div class="auth-container">
 
-
-            <!-- =================================================
-                 BRAND
-            ================================================== -->
-
             <div class="auth-brand">
 
-                <a
-                    href="../index.html"
-                    class="academy-logo"
-                >
-
-                    <span class="logo-cws">
-                        CWS
-                    </span>
-
-                    <span class="logo-text">
-                        Academy
-                    </span>
-
+                <a href="../index.html" class="academy-logo">
+                    <span class="logo-cws">CWS</span>
+                    <span class="logo-text">Academy</span>
                 </a>
 
             </div>
 
 
-            <!-- =================================================
-                 LOGIN CARD
-            ================================================== -->
-
             <section class="auth-card">
 
                 <div class="auth-header">
 
-                    <span class="auth-label">
-                        STUDENT ACCESS
-                    </span>
+                    <span class="auth-label">STUDENT ACCESS</span>
 
-                    <h1>
-                        Welcome Back
-                    </h1>
+                    <h1>Welcome Back</h1>
 
                     <p>
-                        Sign in to continue your
-                        cybersecurity learning journey.
+                        Sign in to continue your cybersecurity learning journey.
                     </p>
 
                 </div>
 
-
-                <!-- =================================================
-                     LOGIN MESSAGE
-
-                     login.js expects #loginMessage
-                ================================================== -->
 
                 <div
                     id="loginMessage"
@@ -115,16 +59,7 @@
                 ></div>
 
 
-                <!-- =================================================
-                     LOGIN FORM
-                ================================================== -->
-
-                <form
-                    id="loginForm"
-                    class="auth-form"
-                >
-
-                    <!-- EMAIL -->
+                <form id="loginForm" class="auth-form">
 
                     <div class="form-group">
 
@@ -144,8 +79,6 @@
                     </div>
 
 
-                    <!-- PASSWORD -->
-
                     <div class="form-group">
 
                         <label for="loginPassword">
@@ -164,8 +97,6 @@
                     </div>
 
 
-                    <!-- OPTIONS -->
-
                     <div class="form-options">
 
                         <label class="remember-me">
@@ -176,24 +107,17 @@
                                 name="rememberMe"
                             >
 
-                            <span>
-                                Remember me
-                            </span>
+                            <span>Remember me</span>
 
                         </label>
 
 
-                        <a
-                            href="forgot-password.html"
-                            class="forgot-link"
-                        >
+                        <a href="forgot-password.html" class="forgot-link">
                             Forgot password?
                         </a>
 
                     </div>
 
-
-                    <!-- SUBMIT -->
 
                     <button
                         type="submit"
@@ -206,15 +130,10 @@
                 </form>
 
 
-                <!-- =================================================
-                     REGISTER
-                ================================================== -->
-
                 <div class="auth-switch">
 
                     <p>
                         Don't have an account?
-
                         <a href="register.html">
                             Create one
                         </a>
@@ -223,102 +142,59 @@
                 </div>
 
 
-                <!-- =================================================
-                     SOCIAL LOGIN
-                ================================================== -->
-
                 <div class="social-login">
 
                     <div class="auth-divider">
-                        <span>
-                            OR CONTINUE WITH
-                        </span>
+                        <span>OR CONTINUE WITH</span>
                     </div>
 
 
                     <div class="social-login-buttons">
-
-
-                        <!-- GOOGLE -->
 
                         <button
                             type="button"
                             id="googleLoginBtn"
                             class="social-login-btn google-btn"
                         >
-
-                            <span class="social-icon">
-                                G
-                            </span>
-
-                            <span>
-                                Continue with Google
-                            </span>
-
+                            <span class="social-icon">G</span>
+                            <span>Continue with Google</span>
                         </button>
 
-
-                        <!-- GITHUB -->
 
                         <button
                             type="button"
                             id="githubLoginBtn"
                             class="social-login-btn github-btn"
                         >
-
                             <span class="social-icon">
                                 <i class="fab fa-github"></i>
                             </span>
 
-                            <span>
-                                Continue with GitHub
-                            </span>
-
+                            <span>Continue with GitHub</span>
                         </button>
-
 
                     </div>
 
                 </div>
 
-
             </section>
 
 
-            <!-- =================================================
-                 RETURN HOME
-            ================================================== -->
-
-            <a
-                href="../index.html"
-                class="back-home"
-            >
+            <a href="../index.html" class="back-home">
                 ← Back to CWS Academy
             </a>
-
 
         </div>
 
     </main>
 
 
-    <!-- =====================================================
-         FIREBASE EMAIL/PASSWORD LOGIN
-    ====================================================== -->
+    <script type="module" src="../js/login.js"></script>
+    <script type="module" src="../js/social-auth.js"></script>
 
     <script
         type="module"
-        src="../js/login.js"
-    ></script>
-
-
-    <!-- =====================================================
-         GOOGLE + GITHUB LOGIN
-    ====================================================== -->
-
-    <script
-        type="module"
-        src="../js/social-auth.js"
+        src="../js/cws-assistant.js"
     ></script>
 
 </body>
