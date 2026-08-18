@@ -63,6 +63,41 @@ function lesson(
             extra.lab ||
             null,
 
+        whyItMatters:
+            extra.whyItMatters ||
+            `Understanding ${title} helps you move beyond memorizing Python syntax and understand how the concept supports reliable cybersecurity automation.`,
+
+        commonMistakes:
+            extra.commonMistakes ||
+            [
+                "Copying code without understanding the data flowing through it.",
+                "Assuming external input is valid before checking its type, format and expected range.",
+                "Testing only the successful path instead of checking errors and unexpected conditions."
+            ],
+
+        troubleshooting:
+            extra.troubleshooting ||
+            [
+                "Read the complete Python traceback from the final error line upward.",
+                "Check variable values and data types before the failing operation.",
+                "Reduce the problem to the smallest reproducible example.",
+                "Use print(), logging or a debugger to inspect program state.",
+                "Verify the fix with both expected and unexpected input."
+            ],
+
+        practice:
+            extra.practice ||
+            {
+                title: "Apply What You Learned",
+                steps: [
+                    `Explain ${title} in your own words.`,
+                    "Recreate one lesson example without copying it.",
+                    "Predict the program output before running the code.",
+                    "Change one input or condition and explain why the result changes.",
+                    "Describe one defensive cybersecurity use for the concept."
+                ]
+            },
+
         quiz:
             extra.quiz ||
             []
@@ -106,13 +141,32 @@ export const pythonCybersecurityFundamentals = {
         "fa-brands fa-python",
 
     description:
-        "Learn Python fundamentals through cybersecurity-focused examples including files, HTTP requests, data processing and simple automation.",
+        "Learn Python from first principles through cybersecurity-focused explanations, worked examples, files, structured data, HTTP requests, networking, troubleshooting and safe automation.",
 
     longDescription:
-        "Python Fundamentals for Cybersecurity introduces programming through practical security-oriented tasks. Students learn variables, data structures, conditions, loops, functions, files, JSON, exceptions, logging, HTTP requests, networking concepts and safe automation. The course finishes with a small cybersecurity automation project designed for local or explicitly authorized lab environments.",
+        "Python Fundamentals for Cybersecurity teaches programming through a structured what, why, how and practice approach. Students learn not only Python syntax but why each programming concept exists, how data flows through a program, how to interpret output, how to troubleshoot failures and how the concept applies to defensive cybersecurity work. The curriculum covers variables, data structures, conditions, loops, functions, modules, files, JSON, exceptions, validation, logging, HTTP requests, sockets and safe automation, finishing with a documented cybersecurity automation project for local or explicitly authorized lab environments.",
 
     duration:
-        "18–24 Hours",
+        "35–45 Hours",
+
+    learningStandard:
+        "Deep Explanation • Worked Examples • Cybersecurity Context • Troubleshooting • Practice",
+
+    lessonMethod: [
+        "What the concept is",
+        "Why the concept exists",
+        "How Python implements it",
+        "Syntax and code structure",
+        "Worked cybersecurity example",
+        "Expected output and interpretation",
+        "Defensive cybersecurity relevance",
+        "Common mistakes",
+        "Troubleshooting",
+        "Practice and knowledge check"
+    ],
+
+    learningEnvironment:
+        "Use local systems, sample data, training APIs and explicitly authorized lab environments only.",
 
     objectives: [
 
