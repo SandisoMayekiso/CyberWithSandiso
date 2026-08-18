@@ -1,14 +1,16 @@
 /* =========================================================
    CWS ACADEMY
-   PUBLIC CERTIFICATE VERIFICATION
+   PUBLIC CREDENTIAL VERIFICATION
+   File: css/verify-certificate.css
 ========================================================= */
 
 .verification-page {
     min-height: 100vh;
+    margin: 0;
     background:
         radial-gradient(
             circle at 50% 0%,
-            rgba(190, 21, 21, 0.15),
+            rgba(190, 21, 21, 0.14),
             transparent 32rem
         ),
         #090909;
@@ -21,7 +23,9 @@
     display: flex;
     align-items: center;
     padding: 0 28px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background: rgba(7,7,7,.82);
+    backdrop-filter: blur(12px);
 }
 
 
@@ -47,7 +51,7 @@
 
 
 .verification-brand strong {
-    letter-spacing: 0.08em;
+    letter-spacing: .08em;
 }
 
 
@@ -71,9 +75,9 @@
 
 .verification-eyebrow {
     color: #d72828;
-    font-size: 0.7rem;
+    font-size: .7rem;
     font-weight: 900;
-    letter-spacing: 0.14em;
+    letter-spacing: .14em;
 }
 
 
@@ -102,7 +106,7 @@
     display: block;
     margin-bottom: 8px;
     color: #aaa;
-    font-size: 0.75rem;
+    font-size: .75rem;
     font-weight: 800;
 }
 
@@ -117,11 +121,18 @@
 .verification-input-row input {
     min-height: 52px;
     padding: 0 15px;
-    border: 1px solid rgba(255,255,255,0.11);
+    border: 1px solid rgba(255,255,255,.11);
     border-radius: 10px;
+    outline: none;
     background: #111;
     color: #fff;
     font: inherit;
+}
+
+
+.verification-input-row input:focus {
+    border-color: rgba(215,40,40,.8);
+    box-shadow: 0 0 0 3px rgba(215,40,40,.08);
 }
 
 
@@ -138,12 +149,25 @@
 }
 
 
+.verification-input-row button:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+
+
+.verification-form-message {
+    margin: 9px 0 0;
+    color: #e05a5a;
+    font-size: .78rem;
+}
+
+
 .verification-state,
 .verification-result,
 .verification-info {
     margin-top: 30px;
     padding: 24px;
-    border: 1px solid rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,.09);
     border-radius: 14px;
     background: #101010;
 }
@@ -151,6 +175,23 @@
 
 .verification-state {
     text-align: center;
+}
+
+
+.verification-state > i {
+    color: #d72828;
+    font-size: 1.3rem;
+}
+
+
+.verification-state h2 {
+    margin: 10px 0 5px;
+}
+
+
+.verification-state p {
+    margin: 0;
+    color: #999;
 }
 
 
@@ -173,25 +214,25 @@
 
 
 .verification-result.valid {
-    border-color: rgba(80, 210, 135, 0.28);
+    border-color: rgba(80,210,135,.28);
 }
 
 
 .verification-result.valid
 .verification-result-icon {
-    background: rgba(80, 210, 135, 0.08);
+    background: rgba(80,210,135,.08);
     color: #55d28a;
 }
 
 
 .verification-result.invalid {
-    border-color: rgba(211, 38, 38, 0.28);
+    border-color: rgba(211,38,38,.28);
 }
 
 
 .verification-result.invalid
 .verification-result-icon {
-    background: rgba(211, 38, 38, 0.08);
+    background: rgba(211,38,38,.08);
     color: #e13b3b;
 }
 
@@ -199,9 +240,9 @@
 .verification-result-content > span,
 .verification-result.invalid span {
     color: #55d28a;
-    font-size: 0.7rem;
+    font-size: .7rem;
     font-weight: 900;
-    letter-spacing: 0.12em;
+    letter-spacing: .12em;
 }
 
 
@@ -233,9 +274,9 @@
 
 .verification-grid > div {
     padding: 14px;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,.08);
     border-radius: 9px;
-    background: rgba(255,255,255,0.018);
+    background: rgba(255,255,255,.018);
 }
 
 
@@ -247,9 +288,9 @@
 
 .verification-grid small {
     color: #737373;
-    font-size: 0.62rem;
+    font-size: .62rem;
     font-weight: 900;
-    letter-spacing: 0.1em;
+    letter-spacing: .1em;
 }
 
 
@@ -261,26 +302,44 @@
 
 .verification-info {
     display: flex;
-    gap: 11px;
     align-items: flex-start;
+    gap: 12px;
     color: #949494;
-    font-size: 0.8rem;
+    font-size: .82rem;
 }
 
 
-.verification-info i {
-    color: #d72828;
+.verification-info > i {
     margin-top: 3px;
+    color: #d72828;
+}
+
+
+.verification-info strong {
+    color: #ddd;
 }
 
 
 .verification-info p {
-    margin: 0;
+    margin: 4px 0 0;
     line-height: 1.6;
 }
 
 
+.verification-footer {
+    padding: 24px;
+    border-top: 1px solid rgba(255,255,255,.07);
+    color: #6f6f6f;
+    text-align: center;
+    font-size: .78rem;
+}
+
+
 @media (max-width: 650px) {
+
+    .verification-main {
+        padding-top: 48px;
+    }
 
     .verification-input-row,
     .verification-grid {
