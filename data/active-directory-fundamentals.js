@@ -63,6 +63,43 @@ function lesson(
             extra.lab ||
             null,
 
+        whyItMatters:
+            extra.whyItMatters ||
+            `Understanding ${title} helps you reason about how Active Directory behaves in real enterprise environments instead of memorizing isolated terms or administrative steps.`,
+
+        commonMistakes:
+            extra.commonMistakes ||
+            [
+                "Memorizing names or commands without understanding which Active Directory component is responsible.",
+                "Making changes before confirming DNS, identity, scope, permissions and the intended administrative boundary.",
+                "Assuming one successful result proves the entire domain path is healthy."
+            ],
+
+        troubleshooting:
+            extra.troubleshooting ||
+            [
+                "Define the exact symptom and identify whether it affects one user, one computer, one OU or the whole domain.",
+                "Verify network configuration and Active Directory DNS before changing identity or policy settings.",
+                "Check the relevant object, group membership, OU location and effective policy.",
+                "Use built-in read-only tools to confirm the current state before making changes.",
+                "Change one thing at a time, verify the result and document what changed."
+            ],
+
+        practice:
+            extra.practice ||
+            {
+                title:
+                    "Apply What You Learned",
+
+                steps: [
+                    `Explain ${title} in your own words without reading the lesson.`,
+                    "Draw or describe where this concept fits in a domain environment.",
+                    "Recreate one safe example in your isolated CWS lab.",
+                    "Predict the expected result before using the administrative tool or command.",
+                    "Write one security risk and one troubleshooting check related to this topic."
+                ]
+            },
+
         quiz:
             extra.quiz ||
             []
@@ -106,13 +143,35 @@ export const activeDirectoryFundamentals = {
         "fa-solid fa-building-shield",
 
     description:
-        "Learn how Microsoft Active Directory organizes identities, computers, authentication and policy in Windows domain environments.",
+        "Learn Active Directory from first principles through deep explanations, diagrams, administrative examples, DNS, identity, policy, authentication, troubleshooting and isolated Windows domain labs.",
 
     longDescription:
-        "Active Directory Fundamentals introduces the core technologies behind Windows enterprise identity environments. Students learn domains, forests, domain controllers, DNS, users, groups, organizational units, Group Policy, LDAP, Kerberos, NTLM, permissions and security fundamentals. The course concludes with a guided Windows Server and Windows client Active Directory lab suitable for defensive administration and future authorized penetration-testing study.",
+        "Active Directory Fundamentals teaches the core technologies behind Windows enterprise identity environments using a structured what, why, how and practice approach. Students learn not only what domains, forests, domain controllers, DNS, users, groups, Organizational Units, Group Policy, LDAP, Kerberos and NTLM are, but why they exist, how they interact, how to inspect them safely, how common configuration failures appear and why they matter to cybersecurity. The course concludes with a guided Windows Server and Windows client Active Directory lab for defensive administration and future explicitly authorized security study.",
 
     duration:
-        "20–26 Hours",
+        "40–50 Hours",
+
+    learningStandard:
+        "Deep Explanation • Enterprise Examples • Security Context • Troubleshooting • Practice",
+
+    lessonMethod: [
+        "What the concept is",
+        "Why the concept exists",
+        "Where it fits in Active Directory",
+        "How it works",
+        "Administrative example",
+        "Expected output or result",
+        "Cybersecurity relevance",
+        "Common mistakes",
+        "Troubleshooting",
+        "Practice and knowledge check"
+    ],
+
+    learningEnvironment:
+        "Use an isolated Windows Server and Windows client lab, or another environment where you have explicit administrative authorization.",
+
+    curriculumNote:
+        "Every lesson should connect directory concepts to real domain behavior, safe administration, troubleshooting and defensive security.",
 
     objectives: [
 
