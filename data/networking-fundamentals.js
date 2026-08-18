@@ -113,6 +113,222 @@ export const networkingFundamentals = {
 
     ],
 
+    completionRules: {
+        requireAllLessons: true,
+        requireRequiredLabs: true,
+        requireAllModuleAssessments: true,
+        requireFinalAssessment: true
+    },
+
+    finalAssessment: {
+        "id": "final-assessment",
+        "title": "Networking Fundamentals Final Assessment",
+        "description": "Demonstrate integrated understanding of networking foundations, addressing, subnetting, Ethernet, transport protocols, diagnostics, routing, DNS/DHCP, web traffic and network security.",
+        "passingScore": 75,
+        "questions": [
+            {
+                "question": "Which device primarily forwards Ethernet frames using destination MAC addresses?",
+                "options": [
+                    "Router",
+                    "Switch",
+                    "DNS resolver",
+                    "Web server"
+                ],
+                "answer": 1
+            },
+            {
+                "question": "Which device normally forwards packets between different IP networks?",
+                "options": [
+                    "Switch",
+                    "Router",
+                    "Wireless client",
+                    "Printer"
+                ],
+                "answer": 1
+            },
+            {
+                "question": "How many bits are in an IPv4 address?",
+                "options": [
+                    "16",
+                    "32",
+                    "64",
+                    "128"
+                ],
+                "answer": 1
+            },
+            {
+                "question": "Which address is in an RFC 1918 private range?",
+                "options": [
+                    "8.8.8.8",
+                    "10.20.30.40",
+                    "203.0.113.5",
+                    "1.1.1.1"
+                ],
+                "answer": 1
+            },
+            {
+                "question": "What subnet mask corresponds to /24?",
+                "options": [
+                    "255.255.255.0",
+                    "255.255.0.0",
+                    "255.0.0.0",
+                    "255.255.255.255"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "How many total IPv4 addresses are in a /30 subnet?",
+                "options": [
+                    "2",
+                    "4",
+                    "8",
+                    "16"
+                ],
+                "answer": 1
+            },
+            {
+                "question": "What address does an Ethernet switch normally use for Layer 2 forwarding?",
+                "options": [
+                    "IP address",
+                    "MAC address",
+                    "DNS name",
+                    "TCP sequence number"
+                ],
+                "answer": 1
+            },
+            {
+                "question": "What protocol maps an IPv4 address to a local MAC address?",
+                "options": [
+                    "ARP",
+                    "HTTP",
+                    "DNS",
+                    "TLS"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "Which transport protocol is connection-oriented and reliable?",
+                "options": [
+                    "TCP",
+                    "UDP",
+                    "ARP",
+                    "ICMP"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "Which transport protocol has lower overhead and no TCP-style handshake?",
+                "options": [
+                    "UDP",
+                    "TCP",
+                    "HTTPS",
+                    "Ethernet"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "Which protocol is commonly used by ping?",
+                "options": [
+                    "ICMP",
+                    "HTTP",
+                    "ARP only",
+                    "SMTP"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "What does a successful ping primarily demonstrate?",
+                "options": [
+                    "Some IP reachability and ICMP response capability",
+                    "That every application works",
+                    "That DNS is definitely working",
+                    "That no firewall exists"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "What information does a router primarily use to choose a route?",
+                "options": [
+                    "Destination IP prefix",
+                    "Source MAC vendor only",
+                    "HTTP title",
+                    "DNS TXT text"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "What does 0.0.0.0/0 usually represent in IPv4 routing?",
+                "options": [
+                    "Default route",
+                    "Loopback route",
+                    "Broadcast MAC",
+                    "DNS root zone"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "What is the primary purpose of DNS?",
+                "options": [
+                    "Resolve names and related DNS data",
+                    "Assign Ethernet MAC addresses",
+                    "Encrypt every packet",
+                    "Create VLANs"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "Which DNS record maps a name to an IPv4 address?",
+                "options": [
+                    "A",
+                    "MX",
+                    "NS",
+                    "TXT"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "Which HTTP method is commonly used to retrieve a resource?",
+                "options": [
+                    "GET",
+                    "ARP",
+                    "SYN",
+                    "ICMP"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "What does an HTTP status code in the 200 range generally indicate?",
+                "options": [
+                    "Successful handling",
+                    "DNS failure",
+                    "Ethernet collision",
+                    "Routing loop"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "What is network segmentation intended to reduce?",
+                "options": [
+                    "Unnecessary communication paths and exposure",
+                    "The need for all authentication",
+                    "The number of IP bits",
+                    "DNS record types"
+                ],
+                "answer": 0
+            },
+            {
+                "question": "What is a firewall policy used for?",
+                "options": [
+                    "Control allowed and blocked traffic",
+                    "Assign MAC addresses",
+                    "Generate DNS names",
+                    "Replace endpoint security"
+                ],
+                "answer": 0
+            }
+        ]
+    },
+
     modules: [
                 {
             id:
@@ -132,6 +348,97 @@ export const networkingFundamentals = {
 
             assessments:
                 1,
+
+            labActivities: [],
+
+            moduleAssessment: {
+                "id": "assessment",
+                "title": "Networking Foundations Assessment",
+                "description": "Demonstrate your understanding of the concepts covered in this module before continuing.",
+                "passingScore": 70,
+                "questions": [
+                    {
+                        "question": "Which device primarily forwards Ethernet frames using destination MAC addresses?",
+                        "options": [
+                            "Router",
+                            "Switch",
+                            "DNS resolver",
+                            "Web server"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "question": "Which device normally forwards packets between different IP networks?",
+                        "options": [
+                            "Switch",
+                            "Router",
+                            "Wireless client",
+                            "Printer"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "question": "What is the main purpose of a network protocol?",
+                        "options": [
+                            "Provide agreed communication rules",
+                            "Replace all network hardware",
+                            "Encrypt every file automatically",
+                            "Assign usernames"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which TCP/IP layer includes protocols such as HTTP and DNS?",
+                        "options": [
+                            "Network Access",
+                            "Internet",
+                            "Transport",
+                            "Application"
+                        ],
+                        "answer": 3
+                    },
+                    {
+                        "question": "What is encapsulation?",
+                        "options": [
+                            "Adding protocol information as data moves down the stack",
+                            "Removing all headers before sending",
+                            "Replacing IP addresses with usernames",
+                            "Blocking traffic at a firewall"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "A hostname fails but the same server works by IP address. Which service is a strong suspect?",
+                        "options": [
+                            "DNS",
+                            "Ethernet cable only",
+                            "Printer spooler",
+                            "Bluetooth"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why can VLANs improve security?",
+                        "options": [
+                            "They can create logical segmentation and controlled communication boundaries",
+                            "They automatically encrypt every packet",
+                            "They eliminate routers",
+                            "They make authentication unnecessary"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which statement best describes a client?",
+                        "options": [
+                            "A system requesting a service",
+                            "A device that always routes packets",
+                            "A cable standard",
+                            "A DNS zone"
+                        ],
+                        "answer": 0
+                    }
+                ]
+            },
 
             lessons: [
 
@@ -1593,6 +1900,121 @@ Ethernet frame</pre>
             assessments:
                 1,
 
+            labActivities: [
+                {
+                    "id": "lab-01",
+                    "title": "Inspect Your IP Configuration",
+                    "type": "Guided Practical Activity",
+                    "level": "Beginner",
+                    "duration": "30 minutes",
+                    "description": "Identify IPv4 addressing information on a system you own or an approved training VM.",
+                    "objective": "Find and interpret the local IPv4 address, subnet prefix or mask, default gateway and configured DNS servers on an authorized system.",
+                    "instructions": [
+                        "Use only your own computer, home lab, or an approved training virtual machine.",
+                        "On Windows, run ipconfig /all. On Linux, use ip address and, where available, ip route and resolvectl status.",
+                        "Identify the active interface and record its IPv4 address.",
+                        "Identify the subnet mask or CIDR prefix and determine which portion represents the local network.",
+                        "Identify the default gateway and explain why it is needed for remote destinations.",
+                        "Identify the configured DNS resolver addresses and distinguish them from the default gateway if they are different."
+                    ],
+                    "reflection": [
+                        "Which IPv4 address and prefix did your active interface use?",
+                        "Was the address private or public, and how did you determine that?",
+                        "What role does your default gateway perform?",
+                        "Which values would you investigate if local connectivity worked but Internet access failed?"
+                    ]
+                }
+            ],
+
+            moduleAssessment: {
+                "id": "assessment",
+                "title": "IP Addressing Assessment",
+                "description": "Demonstrate your understanding of the concepts covered in this module before continuing.",
+                "passingScore": 70,
+                "questions": [
+                    {
+                        "question": "How many bits are in an IPv4 address?",
+                        "options": [
+                            "16",
+                            "32",
+                            "64",
+                            "128"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "question": "Which address is in an RFC 1918 private range?",
+                        "options": [
+                            "8.8.8.8",
+                            "10.20.30.40",
+                            "203.0.113.5",
+                            "1.1.1.1"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "question": "What does a /24 prefix mean?",
+                        "options": [
+                            "24 bits identify the network prefix",
+                            "24 usable hosts exist",
+                            "The address uses 24 octets",
+                            "The network has no host bits"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is the network address of 192.168.50.10/24?",
+                        "options": [
+                            "192.168.50.10",
+                            "192.168.50.0",
+                            "192.168.0.0",
+                            "192.168.50.255"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "question": "Which address is commonly used as IPv4 loopback?",
+                        "options": [
+                            "127.0.0.1",
+                            "169.254.1.1",
+                            "224.0.0.1",
+                            "255.255.255.255"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why is a default gateway needed?",
+                        "options": [
+                            "To reach destinations outside the local subnet",
+                            "To assign MAC addresses",
+                            "To create DNS TXT records",
+                            "To store files"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which range is IPv4 link-local?",
+                        "options": [
+                            "169.254.0.0/16",
+                            "10.0.0.0/8",
+                            "172.16.0.0/12",
+                            "127.0.0.0/8"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why should an IP address be treated carefully during attribution?",
+                        "options": [
+                            "NAT, VPNs, proxies and dynamic addressing can affect interpretation",
+                            "An IP address always identifies a person",
+                            "IP addresses cannot appear in logs",
+                            "IP addresses never change"
+                        ],
+                        "answer": 0
+                    }
+                ]
+            },
+
             lessons: [
 
                 lesson(
@@ -2357,6 +2779,121 @@ proto=tcp action=allow</pre>
 
             assessments:
                 1,
+
+            labActivities: [
+                {
+                    "id": "lab-01",
+                    "title": "Calculate and Validate IPv4 Subnets",
+                    "type": "Guided Practical Activity",
+                    "level": "Beginner",
+                    "duration": "45 minutes",
+                    "description": "Practise CIDR, network addresses, broadcast addresses and usable host ranges using documentation-only example networks.",
+                    "objective": "Calculate basic subnet information accurately and explain how the prefix determines network size.",
+                    "instructions": [
+                        "Use only the documentation ranges provided in this activity; do not scan any external network.",
+                        "For 192.0.2.130/26, determine the subnet mask, network address, broadcast address and typical usable host range.",
+                        "For 198.51.100.77/27, determine the same four values.",
+                        "For 203.0.113.200/28, determine the same four values.",
+                        "For each example, calculate the total number of addresses and the typical number of usable host addresses.",
+                        "Check your results with a local subnet calculator only after completing the calculations manually."
+                    ],
+                    "reflection": [
+                        "How does increasing the prefix length affect the number of addresses in a subnet?",
+                        "Why are network and broadcast addresses normally not assigned to ordinary hosts in traditional IPv4 subnets?",
+                        "Which part of the calculation was most error-prone for you?",
+                        "Why does subnetting knowledge matter when interpreting firewall rules or scan scope?"
+                    ]
+                }
+            ],
+
+            moduleAssessment: {
+                "id": "assessment",
+                "title": "Subnetting and CIDR Assessment",
+                "description": "Demonstrate your understanding of the concepts covered in this module before continuing.",
+                "passingScore": 70,
+                "questions": [
+                    {
+                        "question": "What subnet mask corresponds to /24?",
+                        "options": [
+                            "255.255.255.0",
+                            "255.255.0.0",
+                            "255.0.0.0",
+                            "255.255.255.255"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "How many total IPv4 addresses are in a /30 subnet?",
+                        "options": [
+                            "2",
+                            "4",
+                            "8",
+                            "16"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "question": "What is the network address for 192.168.10.70/26?",
+                        "options": [
+                            "192.168.10.0",
+                            "192.168.10.64",
+                            "192.168.10.70",
+                            "192.168.10.127"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "question": "What is the broadcast address for 192.168.10.70/26?",
+                        "options": [
+                            "192.168.10.63",
+                            "192.168.10.64",
+                            "192.168.10.126",
+                            "192.168.10.127"
+                        ],
+                        "answer": 3
+                    },
+                    {
+                        "question": "Which prefix provides more host addresses?",
+                        "options": [
+                            "/28",
+                            "/24",
+                            "/30",
+                            "/29"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "question": "What happens to subnet size as the prefix length increases?",
+                        "options": [
+                            "It becomes smaller",
+                            "It becomes larger",
+                            "It never changes",
+                            "It becomes IPv6"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why is subnetting relevant to security scope?",
+                        "options": [
+                            "It helps define exactly which addresses belong to an authorized network range",
+                            "It disables firewalls",
+                            "It removes routing",
+                            "It makes DNS unnecessary"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which notation is CIDR?",
+                        "options": [
+                            "192.168.1.10/24",
+                            "192.168.1.10:443",
+                            "AA:BB:CC:DD:EE:FF",
+                            "example.com"
+                        ],
+                        "answer": 0
+                    }
+                ]
+            },
 
             lessons: [
 
@@ -3133,6 +3670,121 @@ Apps    DBs      Mgmt
             assessments:
                 1,
 
+            labActivities: [
+                {
+                    "id": "lab-01",
+                    "title": "Observe MAC and ARP Information",
+                    "type": "Guided Practical Activity",
+                    "level": "Beginner",
+                    "duration": "35 minutes",
+                    "description": "Observe local interface MAC addresses and ARP or neighbour-cache entries on an authorized local system.",
+                    "objective": "Relate local IPv4 neighbours to Layer 2 addressing and explain when ARP is used.",
+                    "instructions": [
+                        "Use only your own computer or an approved training VM on a network you are authorized to inspect.",
+                        "Identify the MAC address of your active interface using ipconfig /all, getmac, ip link, or an equivalent local command.",
+                        "Display the ARP or neighbour table using arp -a on Windows or ip neigh on Linux.",
+                        "Identify an entry for your default gateway if one is present.",
+                        "Compare the gateway IP address with the associated MAC address and explain why both addresses are needed for local delivery.",
+                        "Optionally generate ordinary traffic to your own gateway with ping, then inspect the neighbour table again."
+                    ],
+                    "reflection": [
+                        "What is the difference between the IP address and MAC address shown for your gateway?",
+                        "Why does a host need ARP before sending an IPv4 frame to a local neighbour?",
+                        "Why does the destination MAC address normally change when a packet crosses a router?",
+                        "What security concern can arise if ARP information is maliciously manipulated on a local network?"
+                    ]
+                }
+            ],
+
+            moduleAssessment: {
+                "id": "assessment",
+                "title": "Ethernet, MAC and ARP Assessment",
+                "description": "Demonstrate your understanding of the concepts covered in this module before continuing.",
+                "passingScore": 70,
+                "questions": [
+                    {
+                        "question": "What address does an Ethernet switch normally use for Layer 2 forwarding?",
+                        "options": [
+                            "IP address",
+                            "MAC address",
+                            "DNS name",
+                            "TCP sequence number"
+                        ],
+                        "answer": 1
+                    },
+                    {
+                        "question": "What protocol maps an IPv4 address to a local MAC address?",
+                        "options": [
+                            "ARP",
+                            "HTTP",
+                            "DNS",
+                            "TLS"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Where is an ARP request normally relevant?",
+                        "options": [
+                            "The local Layer 2 network",
+                            "Every router on the Internet",
+                            "Only application servers",
+                            "Only DNS zones"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What does a switch learn from incoming Ethernet frames?",
+                        "options": [
+                            "Source MAC locations",
+                            "User passwords",
+                            "DNS MX priorities",
+                            "HTTP cookies"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "When routing occurs, what normally happens to the Ethernet frame?",
+                        "options": [
+                            "It is replaced for the next local link",
+                            "It remains identical end to end",
+                            "It becomes a DNS record",
+                            "It is converted into a username"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What risk is associated with malicious ARP manipulation?",
+                        "options": [
+                            "Traffic redirection or interception on a local network",
+                            "Automatic TLS encryption",
+                            "Faster DNS caching",
+                            "Longer subnet masks"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is a broadcast domain?",
+                        "options": [
+                            "The set of devices that can receive Layer 2 broadcast traffic within a boundary",
+                            "Every computer on the Internet",
+                            "A TCP session",
+                            "A DNS record type"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which control can help limit Layer 2 exposure?",
+                        "options": [
+                            "VLAN segmentation",
+                            "Removing all IP addresses",
+                            "Disabling routing everywhere",
+                            "Using only HTTP"
+                        ],
+                        "answer": 0
+                    }
+                ]
+            },
+
             lessons: [
 
                 lesson(
@@ -3893,6 +4545,121 @@ Linux:   ip neigh</pre>
 
             assessments:
                 1,
+
+            labActivities: [
+                {
+                    "id": "lab-01",
+                    "title": "Inspect TCP and UDP Connections",
+                    "type": "Guided Practical Activity",
+                    "level": "Beginner",
+                    "duration": "40 minutes",
+                    "description": "Use local connection-inspection tools to identify transport protocols, ports and connection states.",
+                    "objective": "Interpret local TCP and UDP socket information and connect ports to applications and services.",
+                    "instructions": [
+                        "Perform this activity only on a system you own or an approved training VM.",
+                        "On Windows, use netstat -ano or Get-NetTCPConnection. On Linux, use ss -tulpen or ss -tunap where permissions allow.",
+                        "Identify at least one listening TCP socket and record its local address and port.",
+                        "Identify one established TCP connection while browsing a website or using another normal application.",
+                        "Identify at least one UDP socket and note that UDP does not use the same established connection state as TCP.",
+                        "If possible, correlate one connection with the local process that owns it."
+                    ],
+                    "reflection": [
+                        "What is the difference between a listening socket and an established TCP connection?",
+                        "Why is a destination port useful to a firewall or security analyst?",
+                        "Why does UDP not show a TCP-style three-way handshake?",
+                        "Which unexpected listening ports would deserve further investigation on a workstation?"
+                    ]
+                }
+            ],
+
+            moduleAssessment: {
+                "id": "assessment",
+                "title": "TCP and UDP Assessment",
+                "description": "Demonstrate your understanding of the concepts covered in this module before continuing.",
+                "passingScore": 70,
+                "questions": [
+                    {
+                        "question": "Which transport protocol is connection-oriented and reliable?",
+                        "options": [
+                            "TCP",
+                            "UDP",
+                            "ARP",
+                            "ICMP"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which transport protocol has lower overhead and no TCP-style handshake?",
+                        "options": [
+                            "UDP",
+                            "TCP",
+                            "HTTPS",
+                            "Ethernet"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is the purpose of a port number?",
+                        "options": [
+                            "Identify an application or service endpoint",
+                            "Identify a switch MAC table",
+                            "Define a subnet mask",
+                            "Name a VLAN cable"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which sequence begins the TCP three-way handshake?",
+                        "options": [
+                            "SYN, SYN-ACK, ACK",
+                            "ACK, FIN, RST",
+                            "DNS, HTTP, TLS",
+                            "ARP, ICMP, UDP"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What does a listening socket indicate?",
+                        "options": [
+                            "A local service is waiting for incoming communication",
+                            "A DNS record expired",
+                            "A cable is disconnected",
+                            "A router has no routes"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why do security analysts inspect unusual destination ports?",
+                        "options": [
+                            "They can reveal unexpected services or communication patterns",
+                            "Ports identify human users with certainty",
+                            "All high ports are malicious",
+                            "Ports replace IP addresses"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which protocol is commonly associated with DNS queries, though DNS can also use TCP?",
+                        "options": [
+                            "UDP",
+                            "ARP",
+                            "Ethernet only",
+                            "SSH only"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which TCP flag is commonly used to begin connection establishment?",
+                        "options": [
+                            "SYN",
+                            "FIN",
+                            "RST only",
+                            "URG only"
+                        ],
+                        "answer": 0
+                    }
+                ]
+            },
 
             lessons: [
 
@@ -4839,6 +5606,121 @@ Linux:   ss -tulpn</pre>
             assessments:
                 1,
 
+            labActivities: [
+                {
+                    "id": "lab-01",
+                    "title": "Diagnose Connectivity with ICMP Tools",
+                    "type": "Guided Practical Activity",
+                    "level": "Beginner",
+                    "duration": "35 minutes",
+                    "description": "Use ping and route-path tools against authorized destinations to practise structured troubleshooting.",
+                    "objective": "Use ICMP-based diagnostic tools to distinguish local reachability, gateway reachability, name-resolution issues and path information.",
+                    "instructions": [
+                        "Use only your own systems, approved lab targets, or ordinary public services where simple connectivity checks are permitted; do not perform scanning.",
+                        "Ping your own loopback address first to confirm the local IP stack is responding.",
+                        "Ping your default gateway and record whether replies are received.",
+                        "Ping a known IP address that you are permitted to contact, then compare the result with a hostname-based ping.",
+                        "Run tracert on Windows or traceroute/tracepath on Linux toward an authorized destination and observe the sequence of hops.",
+                        "Explain why a missing ICMP reply does not always prove that the destination is offline."
+                    ],
+                    "reflection": [
+                        "What does a successful gateway ping prove, and what does it not prove?",
+                        "If an IP responds but a hostname does not, which service becomes a likely suspect?",
+                        "Why can firewalls make ping or traceroute results incomplete?",
+                        "How can TTL-related ICMP messages help reveal a routed path?"
+                    ]
+                }
+            ],
+
+            moduleAssessment: {
+                "id": "assessment",
+                "title": "ICMP and Diagnostics Assessment",
+                "description": "Demonstrate your understanding of the concepts covered in this module before continuing.",
+                "passingScore": 70,
+                "questions": [
+                    {
+                        "question": "Which protocol is commonly used by ping?",
+                        "options": [
+                            "ICMP",
+                            "HTTP",
+                            "ARP only",
+                            "SMTP"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What does a successful ping primarily demonstrate?",
+                        "options": [
+                            "Some IP reachability and ICMP response capability",
+                            "That every application works",
+                            "That DNS is definitely working",
+                            "That no firewall exists"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why can ping fail when a host is still online?",
+                        "options": [
+                            "ICMP may be filtered",
+                            "IPv4 requires HTTP first",
+                            "DNS always blocks ICMP",
+                            "Switches cannot carry ICMP"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What tool helps reveal successive routed hops?",
+                        "options": [
+                            "traceroute or tracert",
+                            "nslookup only",
+                            "arp -a only",
+                            "whoami"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What field is decremented as an IP packet crosses routers?",
+                        "options": [
+                            "TTL / Hop Limit concept",
+                            "TCP destination port",
+                            "MAC vendor name",
+                            "DNS MX priority"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "If loopback works but the default gateway does not respond, where should troubleshooting focus?",
+                        "options": [
+                            "Local interface/network path toward the gateway",
+                            "Remote web application only",
+                            "DNS TXT records only",
+                            "Email server content"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What can an ICMP Destination Unreachable message indicate?",
+                        "options": [
+                            "A delivery problem or unreachable condition",
+                            "A successful TLS handshake",
+                            "A DHCP lease renewal",
+                            "A MAC address table entry"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why should diagnostic results be interpreted with context?",
+                        "options": [
+                            "Network policy and filtering can affect responses",
+                            "Every timeout proves compromise",
+                            "Traceroute always shows every device",
+                            "ICMP identifies users"
+                        ],
+                        "answer": 0
+                    }
+                ]
+            },
+
             lessons: [
 
                 lesson(
@@ -5600,6 +6482,121 @@ Linux:   traceroute example.com</pre>
 
             assessments:
                 1,
+
+            labActivities: [
+                {
+                    "id": "lab-01",
+                    "title": "Read a Local Routing Table",
+                    "type": "Guided Practical Activity",
+                    "level": "Beginner",
+                    "duration": "35 minutes",
+                    "description": "Inspect the routing table of an authorized system and identify connected, default and more-specific routes.",
+                    "objective": "Interpret local routing entries and predict which route a host will use for different destinations.",
+                    "instructions": [
+                        "Use your own computer or an approved training VM.",
+                        "On Windows, run route print. On Linux, run ip route.",
+                        "Identify the route for the directly connected local subnet.",
+                        "Identify the default route and its next-hop gateway.",
+                        "Choose one local destination and one remote destination, then predict which route each would match.",
+                        "If multiple routes exist, compare their prefixes and explain why the most-specific matching route is normally preferred."
+                    ],
+                    "reflection": [
+                        "What destination prefix represents the default route?",
+                        "Why is a default route useful?",
+                        "What is meant by longest-prefix or most-specific route matching?",
+                        "Which routing problem could allow local communication while preventing access to remote networks?"
+                    ]
+                }
+            ],
+
+            moduleAssessment: {
+                "id": "assessment",
+                "title": "Routing Assessment",
+                "description": "Demonstrate your understanding of the concepts covered in this module before continuing.",
+                "passingScore": 70,
+                "questions": [
+                    {
+                        "question": "What information does a router primarily use to choose a route?",
+                        "options": [
+                            "Destination IP prefix",
+                            "Source MAC vendor only",
+                            "HTTP title",
+                            "DNS TXT text"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What does 0.0.0.0/0 usually represent in IPv4 routing?",
+                        "options": [
+                            "Default route",
+                            "Loopback route",
+                            "Broadcast MAC",
+                            "DNS root zone"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is a next hop?",
+                        "options": [
+                            "The router or gateway toward a destination",
+                            "A TCP port",
+                            "A DNS cache timer",
+                            "A user account"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which route normally wins when several routes match?",
+                        "options": [
+                            "The most specific prefix",
+                            "The shortest text description",
+                            "The oldest route always",
+                            "The route with the largest subnet"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is a directly connected route?",
+                        "options": [
+                            "A route to a network attached to a local interface",
+                            "A route learned from DNS",
+                            "A web redirect",
+                            "An ARP cache entry"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why can local communication work while remote communication fails?",
+                        "options": [
+                            "The local Layer 2 network can work even if gateway/routing is wrong",
+                            "Routing is used only locally",
+                            "DNS controls all Ethernet frames",
+                            "TCP replaces routers"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What does a routing loop cause?",
+                        "options": [
+                            "Packets may circulate until TTL expires",
+                            "Automatic encryption",
+                            "A larger subnet",
+                            "A DNS zone transfer"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why are routing tables important to security engineers?",
+                        "options": [
+                            "They explain permitted paths and network reachability",
+                            "They contain user passwords",
+                            "They replace firewall policy",
+                            "They identify malware automatically"
+                        ],
+                        "answer": 0
+                    }
+                ]
+            },
 
             lessons: [
 
@@ -6544,6 +7541,121 @@ Linux:   ip route</pre>
 
             assessments:
                 1,
+
+            labActivities: [
+                {
+                    "id": "lab-01",
+                    "title": "Investigate DNS and DHCP Configuration",
+                    "type": "Guided Practical Activity",
+                    "level": "Beginner",
+                    "duration": "45 minutes",
+                    "description": "Inspect DNS lookups and local DHCP-derived configuration without probing unauthorized systems.",
+                    "objective": "Perform basic DNS queries, interpret common records and relate DHCP configuration to the network settings received by a client.",
+                    "instructions": [
+                        "Use your own device or an approved lab VM. Query only normal public DNS records or domains you are authorized to inspect.",
+                        "Use nslookup or dig to query an A or AAAA record for a well-known public domain.",
+                        "Query an MX record and identify the mail-exchanger hostname returned.",
+                        "Where supported, inspect the TTL shown in the DNS response and explain what it controls.",
+                        "Inspect your local IP configuration and determine whether the address appears to have been obtained through DHCP.",
+                        "Identify the configured DNS resolver and default gateway supplied to the client."
+                    ],
+                    "reflection": [
+                        "What is the difference between an A record and an MX record?",
+                        "What does DNS TTL control?",
+                        "Which network settings can DHCP commonly provide to a client?",
+                        "If a client receives an IP address but no usable DNS resolver, what symptoms might the user observe?"
+                    ]
+                }
+            ],
+
+            moduleAssessment: {
+                "id": "assessment",
+                "title": "DNS and DHCP Assessment",
+                "description": "Demonstrate your understanding of the concepts covered in this module before continuing.",
+                "passingScore": 70,
+                "questions": [
+                    {
+                        "question": "What is the primary purpose of DNS?",
+                        "options": [
+                            "Resolve names and related DNS data",
+                            "Assign Ethernet MAC addresses",
+                            "Encrypt every packet",
+                            "Create VLANs"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which DNS record maps a name to an IPv4 address?",
+                        "options": [
+                            "A",
+                            "MX",
+                            "NS",
+                            "TXT"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which record identifies mail exchangers?",
+                        "options": [
+                            "MX",
+                            "AAAA",
+                            "PTR only",
+                            "SOA only"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What does a recursive resolver do?",
+                        "options": [
+                            "Obtains DNS answers on behalf of clients",
+                            "Routes Ethernet frames",
+                            "Assigns TCP sequence numbers",
+                            "Creates Wi-Fi signals"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What does TTL influence in DNS?",
+                        "options": [
+                            "How long a result may be cached",
+                            "The TCP port number",
+                            "The Ethernet cable speed",
+                            "The user password age"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is DHCP commonly used for?",
+                        "options": [
+                            "Automatically provide IP configuration to clients",
+                            "Encrypt HTTPS",
+                            "Resolve MX records",
+                            "Forward MAC frames"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which DHCP value often tells a client where to send remote traffic?",
+                        "options": [
+                            "Default gateway",
+                            "HTTP status code",
+                            "MAC vendor",
+                            "TLS certificate"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "A client can reach 8.8.8.8 but not example.com. Which service should be checked first?",
+                        "options": [
+                            "DNS",
+                            "ARP only",
+                            "Printer service",
+                            "Bluetooth"
+                        ],
+                        "answer": 0
+                    }
+                ]
+            },
 
             lessons: [
 
@@ -7491,6 +8603,121 @@ Request   -------------------->
 
             assessments:
                 1,
+
+            labActivities: [
+                {
+                    "id": "lab-01",
+                    "title": "Inspect HTTP and HTTPS Behaviour",
+                    "type": "Guided Practical Activity",
+                    "level": "Beginner",
+                    "duration": "45 minutes",
+                    "description": "Use a browser and basic client tools to observe HTTP status, headers and TLS-protected web access.",
+                    "objective": "Recognize requests, responses, status codes, headers and the security purpose of HTTPS/TLS.",
+                    "instructions": [
+                        "Use a website you own, an approved training application, localhost, or a normal public site for ordinary browser requests only.",
+                        "Open browser developer tools and load a permitted web page.",
+                        "Inspect one network request and record the request method, URL, response status and content type.",
+                        "Identify at least three response headers and explain what information they convey.",
+                        "Confirm whether the page uses HTTPS and inspect the browser certificate information.",
+                        "Compare what HTTP provides at the application layer with what TLS adds to protect data in transit."
+                    ],
+                    "reflection": [
+                        "What does a 200-series HTTP status generally indicate?",
+                        "What is the purpose of an HTTP header?",
+                        "What security properties does TLS aim to provide to HTTPS?",
+                        "Why does HTTPS not guarantee that the web application itself is free of vulnerabilities?"
+                    ]
+                }
+            ],
+
+            moduleAssessment: {
+                "id": "assessment",
+                "title": "HTTP, HTTPS and Web Traffic Assessment",
+                "description": "Demonstrate your understanding of the concepts covered in this module before continuing.",
+                "passingScore": 70,
+                "questions": [
+                    {
+                        "question": "Which HTTP method is commonly used to retrieve a resource?",
+                        "options": [
+                            "GET",
+                            "ARP",
+                            "SYN",
+                            "ICMP"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What does an HTTP status code in the 200 range generally indicate?",
+                        "options": [
+                            "Successful handling",
+                            "DNS failure",
+                            "Ethernet collision",
+                            "Routing loop"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is the main security contribution of TLS to HTTPS?",
+                        "options": [
+                            "Protect confidentiality and integrity in transit and authenticate the server through certificates",
+                            "Fix every web vulnerability",
+                            "Hide all destination IP addresses",
+                            "Replace DNS"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is an HTTP header?",
+                        "options": [
+                            "Metadata carried with an HTTP request or response",
+                            "A physical cable connector",
+                            "A route entry",
+                            "A MAC address"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What does a 404 status generally mean?",
+                        "options": [
+                            "Requested resource was not found",
+                            "TLS certificate is always invalid",
+                            "DNS cache succeeded",
+                            "TCP has no ports"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why does HTTPS not guarantee a secure web application?",
+                        "options": [
+                            "TLS protects transport but application flaws can still exist",
+                            "HTTPS disables authentication",
+                            "HTTPS removes servers",
+                            "TLS uses no cryptography"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which port is commonly associated with HTTPS by convention?",
+                        "options": [
+                            "443",
+                            "53",
+                            "22",
+                            "25"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What can browser developer tools help inspect?",
+                        "options": [
+                            "HTTP requests, responses, headers and timing",
+                            "Only physical cable voltage",
+                            "Router firmware only",
+                            "ARP tables on every device"
+                        ],
+                        "answer": 0
+                    }
+                ]
+            },
 
             lessons: [
 
@@ -8457,6 +9684,122 @@ Encrypted HTTP traffic follows</pre>
 
             assessments:
                 1,
+
+            labActivities: [
+                {
+                    "id": "lab-01",
+                    "title": "Analyze a Small Network Security Scenario",
+                    "type": "Guided Practical Activity",
+                    "level": "Beginner",
+                    "duration": "60 minutes",
+                    "description": "Apply the course concepts to a defensive network scenario and propose sensible controls.",
+                    "objective": "Identify network assets, trust boundaries, exposed services and appropriate defensive controls in a small fictional environment.",
+                    "instructions": [
+                        "Use the fictional scenario only; no live testing or scanning is required.",
+                        "Scenario: a small company has a user VLAN, server VLAN, guest Wi-Fi, Internet firewall, public web server, internal DNS/DHCP server and remote-access VPN.",
+                        "Draw or describe the logical communication paths between users, servers, guests, the Internet and VPN users.",
+                        "Identify at least three trust boundaries where security policy should be enforced.",
+                        "List which services should be reachable from the Internet and which should remain internal.",
+                        "Propose firewall or segmentation rules that reduce unnecessary access while preserving business requirements.",
+                        "Identify useful logs or telemetry for investigating suspicious outbound traffic from a workstation."
+                    ],
+                    "reflection": [
+                        "Why should guest Wi-Fi normally be separated from internal business systems?",
+                        "Which logs would help investigate a workstation repeatedly contacting an unknown external host?",
+                        "Why is network segmentation only one layer of defense rather than a complete security solution?",
+                        "Which networking concepts from this course were most useful when analyzing the scenario?"
+                    ]
+                }
+            ],
+
+            moduleAssessment: {
+                "id": "assessment",
+                "title": "Network Security and Final Review Assessment",
+                "description": "Demonstrate your understanding of the concepts covered in this module before continuing.",
+                "passingScore": 70,
+                "questions": [
+                    {
+                        "question": "What is network segmentation intended to reduce?",
+                        "options": [
+                            "Unnecessary communication paths and exposure",
+                            "The need for all authentication",
+                            "The number of IP bits",
+                            "DNS record types"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is a firewall policy used for?",
+                        "options": [
+                            "Control allowed and blocked traffic",
+                            "Assign MAC addresses",
+                            "Generate DNS names",
+                            "Replace endpoint security"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why is least privilege relevant to network access?",
+                        "options": [
+                            "Systems should receive only the connectivity they need",
+                            "Every system should reach everything",
+                            "Firewalls should allow all traffic",
+                            "Only administrators need IP addresses"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which telemetry can help investigate suspicious outbound traffic?",
+                        "options": [
+                            "Firewall, DNS, proxy and endpoint logs",
+                            "Monitor brightness only",
+                            "Keyboard layout only",
+                            "File names without timestamps"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is defense in depth?",
+                        "options": [
+                            "Using multiple complementary security controls",
+                            "Using one firewall as the only control",
+                            "Disabling all networks",
+                            "Using longer DNS names"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Why should exposed services be minimized?",
+                        "options": [
+                            "Each unnecessary service increases attack surface",
+                            "All services are equally safe",
+                            "Fewer services make IP routing impossible",
+                            "DNS requires every port open"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "Which action is appropriate before security testing a network?",
+                        "options": [
+                            "Confirm explicit authorization and scope",
+                            "Scan any public address without permission",
+                            "Disable logging",
+                            "Ignore rules of engagement"
+                        ],
+                        "answer": 0
+                    },
+                    {
+                        "question": "What is the best interpretation of an IP address in an investigation?",
+                        "options": [
+                            "One piece of evidence that needs context",
+                            "Guaranteed identity of a person",
+                            "Proof that malware exists",
+                            "A replacement for timestamps"
+                        ],
+                        "answer": 0
+                    }
+                ]
+            },
 
             lessons: [
 
