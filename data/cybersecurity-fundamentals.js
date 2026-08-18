@@ -4,56 +4,334 @@
    Expanded lesson content
 ========================================================= */
 
-function buildLesson({ id, title, duration = "25 minutes", subtitle, icon = "fa-solid fa-shield-halved", overview, explanation, security, example, objectives = [], keyConcepts = [], quiz = [] }) {
+function buildLesson({
+    id,
+    title,
+    duration = "35 minutes",
+    subtitle,
+    icon = "fa-solid fa-shield-halved",
+    overview,
+    explanation,
+    security,
+    example,
+    objectives = [],
+    keyConcepts = [],
+    quiz = [],
+    whyItMatters,
+    howItWorks,
+    commonMistakes = [],
+    verificationSteps = [],
+    practicePrompts = []
+}) {
+
+    const resolvedWhy =
+        whyItMatters ||
+        security ||
+        `${title} matters because cybersecurity decisions depend on understanding how the concept changes risk, exposure, trust or defensive capability.`;
+
+    const resolvedHow =
+        howItWorks ||
+        explanation ||
+        overview;
+
+    const resolvedMistakes =
+        commonMistakes.length
+            ? commonMistakes
+            : [
+                `Memorizing the definition of ${title} without connecting it to a realistic asset, threat or business process.`,
+                "Assuming one security control is enough instead of considering prevention, detection, response and recovery together.",
+                "Treating a technical finding as automatically high risk without considering exposure, likelihood, asset value and impact."
+            ];
+
+    const resolvedVerification =
+        verificationSteps.length
+            ? verificationSteps
+            : [
+                "Identify the asset, identity, system or business process involved.",
+                "State the expected secure behavior before reviewing evidence.",
+                "Identify which control should prevent, detect or limit the problem.",
+                "Look for evidence that confirms whether the control is operating as intended.",
+                "Document assumptions, gaps and any follow-up action that is still required."
+            ];
+
+    const resolvedPractice =
+        practicePrompts.length
+            ? practicePrompts
+            : [
+                `Explain ${title} in your own words without reading the lesson.`,
+                "Create one realistic scenario where the concept reduces risk.",
+                "Create one realistic scenario where the relevant control fails or is misconfigured.",
+                "Name one preventive control and one detective control connected to this topic.",
+                "Describe what evidence an analyst could review to determine whether the control is working."
+            ];
+
+    const supplementalQuiz = [
+        {
+            question:
+                `Which approach shows the strongest understanding of ${title}?`,
+            options: [
+                "Memorize the definition only.",
+                "Connect the concept to assets, threats, controls, evidence and business impact.",
+                "Assume one security product solves the entire problem.",
+                "Ignore context and rank every issue as critical."
+            ],
+            answer:
+                1
+        },
+        {
+            question:
+                `When reviewing ${title} in a real environment, what should a security professional do first?`,
+            options: [
+                "Change the configuration immediately.",
+                "Define the expected behavior and gather relevant evidence.",
+                "Disable all related services.",
+                "Assume the most severe explanation is correct."
+            ],
+            answer:
+                1
+        },
+        {
+            question:
+                `Why should ${title} be considered together with other security controls?`,
+            options: [
+                "Because defense in depth reduces dependence on a single control.",
+                "Because individual controls never need monitoring.",
+                "Because cybersecurity risk can always be reduced to zero.",
+                "Because technical controls automatically replace policy and response."
+            ],
+            answer:
+                0
+        }
+    ];
+
+    const resolvedQuiz =
+        [
+            ...quiz,
+            ...supplementalQuiz
+        ]
+            .slice(
+                0,
+                Math.max(
+                    3,
+                    Math.min(
+                        5,
+                        quiz.length + 3
+                    )
+                )
+            );
+
     return {
-        id, title, duration, type: "Lesson", icon,
-        subtitle: subtitle || `Develop a practical understanding of ${title}.`,
-        objectives: objectives.length ? objectives : [
-            `Explain ${title} in your own words.`,
-            `Describe why ${title} matters in cybersecurity.`,
-            `Recognize how ${title} appears in realistic security scenarios.`,
-            `Connect ${title} to risk, controls and defensive decision-making.`
-        ],
+
+        id,
+        title,
+        duration,
+        type:
+            "Lesson",
+        icon,
+
+        subtitle:
+            subtitle ||
+            `Develop a practical understanding of ${title}.`,
+
+        objectives:
+            objectives.length
+                ? objectives
+                : [
+                    `Explain ${title} in your own words.`,
+                    `Describe why ${title} matters in cybersecurity.`,
+                    `Explain how ${title} works in a realistic environment.`,
+                    `Recognize common mistakes or failure conditions related to ${title}.`,
+                    `Identify evidence or controls used to verify ${title} in practice.`
+                ],
+
         introduction: `
             <h2>${title}</h2>
-            <p>${overview}</p>
-            <p>This lesson goes beyond a short definition. The goal is to understand how the concept works, why security teams care about it, and how it connects to decisions you may need to make as a cybersecurity professional.</p>
-        `,
-        body: `
-            <h2>Understanding the Concept</h2>
-            <p>${explanation}</p>
-            <p>Security concepts become more useful when you connect them to assets, users, systems and business processes. Instead of asking only what a term means, ask what can go wrong, which controls reduce the risk, and what evidence would show that the control is working.</p>
-            <h2>Cybersecurity Perspective</h2>
-            <p>${security}</p>
-            <p>A mature security approach usually combines prevention, detection and response. Even a strong preventive control can fail, so organizations also need visibility, logging, procedures and recovery capabilities.</p>
-            <h2>Practical Example</h2>
-            <p>${example}</p>
-            <div class="lesson-callout">
-                <div class="lesson-callout-icon"><i class="fa-solid fa-lightbulb"></i></div>
-                <div><strong>CWS Academy Study Tip</strong><p>When you finish this lesson, try explaining the topic without looking at the page. Then identify one preventive control, one detective control and one realistic failure scenario related to it.</p></div>
-            </div>
-            <h2>What to Remember</h2>
-            <p>The most important outcome is not memorizing terminology. You should be able to recognize the concept in a real environment, explain the risk it addresses and describe how it interacts with other security controls.</p>
-        `,
-        keyConcepts: keyConcepts.length ? keyConcepts : [
-            { title, description: overview },
-            { title: "Security Context", description: security }
-        ],
-        quiz: quiz.length ? quiz : [
-            {
-                question: `What is the best description of why ${title} matters in cybersecurity?`,
-                options: [
-                    "It is only useful for memorizing terminology.",
-                    "It helps security teams understand and reduce risk in real systems.",
-                    "It removes the need for monitoring and response.",
-                    "It guarantees that security incidents can never happen."
-                ],
-                answer: 1
-            }
-        ]
-    };
-}
 
+            <p>${overview}</p>
+
+            <p>
+                This lesson goes beyond a short definition. You should finish
+                able to explain <strong>what the concept is, why it exists,
+                how it works, what can go wrong and how a security professional
+                would evaluate it in a real environment</strong>.
+            </p>
+        `,
+
+        body: `
+            <h2>What Is ${title}?</h2>
+
+            <p>${overview}</p>
+
+
+            <h2>Why Does It Matter?</h2>
+
+            <p>${resolvedWhy}</p>
+
+            <p>
+                Cybersecurity decisions become more useful when the concept is
+                tied to an actual asset, user, service or business process.
+                Ask what could fail, who could abuse it, what impact would
+                result and which controls reduce that risk.
+            </p>
+
+
+            <h2>How Does It Work?</h2>
+
+            <p>${resolvedHow}</p>
+
+            <p>
+                When studying this topic, separate the <strong>expected
+                behavior</strong> from the <strong>security failure</strong>.
+                This makes it easier to understand whether a problem comes from
+                design, configuration, implementation, user behavior or a
+                missing control.
+            </p>
+
+
+            <h2>Cybersecurity Perspective</h2>
+
+            <p>${security}</p>
+
+            <p>
+                A mature security approach combines prevention, detection,
+                response and recovery. Preventive controls reduce the chance of
+                an incident, detective controls provide visibility, response
+                procedures limit damage and recovery controls help restore
+                normal operations.
+            </p>
+
+
+            <h2>Worked Example</h2>
+
+            <p>${example}</p>
+
+            <div class="lesson-callout">
+
+                <div class="lesson-callout-icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+
+                <div>
+
+                    <strong>How to analyse the example</strong>
+
+                    <p>
+                        Identify the asset, the threat or failure condition,
+                        the vulnerability or weakness, the likely impact and
+                        the controls that could prevent, detect or reduce the
+                        problem. This five-part approach turns theory into
+                        practical security reasoning.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <h2>Common Mistakes and Misconceptions</h2>
+
+            <ul>
+                ${resolvedMistakes
+                    .map(
+                        item =>
+                            `<li>${item}</li>`
+                    )
+                    .join("")}
+            </ul>
+
+
+            <h2>How Would You Verify It?</h2>
+
+            <ol>
+                ${resolvedVerification
+                    .map(
+                        item =>
+                            `<li>${item}</li>`
+                    )
+                    .join("")}
+            </ol>
+
+            <p>
+                Verification matters because a configured control and an
+                effective control are not always the same thing. Security teams
+                should look for evidence that the intended behavior is actually
+                occurring.
+            </p>
+
+
+            <h2>Practice Before Moving On</h2>
+
+            <ol>
+                ${resolvedPractice
+                    .map(
+                        item =>
+                            `<li>${item}</li>`
+                    )
+                    .join("")}
+            </ol>
+
+
+            <div class="lesson-callout">
+
+                <div class="lesson-callout-icon">
+                    <i class="fa-solid fa-lightbulb"></i>
+                </div>
+
+                <div>
+
+                    <strong>CWS Academy Study Standard</strong>
+
+                    <p>
+                        Do not move on because you recognize the terminology.
+                        Move on when you can explain the topic without notes,
+                        apply it to a new scenario and justify which security
+                        controls or evidence matter.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <h2>What to Remember</h2>
+
+            <p>
+                The goal is not memorization. You should be able to recognize
+                ${title} in a realistic environment, explain its relationship
+                to risk and identify how security teams would prevent, detect,
+                investigate or respond to problems involving it.
+            </p>
+        `,
+
+        keyConcepts:
+            keyConcepts.length
+                ? keyConcepts
+                : [
+                    {
+                        title,
+                        description:
+                            overview
+                    },
+                    {
+                        title:
+                            "Security Context",
+                        description:
+                            security
+                    },
+                    {
+                        title:
+                            "Verification",
+                        description:
+                            "Confirm expected security behavior using evidence rather than assumption."
+                    }
+                ],
+
+        quiz:
+            resolvedQuiz
+
+    };
+
+}
 
 
 /* =========================================================
@@ -110,10 +388,24 @@ export const cybersecurityFundamentals = {
     status: "available",
     access: "free",
     icon: "fa-solid fa-shield-halved",
-    description: "Build a strong foundation in cybersecurity concepts, threats, vulnerabilities, security controls and ethical security practices.",
-    longDescription: "Cybersecurity Fundamentals introduces the core concepts students need before progressing into networking, Linux, defensive security, ethical hacking and penetration testing. Each lesson develops the ideas in depth and connects them to realistic defensive and risk-management decisions.",
-    duration: "25–35 Hours",
-    estimatedLessons: 44,
+    description: "Build a deep practical foundation in cybersecurity concepts, threats, vulnerabilities, risk, controls, identity, network and endpoint security, ethics and defensive decision-making.",
+    longDescription: "Cybersecurity Fundamentals teaches the core concepts students need before progressing into networking, Linux, defensive security, ethical hacking and penetration testing. Every lesson follows a what, why, how, example, verification and practice model so students learn to reason about assets, threats, vulnerabilities, risk, controls and evidence rather than memorizing definitions. The course connects technical concepts to realistic defensive decisions, business impact, professional ethics and incident-response thinking.",
+    duration: "40–50 Hours",
+    estimatedLessons: 45,
+    learningStandard: "Deep Explanation • Scenario Analysis • Security Context • Verification • Practice",
+    lessonMethod: [
+        "What the concept is",
+        "Why the concept exists",
+        "How it works",
+        "Realistic cybersecurity example",
+        "Assets, threats, vulnerabilities and impact",
+        "Preventive and detective controls",
+        "Common mistakes and misconceptions",
+        "Verification and evidence",
+        "Practice before progression",
+        "Knowledge check"
+    ],
+    learningEnvironment: "Use fictional scenarios, sample data and systems you own or are explicitly authorized to assess.",
     certificateEligible: true,
     completionRules: {
         minimumLessonCompletion: 100,
