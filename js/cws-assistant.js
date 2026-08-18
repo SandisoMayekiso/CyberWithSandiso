@@ -1,7 +1,7 @@
 /* =========================================================
    CWS ACADEMY
-   SITE ASSISTANT V2
-   Context-aware student guidance
+   SITE ASSISTANT V3
+   Firestore-powered personalized student guidance
    File: js/cws-assistant.js
 ========================================================= */
 
@@ -11,6 +11,11 @@ import {
     CWS_ASSISTANT_KNOWLEDGE,
     CWS_ASSISTANT_QUICK_ACTIONS
 } from "./cws-assistant-knowledge.js";
+
+
+import {
+    getPersonalizedNextStep
+} from "./cws-assistant-progress.js";
 
 
 const STORAGE_KEY =
@@ -1239,7 +1244,7 @@ function renderQuickActions(
    QUESTION HANDLING
 ========================================================= */
 
-function handleQuestion(
+async function handleQuestion(
     elements,
     question
 ) {
@@ -1277,7 +1282,52 @@ function handleQuestion(
         )
     ) {
 
+        if (
+            isStudentPage()
+        ) {
+
+            if (
+                elements.input
+            ) {
+
+                elements.input.disabled =
+                    true;
+
+            }
+
+
+            try {
+
+                response =
+                    await getPersonalizedNextStep();
+
+            }
+            catch (error) {
+
+                console.warn(
+                    "[CWS Assistant] Personalized guidance unavailable:",
+                    error
+                );
+
+            }
+            finally {
+
+                if (
+                    elements.input
+                ) {
+
+                    elements.input.disabled =
+                        false;
+
+                }
+
+            }
+
+        }
+
+
         response =
+            response ||
             getContextGuidance();
 
     }
@@ -1292,19 +1342,12 @@ function handleQuestion(
     }
 
 
-    window.setTimeout(
-        () => {
-
-            createMessage(
-                elements,
-                "assistant",
-                response.answer,
-                response.action ||
-                null
-            );
-
-        },
-        150
+    createMessage(
+        elements,
+        "assistant",
+        response.answer,
+        response.action ||
+        null
     );
 
 }
