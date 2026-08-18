@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -13,7 +15,13 @@
         content="Verify a CWS Academy certificate credential."
     >
 
+    <meta
+        name="author"
+        content="CyberWithSandiso"
+    >
+
     <title>Verify Credential | CWS Academy</title>
+
 
     <link
         rel="stylesheet"
@@ -29,28 +37,42 @@
         rel="stylesheet"
         href="../css/verify-certificate.css"
     >
+
 </head>
 
+
 <body class="verification-page">
+
 
 <header class="verification-header">
 
     <a
         href="../index.html"
         class="verification-brand"
+        aria-label="CyberWithSandiso home"
     >
+
         <i class="fa-solid fa-shield-halved"></i>
 
         <span>
-            <strong>CWS ACADEMY</strong>
-            <small>CyberWithSandiso</small>
+
+            <strong>
+                CWS ACADEMY
+            </strong>
+
+            <small>
+                CyberWithSandiso
+            </small>
+
         </span>
+
     </a>
 
 </header>
 
 
 <main class="verification-main">
+
 
     <section class="verification-hero">
 
@@ -63,36 +85,55 @@
         </h1>
 
         <p>
-            Enter a credential ID or use a certificate's QR code to confirm
-            that a CWS Academy achievement record exists.
+            Enter a CWS Academy credential ID or scan the QR code
+            on a certificate to confirm that its verification record exists.
         </p>
 
 
         <form
             id="verificationForm"
             class="verification-form"
+            novalidate
         >
 
             <label for="credentialInput">
                 Credential ID
             </label>
 
+
             <div class="verification-input-row">
 
                 <input
                     type="text"
                     id="credentialInput"
+                    name="credential"
                     autocomplete="off"
-                    placeholder="CWS-CYBER-XXXXXXXX"
+                    spellcheck="false"
+                    placeholder="CWS-CYBERSEC-XXXXXX"
                     required
                 >
 
-                <button type="submit">
+
+                <button
+                    type="submit"
+                    id="verifyCredentialBtn"
+                >
+
                     <i class="fa-solid fa-magnifying-glass"></i>
+
                     Verify
+
                 </button>
 
             </div>
+
+
+            <p
+                id="verificationFormMessage"
+                class="verification-form-message"
+                hidden
+                aria-live="polite"
+            ></p>
 
         </form>
 
@@ -103,9 +144,19 @@
         id="verificationLoading"
         class="verification-state"
         hidden
+        aria-live="polite"
     >
+
         <i class="fa-solid fa-spinner fa-spin"></i>
-        <h2>Checking credential...</h2>
+
+        <h2>
+            Checking credential...
+        </h2>
+
+        <p>
+            Looking for a matching CWS Academy verification record.
+        </p>
+
     </section>
 
 
@@ -113,19 +164,29 @@
         id="verificationNotFound"
         class="verification-result invalid"
         hidden
+        aria-live="polite"
     >
 
         <div class="verification-result-icon">
             <i class="fa-solid fa-circle-xmark"></i>
         </div>
 
+
         <div>
-            <span>NOT VERIFIED</span>
-            <h2>Credential not found</h2>
-            <p>
+
+            <span>
+                NOT VERIFIED
+            </span>
+
+            <h2>
+                Credential not found
+            </h2>
+
+            <p id="verificationNotFoundText">
                 No active CWS Academy verification record was found for this
                 credential ID.
             </p>
+
         </div>
 
     </section>
@@ -135,11 +196,13 @@
         id="verificationResult"
         class="verification-result valid"
         hidden
+        aria-live="polite"
     >
 
         <div class="verification-result-icon">
             <i class="fa-solid fa-circle-check"></i>
         </div>
+
 
         <div class="verification-result-content">
 
@@ -152,7 +215,8 @@
             </h2>
 
             <p>
-                This credential matches a CWS Academy course-completion record.
+                This credential matches an active CWS Academy
+                course-completion verification record.
             </p>
 
 
@@ -199,21 +263,41 @@
 
         <i class="fa-solid fa-circle-info"></i>
 
-        <p>
-            Verification confirms that the credential exists in the CWS Academy
-            verification database. Credential security should be backed by
-            server-side certificate issuance in production.
-        </p>
+        <div>
+
+            <strong>
+                About credential verification
+            </strong>
+
+            <p>
+                This page confirms whether a credential ID exists in the
+                CWS Academy verification database and whether its status
+                is active.
+            </p>
+
+        </div>
 
     </section>
 
+
 </main>
+
+
+<footer class="verification-footer">
+
+    <p>
+        © 2026 CWS Academy.
+        Part of the CyberWithSandiso ecosystem.
+    </p>
+
+</footer>
 
 
 <script
     type="module"
     src="../js/verify-certificate.js"
 ></script>
+
 
 </body>
 </html>
