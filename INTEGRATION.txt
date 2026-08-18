@@ -1,0 +1,48 @@
+CWS ASSISTANT V1 — INTEGRATION
+
+Add this CSS to every page where the assistant should appear:
+
+ROOT index.html
+----------------
+<link rel="stylesheet" href="css/cws-assistant.css">
+
+<script
+    type="module"
+    src="js/cws-assistant.js"
+></script>
+
+
+PAGES INSIDE /pages/
+--------------------
+<link rel="stylesheet" href="../css/cws-assistant.css">
+
+<script
+    type="module"
+    src="../js/cws-assistant.js"
+></script>
+
+
+PAGES INSIDE /student/
+----------------------
+<link rel="stylesheet" href="../css/cws-assistant.css">
+
+<script
+    type="module"
+    src="../js/cws-assistant.js"
+></script>
+
+
+FILES
+-----
+js/cws-assistant.js
+js/cws-assistant-knowledge.js
+css/cws-assistant.css
+
+
+NOTES
+-----
+- No API key is required.
+- This version answers only CWS Academy/site questions.
+- It uses localStorage for chat history/open state.
+- It automatically adjusts navigation links for root, /pages/, and /student/.
+- Later, an AI backend can be added as a fallback without replacing this UI.
