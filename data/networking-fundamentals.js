@@ -1,14 +1,11 @@
 /* =========================================================
    CWS ACADEMY
    NETWORKING FUNDAMENTALS
-   EXPANDED COURSE CONTENT
+   COMPLETE COURSE • CWS CURRICULUM STANDARD
 
-   IMPORTANT:
-   This course is split into 3 text files for easier editing.
-   Copy PART 1, then PART 2, then PART 3 into:
-   data/networking-fundamentals.js
-
-   Keep the parts in that exact order.
+   Teaching standard used throughout:
+   What -> Why -> How -> Examples -> Security -> Troubleshooting
+   -> Recap -> Knowledge Check -> Next Step
 ========================================================= */
 
 
@@ -88,9 +85,6 @@ export const networkingFundamentals = {
     status:
         "available",
 
-    access:
-        "free",
-
     icon:
         "fa-solid fa-network-wired",
 
@@ -98,10 +92,10 @@ export const networkingFundamentals = {
         "Learn IP addressing, CIDR, ARP, TCP, UDP, ICMP, routing, DNS, HTTP and HTTPS from a cybersecurity perspective.",
 
     longDescription:
-        "Networking Fundamentals explains how devices communicate from the local network to the Internet. Students learn addressing, Ethernet, ARP, TCP, UDP, ICMP, routing, DNS, DHCP, HTTP, HTTPS and network-defense concepts through detailed explanations, worked examples and practical command demonstrations.",
+        "Networking Fundamentals teaches how devices communicate from the local network to the Internet using a structured CWS learning standard. Every major topic explains what the technology is, why it exists, how it works, worked examples, troubleshooting, cybersecurity relevance and knowledge checks before students progress. The course covers addressing, subnetting, Ethernet, ARP, TCP, UDP, ICMP, routing, DNS, DHCP, HTTP, HTTPS, packet analysis and network-defense concepts.",
 
     duration:
-        "30–40 Hours",
+        "50–65 Hours",
 
     objectives: [
 
@@ -1580,7 +1574,7 @@ Ethernet frame</pre>
             ]
         },
 
-        {
+{
             id:
                 "module-02",
 
@@ -1654,7 +1648,49 @@ Broadcast: 192.168.1.255</pre>
                             <p>
                                 IP addresses appear throughout firewall logs, proxy logs, endpoint telemetry and packet captures. Analysts need to recognize whether an address is internal, external, expected or unusual before drawing conclusions.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                IPv4 is the addressing system most beginners encounter first in local networks, firewall logs, cloud security groups and packet captures. Knowing only that an address contains four numbers is not enough; a learner must understand that the address is a 32-bit value interpreted together with a prefix or subnet mask.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Read an IPv4 address in two views at the same time: dotted decimal for human readability and binary for understanding boundaries. Each decimal octet represents eight bits. The prefix length tells you how many leading bits identify the network. The remaining bits identify addresses inside that network. This is why 192.168.10.25/24 and 192.168.10.200/24 are local to the same /24, while 192.168.11.25/24 is not.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A workstation configured as 192.168.50.25/24 interprets 192.168.50.80 as local because both addresses belong to 192.168.50.0/24. It interprets 192.168.60.80 as remote and normally sends that traffic to a default gateway.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Security tools constantly expose source IP, destination IP and prefix information. An analyst who understands addressing can quickly tell whether traffic stays inside a subnet, crosses a security boundary or targets an unexpected external address.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If a host has an IP address but cannot reach expected systems, confirm the address, prefix length, gateway and whether the address belongs to the intended subnet. A correct-looking address with the wrong prefix can still produce broken or misleading connectivity.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Understanding IPv4</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The next lesson separates the network portion from the host portion so you can predict whether a destination is local or requires routing.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -1689,6 +1725,55 @@ Broadcast: 192.168.1.255</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes IPv4?",
+                                options: [
+                                    "A 32-bit Internet Protocol address.",
+                                    "Eight bits of an IPv4 address.",
+                                    "Number of leading bits representing the network prefix.",
+                                    "A dotted-decimal representation of network and host boundaries."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Octet?",
+                                options: [
+                                    "Eight bits of an IPv4 address.",
+                                    "A 32-bit Internet Protocol address.",
+                                    "Number of leading bits representing the network prefix.",
+                                    "A dotted-decimal representation of network and host boundaries."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Prefix Length?",
+                                options: [
+                                    "Number of leading bits representing the network prefix.",
+                                    "A 32-bit Internet Protocol address.",
+                                    "Eight bits of an IPv4 address.",
+                                    "A dotted-decimal representation of network and host boundaries."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Subnet Mask?",
+                                options: [
+                                    "A dotted-decimal representation of network and host boundaries.",
+                                    "A 32-bit Internet Protocol address.",
+                                    "Eight bits of an IPv4 address.",
+                                    "Number of leading bits representing the network prefix."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -1743,7 +1828,49 @@ NNNNNNNN.NNNNNNNN.NNNNNNNN.HHHHHHHH</pre>
                             <p>
                                 Host A is 10.10.5.20/24 and Host B is 10.10.5.99/24. Both share network 10.10.5.0/24. Host C is 10.10.6.10/24, which belongs to a different network and requires routing between the subnets.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                An IP address by itself does not tell a device what is local. The subnet mask or CIDR prefix creates the boundary. Hosts use that boundary every time they decide whether to deliver traffic directly on the LAN or send it to a router.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Conceptually, apply the subnet mask to both the local address and destination address. If the resulting network values match, the destination is local. If they differ, the destination is remote. In a /24, the first three octets form the network portion; in other prefixes the boundary can fall inside an octet, which is why binary understanding becomes important.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                10.10.5.20/24 and 10.10.5.99/24 both calculate to network 10.10.5.0/24. 10.10.6.10/24 calculates to 10.10.6.0/24, so a router is needed between the networks.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Network segmentation, ACLs and firewall policies are usually expressed in prefixes. Misunderstanding the host/network boundary can result in rules that expose too many systems or unintentionally block legitimate traffic.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When two nearby devices cannot communicate, do not assume they are local simply because their addresses look similar. Compare the full prefix. A /23, /24 and /25 can produce very different local-network decisions.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Network and Host Portions</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will learn which IPv4 ranges are intended for private networks, which are globally routable and why NAT is commonly used at network edges.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -1778,6 +1905,55 @@ NNNNNNNN.NNNNNNNN.NNNNNNNN.HHHHHHHH</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Network Portion?",
+                                options: [
+                                    "Bits identifying the IP subnet.",
+                                    "Bits that vary within a subnet.",
+                                    "A destination considered to be on the same IP subnet.",
+                                    "A destination reached through routing."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Host Portion?",
+                                options: [
+                                    "Bits that vary within a subnet.",
+                                    "Bits identifying the IP subnet.",
+                                    "A destination considered to be on the same IP subnet.",
+                                    "A destination reached through routing."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Local Destination?",
+                                options: [
+                                    "A destination considered to be on the same IP subnet.",
+                                    "Bits identifying the IP subnet.",
+                                    "Bits that vary within a subnet.",
+                                    "A destination reached through routing."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Remote Destination?",
+                                options: [
+                                    "A destination reached through routing.",
+                                    "Bits identifying the IP subnet.",
+                                    "Bits that vary within a subnet.",
+                                    "A destination considered to be on the same IP subnet."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -1839,7 +2015,49 @@ NNNNNNNN.NNNNNNNN.NNNNNNNN.HHHHHHHH</pre>
                             <p>
                                 Private addressing does not itself provide security. An internal host can still be vulnerable to another compromised internal system, and NAT should not be treated as a replacement for firewall policy.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                The Internet cannot assign a unique public IPv4 address to every internal device indefinitely, so private address space allows organizations to reuse the same ranges internally. Understanding these ranges prevents analysts from confusing internal addresses with Internet-routable ones.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                RFC 1918 private space includes 10.0.0.0/8, 172.16.0.0/12 and 192.168.0.0/16. Edge devices commonly use NAT or PAT to translate internal private connections to public addresses. The translation changes how a flow appears depending on where it is observed.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A laptop may use 192.168.1.25:51522 internally. A home router can translate that flow to 203.0.113.50:62001 before sending it to the Internet. The remote server sees the translated public tuple, not the private one.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Private addressing is not a security control by itself. Attackers who gain an internal foothold can still communicate with other private systems. NAT also complicates attribution because many users may share one public address.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If an external service logs one public IP for many users, correlate timestamps and translated source ports with NAT logs. If a host self-assigns a 169.254.x.x address unexpectedly, investigate DHCP or local connectivity.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Public and Private IP Addresses</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The next lesson applies IPv4 knowledge to security evidence such as firewall logs, attribution, spoofing, VPNs and NAT.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -1874,6 +2092,55 @@ NNNNNNNN.NNNNNNNN.NNNNNNNN.HHHHHHHH</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Private Address?",
+                                options: [
+                                    "An address reserved for internal use.",
+                                    "An address intended to be globally routable, subject to routing and policy.",
+                                    "Translation between address representations at a network boundary.",
+                                    "Addressing used to communicate with the local host itself."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Public Address?",
+                                options: [
+                                    "An address intended to be globally routable, subject to routing and policy.",
+                                    "An address reserved for internal use.",
+                                    "Translation between address representations at a network boundary.",
+                                    "Addressing used to communicate with the local host itself."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes NAT?",
+                                options: [
+                                    "Translation between address representations at a network boundary.",
+                                    "An address reserved for internal use.",
+                                    "An address intended to be globally routable, subject to routing and policy.",
+                                    "Addressing used to communicate with the local host itself."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Loopback?",
+                                options: [
+                                    "Addressing used to communicate with the local host itself.",
+                                    "An address reserved for internal use.",
+                                    "An address intended to be globally routable, subject to routing and policy.",
+                                    "Translation between address representations at a network boundary."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -1935,7 +2202,49 @@ proto=tcp action=allow</pre>
                             <p>
                                 Treat an IP address as one piece of evidence, not absolute attribution. Always ask where the log was captured, what translation occurred and whether the address was dynamically assigned.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                IP addresses are everywhere in security investigations, yet they are easy to over-interpret. An address identifies a network endpoint at an observation point, not automatically a person, device owner or attacker.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Always interpret an IP together with time, direction, interface, ports, translation state and asset ownership. VPNs, proxies, cloud services, DHCP and NAT can all change the meaning of an address. Source spoofing can also make some packets claim an address that did not originate the traffic.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A firewall log showing src=10.10.20.45 dst=172.16.5.10 dport=443 tells you a private source communicated toward a private destination over TCP 443 at that firewall. It does not by itself tell you which human used 10.10.20.45; DHCP and identity records may be needed.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Good analysts correlate IP evidence with endpoint telemetry, authentication logs, DHCP leases, DNS history, VPN records and asset inventories before making attribution claims.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When an IP appears suspicious, first establish whether it is internal or public, whether translation occurred, whether the address was dynamically assigned and where the event was captured. This prevents false conclusions.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>IPv4 from a Security Perspective</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                With addressing understood, the course moves into subnet masks and CIDR so you can calculate exact network ranges and security boundaries.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -1970,6 +2279,55 @@ proto=tcp action=allow</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Source IP?",
+                                options: [
+                                    "The source address recorded in an IP packet.",
+                                    "The address the packet is intended to reach.",
+                                    "Falsifying addressing information.",
+                                    "Connecting observed activity to a responsible system, account or actor using evidence."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Destination IP?",
+                                options: [
+                                    "The address the packet is intended to reach.",
+                                    "The source address recorded in an IP packet.",
+                                    "Falsifying addressing information.",
+                                    "Connecting observed activity to a responsible system, account or actor using evidence."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Spoofing?",
+                                options: [
+                                    "Falsifying addressing information.",
+                                    "The source address recorded in an IP packet.",
+                                    "The address the packet is intended to reach.",
+                                    "Connecting observed activity to a responsible system, account or actor using evidence."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Attribution?",
+                                options: [
+                                    "Connecting observed activity to a responsible system, account or actor using evidence.",
+                                    "The source address recorded in an IP packet.",
+                                    "The address the packet is intended to reach.",
+                                    "Falsifying addressing information."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -2056,7 +2414,49 @@ Net:  192.168.1.0</pre>
                             <p>
                                 Subnet masks matter when defining firewall rules, vulnerability-scan scopes and network-monitoring ranges. A mistake such as scanning /16 instead of /24 can dramatically expand the number of targeted addresses.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Subnet masks define the network boundary used by hosts and routers. They are also the foundation of firewall scopes, route definitions and network segmentation. A small mistake can change the size of a trusted network dramatically.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                A subnet mask contains contiguous 1 bits for the network portion followed by 0 bits for the host portion. 255.255.255.0 corresponds to /24 because it contains 24 leading 1 bits. The mask is combined with an IP address to calculate the network address.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                For 192.168.10.42 with mask 255.255.255.0, the network is 192.168.10.0. With mask 255.255.255.128 (/25), 192.168.10.42 belongs to 192.168.10.0/25 while 192.168.10.200 belongs to 192.168.10.128/25.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Overly broad masks in access rules can unintentionally trust or expose more hosts than intended. Analysts should verify the actual prefix instead of guessing from familiar address patterns.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When two hosts disagree about whether they are local, compare their masks. Inconsistent masks can make one host ARP directly while the other tries to route through a gateway, producing confusing one-way symptoms.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Understanding Subnet Masks</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                CIDR notation expresses the same boundary more compactly and makes it easier to reason about prefixes and address ranges.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -2091,6 +2491,55 @@ Net:  192.168.1.0</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Subnet Mask?",
+                                options: [
+                                    "A 32-bit mask defining an IPv4 network prefix.",
+                                    "Leading network bits shared by addresses in a subnet.",
+                                    "Operation used to derive the network address from IP and mask.",
+                                    "The addresses or systems included in an activity such as monitoring or scanning."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Prefix?",
+                                options: [
+                                    "Leading network bits shared by addresses in a subnet.",
+                                    "A 32-bit mask defining an IPv4 network prefix.",
+                                    "Operation used to derive the network address from IP and mask.",
+                                    "The addresses or systems included in an activity such as monitoring or scanning."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Bitwise AND?",
+                                options: [
+                                    "Operation used to derive the network address from IP and mask.",
+                                    "A 32-bit mask defining an IPv4 network prefix.",
+                                    "Leading network bits shared by addresses in a subnet.",
+                                    "The addresses or systems included in an activity such as monitoring or scanning."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Scope?",
+                                options: [
+                                    "The addresses or systems included in an activity such as monitoring or scanning.",
+                                    "A 32-bit mask defining an IPv4 network prefix.",
+                                    "Leading network bits shared by addresses in a subnet.",
+                                    "Operation used to derive the network address from IP and mask."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -2147,7 +2596,49 @@ Net:  192.168.1.0</pre>
                             <p>
                                 Firewalls, SIEM platforms, cloud security groups and scanners commonly accept CIDR ranges. A rule permitting 10.0.0.0/8 is far broader than one permitting 10.20.30.0/24, so prefix accuracy is security-relevant.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                CIDR is the standard compact way to describe IP prefixes. Routes, cloud security rules, VPN networks and firewall objects frequently use notation such as /24, /20 or /32, so learners must read it confidently.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                The number after the slash is the count of network bits. A /24 leaves 8 host bits, giving 256 total addresses before reserved-address considerations. A /26 leaves 6 host bits, giving 64 total addresses. Smaller host-bit counts create smaller subnets.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                192.168.10.0/24 contains 256 addresses. Splitting it into /26 networks creates four blocks: .0/26, .64/26, .128/26 and .192/26. Each block spans 64 addresses.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                CIDR is common in allowlists and deny rules. Accidentally using /16 instead of /24 can expand access from 256 addresses to 65,536 addresses.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If a rule appears to permit too many or too few systems, translate the CIDR to its actual range. Do not rely on visual similarity of addresses.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>CIDR Notation</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will calculate network and broadcast addresses so you can identify exact subnet boundaries.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -2182,6 +2673,55 @@ Net:  192.168.1.0</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes CIDR?",
+                                options: [
+                                    "Classless notation representing an IP prefix.",
+                                    "Number after the slash indicating fixed network bits.",
+                                    "Bits remaining after the prefix.",
+                                    "Contiguous addresses represented by a prefix."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Prefix Length?",
+                                options: [
+                                    "Number after the slash indicating fixed network bits.",
+                                    "Classless notation representing an IP prefix.",
+                                    "Bits remaining after the prefix.",
+                                    "Contiguous addresses represented by a prefix."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Host Bits?",
+                                options: [
+                                    "Bits remaining after the prefix.",
+                                    "Classless notation representing an IP prefix.",
+                                    "Number after the slash indicating fixed network bits.",
+                                    "Contiguous addresses represented by a prefix."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Address Block?",
+                                options: [
+                                    "Contiguous addresses represented by a prefix.",
+                                    "Classless notation representing an IP prefix.",
+                                    "Number after the slash indicating fixed network bits.",
+                                    "Bits remaining after the prefix."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -2243,7 +2783,49 @@ Broadcast: 10.0.0.191</pre>
                             <p>
                                 A security rule written for the wrong range may expose additional hosts or exclude systems that were intended to be protected. Accurate network boundaries are therefore part of access-control hygiene.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Every traditional IPv4 subnet has boundary addresses with special meaning. Knowing the network and broadcast addresses helps you calculate usable ranges, validate configurations and interpret scanning or routing results.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                The network address has all host bits set to 0. The directed broadcast address has all host bits set to 1. Addresses between them are normally available for hosts in ordinary subnets, with exceptions for special designs such as /31 point-to-point links.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                For 192.168.10.64/26, the block size is 64. The network is .64, the broadcast is .127 and the traditional usable host range is .65 through .126.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Correct range calculation prevents assessment tools from scanning outside an authorized subnet. It also helps defenders distinguish legitimate host addresses from unusual or invalid configurations.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If a supposed host address equals the calculated network or broadcast address in a conventional LAN, verify the configuration. Also verify that your scanner scope stops at the authorized range boundary.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Network and Broadcast Addresses</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The next lesson connects subnetting directly to segmentation, least privilege and containment.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -2278,6 +2860,55 @@ Broadcast: 10.0.0.191</pre>
 
                                 answer:
                                     3
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Network Address?",
+                                options: [
+                                    "Lowest address identifying a traditional IPv4 subnet.",
+                                    "Highest address used for directed broadcast in a traditional subnet.",
+                                    "Addresses available for devices under common subnetting conventions.",
+                                    "Number of addresses represented by a prefix."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Broadcast Address?",
+                                options: [
+                                    "Highest address used for directed broadcast in a traditional subnet.",
+                                    "Lowest address identifying a traditional IPv4 subnet.",
+                                    "Addresses available for devices under common subnetting conventions.",
+                                    "Number of addresses represented by a prefix."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Host Range?",
+                                options: [
+                                    "Addresses available for devices under common subnetting conventions.",
+                                    "Lowest address identifying a traditional IPv4 subnet.",
+                                    "Highest address used for directed broadcast in a traditional subnet.",
+                                    "Number of addresses represented by a prefix."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Block Size?",
+                                options: [
+                                    "Number of addresses represented by a prefix.",
+                                    "Lowest address identifying a traditional IPv4 subnet.",
+                                    "Highest address used for directed broadcast in a traditional subnet.",
+                                    "Addresses available for devices under common subnetting conventions."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -2336,7 +2967,49 @@ Apps    DBs      Mgmt
                             <p>
                                 Simply assigning different IP ranges does not guarantee isolation. If routing permits unrestricted communication between them, the security benefit is limited. Segmentation requires enforcement through firewalls, ACLs, security groups or equivalent controls.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Subnetting is not only an addressing exercise. It creates boundaries that can support security policy, monitoring and containment. Thoughtful segmentation reduces the number of systems that can communicate freely.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Design subnets around trust, function and operational need. User devices, servers, management interfaces, guest systems and sensitive services can be placed into different prefixes. Routing and firewall policy then control permitted paths between them.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A company might use 10.20.10.0/24 for users, 10.20.20.0/24 for servers and 10.20.30.0/24 for guest Wi-Fi. Guest-to-server traffic can be denied while users are allowed only the specific server ports they need.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Segmentation supports least privilege and can slow lateral movement after compromise. It also creates useful monitoring points where inter-segment traffic can be logged and inspected.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If an application breaks after segmentation, identify its real communication dependencies rather than opening broad any-to-any rules. Capture required source, destination, protocol and port information and permit only what is necessary.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Subnetting for Network Security</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The course now moves down to local Ethernet communication, beginning with frames, switches and MAC addresses.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -2371,6 +3044,55 @@ Apps    DBs      Mgmt
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Segmentation?",
+                                options: [
+                                    "Dividing a network into controlled zones.",
+                                    "Movement from one compromised system to other systems.",
+                                    "Rules that permit or deny traffic based on defined criteria.",
+                                    "Allowing only communication required for legitimate operation."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Lateral Movement?",
+                                options: [
+                                    "Movement from one compromised system to other systems.",
+                                    "Dividing a network into controlled zones.",
+                                    "Rules that permit or deny traffic based on defined criteria.",
+                                    "Allowing only communication required for legitimate operation."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes ACL?",
+                                options: [
+                                    "Rules that permit or deny traffic based on defined criteria.",
+                                    "Dividing a network into controlled zones.",
+                                    "Movement from one compromised system to other systems.",
+                                    "Allowing only communication required for legitimate operation."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Least Connectivity?",
+                                options: [
+                                    "Allowing only communication required for legitimate operation.",
+                                    "Dividing a network into controlled zones.",
+                                    "Movement from one compromised system to other systems.",
+                                    "Rules that permit or deny traffic based on defined criteria."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -2460,7 +3182,49 @@ Apps    DBs      Mgmt
                             <p>
                                 Layer 2 visibility matters when investigating local attacks, rogue devices or ARP manipulation. Network access controls, switch security features and segmentation can help reduce exposure on shared LANs.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Most wired LAN communication uses Ethernet. IP packets usually travel inside Ethernet frames on local links, so understanding frames explains what switches actually forward and what packet captures show at Layer 2.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                An Ethernet frame includes destination and source MAC addresses, an EtherType or length field, payload and error-detection information. A switch reads the Layer 2 header to determine where a frame should go inside the VLAN.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                When Host A sends an IP packet to Host B on the same LAN, the packet is placed inside an Ethernet frame addressed to Host B's MAC. When Host A sends to a remote network, the frame is instead addressed to the local router's MAC while the IP destination remains remote.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Layer 2 visibility can reveal unknown devices, unusual MAC changes and local attacks. Ethernet concepts are essential before studying ARP spoofing or VLAN security.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If an interface has link but local communication fails, inspect VLAN membership, MAC learning, duplex/speed issues and whether the expected destination MAC can be resolved.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Ethernet Fundamentals</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will examine MAC addresses themselves—how they are formatted, learned and used for local delivery.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -2495,6 +3259,55 @@ Apps    DBs      Mgmt
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Ethernet Frame?",
+                                options: [
+                                    "Layer 2 unit used to carry data on Ethernet.",
+                                    "Layer 2 identifier used for local delivery.",
+                                    "Traffic intended for all devices in a broadcast domain.",
+                                    "Frame Check Sequence used to detect transmission errors."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes MAC Address?",
+                                options: [
+                                    "Layer 2 identifier used for local delivery.",
+                                    "Layer 2 unit used to carry data on Ethernet.",
+                                    "Traffic intended for all devices in a broadcast domain.",
+                                    "Frame Check Sequence used to detect transmission errors."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Broadcast?",
+                                options: [
+                                    "Traffic intended for all devices in a broadcast domain.",
+                                    "Layer 2 unit used to carry data on Ethernet.",
+                                    "Layer 2 identifier used for local delivery.",
+                                    "Frame Check Sequence used to detect transmission errors."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes FCS?",
+                                options: [
+                                    "Frame Check Sequence used to detect transmission errors.",
+                                    "Layer 2 unit used to carry data on Ethernet.",
+                                    "Layer 2 identifier used for local delivery.",
+                                    "Traffic intended for all devices in a broadcast domain."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -2548,7 +3361,49 @@ Apps    DBs      Mgmt
                             <p>
                                 Because host software can often alter a MAC address, MAC allowlists alone are weak protection. Stronger controls may include authenticated network access, switch-port security, endpoint identity and monitoring.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                MAC addresses identify network interfaces for local Layer 2 delivery. They appear in switch tables, ARP caches and packet captures and help map observed traffic to local devices.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                A common Ethernet MAC address is 48 bits written as six hexadecimal octets. Switches learn source MAC addresses and associate them with ports. The all-FF address is used for Ethernet broadcast.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                If a switch learns 00:11:22:33:44:55 on Gi0/5, later unicast frames destined for that MAC can be forwarded toward Gi0/5 rather than flooded across the VLAN.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                MAC addresses can be changed or spoofed, so they are useful evidence but not strong identity by themselves. Port-security features and network-access controls may use MAC information as one signal.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If a device appears on an unexpected switch port, verify whether the endpoint moved, a virtual machine migrated, a phone is bridging a PC or suspicious spoofing is occurring.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>MAC Addresses</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                IP communication still needs a way to discover the correct local MAC address. ARP solves that problem in IPv4 networks.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -2583,6 +3438,55 @@ Apps    DBs      Mgmt
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes MAC Address?",
+                                options: [
+                                    "A Layer 2 hardware/interface identifier.",
+                                    "Switch table mapping learned MAC addresses to ports.",
+                                    "Presenting a forged identifier.",
+                                    "Base-16 notation commonly used for MAC addresses."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes MAC Table?",
+                                options: [
+                                    "Switch table mapping learned MAC addresses to ports.",
+                                    "A Layer 2 hardware/interface identifier.",
+                                    "Presenting a forged identifier.",
+                                    "Base-16 notation commonly used for MAC addresses."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Spoofing?",
+                                options: [
+                                    "Presenting a forged identifier.",
+                                    "A Layer 2 hardware/interface identifier.",
+                                    "Switch table mapping learned MAC addresses to ports.",
+                                    "Base-16 notation commonly used for MAC addresses."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Hexadecimal?",
+                                options: [
+                                    "Base-16 notation commonly used for MAC addresses.",
+                                    "A Layer 2 hardware/interface identifier.",
+                                    "Switch table mapping learned MAC addresses to ports.",
+                                    "Presenting a forged identifier."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -2648,7 +3552,49 @@ Linux:   ip neigh</pre>
                             <p>
                                 ARP has no built-in authentication. This makes forged ARP messages possible on some local networks, which is why secure switching practices and encrypted higher-layer protocols remain important.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                A host may know a destination IPv4 address but Ethernet delivery requires a MAC address. ARP bridges that gap on a local IPv4 network by asking which MAC address owns a particular IP.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                When no valid ARP cache entry exists, a host broadcasts an ARP request such as “Who has 192.168.1.1?” The device owning that address replies with its MAC. The sender caches the mapping temporarily and can then build Ethernet frames.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A laptop 192.168.1.25 wants to reach its gateway 192.168.1.1. It broadcasts an ARP request. The router responds with its MAC address, and the laptop sends remote-bound frames to that MAC.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                ARP has no built-in authentication. A malicious local system may send false mappings, enabling traffic interception or disruption. This is why ARP behaviour matters in local-network security.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If local IPv4 communication fails despite correct addressing, inspect the ARP cache and capture ARP requests/replies. Duplicate IP addresses or stale mappings can produce intermittent symptoms.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Understanding ARP</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The next lesson focuses on ARP abuse, spoofing indicators and defensive controls.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -2683,6 +3629,55 @@ Linux:   ip neigh</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes ARP?",
+                                options: [
+                                    "Protocol mapping local IPv4 addresses to MAC addresses.",
+                                    "Broadcast query asking for the MAC associated with an IPv4 address.",
+                                    "Response providing an address mapping.",
+                                    "Temporary host table of learned IP-to-MAC mappings."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes ARP Request?",
+                                options: [
+                                    "Broadcast query asking for the MAC associated with an IPv4 address.",
+                                    "Protocol mapping local IPv4 addresses to MAC addresses.",
+                                    "Response providing an address mapping.",
+                                    "Temporary host table of learned IP-to-MAC mappings."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes ARP Reply?",
+                                options: [
+                                    "Response providing an address mapping.",
+                                    "Protocol mapping local IPv4 addresses to MAC addresses.",
+                                    "Broadcast query asking for the MAC associated with an IPv4 address.",
+                                    "Temporary host table of learned IP-to-MAC mappings."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes ARP Cache?",
+                                options: [
+                                    "Temporary host table of learned IP-to-MAC mappings.",
+                                    "Protocol mapping local IPv4 addresses to MAC addresses.",
+                                    "Broadcast query asking for the MAC associated with an IPv4 address.",
+                                    "Response providing an address mapping."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -2743,7 +3738,49 @@ Linux:   ip neigh</pre>
                             <p>
                                 ARP-manipulation testing should only be performed in an isolated lab or on networks where you have explicit authorization. Interfering with real network traffic can disrupt users and expose sensitive data.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                ARP trusts local replies, which creates opportunities for spoofing. Understanding the attack at a conceptual level helps defenders recognize why local network segmentation and switch controls matter.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                In ARP spoofing, a malicious host advertises a false IP-to-MAC mapping—for example claiming that the default gateway IP belongs to the attacker's MAC. Other hosts may then send gateway-bound frames to the attacker.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                Victim 192.168.1.20 expects gateway 192.168.1.1. An attacker repeatedly sends forged ARP replies associating 192.168.1.1 with the attacker MAC. The victim's ARP cache can be poisoned and traffic may be redirected.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Defenses can include network segmentation, Dynamic ARP Inspection on supported switches, DHCP snooping dependencies, static mappings for limited critical use cases and monitoring for unexpected MAC/IP changes.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                Symptoms can include changing ARP entries, certificate warnings during interception attempts, duplicate-IP alerts or traffic unexpectedly passing through another host. Verify with switch tables and packet captures.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>ARP Security Risks</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                After local delivery, the course moves to the Transport layer where TCP and UDP carry application traffic between ports.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -2778,6 +3815,55 @@ Linux:   ip neigh</pre>
 
                                 answer:
                                     3
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes ARP Spoofing?",
+                                options: [
+                                    "Sending forged ARP information.",
+                                    "Positioning between communicating systems.",
+                                    "Switch feature that validates ARP information against trusted bindings.",
+                                    "Protection that can reduce the value of intercepted traffic."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Man-in-the-Middle?",
+                                options: [
+                                    "Positioning between communicating systems.",
+                                    "Sending forged ARP information.",
+                                    "Switch feature that validates ARP information against trusted bindings.",
+                                    "Protection that can reduce the value of intercepted traffic."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Dynamic ARP Inspection?",
+                                options: [
+                                    "Switch feature that validates ARP information against trusted bindings.",
+                                    "Sending forged ARP information.",
+                                    "Positioning between communicating systems.",
+                                    "Protection that can reduce the value of intercepted traffic."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Encryption?",
+                                options: [
+                                    "Protection that can reduce the value of intercepted traffic.",
+                                    "Sending forged ARP information.",
+                                    "Positioning between communicating systems.",
+                                    "Switch feature that validates ARP information against trusted bindings."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -2857,7 +3943,49 @@ Linux:   ip neigh</pre>
                             <p>
                                 Open ports may indicate reachable services, but a port number alone does not guarantee which application is running. Security analysis combines port information with protocol behaviour, banners, process data and configuration.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                IP gets packets to a host, but applications need a way to distinguish one conversation from another. Transport protocols provide ports and delivery behaviour so many applications can communicate simultaneously.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                TCP and UDP use source and destination ports. A flow is commonly identified using source IP, source port, destination IP, destination port and protocol. The operating system uses these values to deliver received traffic to the correct process.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A browser might open TCP source port 53012 toward a web server destination port 443. Another browser tab can use a different source port while reaching the same server and port.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Firewall rules, connection logs and service discovery rely heavily on transport information. A listening port indicates a service endpoint but does not prove that the service is safe or correctly configured.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If IP connectivity works but an application cannot connect, verify whether the destination port is listening, whether a firewall permits the protocol and whether the application expects TCP or UDP.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Transport Layer Fundamentals</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will study TCP in depth, including connection establishment and reliable delivery.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -2892,6 +4020,55 @@ Linux:   ip neigh</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Port?",
+                                options: [
+                                    "Transport-layer number associated with an application endpoint.",
+                                    "Software abstraction for a communication endpoint.",
+                                    "Connection-oriented transport protocol.",
+                                    "Connectionless datagram transport protocol."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Socket?",
+                                options: [
+                                    "Software abstraction for a communication endpoint.",
+                                    "Transport-layer number associated with an application endpoint.",
+                                    "Connection-oriented transport protocol.",
+                                    "Connectionless datagram transport protocol."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes TCP?",
+                                options: [
+                                    "Connection-oriented transport protocol.",
+                                    "Transport-layer number associated with an application endpoint.",
+                                    "Software abstraction for a communication endpoint.",
+                                    "Connectionless datagram transport protocol."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes UDP?",
+                                options: [
+                                    "Connectionless datagram transport protocol.",
+                                    "Transport-layer number associated with an application endpoint.",
+                                    "Software abstraction for a communication endpoint.",
+                                    "Connection-oriented transport protocol."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -2955,7 +4132,49 @@ Linux:   ip neigh</pre>
                             <p>
                                 TCP state helps firewalls distinguish new and established flows. Analysts can also recognize suspicious patterns such as large numbers of incomplete handshakes, resets or repeated connection attempts.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                TCP supports many critical protocols because it provides connection-oriented, ordered and reliable delivery. The three-way handshake establishes shared state before application data is exchanged.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                The client sends SYN, the server replies SYN-ACK and the client responds ACK. TCP then tracks sequence numbers, acknowledgements, retransmissions and flow control. Connection teardown commonly uses FIN/ACK exchanges, while RST can terminate a connection abruptly.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                Client 10.0.0.5:51000 sends SYN to 10.0.0.10:443. The server replies from 443 to 51000 with SYN-ACK. The client ACKs, after which TLS and HTTP can proceed.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                SYN patterns help analysts recognize connection attempts. Large volumes of incomplete handshakes can appear in scanning or denial-of-service activity, although context is required before labeling traffic malicious.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If SYN leaves the client but no SYN-ACK returns, investigate routing, firewall policy and whether the service is listening. An immediate RST often indicates a reachable host but closed or rejected port.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>TCP and the Three-Way Handshake</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                UDP takes a different approach: it avoids connection establishment and reliability mechanisms in exchange for lower overhead.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -2990,6 +4209,55 @@ Linux:   ip neigh</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes SYN?",
+                                options: [
+                                    "TCP flag used during connection establishment.",
+                                    "TCP flag indicating acknowledgement information is valid.",
+                                    "Number used to track bytes in a TCP stream.",
+                                    "Resending data believed to have been lost."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes ACK?",
+                                options: [
+                                    "TCP flag indicating acknowledgement information is valid.",
+                                    "TCP flag used during connection establishment.",
+                                    "Number used to track bytes in a TCP stream.",
+                                    "Resending data believed to have been lost."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Sequence Number?",
+                                options: [
+                                    "Number used to track bytes in a TCP stream.",
+                                    "TCP flag used during connection establishment.",
+                                    "TCP flag indicating acknowledgement information is valid.",
+                                    "Resending data believed to have been lost."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Retransmission?",
+                                options: [
+                                    "Resending data believed to have been lost.",
+                                    "TCP flag used during connection establishment.",
+                                    "TCP flag indicating acknowledgement information is valid.",
+                                    "Number used to track bytes in a TCP stream."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -3044,7 +4312,49 @@ Linux:   ip neigh</pre>
                             <p>
                                 Because UDP does not require a handshake, source-address spoofing can be easier in some scenarios. This contributes to the possibility of reflection and amplification attacks against poorly designed or exposed UDP services.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Some applications value low overhead, speed or simple request-response behaviour more than built-in reliability. UDP provides a lightweight datagram service without a TCP-style handshake.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                UDP carries source port, destination port, length, checksum and payload. It does not establish a connection, guarantee delivery, reorder data or retransmit missing datagrams. Applications add reliability themselves if they need it.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A traditional DNS query can use UDP port 53: a client sends one query and receives one response. Real-time voice or video may also tolerate occasional loss better than waiting for retransmission.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Because UDP is connectionless, spoofing and amplification patterns are important security considerations. Analysts must also remember that “no response” does not necessarily distinguish filtering from an unused UDP port.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If a UDP service fails, packet capture is especially useful because there is no handshake to show connection state. Verify requests, responses, ICMP errors and firewall rules.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Understanding UDP</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The next lesson organizes TCP and UDP communication around well-known and ephemeral ports and common services.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -3077,6 +4387,55 @@ Linux:   ip neigh</pre>
                                     "UDP requires TLS"
                                 ],
 
+                                answer:
+                                    0
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Datagram?",
+                                options: [
+                                    "Independent unit sent using a connectionless protocol.",
+                                    "Communication without maintaining TCP-style connection state.",
+                                    "Relatively small protocol control information.",
+                                    "Receiving a larger response than the triggering request, potentially useful in abuse scenarios."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Connectionless?",
+                                options: [
+                                    "Communication without maintaining TCP-style connection state.",
+                                    "Independent unit sent using a connectionless protocol.",
+                                    "Relatively small protocol control information.",
+                                    "Receiving a larger response than the triggering request, potentially useful in abuse scenarios."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Low Overhead?",
+                                options: [
+                                    "Relatively small protocol control information.",
+                                    "Independent unit sent using a connectionless protocol.",
+                                    "Communication without maintaining TCP-style connection state.",
+                                    "Receiving a larger response than the triggering request, potentially useful in abuse scenarios."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Amplification?",
+                                options: [
+                                    "Receiving a larger response than the triggering request, potentially useful in abuse scenarios.",
+                                    "Independent unit sent using a connectionless protocol.",
+                                    "Communication without maintaining TCP-style connection state.",
+                                    "Relatively small protocol control information."
+                                ],
                                 answer:
                                     0
                             }
@@ -3147,7 +4506,49 @@ Linux:   ip neigh</pre>
 
                             <pre class="lesson-code-block">Windows: netstat -ano
 Linux:   ss -tulpn</pre>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Ports let multiple network applications share the same IP address. Knowing common ports helps with troubleshooting and security triage, but port numbers should be treated as clues rather than absolute proof of the application.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Servers usually listen on stable destination ports while clients often choose ephemeral source ports. IANA conventions divide port ranges, but applications can be configured on non-standard ports.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A browser may use source port 52144 to connect to server TCP 443. The reply reverses the tuple: source TCP 443 back to destination 52144.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Unexpected listening services expand attack surface. Defenders compare exposed ports with approved services, and testers enumerate ports only within authorized scopes to discover reachable services.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If a service works locally but not remotely, confirm it is listening on the correct interface and port, then check host firewalls, network firewalls, NAT and routing.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Ports and Services</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will interpret TCP/UDP behaviour from a cybersecurity perspective rather than memorizing port numbers alone.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -3182,6 +4583,55 @@ Linux:   ss -tulpn</pre>
 
                                 answer:
                                     3
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Well-Known Port?",
+                                options: [
+                                    "Standardized low-numbered port associated with common services.",
+                                    "Temporary client-side port often chosen dynamically.",
+                                    "Endpoint waiting for inbound communication.",
+                                    "Reachable functionality that may potentially be attacked."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Ephemeral Port?",
+                                options: [
+                                    "Temporary client-side port often chosen dynamically.",
+                                    "Standardized low-numbered port associated with common services.",
+                                    "Endpoint waiting for inbound communication.",
+                                    "Reachable functionality that may potentially be attacked."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Listening Socket?",
+                                options: [
+                                    "Endpoint waiting for inbound communication.",
+                                    "Standardized low-numbered port associated with common services.",
+                                    "Temporary client-side port often chosen dynamically.",
+                                    "Reachable functionality that may potentially be attacked."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Attack Surface?",
+                                options: [
+                                    "Reachable functionality that may potentially be attacked.",
+                                    "Standardized low-numbered port associated with common services.",
+                                    "Temporary client-side port often chosen dynamically.",
+                                    "Endpoint waiting for inbound communication."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -3233,7 +4683,49 @@ Linux:   ss -tulpn</pre>
                             <p>
                                 Suppose a workstation suddenly makes TCP connections to many internal hosts on port 445. This might be administrative activity, vulnerability scanning or lateral movement. Analysts correlate the pattern with endpoint processes, user identity and change records.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Security tools frequently summarize traffic by protocol, ports and connection state. Understanding the transport layer allows analysts to distinguish a completed connection from a failed attempt, scan pattern or connectionless exchange.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Combine transport flags, timing, byte counts, direction and repeated attempts. TCP SYNs without completed handshakes may indicate blocked services, scanning or network failure. UDP analysis often relies on request/response pairing and ICMP errors.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                One host sending SYN packets to hundreds of destination ports on another host over a short period resembles service enumeration. The same pattern can also come from an approved scanner, so asset and change context matters.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Transport telemetry supports firewall tuning, intrusion detection and incident response. Never infer an application solely from the port; TLS, tunnels and custom services can use unexpected ports.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When a detection fires on a port pattern, validate whether the source is an approved scanner, management system or actual suspicious endpoint. Compare endpoint processes and network telemetry.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>TCP and UDP in Cybersecurity</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The next module introduces ICMP, which reports network conditions and supports tools such as ping and traceroute.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -3268,6 +4760,55 @@ Linux:   ss -tulpn</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Stateful Firewall?",
+                                options: [
+                                    "Firewall that tracks connection/flow state.",
+                                    "A communication record identified by addressing, ports and protocol.",
+                                    "Determining reachable network services.",
+                                    "Additional evidence needed to interpret network behaviour accurately."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Flow?",
+                                options: [
+                                    "A communication record identified by addressing, ports and protocol.",
+                                    "Firewall that tracks connection/flow state.",
+                                    "Determining reachable network services.",
+                                    "Additional evidence needed to interpret network behaviour accurately."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Service Discovery?",
+                                options: [
+                                    "Determining reachable network services.",
+                                    "Firewall that tracks connection/flow state.",
+                                    "A communication record identified by addressing, ports and protocol.",
+                                    "Additional evidence needed to interpret network behaviour accurately."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Context?",
+                                options: [
+                                    "Additional evidence needed to interpret network behaviour accurately.",
+                                    "Firewall that tracks connection/flow state.",
+                                    "A communication record identified by addressing, ports and protocol.",
+                                    "Determining reachable network services."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -3345,7 +4886,49 @@ Linux:   ss -tulpn</pre>
                             <p>
                                 Blocking all ICMP may hide some reconnaissance, but it can also break useful diagnostics and network functions. Mature security policy usually permits necessary ICMP messages while controlling unnecessary exposure.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                IP itself does not provide rich error reporting. ICMP carries control and diagnostic messages that help hosts and routers report network conditions such as unreachable destinations or expired hop limits.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                ICMP messages have types and codes. Echo Request and Echo Reply support ping. Destination Unreachable reports delivery problems. Time Exceeded is important to traceroute. ICMP is carried directly in IP rather than using TCP or UDP ports.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                If a router cannot forward a packet because no route exists, it may return an ICMP Destination Unreachable message. If TTL reaches zero at a router, the router may return ICMP Time Exceeded.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                ICMP can aid reconnaissance but also supports legitimate troubleshooting and Path MTU Discovery. Blocking all ICMP can cause operational problems, so policy should be deliberate rather than reflexive.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When ICMP behaves differently across paths, consider firewall policy, rate limiting and device configuration. Lack of ping response does not prove that a host is offline.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Understanding ICMP</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will use Echo Request and Echo Reply through the ping utility and learn what ping can and cannot prove.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -3380,6 +4963,55 @@ Linux:   ss -tulpn</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes ICMP?",
+                                options: [
+                                    "Protocol carrying IP-related control and diagnostic messages.",
+                                    "Message commonly used by ping.",
+                                    "Message used when packet lifetime expires.",
+                                    "Message indicating certain delivery failures."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Echo Request?",
+                                options: [
+                                    "Message commonly used by ping.",
+                                    "Protocol carrying IP-related control and diagnostic messages.",
+                                    "Message used when packet lifetime expires.",
+                                    "Message indicating certain delivery failures."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Time Exceeded?",
+                                options: [
+                                    "Message used when packet lifetime expires.",
+                                    "Protocol carrying IP-related control and diagnostic messages.",
+                                    "Message commonly used by ping.",
+                                    "Message indicating certain delivery failures."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Destination Unreachable?",
+                                options: [
+                                    "Message indicating certain delivery failures.",
+                                    "Protocol carrying IP-related control and diagnostic messages.",
+                                    "Message commonly used by ping.",
+                                    "Message used when packet lifetime expires."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -3446,7 +5078,49 @@ Linux:   ping -c 4 192.168.1.1</pre>
                             <p>
                                 Ping sweeps can be used to identify live systems, but defenders also use ping for legitimate monitoring. An observed echo request alone is not evidence of compromise.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Ping is one of the fastest ways to test whether an IP path can carry ICMP echo traffic and to observe round-trip time. It is useful, but students must understand its limits to avoid incorrect conclusions.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Ping sends ICMP Echo Requests and waits for Echo Replies. Output commonly shows success or loss, round-trip latency and sometimes TTL. DNS resolution may occur first if you ping a hostname.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                If `ping 8.8.8.8` works but `ping example.com` fails to resolve the name, basic IP connectivity may be working while DNS is not. If both fail, investigate lower layers and routing.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Attackers may use ping sweeps for discovery, but monitoring must distinguish authorized administration from malicious reconnaissance. Many hosts intentionally block echo requests.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                Test in stages: loopback, local address, default gateway, remote IP and finally hostname. This sequence narrows the failing layer instead of treating one ping result as definitive.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Ping</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Traceroute builds on TTL behaviour to reveal intermediate hops along a path.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -3481,6 +5155,55 @@ Linux:   ping -c 4 192.168.1.1</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Ping?",
+                                options: [
+                                    "Diagnostic utility using ICMP echo messages.",
+                                    "Time for a request to reach a destination and a reply to return.",
+                                    "Expected responses that are not observed.",
+                                    "Whether a destination can be contacted through the network path."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Round-Trip Time?",
+                                options: [
+                                    "Time for a request to reach a destination and a reply to return.",
+                                    "Diagnostic utility using ICMP echo messages.",
+                                    "Expected responses that are not observed.",
+                                    "Whether a destination can be contacted through the network path."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Packet Loss?",
+                                options: [
+                                    "Expected responses that are not observed.",
+                                    "Diagnostic utility using ICMP echo messages.",
+                                    "Time for a request to reach a destination and a reply to return.",
+                                    "Whether a destination can be contacted through the network path."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Reachability?",
+                                options: [
+                                    "Whether a destination can be contacted through the network path.",
+                                    "Diagnostic utility using ICMP echo messages.",
+                                    "Time for a request to reach a destination and a reply to return.",
+                                    "Expected responses that are not observed."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -3545,7 +5268,49 @@ Linux:   traceroute example.com</pre>
                             <p>
                                 Path information can help defenders understand routing and external dependencies. Publicly exposed topology information may also assist reconnaissance, so organizations balance diagnostic usefulness with policy.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                A successful or failed connection does not reveal where along a multi-hop route the behaviour changes. Traceroute helps visualize the path by intentionally manipulating TTL or hop-limit values.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Packets are sent with increasing TTL values. Each router that reduces TTL to zero can return an ICMP Time Exceeded message, allowing the sender to learn an intermediate hop. Implementations differ across operating systems and may use UDP, ICMP or other probe styles.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                Hop 1 may be the local gateway, hop 2 an ISP edge and later hops transit networks. Asterisks mean no response was received for a probe; they do not automatically mean the path is broken.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Traceroute reveals network structure and can aid both troubleshooting and reconnaissance. Organizations may rate-limit or filter responses, which can hide some hops without affecting real application traffic.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                Do not assume the first non-responding hop is the failure. Test the final destination and understand that routers can forward traffic while refusing to answer traceroute probes.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Traceroute</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will examine ICMP from a security-policy perspective, including why over-blocking can create blind spots or operational failures.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -3578,6 +5343,55 @@ Linux:   traceroute example.com</pre>
                                     "Opening port 65535"
                                 ],
 
+                                answer:
+                                    0
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes TTL?",
+                                options: [
+                                    "IPv4 packet lifetime field decremented by routers.",
+                                    "An intermediate routed step.",
+                                    "ICMP response generated when packet lifetime expires.",
+                                    "Diagnostic method for discovering path hops."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Hop?",
+                                options: [
+                                    "An intermediate routed step.",
+                                    "IPv4 packet lifetime field decremented by routers.",
+                                    "ICMP response generated when packet lifetime expires.",
+                                    "Diagnostic method for discovering path hops."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Time Exceeded?",
+                                options: [
+                                    "ICMP response generated when packet lifetime expires.",
+                                    "IPv4 packet lifetime field decremented by routers.",
+                                    "An intermediate routed step.",
+                                    "Diagnostic method for discovering path hops."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Traceroute?",
+                                options: [
+                                    "Diagnostic method for discovering path hops.",
+                                    "IPv4 packet lifetime field decremented by routers.",
+                                    "An intermediate routed step.",
+                                    "ICMP response generated when packet lifetime expires."
+                                ],
                                 answer:
                                     0
                             }
@@ -3631,7 +5445,49 @@ Linux:   traceroute example.com</pre>
                             <p>
                                 Security teams can baseline expected ICMP usage and alert on unusual volume, uncommon message types or patterns inconsistent with normal operations.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                ICMP sits at the intersection of operations and security. It can reveal information and participate in abuse, but it is also part of healthy IP networking and diagnostics.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Security policy should consider message type, direction and business need. Echo traffic may be restricted differently from fragmentation-related messages or error reporting. Rate limiting is often more appropriate than indiscriminate blocking.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A perimeter firewall might block unsolicited inbound echo requests while still allowing necessary ICMP error messages. Internal monitoring may permit ping from management networks to servers.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Reconnaissance, covert channels and denial-of-service abuse are possible, yet defenders also rely on ICMP for visibility. Treat it as a protocol to govern, not simply “good” or “bad”.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If large packets fail while smaller ones succeed, consider MTU and required ICMP messages. Excessive ICMP blocking can contribute to Path MTU Discovery problems.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>ICMP Security Considerations</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The course now moves into routing: how hosts and routers choose paths between IP networks.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -3666,6 +5522,55 @@ Linux:   traceroute example.com</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Reconnaissance?",
+                                options: [
+                                    "Information gathering about systems and networks.",
+                                    "Expected normal behaviour used for comparison.",
+                                    "Allowing or denying traffic according to policy.",
+                                    "Maximum packet size usable along a network path without problematic fragmentation."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Baseline?",
+                                options: [
+                                    "Expected normal behaviour used for comparison.",
+                                    "Information gathering about systems and networks.",
+                                    "Allowing or denying traffic according to policy.",
+                                    "Maximum packet size usable along a network path without problematic fragmentation."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Filtering?",
+                                options: [
+                                    "Allowing or denying traffic according to policy.",
+                                    "Information gathering about systems and networks.",
+                                    "Expected normal behaviour used for comparison.",
+                                    "Maximum packet size usable along a network path without problematic fragmentation."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Path MTU?",
+                                options: [
+                                    "Maximum packet size usable along a network path without problematic fragmentation.",
+                                    "Information gathering about systems and networks.",
+                                    "Expected normal behaviour used for comparison.",
+                                    "Allowing or denying traffic according to policy."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -3747,7 +5652,49 @@ Linux:   traceroute example.com</pre>
                             <p>
                                 Routing determines which paths are possible. Incorrect routes can expose networks, bypass inspection points or create outages. Security architecture therefore considers both firewall rules and underlying routing.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Local switching only solves communication inside a Layer 2 segment. Routing allows packets to move between IP networks and ultimately across the Internet.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                A router compares the destination IP with entries in its routing table and chooses the most specific matching prefix. It then forwards the packet toward a next hop or directly connected interface, subject to policy and reachability.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A router with routes for 10.0.0.0/8 and 10.20.30.0/24 will prefer the /24 for destination 10.20.30.50 because it is the longer, more specific match.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Routing determines which networks are reachable. Route manipulation, misconfiguration or insecure peering can redirect or expose traffic. Firewalls often rely on correct routing to enforce expected paths.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When local traffic works but remote traffic fails, inspect the host gateway and router routes in both directions. Return-path routing matters as much as the forward path.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>What Is Routing?</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will focus on the first router a host normally uses for remote destinations: the default gateway.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -3782,6 +5729,55 @@ Linux:   traceroute example.com</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Routing?",
+                                options: [
+                                    "Forwarding packets between IP networks.",
+                                    "Instruction describing how to reach a destination prefix.",
+                                    "Router/address toward which a packet is forwarded.",
+                                    "Selecting the most specific matching route."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Route?",
+                                options: [
+                                    "Instruction describing how to reach a destination prefix.",
+                                    "Forwarding packets between IP networks.",
+                                    "Router/address toward which a packet is forwarded.",
+                                    "Selecting the most specific matching route."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Next Hop?",
+                                options: [
+                                    "Router/address toward which a packet is forwarded.",
+                                    "Forwarding packets between IP networks.",
+                                    "Instruction describing how to reach a destination prefix.",
+                                    "Selecting the most specific matching route."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Longest Prefix Match?",
+                                options: [
+                                    "Selecting the most specific matching route.",
+                                    "Forwarding packets between IP networks.",
+                                    "Instruction describing how to reach a destination prefix.",
+                                    "Router/address toward which a packet is forwarded."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -3840,7 +5836,49 @@ IP destination       = 8.8.8.8</pre>
                             <p>
                                 Malicious or accidental gateway changes can redirect or disrupt traffic. DHCP security, endpoint configuration management and network monitoring help detect unauthorized network settings.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                A host cannot maintain routes to every network on the Internet. The default gateway provides a simple next hop for destinations outside the local subnet.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                The host first decides whether the destination is local using its address and prefix. For a remote destination it resolves the gateway's local MAC address and sends an Ethernet frame to that gateway while keeping the remote IP as the packet destination.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                Host 192.168.1.25/24 sending to 8.8.8.8 uses gateway 192.168.1.1. The Ethernet destination is the router MAC; the IP destination remains 8.8.8.8.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                A malicious or incorrect gateway can intercept or disrupt traffic. DHCP configuration and local ARP integrity therefore influence which device becomes the next hop.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If same-subnet systems work but remote destinations fail, verify the configured default gateway, confirm it is in the local subnet and test reachability to it.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Default Gateways</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Routing tables generalize this concept by storing many possible destination prefixes and next hops.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -3875,6 +5913,55 @@ IP destination       = 8.8.8.8</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Default Gateway?",
+                                options: [
+                                    "Router used for destinations without a more specific route.",
+                                    "Network directly reachable without an IP router.",
+                                    "Network requiring routing.",
+                                    "Layer 2 destination used to deliver a remote-bound packet to the local router."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Local Subnet?",
+                                options: [
+                                    "Network directly reachable without an IP router.",
+                                    "Router used for destinations without a more specific route.",
+                                    "Network requiring routing.",
+                                    "Layer 2 destination used to deliver a remote-bound packet to the local router."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Remote Network?",
+                                options: [
+                                    "Network requiring routing.",
+                                    "Router used for destinations without a more specific route.",
+                                    "Network directly reachable without an IP router.",
+                                    "Layer 2 destination used to deliver a remote-bound packet to the local router."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Gateway MAC?",
+                                options: [
+                                    "Layer 2 destination used to deliver a remote-bound packet to the local router.",
+                                    "Router used for destinations without a more specific route.",
+                                    "Network directly reachable without an IP router.",
+                                    "Network requiring routing."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -3938,7 +6025,49 @@ Linux:   ip route</pre>
                             <p>
                                 Unexpected routes may indicate misconfiguration, VPN changes or malicious persistence. Analysts sometimes compare current routing tables with known-good configuration during incident response.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Routing tables are the decision maps used by hosts and routers. Reading them explains why traffic chooses one interface or next hop instead of another.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Routes include a destination prefix and forwarding information. Selection commonly prefers the longest prefix match, then uses route preference or metrics when multiple candidate routes exist. A default route matches destinations not covered by more specific entries.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                For destination 192.168.50.20, a route 192.168.50.0/24 beats 192.168.0.0/16 because /24 is more specific. If neither exists, 0.0.0.0/0 may be used.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Unexpected routes can bypass monitoring points or send sensitive traffic to unauthorized gateways. Route-table review is therefore useful in host and network investigations.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If traffic follows the wrong path, compare competing prefix lengths, metrics, VPN routes and policy routes. Also confirm the reverse path from the destination.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Routing Tables</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will compare manually configured static routes with routes learned dynamically between routers.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -3973,6 +6102,55 @@ Linux:   ip route</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Default Route?",
+                                options: [
+                                    "Fallback route, represented as 0.0.0.0/0 in IPv4.",
+                                    "Value influencing preference among candidate routes.",
+                                    "Local network endpoint used to transmit traffic.",
+                                    "Set of routes used for forwarding decisions."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Metric?",
+                                options: [
+                                    "Value influencing preference among candidate routes.",
+                                    "Fallback route, represented as 0.0.0.0/0 in IPv4.",
+                                    "Local network endpoint used to transmit traffic.",
+                                    "Set of routes used for forwarding decisions."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Interface?",
+                                options: [
+                                    "Local network endpoint used to transmit traffic.",
+                                    "Fallback route, represented as 0.0.0.0/0 in IPv4.",
+                                    "Value influencing preference among candidate routes.",
+                                    "Set of routes used for forwarding decisions."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Routing Table?",
+                                options: [
+                                    "Set of routes used for forwarding decisions.",
+                                    "Fallback route, represented as 0.0.0.0/0 in IPv4.",
+                                    "Value influencing preference among candidate routes.",
+                                    "Local network endpoint used to transmit traffic."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -4024,7 +6202,49 @@ Linux:   ip route</pre>
                             <p>
                                 Routing protocols require protection because unauthorized or incorrect route advertisements can redirect or disrupt traffic. Controls can include authentication features, filtering, neighbour restrictions and control-plane protections.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Small networks may be manageable with manually configured routes, while larger environments need routers to exchange reachability information automatically.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Static routes are explicitly configured and remain until changed or made unusable by dependent conditions. Dynamic routing protocols such as OSPF or BGP exchange information and calculate paths according to protocol-specific rules.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A small branch can use one static default route toward headquarters. An enterprise with many redundant paths may use OSPF internally so routers automatically adapt when a link fails.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Dynamic routing introduces trust relationships and control-plane attack surface. Authentication, filtering and careful peer configuration help prevent unauthorized route advertisements.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When a dynamic route disappears, check neighbor relationships, interface state, advertisements and policy filters. When static routes fail, verify next-hop reachability and exact prefix syntax.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Static and Dynamic Routing</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The next lesson examines routing-specific threats and defensive controls.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -4059,6 +6279,55 @@ Linux:   ip route</pre>
 
                                 answer:
                                     3
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Static Route?",
+                                options: [
+                                    "Manually configured route.",
+                                    "Automated route exchange between routers.",
+                                    "Interior routing protocol commonly used within organizations.",
+                                    "Path-vector routing protocol central to inter-domain Internet routing."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Dynamic Routing?",
+                                options: [
+                                    "Automated route exchange between routers.",
+                                    "Manually configured route.",
+                                    "Interior routing protocol commonly used within organizations.",
+                                    "Path-vector routing protocol central to inter-domain Internet routing."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes OSPF?",
+                                options: [
+                                    "Interior routing protocol commonly used within organizations.",
+                                    "Manually configured route.",
+                                    "Automated route exchange between routers.",
+                                    "Path-vector routing protocol central to inter-domain Internet routing."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes BGP?",
+                                options: [
+                                    "Path-vector routing protocol central to inter-domain Internet routing.",
+                                    "Manually configured route.",
+                                    "Automated route exchange between routers.",
+                                    "Interior routing protocol commonly used within organizations."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -4110,7 +6379,49 @@ Linux:   ip route</pre>
                             <p>
                                 Operations teams monitor route changes, adjacency status and reachability. Sudden changes in path, prefixes or next hops may indicate faults or require security investigation.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                If an attacker or misconfiguration changes where traffic is routed, confidentiality, availability and monitoring can all be affected even when endpoints themselves are secure.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Routing security includes protecting router management access, authenticating routing peers where supported, filtering accepted and advertised prefixes, logging changes and limiting who can modify routes.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                An incorrect route for a sensitive subnet could send traffic through an untrusted path or black-hole the network. A more specific malicious route can win because longest-prefix matching prefers it.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Internet-scale route leaks and hijacks demonstrate that routing is a security dependency. Inside enterprises, compromised routing devices can also alter segmentation and traffic paths.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When traffic suddenly changes path, compare current routes with known-good configuration, review routing-protocol events and check for newly advertised more-specific prefixes.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Routing Security</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                With routing understood, the course moves to application-layer infrastructure: DNS and DHCP.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -4143,6 +6454,55 @@ Linux:   ip route</pre>
                                     "Replace firewalls"
                                 ],
 
+                                answer:
+                                    0
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Control Plane?",
+                                options: [
+                                    "Network logic responsible for learning and maintaining forwarding information.",
+                                    "Unauthorized or incorrect advertisement attracting traffic.",
+                                    "Policy controlling which routes are accepted or advertised.",
+                                    "Infrastructure supporting cryptographic validation of route-origin authorization."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Route Hijack?",
+                                options: [
+                                    "Unauthorized or incorrect advertisement attracting traffic.",
+                                    "Network logic responsible for learning and maintaining forwarding information.",
+                                    "Policy controlling which routes are accepted or advertised.",
+                                    "Infrastructure supporting cryptographic validation of route-origin authorization."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Prefix Filtering?",
+                                options: [
+                                    "Policy controlling which routes are accepted or advertised.",
+                                    "Network logic responsible for learning and maintaining forwarding information.",
+                                    "Unauthorized or incorrect advertisement attracting traffic.",
+                                    "Infrastructure supporting cryptographic validation of route-origin authorization."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes RPKI?",
+                                options: [
+                                    "Infrastructure supporting cryptographic validation of route-origin authorization.",
+                                    "Network logic responsible for learning and maintaining forwarding information.",
+                                    "Unauthorized or incorrect advertisement attracting traffic.",
+                                    "Policy controlling which routes are accepted or advertised."
+                                ],
                                 answer:
                                     0
                             }
@@ -4238,7 +6598,49 @@ Linux:   ip route</pre>
                             <p>
                                 DNS logs can reveal domains contacted by endpoints and are valuable during threat hunting. Malicious software may use DNS for command-and-control discovery, while phishing relies heavily on deceptive domain names.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Humans prefer names while IP networking uses addresses. DNS provides a scalable distributed system that maps names to many kinds of network information and lets services move without requiring users to memorize new addresses.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                A client normally asks a configured recursive resolver. If the answer is not cached, the resolver can follow delegation from root servers to a top-level-domain server and then to the authoritative server for the requested zone. The final answer is returned and cached according to TTL.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                To resolve www.example.com, a resolver may learn which servers handle .com, then which servers are authoritative for example.com, and finally request the www record. The browser then uses the returned address to start network communication.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                DNS is both infrastructure and telemetry. Phishing depends on deceptive names, malware can query command-and-control domains and defenders can use DNS logs to understand endpoint behaviour.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If an IP works but a hostname does not, compare local resolver configuration, cached answers, authoritative records and query responses. Test with `nslookup` or `dig` rather than guessing.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Introduction to DNS</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will learn the individual record types stored in DNS zones and what each one means.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -4273,6 +6675,55 @@ Linux:   ip route</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes DNS?",
+                                options: [
+                                    "Distributed Domain Name System.",
+                                    "Service that performs or assists DNS lookups.",
+                                    "Server responsible for definitive records in a DNS zone.",
+                                    "Temporarily stored DNS answer."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Resolver?",
+                                options: [
+                                    "Service that performs or assists DNS lookups.",
+                                    "Distributed Domain Name System.",
+                                    "Server responsible for definitive records in a DNS zone.",
+                                    "Temporarily stored DNS answer."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Authoritative Server?",
+                                options: [
+                                    "Server responsible for definitive records in a DNS zone.",
+                                    "Distributed Domain Name System.",
+                                    "Service that performs or assists DNS lookups.",
+                                    "Temporarily stored DNS answer."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Cache?",
+                                options: [
+                                    "Temporarily stored DNS answer.",
+                                    "Distributed Domain Name System.",
+                                    "Service that performs or assists DNS lookups.",
+                                    "Server responsible for definitive records in a DNS zone."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -4335,7 +6786,49 @@ dig example.com MX</pre>
                             <p>
                                 DNS records can expose public infrastructure by design. Defensive teams should know what their domains publish, remove stale records and monitor unauthorized changes.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                DNS is not simply a hostname-to-IPv4 database. Different record types represent IPv4, IPv6, aliases, mail routing, delegation, reverse mappings and policy or verification text.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                A records return IPv4 addresses, AAAA returns IPv6, CNAME aliases one name to another, MX identifies mail exchangers, NS identifies authoritative servers, TXT stores text data and PTR is commonly used in reverse lookup zones.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A company may publish `www` as an A record, mail routing with MX, SPF information inside TXT records and authoritative server names with NS records. Each record answers a different question.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Public records intentionally disclose some infrastructure. Defenders should remove stale records, protect registrar and DNS-provider accounts and monitor unauthorized changes. Security testers interpret records only within authorized reconnaissance scopes.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When a service fails, request the exact record type instead of only doing a generic lookup. A working A record does not prove that MX, TXT or delegation is correct.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>DNS Records</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will follow the resolution process step by step and understand caching, TTL and common failure points.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -4370,6 +6863,55 @@ dig example.com MX</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes A Record?",
+                                options: [
+                                    "Maps a name to an IPv4 address.",
+                                    "Maps a name to an IPv6 address.",
+                                    "Identifies mail servers for a domain.",
+                                    "Aliases one DNS name to another."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes AAAA Record?",
+                                options: [
+                                    "Maps a name to an IPv6 address.",
+                                    "Maps a name to an IPv4 address.",
+                                    "Identifies mail servers for a domain.",
+                                    "Aliases one DNS name to another."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes MX Record?",
+                                options: [
+                                    "Identifies mail servers for a domain.",
+                                    "Maps a name to an IPv4 address.",
+                                    "Maps a name to an IPv6 address.",
+                                    "Aliases one DNS name to another."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes CNAME?",
+                                options: [
+                                    "Aliases one DNS name to another.",
+                                    "Maps a name to an IPv4 address.",
+                                    "Maps a name to an IPv6 address.",
+                                    "Identifies mail servers for a domain."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -4428,7 +6970,49 @@ dig example.com MX</pre>
                             <p>
                                 If an IP address works but a hostname does not, DNS becomes a primary suspect. Check configured resolvers, query responses, search domains and whether the record exists.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Knowing record types is only part of DNS. Troubleshooting requires understanding how a query moves from the application through caches, recursive resolvers, delegation and authoritative servers.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                The operating system stub resolver asks a recursive server. The recursive server checks cache; if needed it follows referrals through the DNS hierarchy. The authoritative server supplies the answer or relevant negative response. TTL determines how long cached data can normally be reused.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A recently changed A record may be correct on the authoritative server while some users still receive the old address because their recursive resolvers legitimately cached it before the change.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Resolution paths create multiple observation and trust points. DNSSEC can provide authenticity for signed DNS data, while encrypted DNS transports affect where defenders can observe client queries.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                Compare answers from the local resolver with direct queries to authoritative servers. Check TTL, CNAME chains, delegation and whether negative responses are being cached.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>DNS Resolution</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                DNS tells systems where services are; DHCP helps devices obtain the network configuration required to communicate in the first place.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -4461,6 +7045,55 @@ dig example.com MX</pre>
                                     "Password length"
                                 ],
 
+                                answer:
+                                    0
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Stub Resolver?",
+                                options: [
+                                    "Client-side component asking a recursive DNS resolver.",
+                                    "DNS hierarchy directing queries to authoritative servers.",
+                                    "Time-to-live controlling caching duration.",
+                                    "DNS response indicating the queried name does not exist."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Delegation?",
+                                options: [
+                                    "DNS hierarchy directing queries to authoritative servers.",
+                                    "Client-side component asking a recursive DNS resolver.",
+                                    "Time-to-live controlling caching duration.",
+                                    "DNS response indicating the queried name does not exist."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes TTL?",
+                                options: [
+                                    "Time-to-live controlling caching duration.",
+                                    "Client-side component asking a recursive DNS resolver.",
+                                    "DNS hierarchy directing queries to authoritative servers.",
+                                    "DNS response indicating the queried name does not exist."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes NXDOMAIN?",
+                                options: [
+                                    "DNS response indicating the queried name does not exist.",
+                                    "Client-side component asking a recursive DNS resolver.",
+                                    "DNS hierarchy directing queries to authoritative servers.",
+                                    "Time-to-live controlling caching duration."
+                                ],
                                 answer:
                                     0
                             }
@@ -4526,7 +7159,49 @@ Request   -------------------->
                             <p>
                                 A rogue DHCP server can provide malicious gateway or DNS settings. Enterprise networks may use DHCP snooping and switch-port controls to reduce this risk.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Manually configuring every client IP address, mask, gateway and DNS server does not scale. DHCP automates network configuration and reduces administrative errors.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                A typical IPv4 lease process is summarized as DORA: Discover, Offer, Request, Acknowledge. A new client broadcasts because it may not yet know its own network details. The server offers configuration and records the lease.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A laptop joins office Wi-Fi, broadcasts DHCP Discover, receives an offer for 10.20.30.55/24 with gateway 10.20.30.1 and DNS 10.20.1.10, requests the offer and receives an acknowledgement.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Unauthorized DHCP servers can provide malicious gateways or DNS settings. Switch features such as DHCP snooping can help establish trusted server ports and support other controls such as Dynamic ARP Inspection.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If a Windows host receives 169.254.x.x unexpectedly, investigate whether DHCP messages are reaching a valid server, whether the pool has free addresses and whether VLAN relay configuration is correct.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Understanding DHCP</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The next lesson combines DNS and DHCP from a security perspective, focusing on tampering, monitoring and hardening.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -4561,6 +7236,55 @@ Request   -------------------->
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes DHCP?",
+                                options: [
+                                    "Protocol for automated host network configuration.",
+                                    "Temporary assignment of configuration.",
+                                    "Discover, Offer, Request, Acknowledge.",
+                                    "Switch security feature distinguishing trusted DHCP information."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Lease?",
+                                options: [
+                                    "Temporary assignment of configuration.",
+                                    "Protocol for automated host network configuration.",
+                                    "Discover, Offer, Request, Acknowledge.",
+                                    "Switch security feature distinguishing trusted DHCP information."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes DORA?",
+                                options: [
+                                    "Discover, Offer, Request, Acknowledge.",
+                                    "Protocol for automated host network configuration.",
+                                    "Temporary assignment of configuration.",
+                                    "Switch security feature distinguishing trusted DHCP information."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes DHCP Snooping?",
+                                options: [
+                                    "Switch security feature distinguishing trusted DHCP information.",
+                                    "Protocol for automated host network configuration.",
+                                    "Temporary assignment of configuration.",
+                                    "Discover, Offer, Request, Acknowledge."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -4612,7 +7336,49 @@ Request   -------------------->
                             <p>
                                 If several endpoints suddenly start using an unexpected DNS resolver, analysts should investigate DHCP configuration, endpoint settings and network traffic to determine whether the change was authorized.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                DNS and DHCP shape how clients find services and how they are configured. Compromise of either service can redirect users without changing the endpoint application itself.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Protect DNS administrative accounts, restrict zone changes, monitor record modifications and use secure update mechanisms. For DHCP, control trusted server locations, monitor leases and use switch protections where supported.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A rogue DHCP server could give clients an attacker-controlled DNS resolver. The clients may appear to have normal IP connectivity while name resolution is manipulated.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Monitor sudden DNS-record changes, suspicious newly registered domains, unusual query volume, unauthorized DHCP offers and unexpected gateway or DNS options.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When many users suddenly reach wrong destinations, compare their DHCP options and DNS responses. A shared infrastructure problem can affect many endpoints at once.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>DNS and DHCP Security</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The course now follows web traffic after DNS resolution, beginning with HTTP.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -4647,6 +7413,55 @@ Request   -------------------->
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes DNSSEC?",
+                                options: [
+                                    "Extensions enabling cryptographic validation of DNS data origin/integrity.",
+                                    "Encoding data within DNS queries/responses for covert communication.",
+                                    "Unauthorized DHCP service providing configuration.",
+                                    "Attempt to consume available DHCP leases."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes DNS Tunneling?",
+                                options: [
+                                    "Encoding data within DNS queries/responses for covert communication.",
+                                    "Extensions enabling cryptographic validation of DNS data origin/integrity.",
+                                    "Unauthorized DHCP service providing configuration.",
+                                    "Attempt to consume available DHCP leases."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Rogue DHCP?",
+                                options: [
+                                    "Unauthorized DHCP service providing configuration.",
+                                    "Extensions enabling cryptographic validation of DNS data origin/integrity.",
+                                    "Encoding data within DNS queries/responses for covert communication.",
+                                    "Attempt to consume available DHCP leases."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes DHCP Starvation?",
+                                options: [
+                                    "Attempt to consume available DHCP leases.",
+                                    "Extensions enabling cryptographic validation of DNS data origin/integrity.",
+                                    "Encoding data within DNS queries/responses for covert communication.",
+                                    "Unauthorized DHCP service providing configuration."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -4731,7 +7546,49 @@ Content-Type: text/html</pre>
                             <p>
                                 Because web applications expose functionality through HTTP, analysts often inspect methods, paths, status codes, hostnames and user agents. Sensitive HTTP traffic should be protected with HTTPS rather than sent in plaintext.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                HTTP is the application protocol behind the web and many APIs. Security professionals encounter it in proxies, browser developer tools, web-server logs and application-security testing.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                HTTP follows a request-response model. A client sends a request describing a resource and action. The server returns a response containing a status, headers and often a body. HTTP semantics are independent of whether TLS protects the transport.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A browser requests `/courses` from a web server. The server may return `200 OK` with HTML. A request for a missing resource may return `404 Not Found`.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                HTTP carries authentication tokens, cookies, parameters and application data. Understanding its structure is essential for recognizing insecure exposure, suspicious requests and web-application attacks.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If DNS and TCP work but the page fails, inspect the HTTP status, response headers, redirects and application logs rather than assuming basic networking is broken.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Introduction to HTTP</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will break HTTP into the exact structure of requests and responses.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -4764,6 +7621,55 @@ Content-Type: text/html</pre>
                                     "DHCP offer"
                                 ],
 
+                                answer:
+                                    0
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes HTTP?",
+                                options: [
+                                    "Application protocol for web communication.",
+                                    "Message sent by a client to a server.",
+                                    "Message returned by a server.",
+                                    "HTTP protected using TLS."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Request?",
+                                options: [
+                                    "Message sent by a client to a server.",
+                                    "Application protocol for web communication.",
+                                    "Message returned by a server.",
+                                    "HTTP protected using TLS."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Response?",
+                                options: [
+                                    "Message returned by a server.",
+                                    "Application protocol for web communication.",
+                                    "Message sent by a client to a server.",
+                                    "HTTP protected using TLS."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes HTTPS?",
+                                options: [
+                                    "HTTP protected using TLS.",
+                                    "Application protocol for web communication.",
+                                    "Message sent by a client to a server.",
+                                    "Message returned by a server."
+                                ],
                                 answer:
                                     0
                             }
@@ -4834,7 +7740,49 @@ Set-Cookie: session=abc123; Secure; HttpOnly</pre>
                             <p>
                                 Browser developer tools provide a safe way to inspect requests generated by sites you are using. The Network tab displays URLs, methods, status codes, timing and headers.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Web troubleshooting and security analysis depend on reading raw HTTP rather than only seeing the rendered page. Headers and bodies reveal what the browser actually sent and what the server actually returned.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                A request contains a request line, headers and optionally a body. A response contains a status line, headers and optionally a body. Headers carry metadata such as Host, Content-Type, authorization information, cookies and caching directives.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A request `GET /login HTTP/1.1` with `Host: academy.example.com` asks for the login resource. A response `HTTP/1.1 200 OK` with `Content-Type: text/html` tells the client how to interpret the returned body.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Sensitive tokens can appear in Authorization or Cookie headers. Proxies and logs must be configured carefully so secrets are not exposed unnecessarily.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                Compare the request that failed with one that succeeds. Differences in Host, method, cookies, content type or redirects often explain application behaviour.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>HTTP Requests and Responses</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The next lesson adds meaning to common methods and status-code families so you can interpret application behaviour quickly.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -4869,6 +7817,55 @@ Set-Cookie: session=abc123; Secure; HttpOnly</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Header?",
+                                options: [
+                                    "HTTP metadata field.",
+                                    "Optional message content.",
+                                    "Browser-stored value commonly used for session or application state.",
+                                    "Numeric result category in an HTTP response."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Body?",
+                                options: [
+                                    "Optional message content.",
+                                    "HTTP metadata field.",
+                                    "Browser-stored value commonly used for session or application state.",
+                                    "Numeric result category in an HTTP response."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Cookie?",
+                                options: [
+                                    "Browser-stored value commonly used for session or application state.",
+                                    "HTTP metadata field.",
+                                    "Optional message content.",
+                                    "Numeric result category in an HTTP response."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Status Code?",
+                                options: [
+                                    "Numeric result category in an HTTP response.",
+                                    "HTTP metadata field.",
+                                    "Optional message content.",
+                                    "Browser-stored value commonly used for session or application state."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -4934,7 +7931,49 @@ DELETE /users/42</pre>
                             <p>
                                 A 403 response may show that a resource exists but access is denied, while repeated 401 or 403 responses could represent legitimate mistakes or probing. Logs should be interpreted with user, source and application context.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Methods communicate intended actions while status codes summarize server outcomes. Understanding both makes logs and proxy captures far easier to interpret.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                GET commonly retrieves resources, POST submits data, PUT replaces or creates representations, PATCH modifies and DELETE requests removal. Status codes are grouped: 1xx informational, 2xx success, 3xx redirection, 4xx client-side/request problems and 5xx server errors.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                `GET /profile` may return 200. Accessing a protected page without authentication may return 401 or redirect to login. A non-existent path may return 404, while an application crash can produce 500.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Unexpected methods, repeated 401/403 responses and unusual 404 patterns may appear during probing, but context is essential because legitimate applications can generate the same codes.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                Treat status codes as starting points, not complete diagnoses. A 502 from a reverse proxy can mean the frontend is reachable while a backend service is unhealthy.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>HTTP Methods and Status Codes</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                HTTP by itself does not protect confidentiality. HTTPS combines HTTP with TLS, which is the next lesson.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -4969,6 +8008,55 @@ DELETE /users/42</pre>
 
                                 answer:
                                     3
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes GET?",
+                                options: [
+                                    "HTTP method commonly used to retrieve data.",
+                                    "Method commonly used to submit data or trigger processing.",
+                                    "Status-code class indicating client/request errors.",
+                                    "Status-code class indicating server errors."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes POST?",
+                                options: [
+                                    "Method commonly used to submit data or trigger processing.",
+                                    "HTTP method commonly used to retrieve data.",
+                                    "Status-code class indicating client/request errors.",
+                                    "Status-code class indicating server errors."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes 4xx?",
+                                options: [
+                                    "Status-code class indicating client/request errors.",
+                                    "HTTP method commonly used to retrieve data.",
+                                    "Method commonly used to submit data or trigger processing.",
+                                    "Status-code class indicating server errors."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes 5xx?",
+                                options: [
+                                    "Status-code class indicating server errors.",
+                                    "HTTP method commonly used to retrieve data.",
+                                    "Method commonly used to submit data or trigger processing.",
+                                    "Status-code class indicating client/request errors."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -5031,7 +8119,49 @@ Encrypted HTTP traffic follows</pre>
                             <p>
                                 TLS does not prevent phishing on a valid HTTPS domain, stop server-side SQL injection or guarantee that the organization behind a domain is trustworthy. It secures the connection to the authenticated endpoint.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Plain HTTP can expose data to observers on the path. TLS provides confidentiality, integrity and server authentication so HTTP can be transported securely as HTTPS.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                During a TLS handshake, client and server negotiate cryptographic parameters and the server presents a certificate. The client validates the certificate chain and hostname before establishing encrypted session keys. Modern TLS uses asymmetric cryptography mainly for authentication/key agreement and efficient symmetric encryption for data.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                When a browser connects to `https://example.com`, it verifies that the certificate is valid for the hostname and chains to a trusted certificate authority. After the handshake, HTTP content is encrypted inside TLS records.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                TLS protects data in transit but does not make the web application itself secure. A vulnerable application can still be attacked over a perfectly encrypted HTTPS connection.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                Certificate errors may result from wrong hostname, expired certificate, untrusted issuer, clock problems or interception. TLS-version and cipher incompatibility can also prevent connection establishment.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>HTTPS and TLS</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will interpret web traffic from a defender and tester perspective, combining HTTP, TLS, proxies and logs.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -5066,6 +8196,55 @@ Encrypted HTTP traffic follows</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes TLS?",
+                                options: [
+                                    "Protocol protecting application traffic in transit.",
+                                    "Signed data binding identities such as hostnames to public keys.",
+                                    "Certification Authority trusted to issue or sign certificates.",
+                                    "Symmetric key material used to encrypt an established session."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Certificate?",
+                                options: [
+                                    "Signed data binding identities such as hostnames to public keys.",
+                                    "Protocol protecting application traffic in transit.",
+                                    "Certification Authority trusted to issue or sign certificates.",
+                                    "Symmetric key material used to encrypt an established session."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes CA?",
+                                options: [
+                                    "Certification Authority trusted to issue or sign certificates.",
+                                    "Protocol protecting application traffic in transit.",
+                                    "Signed data binding identities such as hostnames to public keys.",
+                                    "Symmetric key material used to encrypt an established session."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Session Key?",
+                                options: [
+                                    "Symmetric key material used to encrypt an established session.",
+                                    "Protocol protecting application traffic in transit.",
+                                    "Signed data binding identities such as hostnames to public keys.",
+                                    "Certification Authority trusted to issue or sign certificates."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -5123,7 +8302,49 @@ Encrypted HTTP traffic follows</pre>
                             <p>
                                 Use your browser's developer tools on a site you are authorized to access. Open the Network panel, reload the page and inspect the request method, hostname, path, status code and response content type.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Web applications are major attack surfaces, and their network traffic contains valuable evidence. Defenders need to know what can be observed in HTTP, what TLS hides and where logs remain available.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                A reverse proxy or web server can record source context, requested path, method, status, user agent and timing. TLS encrypts content on the network path, but endpoints terminating TLS can still inspect application requests.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A burst of requests for many unusual paths followed by repeated 404 responses may indicate automated enumeration. The same activity from an approved vulnerability scanner may be expected, so authorization context matters.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Use HTTPS, secure cookies, appropriate headers, authentication, input validation and server-side authorization. Network controls complement but do not replace application security.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When suspicious traffic is reported, correlate reverse-proxy logs, application logs, WAF events, authentication logs and endpoint activity before drawing conclusions.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Web Traffic Security</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The final module combines the networking concepts into security architecture, monitoring and packet analysis.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -5158,6 +8379,55 @@ Encrypted HTTP traffic follows</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Forward Proxy?",
+                                options: [
+                                    "Intermediary acting on behalf of clients.",
+                                    "Intermediary acting on behalf of servers.",
+                                    "Web Application Firewall inspecting application-layer web traffic.",
+                                    "Information about communication such as endpoints and timing, separate from content."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Reverse Proxy?",
+                                options: [
+                                    "Intermediary acting on behalf of servers.",
+                                    "Intermediary acting on behalf of clients.",
+                                    "Web Application Firewall inspecting application-layer web traffic.",
+                                    "Information about communication such as endpoints and timing, separate from content."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes WAF?",
+                                options: [
+                                    "Web Application Firewall inspecting application-layer web traffic.",
+                                    "Intermediary acting on behalf of clients.",
+                                    "Intermediary acting on behalf of servers.",
+                                    "Information about communication such as endpoints and timing, separate from content."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Metadata?",
+                                options: [
+                                    "Information about communication such as endpoints and timing, separate from content.",
+                                    "Intermediary acting on behalf of clients.",
+                                    "Intermediary acting on behalf of servers.",
+                                    "Web Application Firewall inspecting application-layer web traffic."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -5245,7 +8515,49 @@ Admins --> Management Network</pre>
                             <p>
                                 Segmentation should be tested and monitored. Configuration drift or overly broad rules can silently defeat the intended boundary.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Segmentation reduces unnecessary trust and communication. If every endpoint can freely reach every server, one compromised device may have a much easier path to sensitive systems.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Create zones or subnets around function and trust level, then route between them through policy controls. VLANs provide Layer 2 separation; routers and firewalls enforce Layer 3/4 communication rules; identity-aware controls can add context.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                Guest, user, server and management networks can be separated. Guests may reach only the Internet, users reach approved application ports and management access is limited to administrator networks.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Segmentation supports least privilege and containment. It is especially valuable for protecting administrative interfaces, backup systems, identity infrastructure and sensitive databases.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When segmentation blocks business traffic, document the exact required flow and create narrow rules. Avoid “temporary” any-to-any exceptions that become permanent.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Network Segmentation</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Firewalls are one of the main controls used to enforce policy between network segments.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -5280,6 +8592,55 @@ Admins --> Management Network</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Segmentation?",
+                                options: [
+                                    "Division of systems into controlled network zones.",
+                                    "Group of systems with similar trust or policy.",
+                                    "Fine-grained workload-to-workload access control.",
+                                    "Movement between systems after initial compromise."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Security Zone?",
+                                options: [
+                                    "Group of systems with similar trust or policy.",
+                                    "Division of systems into controlled network zones.",
+                                    "Fine-grained workload-to-workload access control.",
+                                    "Movement between systems after initial compromise."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Microsegmentation?",
+                                options: [
+                                    "Fine-grained workload-to-workload access control.",
+                                    "Division of systems into controlled network zones.",
+                                    "Group of systems with similar trust or policy.",
+                                    "Movement between systems after initial compromise."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Lateral Movement?",
+                                options: [
+                                    "Movement between systems after initial compromise.",
+                                    "Division of systems into controlled network zones.",
+                                    "Group of systems with similar trust or policy.",
+                                    "Fine-grained workload-to-workload access control."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -5340,7 +8701,49 @@ DENY  ip  any -> 10.10.30.0/24</pre>
                             <p>
                                 Firewalls reduce reachable attack surface but do not replace patching, authentication, encryption or secure application design.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Firewalls provide controlled boundaries where network communication can be permitted, denied and logged. They translate security policy into enforceable traffic rules.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Rules can evaluate source, destination, protocol, port and connection state; advanced firewalls may also use application or identity context. Stateful firewalls remember established flows so return traffic can be handled appropriately.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                A rule may allow user networks to reach a web application on TCP 443 while denying direct database access. Administrative SSH can be limited to a management subnet.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Good firewall policy follows least privilege, has clear ownership and is reviewed for stale or overly broad rules. Logging important denies and sensitive allows helps investigations.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                When a flow is blocked, verify rule order, direction, interfaces, NAT, state and whether the traffic actually matches the expected source/destination tuple.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Firewalls</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Next you will compare IDS and IPS—controls that inspect traffic for suspicious patterns rather than only enforcing static reachability rules.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -5373,6 +8776,55 @@ DENY  ip  any -> 10.10.30.0/24</pre>
                                     "It automatically patches servers"
                                 ],
 
+                                answer:
+                                    0
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Firewall?",
+                                options: [
+                                    "Control enforcing traffic policy.",
+                                    "Tracking connection/flow state.",
+                                    "Ordered or structured traffic-control rules.",
+                                    "Policy where traffic is denied unless explicitly permitted."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Stateful Inspection?",
+                                options: [
+                                    "Tracking connection/flow state.",
+                                    "Control enforcing traffic policy.",
+                                    "Ordered or structured traffic-control rules.",
+                                    "Policy where traffic is denied unless explicitly permitted."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes ACL?",
+                                options: [
+                                    "Ordered or structured traffic-control rules.",
+                                    "Control enforcing traffic policy.",
+                                    "Tracking connection/flow state.",
+                                    "Policy where traffic is denied unless explicitly permitted."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Default Deny?",
+                                options: [
+                                    "Policy where traffic is denied unless explicitly permitted.",
+                                    "Control enforcing traffic policy.",
+                                    "Tracking connection/flow state.",
+                                    "Ordered or structured traffic-control rules."
+                                ],
                                 answer:
                                     0
                             }
@@ -5431,7 +8883,49 @@ IPS: Network ---> IPS ---> Destination</pre>
                             <p>
                                 Encryption can limit payload inspection. Security teams may rely on endpoint telemetry, TLS metadata, controlled decryption in approved environments or application-layer logs.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Firewalls decide whether traffic is allowed, but permitted traffic can still contain attacks. Intrusion Detection and Prevention Systems inspect network activity for suspicious signatures or behaviour.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                An IDS typically alerts without directly blocking, while an IPS is positioned to prevent or disrupt matching traffic. Detection can use signatures, protocol analysis, reputation or behavioural techniques.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                An IDS may alert when it observes a known exploit pattern inside traffic. An IPS with an appropriate rule could drop the matching packet or connection, depending on configuration.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Detection quality depends on placement, tuning and context. Encrypted traffic reduces payload visibility unless inspection occurs where TLS is terminated or decrypted legitimately.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                Investigate false positives by reviewing packet evidence, affected assets and rule logic. Do not disable noisy detections blindly; tune them against known legitimate behaviour.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>IDS and IPS</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                Packet analysis gives you the underlying evidence needed to validate many network detections.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -5466,6 +8960,55 @@ IPS: Network ---> IPS ---> Destination</pre>
 
                                 answer:
                                     2
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes IDS?",
+                                options: [
+                                    "System that detects and alerts on suspicious activity.",
+                                    "System capable of blocking activity according to detection policy.",
+                                    "Benign event incorrectly flagged.",
+                                    "Malicious event not detected."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes IPS?",
+                                options: [
+                                    "System capable of blocking activity according to detection policy.",
+                                    "System that detects and alerts on suspicious activity.",
+                                    "Benign event incorrectly flagged.",
+                                    "Malicious event not detected."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes False Positive?",
+                                options: [
+                                    "Benign event incorrectly flagged.",
+                                    "System that detects and alerts on suspicious activity.",
+                                    "System capable of blocking activity according to detection policy.",
+                                    "Malicious event not detected."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes False Negative?",
+                                options: [
+                                    "Malicious event not detected.",
+                                    "System that detects and alerts on suspicious activity.",
+                                    "System capable of blocking activity according to detection policy.",
+                                    "Benign event incorrectly flagged."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -5533,7 +9076,49 @@ icmp</pre>
                             <p>
                                 Packet captures may contain credentials, personal data or confidential business information. Capture, store and share them only under appropriate authorization and data-handling rules.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Logs summarize events, while packet captures can expose the actual protocol fields and timing of communication. Packet analysis is one of the strongest ways to verify what happened on a network path.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Start with a question, then filter. Examine Ethernet, IP, transport and application layers in order. Follow conversations, compare timestamps and distinguish requests from responses. Tools such as Wireshark decode protocols but the analyst must interpret them.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                To investigate failed HTTPS connectivity, confirm ARP/gateway behaviour, IP destination, TCP handshake and then TLS handshake. A missing SYN-ACK indicates a different problem from a TLS alert after TCP succeeds.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                Captures can contain passwords, tokens and personal or sensitive data, especially for unencrypted protocols. Capture only where authorized, minimize scope and protect stored PCAP files.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                If a capture appears empty, verify the capture interface and observation point. Switched networks do not automatically deliver every host's traffic to your interface.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Packet Analysis</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                The final lesson integrates addressing, switching, routing, transport, DNS, web traffic and security controls into one end-to-end review.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -5568,6 +9153,55 @@ icmp</pre>
 
                                 answer:
                                     3
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes Packet Capture?",
+                                options: [
+                                    "Recorded network packets for analysis.",
+                                    "Expression selecting packets to show in an analysis tool.",
+                                    "Data carried by a protocol.",
+                                    "Interpreting packet fields according to protocol definitions."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Display Filter?",
+                                options: [
+                                    "Expression selecting packets to show in an analysis tool.",
+                                    "Recorded network packets for analysis.",
+                                    "Data carried by a protocol.",
+                                    "Interpreting packet fields according to protocol definitions."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Payload?",
+                                options: [
+                                    "Data carried by a protocol.",
+                                    "Recorded network packets for analysis.",
+                                    "Expression selecting packets to show in an analysis tool.",
+                                    "Interpreting packet fields according to protocol definitions."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Protocol Dissection?",
+                                options: [
+                                    "Interpreting packet fields according to protocol definitions.",
+                                    "Recorded network packets for analysis.",
+                                    "Expression selecting packets to show in an analysis tool.",
+                                    "Data carried by a protocol."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
@@ -5633,7 +9267,49 @@ HTTP -> web request/response</pre>
                             <p>
                                 This foundation prepares you for Linux networking tools, network scanning in authorized labs, packet analysis, firewall administration, SOC monitoring and penetration-testing methodology.
                             </p>
-                        `,
+                        
+
+                            <h2>Why This Matters</h2>
+
+                            <p>
+                                Networking knowledge becomes useful when concepts can be combined, not when each definition is memorized separately. Security work requires tracing one event through several layers and devices.
+                            </p>
+
+                            <h2>How to Think About It</h2>
+
+                            <p>
+                                Use an end-to-end mental model: the client receives configuration, resolves a name, decides local versus remote delivery, resolves a gateway MAC, creates transport state, crosses routers/firewalls and exchanges application data. At each stage ask what evidence and failure modes exist.
+                            </p>
+
+                            <h2>Worked Example</h2>
+
+                            <p>
+                                For a failed website request: check link and IP configuration, local subnet decision, gateway reachability, routing, DNS, TCP 443, TLS and finally HTTP/application response. The first failing stage narrows the investigation.
+                            </p>
+
+                            <h2>Cybersecurity Relevance</h2>
+
+                            <p>
+                                The same model supports incident response and ethical testing. A suspicious domain query, new outbound TCP connection and unusual HTTP request may be three views of the same activity.
+                            </p>
+
+                            <h2>Troubleshooting / Investigation Example</h2>
+
+                            <p>
+                                Avoid jumping directly to advanced tools. Confirm fundamentals in order and record evidence. Networking problems often become obvious once you identify the first layer or dependency that fails.
+                            </p>
+
+                            <h2>Lesson Recap</h2>
+
+                            <p>
+                                Before moving on, make sure you can explain <strong>Networking Fundamentals Review</strong> in your own words, describe why it exists, follow the basic communication flow and connect the concept to a real troubleshooting or security scenario.
+                            </p>
+
+                            <h2>What Comes Next?</h2>
+
+                            <p>
+                                After this course, students are ready for deeper hands-on networking, packet analysis and security courses where these fundamentals are applied in realistic labs.
+                            </p>`,
 
                         keyConcepts: [
                             {
@@ -5668,6 +9344,55 @@ HTTP -> web request/response</pre>
 
                                 answer:
                                     1
+                            }
+                        ,
+                            {
+                                question:
+                                    "Which statement best describes End-to-End Flow?",
+                                options: [
+                                    "Complete sequence of protocols involved in a communication.",
+                                    "Using multiple complementary security controls.",
+                                    "Systematic isolation of the source of a problem.",
+                                    "Data that helps defenders understand network communication."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Defense in Depth?",
+                                options: [
+                                    "Using multiple complementary security controls.",
+                                    "Complete sequence of protocols involved in a communication.",
+                                    "Systematic isolation of the source of a problem.",
+                                    "Data that helps defenders understand network communication."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Troubleshooting?",
+                                options: [
+                                    "Systematic isolation of the source of a problem.",
+                                    "Complete sequence of protocols involved in a communication.",
+                                    "Using multiple complementary security controls.",
+                                    "Data that helps defenders understand network communication."
+                                ],
+                                answer:
+                                    0
+                            },
+                            {
+                                question:
+                                    "Which statement best describes Network Visibility?",
+                                options: [
+                                    "Data that helps defenders understand network communication.",
+                                    "Complete sequence of protocols involved in a communication.",
+                                    "Using multiple complementary security controls.",
+                                    "Systematic isolation of the source of a problem."
+                                ],
+                                answer:
+                                    0
                             }
                         ]
 
