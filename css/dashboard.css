@@ -2326,3 +2326,245 @@
     }
 
 }
+
+/* =========================================================
+   CWS ACADEMY — TOP BAR UI UPGRADE
+   Shared navigation typography, icons and account treatment
+========================================================= */
+
+.student-header {
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
+}
+
+.student-nav {
+    min-height: 80px;
+    gap: 26px;
+}
+
+.academy-logo {
+    gap: 11px;
+}
+
+.logo-cws {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-family: "Orbitron", sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    box-shadow:
+        0 0 0 1px rgba(0, 255, 170, 0.03),
+        0 0 24px rgba(0, 255, 170, 0.10),
+        inset 0 0 18px rgba(0, 255, 170, 0.035);
+}
+
+.logo-text {
+    font-family: "Orbitron", sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+}
+
+.student-nav-links {
+    gap: 5px;
+}
+
+.student-nav-links a {
+    min-height: 44px;
+    padding: 0 13px;
+    gap: 9px;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    transition:
+        color 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease;
+}
+
+.student-nav-links a i {
+    width: 18px;
+    color: #71849a;
+    font-size: 0.94rem;
+    text-align: center;
+    transition:
+        color 180ms ease,
+        transform 180ms ease,
+        filter 180ms ease;
+}
+
+.student-nav-links a:hover {
+    transform: translateY(-1px);
+    color: #ffffff;
+    border-color: rgba(0, 255, 170, 0.10);
+    background: rgba(0, 255, 170, 0.055);
+}
+
+.student-nav-links a:hover i {
+    transform: translateY(-1px);
+    color: var(--dashboard-primary);
+    filter: drop-shadow(0 0 7px rgba(0, 255, 170, 0.32));
+}
+
+.student-nav-links a.active {
+    color: #ffffff;
+    border-color: rgba(0, 255, 170, 0.16);
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 255, 170, 0.105),
+            rgba(0, 255, 170, 0.045)
+        );
+    box-shadow:
+        inset 0 0 18px rgba(0, 255, 170, 0.025),
+        0 7px 22px rgba(0, 0, 0, 0.10);
+}
+
+.student-nav-links a.active i {
+    color: var(--dashboard-primary);
+    filter: drop-shadow(0 0 7px rgba(0, 255, 170, 0.30));
+}
+
+.student-nav-links a.active::after {
+    left: 14px;
+    right: 14px;
+    bottom: -1px;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--dashboard-primary) 18%,
+        var(--dashboard-accent) 82%,
+        transparent
+    );
+}
+
+.student-nav-account {
+    gap: 10px;
+}
+
+.student-profile-chip {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 5px 10px 5px 6px;
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.student-profile-avatar {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 255, 170, 0.16);
+    border-radius: 9px;
+    color: var(--dashboard-primary);
+    background: rgba(0, 255, 170, 0.07);
+    font-size: 0.78rem;
+}
+
+.student-nav-name {
+    max-width: 130px;
+    overflow: hidden;
+    color: #f7fffc;
+    font-family: "Inter", sans-serif;
+    font-size: 0.79rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-logout-btn {
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 11px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.78rem;
+}
+
+.dashboard-logout-btn i {
+    font-size: 0.88rem;
+}
+
+/* Keep icons visible longer on medium screens. */
+@media (max-width: 1250px) {
+    .student-nav {
+        gap: 16px;
+    }
+
+    .student-nav-links a {
+        padding: 0 9px;
+        gap: 6px;
+        font-size: 0.75rem;
+    }
+
+    .student-nav-links a i {
+        display: inline-block;
+        width: 16px;
+        font-size: 0.82rem;
+    }
+
+    .student-profile-chip {
+        padding-right: 6px;
+    }
+
+    .student-nav-name {
+        display: none;
+    }
+}
+
+@media (max-width: 1000px) {
+    .student-nav-links a {
+        width: 42px;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .student-nav-links a span {
+        display: none;
+    }
+
+    .student-nav-links a i {
+        width: auto;
+        font-size: 0.94rem;
+    }
+
+    .student-nav-links a.active::after {
+        left: 9px;
+        right: 9px;
+    }
+}
+
+@media (max-width: 800px) {
+    .student-nav {
+        min-height: 70px;
+    }
+
+    .student-nav-links {
+        display: none;
+    }
+
+    .student-profile-chip {
+        min-height: 40px;
+    }
+
+    .student-profile-avatar {
+        width: 29px;
+        height: 29px;
+    }
+
+    .dashboard-logout-btn {
+        min-height: 40px;
+    }
+}
