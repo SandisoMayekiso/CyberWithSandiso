@@ -545,13 +545,8 @@ function buildProPricingUrl(
     );
 
 
-    /*
-     * Logged-in students should remain inside the student area.
-     * The public pricing page is for visitors who are not signed in.
-     */
-
     return (
-        `subscription.html?${params.toString()}`
+        `../pages/pricing.html?${params.toString()}`
     );
 
 }
