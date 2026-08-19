@@ -1,6 +1,7 @@
 /* =========================================================
    CWS ACADEMY
    CENTRAL COURSE REGISTRY
+   File: data/courses.js
 ========================================================= */
 
 
@@ -117,9 +118,7 @@ export const courses = {
    NORMALIZE ID
 ========================================================= */
 
-function normalizeId(
-    value
-) {
+function normalizeId(value) {
 
     if (
         value === null ||
@@ -131,9 +130,7 @@ function normalizeId(
     }
 
 
-    return String(
-        value
-    )
+    return String(value)
         .trim()
         .toLowerCase();
 
@@ -144,13 +141,10 @@ function normalizeId(
    NORMALIZE VALUE
 ========================================================= */
 
-function normalizeValue(
-    value
-) {
+function normalizeValue(value) {
 
     return String(
-        value ||
-        ""
+        value || ""
     )
         .trim()
         .toLowerCase();
@@ -175,9 +169,7 @@ export function getCourses() {
    GET COURSE
 ========================================================= */
 
-export function getCourse(
-    courseId
-) {
+export function getCourse(courseId) {
 
     const normalizedCourseId =
         normalizeId(
@@ -237,18 +229,14 @@ export function getModule(
 
 
     return (
-
         course.modules.find(
             module =>
-
                 normalizeId(
                     module?.id
                 ) ===
                 normalizedModuleId
         ) ||
-
         null
-
     );
 
 }
@@ -291,18 +279,14 @@ export function getLesson(
 
 
     return (
-
         module.lessons.find(
             lesson =>
-
                 normalizeId(
                     lesson?.id
                 ) ===
                 normalizedLessonId
         ) ||
-
         null
-
     );
 
 }
@@ -312,9 +296,7 @@ export function getLesson(
    GET FIRST MODULE
 ========================================================= */
 
-export function getFirstModule(
-    courseId
-) {
+export function getFirstModule(courseId) {
 
     const course =
         getCourse(
@@ -384,9 +366,7 @@ export function getFirstLesson(
    COURSE EXISTS
 ========================================================= */
 
-export function courseExists(
-    courseId
-) {
+export function courseExists(courseId) {
 
     return Boolean(
         getCourse(
@@ -401,9 +381,7 @@ export function courseExists(
    COURSE AVAILABLE
 ========================================================= */
 
-export function isCourseAvailable(
-    courseId
-) {
+export function isCourseAvailable(courseId) {
 
     const course =
         getCourse(
@@ -432,9 +410,7 @@ export function isCourseAvailable(
    COURSE ACCESS LEVEL
 ========================================================= */
 
-export function getCourseAccess(
-    courseId
-) {
+export function getCourseAccess(courseId) {
 
     const course =
         getCourse(
@@ -449,11 +425,13 @@ export function getCourseAccess(
     }
 
 
-    return normalizeValue(
-        course.access ||
+    return (
+        normalizeValue(
+            course.access ||
+            "free"
+        ) ||
         "free"
-    ) ||
-    "free";
+    );
 
 }
 
@@ -462,9 +440,7 @@ export function getCourseAccess(
    PRO COURSE
 ========================================================= */
 
-export function isProCourse(
-    courseId
-) {
+export function isProCourse(courseId) {
 
     const course =
         getCourse(
@@ -480,13 +456,11 @@ export function isProCourse(
 
 
     return (
-        course.proOnly ===
-            true ||
-
+        course.proOnly === true ||
         normalizeValue(
             course.access
         ) ===
-            "pro"
+        "pro"
     );
 
 }
@@ -496,9 +470,7 @@ export function isProCourse(
    COURSE LOCKED
 ========================================================= */
 
-export function isCourseLocked(
-    courseId
-) {
+export function isCourseLocked(courseId) {
 
     const course =
         getCourse(
@@ -514,13 +486,11 @@ export function isCourseLocked(
 
 
     return (
-        course.locked ===
-            true ||
-
+        course.locked === true ||
         normalizeValue(
             course.availability
         ) ===
-            "pro-coming-soon"
+        "pro-coming-soon"
     );
 
 }
@@ -530,9 +500,7 @@ export function isCourseLocked(
    COURSE DISPLAY STATUS
 ========================================================= */
 
-export function getCourseDisplayStatus(
-    courseId
-) {
+export function getCourseDisplayStatus(courseId) {
 
     const course =
         getCourse(
@@ -606,9 +574,7 @@ export function getCourseDisplayStatus(
    GET COURSES BY LEVEL
 ========================================================= */
 
-export function getCoursesByLevel(
-    level
-) {
+export function getCoursesByLevel(level) {
 
     const normalizedLevel =
         normalizeValue(
@@ -626,7 +592,6 @@ export function getCoursesByLevel(
     return getCourses()
         .filter(
             course =>
-
                 normalizeValue(
                     course?.levelKey ||
                     course?.level
@@ -646,7 +611,6 @@ export function getFreeCourses() {
     return getCourses()
         .filter(
             course =>
-
                 normalizeValue(
                     course?.access
                 ) !==
@@ -665,14 +629,320 @@ export function getProCourses() {
     return getCourses()
         .filter(
             course =>
-
-                course?.proOnly ===
-                    true ||
-
+                course?.proOnly === true ||
                 normalizeValue(
                     course?.access
                 ) ===
-                    "pro"
+                "pro"
         );
+
+}
+
+
+/* =========================================================
+   GET AVAILABLE COURSES
+========================================================= */
+
+export function getAvailableCourses() {
+
+    return getCourses()
+        .filter(
+            course =>
+                normalizeValue(
+                    course?.status
+                ) ===
+                "available"
+        );
+
+}
+
+
+/* =========================================================
+   GET PLANNED COURSES
+========================================================= */
+
+export function getPlannedCourses() {
+
+    return getCourses()
+        .filter(
+            course =>
+                normalizeValue(
+                    course?.status
+                ) !==
+                "available"
+        );
+
+}
+
+
+/* =========================================================
+   GET COURSE MODULE COUNT
+========================================================= */
+
+export function getCourseModuleCount(courseId) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    if (
+        !course ||
+        !Array.isArray(
+            course.modules
+        )
+    ) {
+
+        return 0;
+
+    }
+
+
+    return course.modules.length;
+
+}
+
+
+/* =========================================================
+   GET COURSE LESSON COUNT
+========================================================= */
+
+export function getCourseLessonCount(courseId) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    if (
+        !course ||
+        !Array.isArray(
+            course.modules
+        )
+    ) {
+
+        return 0;
+
+    }
+
+
+    return course.modules.reduce(
+        (total, module) => {
+
+            if (
+                !Array.isArray(
+                    module?.lessons
+                )
+            ) {
+
+                return total;
+
+            }
+
+
+            return (
+                total +
+                module.lessons.length
+            );
+
+        },
+        0
+    );
+
+}
+
+
+/* =========================================================
+   GET COURSE LAB COUNT
+========================================================= */
+
+export function getCourseLabCount(courseId) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    if (
+        !course ||
+        !Array.isArray(
+            course.modules
+        )
+    ) {
+
+        return 0;
+
+    }
+
+
+    return course.modules.reduce(
+        (total, module) => {
+
+            if (
+                Array.isArray(
+                    module?.labActivities
+                )
+            ) {
+
+                return (
+                    total +
+                    module.labActivities.length
+                );
+
+            }
+
+
+            return (
+                total +
+                Number(
+                    module?.labs ||
+                    0
+                )
+            );
+
+        },
+        0
+    );
+
+}
+
+
+/* =========================================================
+   GET COURSE ASSESSMENT COUNT
+========================================================= */
+
+export function getCourseAssessmentCount(courseId) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    if (
+        !course ||
+        !Array.isArray(
+            course.modules
+        )
+    ) {
+
+        return 0;
+
+    }
+
+
+    return course.modules.reduce(
+        (total, module) => {
+
+            if (
+                module?.moduleAssessment
+            ) {
+
+                return total + 1;
+
+            }
+
+
+            return (
+                total +
+                Number(
+                    module?.assessments ||
+                    0
+                )
+            );
+
+        },
+        0
+    );
+
+}
+
+
+/* =========================================================
+   GET COURSE SUMMARY
+========================================================= */
+
+export function getCourseSummary(courseId) {
+
+    const course =
+        getCourse(
+            courseId
+        );
+
+
+    if (!course) {
+
+        return null;
+
+    }
+
+
+    return {
+
+        id:
+            course.id,
+
+        title:
+            course.title,
+
+        description:
+            course.description ||
+            "",
+
+        level:
+            course.level ||
+            "",
+
+        levelKey:
+            course.levelKey ||
+            "",
+
+        status:
+            course.status ||
+            "planned",
+
+        access:
+            getCourseAccess(
+                course.id
+            ),
+
+        isPro:
+            isProCourse(
+                course.id
+            ),
+
+        isLocked:
+            isCourseLocked(
+                course.id
+            ),
+
+        modules:
+            getCourseModuleCount(
+                course.id
+            ),
+
+        lessons:
+            getCourseLessonCount(
+                course.id
+            ),
+
+        labs:
+            getCourseLabCount(
+                course.id
+            ),
+
+        assessments:
+            getCourseAssessmentCount(
+                course.id
+            ),
+
+        certificateEligible:
+            course.certificateEligible ===
+                true
+
+    };
 
 }
