@@ -1026,10 +1026,172 @@ async function renderQrCode() {
 
 
 /* =========================================================
+   CERTIFICATE THEME
+========================================================= */
+
+function isCurrentCoursePro() {
+
+    return (
+        String(
+            currentCourse?.access ||
+            ""
+        )
+            .trim()
+            .toLowerCase() ===
+            "pro" ||
+
+        currentCourse?.proOnly ===
+            true
+    );
+
+}
+
+
+function applyCertificateTheme() {
+
+    const isPro =
+        isCurrentCoursePro();
+
+
+    const documentElement =
+        document.getElementById(
+            "certificateDocument"
+        );
+
+
+    document.body.classList.toggle(
+        "pro-certificate-page",
+        isPro
+    );
+
+
+    if (documentElement) {
+
+        documentElement.classList.toggle(
+            "pro-certificate",
+            isPro
+        );
+
+    }
+
+
+    const eyebrow =
+        document.querySelector(
+            ".certificate-page-heading .certificate-eyebrow"
+        );
+
+
+    if (eyebrow) {
+
+        eyebrow.textContent =
+            isPro
+                ? "CWS ACADEMY • PRO VERIFIED ACHIEVEMENT"
+                : "CWS ACADEMY • VERIFIED ACHIEVEMENT";
+
+    }
+
+
+    const pageHeading =
+        document.querySelector(
+            ".certificate-page-heading h1"
+        );
+
+
+    if (pageHeading) {
+
+        pageHeading.textContent =
+            isPro
+                ? "CWS Pro Certificate"
+                : "Course Certificate";
+
+    }
+
+
+    const verifiedBadge =
+        document.querySelector(
+            ".certificate-verified-badge"
+        );
+
+
+    if (verifiedBadge) {
+
+        verifiedBadge.innerHTML =
+            isPro
+                ? `
+                    <i class="fa-solid fa-crown"></i>
+                    CWS PRO VERIFIED
+                  `
+                : `
+                    <i class="fa-solid fa-circle-check"></i>
+                    VERIFIED
+                  `;
+
+    }
+
+
+    const kicker =
+        document.querySelector(
+            ".certificate-kicker"
+        );
+
+
+    if (kicker) {
+
+        kicker.textContent =
+            isPro
+                ? "CWS PRO • VERIFIED CERTIFICATE OF COMPLETION"
+                : "CERTIFICATE OF COMPLETION";
+
+    }
+
+
+    const brand =
+        document.querySelector(
+            ".certificate-brand"
+        );
+
+
+    if (
+        isPro &&
+        brand &&
+        !brand.querySelector(
+            ".pro-certificate-ribbon"
+        )
+    ) {
+
+        const ribbon =
+            document.createElement(
+                "span"
+            );
+
+
+        ribbon.className =
+            "pro-certificate-ribbon";
+
+
+        ribbon.innerHTML = `
+            <i class="fa-solid fa-crown"></i>
+            PREMIUM PRACTICAL TRAINING
+        `;
+
+
+        brand.appendChild(
+            ribbon
+        );
+
+    }
+
+}
+
+
+/* =========================================================
    RENDER CERTIFICATE
 ========================================================= */
 
 async function renderCertificate() {
+
+    applyCertificateTheme();
+
 
     const name =
         getUserName(
@@ -1474,14 +1636,30 @@ async function downloadCertificatePdf() {
                 .getHeight();
 
 
+        const isProCertificate =
+            isCurrentCoursePro();
+
+
+        const accentColor =
+            isProCertificate
+                ? [246, 196, 83]
+                : [220, 48, 48];
+
+
+        const accentDarkColor =
+            isProCertificate
+                ? [183, 121, 31]
+                : [160, 24, 24];
+
+
         /*
          * BACKGROUND
          */
 
         pdf.setFillColor(
-            10,
-            10,
-            10
+            isProCertificate ? 11 : 10,
+            isProCertificate ? 9 : 10,
+            isProCertificate ? 5 : 10
         );
 
 
@@ -1499,9 +1677,7 @@ async function downloadCertificatePdf() {
          */
 
         pdf.setDrawColor(
-            160,
-            24,
-            24
+            ...accentDarkColor
         );
 
 
@@ -1543,9 +1719,7 @@ async function downloadCertificatePdf() {
          */
 
         pdf.setTextColor(
-            220,
-            48,
-            48
+            ...accentColor
         );
 
 
@@ -1599,7 +1773,9 @@ async function downloadCertificatePdf() {
 
 
         pdf.text(
-            "VERIFIED ACHIEVEMENT",
+            isProCertificate
+                ? "CWS PRO VERIFIED"
+                : "VERIFIED ACHIEVEMENT",
             width - 20,
             24,
             {
@@ -1614,9 +1790,7 @@ async function downloadCertificatePdf() {
          */
 
         pdf.setTextColor(
-            211,
-            37,
-            37
+            ...accentColor
         );
 
 
@@ -1626,7 +1800,9 @@ async function downloadCertificatePdf() {
 
 
         pdf.text(
-            "CERTIFICATE OF COMPLETION",
+            isProCertificate
+                ? "CWS PRO • CERTIFICATE OF COMPLETION"
+                : "CERTIFICATE OF COMPLETION",
             width / 2,
             49,
             {
@@ -1715,9 +1891,7 @@ async function downloadCertificatePdf() {
 
 
         pdf.setDrawColor(
-            175,
-            26,
-            26
+            ...accentDarkColor
         );
 
 
