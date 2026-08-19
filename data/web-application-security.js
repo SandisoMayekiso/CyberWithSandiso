@@ -1,7 +1,407 @@
 /* =========================================================
    CWS ACADEMY
    WEB APPLICATION SECURITY
-   PRO COURSE - COMING SOON
+   PRO • BEGINNER TO INTERMEDIATE
+========================================================= */
+
+
+/* =========================================================
+   LESSON BUILDER
+========================================================= */
+
+function buildLesson(
+    id,
+    title,
+    data = {}
+) {
+
+    const what =
+        data.what ||
+        title;
+
+
+    const why =
+        data.why ||
+        "This concept helps explain how web applications process trust, input, identity and data."
+
+
+    const how =
+        data.how ||
+        "Study the request/response flow, identify assumptions, test those assumptions safely and document evidence.";
+
+
+    return {
+
+        id,
+        title,
+
+        duration:
+            data.duration ||
+            "50 minutes",
+
+        access:
+            "pro",
+
+        type:
+            "Lesson",
+
+        icon:
+            data.icon ||
+            "fa-solid fa-code",
+
+        subtitle:
+            data.subtitle ||
+            `Understand ${title} through practical web-security examples.`,
+
+        objectives:
+            data.objectives ||
+            [
+                `Explain ${title} in your own words.`,
+                `Describe why ${title} matters in web security.`,
+                `Recognize how ${title} appears in HTTP traffic.`,
+                `Identify common mistakes and weak assumptions.`,
+                `Apply the concept in an authorized training lab.`
+            ],
+
+        introduction: `
+            <h2>${title}</h2>
+
+            <p>
+                <strong>What:</strong>
+                ${what}.
+            </p>
+
+            <p>
+                <strong>Why:</strong>
+                ${why}.
+            </p>
+        `,
+
+        body: `
+            <h2>What Is ${title}?</h2>
+
+            <p>
+                ${what}.
+            </p>
+
+
+            <h2>Why Does It Matter?</h2>
+
+            <p>
+                ${why}.
+            </p>
+
+
+            <h2>How Does It Work?</h2>
+
+            <p>
+                ${how}.
+            </p>
+
+
+            <h2>Web-Security Reasoning</h2>
+
+            <p>
+                Start with the normal application behavior. Identify which
+                user-controlled values influence server-side decisions, what
+                trust boundary is crossed, and what security control should
+                protect that boundary.
+            </p>
+
+
+            <h2>Worked Scenario</h2>
+
+            <p>
+                ${
+                    data.example ||
+                    "Use a deliberately vulnerable training application and compare the intended request with one controlled variation. Record the request, response and security conclusion."
+                }
+            </p>
+
+
+            <h2>Common Mistakes</h2>
+
+            <ul>
+                <li>Testing without understanding the normal application flow.</li>
+                <li>Changing many request values at once and losing causality.</li>
+                <li>Assuming a scanner result is proof without manual confirmation.</li>
+                <li>Confusing client-side controls with server-side authorization.</li>
+                <li>Collecting more sensitive data than necessary for evidence.</li>
+            </ul>
+
+
+            <h2>Safe Validation</h2>
+
+            <ol>
+                <li>Confirm the exact authorized application and account.</li>
+                <li>Capture the normal request and response.</li>
+                <li>Change one relevant value at a time.</li>
+                <li>Compare the application response.</li>
+                <li>Use the minimum action needed to demonstrate impact.</li>
+                <li>Save evidence and write the remediation implication.</li>
+            </ol>
+
+
+            <h2>Before Moving On</h2>
+
+            <p>
+                You should be able to explain the concept without notes,
+                recognize it in HTTP traffic and describe what evidence would
+                confirm or reject the suspected weakness.
+            </p>
+        `,
+
+        keyConcepts:
+            data.keyConcepts ||
+            [
+                {
+                    title,
+                    description:
+                        what
+                },
+                {
+                    title:
+                        "Trust Boundary",
+                    description:
+                        "A point where data, identity or authority crosses from one security context to another."
+                },
+                {
+                    title:
+                        "Validation",
+                    description:
+                        "Confirming a weakness with controlled evidence rather than assumption."
+                }
+            ],
+
+        commands:
+            data.commands ||
+            [],
+
+        quiz:
+            data.quiz ||
+            [
+                {
+                    question:
+                        `What is the strongest way to study ${title}?`,
+                    options: [
+                        "Understand the normal request flow, vary one assumption and validate evidence",
+                        "Run every available scanner",
+                        "Ignore the application workflow",
+                        "Change many values at once"
+                    ],
+                    answer:
+                        0
+                },
+                {
+                    question:
+                        "Which control must enforce authorization decisions?",
+                    options: [
+                        "The server-side application",
+                        "Only JavaScript in the browser",
+                        "Only CSS",
+                        "The page title"
+                    ],
+                    answer:
+                        0
+                },
+                {
+                    question:
+                        "What should happen when validation is uncertain?",
+                    options: [
+                        "Document uncertainty and gather more evidence safely",
+                        "Report it as critical",
+                        "Ignore the result",
+                        "Increase impact"
+                    ],
+                    answer:
+                        0
+                }
+            ]
+
+    };
+
+}
+
+
+/* =========================================================
+   LAB BUILDER
+========================================================= */
+
+function buildLab(
+    id,
+    title,
+    moduleTitle,
+    extra = {}
+) {
+
+    return {
+
+        id,
+        title,
+
+        type:
+            "Hands-On Lab",
+
+        duration:
+            extra.duration ||
+            "75–120 minutes",
+
+        objective:
+            extra.objective ||
+            `Apply ${moduleTitle} in an authorized web-security training application.`,
+
+        scenario:
+            extra.scenario ||
+            "You are assessing a deliberately vulnerable CWS training web application under explicit lab scope.",
+
+        prerequisites:
+            extra.prerequisites ||
+            [
+                "Authorized training application",
+                "Browser developer tools",
+                "Burp Suite Community or another intercepting proxy",
+                "Assessment notes"
+            ],
+
+        instructions:
+            extra.instructions ||
+            [
+                "Confirm the exact lab application and account.",
+                "Capture the normal application request and response.",
+                `Apply the ${moduleTitle} workflow taught in this module.`,
+                "Change only one relevant input or request property at a time.",
+                "Record the result and compare it to expected secure behavior.",
+                "Use the minimum action needed to prove impact.",
+                "Capture screenshots or request/response evidence.",
+                "Write one remediation recommendation."
+            ],
+
+        evidence:
+            extra.evidence ||
+            [
+                "Relevant HTTP request",
+                "Relevant HTTP response",
+                "Screenshot where useful",
+                "Short finding or observation"
+            ],
+
+        reflection:
+            extra.reflection ||
+            [
+                "What security assumption failed?",
+                "What server-side control would prevent the issue?",
+                "What evidence was sufficient to support your conclusion?"
+            ],
+
+        safety:
+            "Use only deliberately vulnerable training applications or another application you are explicitly authorized to assess."
+
+    };
+
+}
+
+
+/* =========================================================
+   ASSESSMENT BUILDER
+========================================================= */
+
+function buildAssessment(
+    title,
+    questions = []
+) {
+
+    const fallback = [
+        {
+            question:
+                "What should begin every web-security test?",
+            options: [
+                "Understanding the normal application flow and scope",
+                "Automated exploitation",
+                "Credential guessing",
+                "Changing every parameter"
+            ],
+            answer:
+                0
+        },
+        {
+            question:
+                "What is the purpose of an intercepting proxy?",
+            options: [
+                "Inspect and modify authorized HTTP requests and responses",
+                "Replace the web server",
+                "Disable authentication",
+                "Encrypt all local files"
+            ],
+            answer:
+                0
+        },
+        {
+            question:
+                "Why is server-side validation important?",
+            options: [
+                "Client-side controls can be bypassed or modified",
+                "CSS cannot load",
+                "Browsers have no JavaScript",
+                "HTTP has no headers"
+            ],
+            answer:
+                0
+        },
+        {
+            question:
+                "What makes a finding useful?",
+            options: [
+                "Evidence, impact and actionable remediation",
+                "Only a scanner name",
+                "Only a screenshot",
+                "Only a severity score"
+            ],
+            answer:
+                0
+        },
+        {
+            question:
+                "What is the safest validation principle?",
+            options: [
+                "Use the minimum action necessary to prove the issue",
+                "Maximize impact",
+                "Collect all accessible data",
+                "Ignore scope"
+            ],
+            answer:
+                0
+        }
+    ];
+
+
+    return {
+
+        title,
+
+        type:
+            "Module Assessment",
+
+        passingScore:
+            75,
+
+        allowRetry:
+            true,
+
+        showResults:
+            true,
+
+        questions:
+            questions.length
+                ? questions
+                : fallback
+
+    };
+
+}
+
+
+/* =========================================================
+   COURSE
 ========================================================= */
 
 export const webApplicationSecurity = {
@@ -13,76 +413,117 @@ export const webApplicationSecurity = {
         "Web Application Security",
 
     overviewTitle:
-        "Web Application Security",
+        "Understand, Test and Report Modern Web Application Security",
 
     category:
-        "CWS ACADEMY • WEB SECURITY • PRO",
+        "CWS ACADEMY • APPLICATION SECURITY",
 
     level:
-        "Intermediate",
+        "Beginner → Intermediate",
 
     levelKey:
         "intermediate",
 
     status:
-        "planned",
+        "available",
 
     access:
         "pro",
 
-    proOnly:
-        true,
-
-    locked:
-        true,
-
-    availability:
-        "pro-coming-soon",
-
-    availabilityLabel:
-        "Pro Coming Soon",
-
     icon:
-        "fa-solid fa-globe",
+        "fa-solid fa-code",
 
     description:
-        "Learn how web applications communicate and explore authentication, sessions, input validation and common application security weaknesses.",
+        "Learn web application security through HTTP analysis, authentication, sessions, access control, input handling, browser security, API testing, Burp Suite workflows and evidence-based reporting.",
 
     longDescription:
-        "Web Application Security teaches students how to assess the security boundaries of modern web applications in authorized environments. The course covers HTTP, application mapping, authentication, sessions, input validation, injection concepts, cross-site scripting, authorization, security configuration and professional reporting.",
+        "Web Application Security is a CWS Pro practical course focused on how modern web applications process identity, trust, input and data. Students learn HTTP deeply, use intercepting proxies, test authentication and authorization, analyze common server-side and browser-side vulnerability classes, inspect APIs and produce professional findings. All testing is performed in deliberately vulnerable applications or environments where explicit authorization exists.",
 
     duration:
-        "20–30 hours",
+        "60–75 Hours",
 
-    labs:
-        8,
+    estimatedLessons:
+        30,
 
-    assessments:
-        8,
+    certificateEligible:
+        true,
+
+    learningStandard:
+        "Deep Explanation • HTTP Analysis • Burp Workflows • Hands-On Labs • Evidence • Reporting",
+
+    prerequisites: [
+        "Cybersecurity Fundamentals",
+        "Networking Fundamentals",
+        "Ethical Hacking"
+    ],
+
+    recommendedPrerequisites: [
+        "Linux Fundamentals",
+        "Python Fundamentals for Cybersecurity"
+    ],
+
+    completionRules: {
+
+        minimumLessonCompletion:
+            100,
+
+        minimumModuleAssessmentScore:
+            75,
+
+        finalAssessmentPassingScore:
+            80,
+
+        requireAllModuleAssessments:
+            true,
+
+        requireRequiredLabs:
+            true,
+
+        requireFinalAssessment:
+            true
+
+    },
+
+    progression: {
+
+        unlockMode:
+            "sequential",
+
+        allowLessonReview:
+            true,
+
+        allowAssessmentRetry:
+            true,
+
+        trackLessonCompletion:
+            true,
+
+        trackAssessmentScores:
+            true,
+
+        trackLabCompletion:
+            true
+
+    },
 
     objectives: [
-
-        "Understand web application architecture, HTTP and application trust boundaries.",
-
-        "Map application functionality, endpoints, roles and user-controlled input.",
-
-        "Review authentication, password recovery and MFA controls.",
-
-        "Assess session-management and cookie-security controls.",
-
-        "Understand injection risks and safe input-handling practices.",
-
-        "Recognize cross-site scripting and browser-side security weaknesses.",
-
-        "Evaluate object-level, role-based and function-level authorization.",
-
-        "Review security headers, TLS, error handling and information exposure.",
-
-        "Complete a structured web application security capstone in an authorized lab."
-
+        "Explain HTTP requests, responses, cookies, headers and sessions.",
+        "Use an intercepting proxy to inspect authorized web traffic.",
+        "Analyze authentication and session-management weaknesses.",
+        "Test server-side authorization and access-control boundaries.",
+        "Understand input-validation weaknesses including SQL injection and command-injection concepts.",
+        "Understand browser-side vulnerabilities including XSS and CSRF.",
+        "Analyze file-upload and path-handling risks.",
+        "Test APIs and JSON-based endpoints safely.",
+        "Assess security headers and browser controls.",
+        "Write reproducible web-application findings with remediation."
     ],
 
     modules: [
+
+        /* =====================================================
+           MODULE 01
+        ====================================================== */
 
         {
             id:
@@ -92,97 +533,102 @@ export const webApplicationSecurity = {
                 1,
 
             title:
-                "Web Application Foundations",
+                "HTTP and Web Application Foundations",
 
             description:
-                "Understand how modern web applications communicate and where security boundaries exist.",
+                "Understand how browsers, servers, HTTP messages, state and trust interact.",
 
             access:
                 "pro",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "How Web Applications Work",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Web applications combine browsers, servers, APIs, databases and supporting services. Understanding these components and their trust relationships is essential before testing security."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "HTTP Requests and Responses",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "HTTP requests and responses carry methods, URLs, headers, cookies, parameters and message bodies that define how clients and servers communicate."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Mapping Application Functionality",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Application mapping identifies pages, endpoints, forms, APIs, workflows, roles and user-controlled inputs so testing can be systematic."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                buildLesson(
+                    "lesson-01",
+                    "How Web Applications Work",
+                    {
+                        what:
+                            "the interaction between browsers, HTTP, application logic, databases and supporting services",
+
+                        why:
+                            "security testing depends on understanding where trust decisions and data processing occur",
+
+                        how:
+                            "a browser sends HTTP requests, the server routes them through application logic, the application may query data stores, and a response is returned",
+
+                        example:
+                            "Trace a login request from browser form submission to server response and identify where authentication is actually decided."
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-02",
+                    "HTTP Requests and Responses",
+                    {
+                        what:
+                            "the structured messages exchanged between web clients and servers",
+
+                        why:
+                            "most web-security testing ultimately involves understanding and manipulating authorized HTTP messages",
+
+                        how:
+                            "requests contain a method, path, headers and optional body; responses contain a status code, headers and optional body",
+
+                        commands: [
+                            {
+                                command:
+                                    "curl -i http://training.cws.local/",
+                                explanation:
+                                    "Displays response headers and body from an authorized training application."
+                            }
+                        ]
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-03",
+                    "Cookies, Sessions and State",
+                    {
+                        what:
+                            "mechanisms that allow a stateless protocol such as HTTP to maintain authenticated or application state",
+
+                        why:
+                            "weak session handling can turn a valid login into broader account compromise",
+
+                        how:
+                            "the server creates or accepts a session identifier, the browser stores it in a cookie, and later requests present that cookie",
+
+                        example:
+                            "Compare authenticated and unauthenticated requests to the same training page and observe the role of the session cookie."
+                    }
+                )
+
+            ],
+
+            labActivities: [
+                buildLab(
+                    "lab-01",
+                    "Map an HTTP Login Flow",
+                    "HTTP and Web Application Foundations"
+                )
+            ],
+
+            moduleAssessment:
+                buildAssessment(
+                    "Module 1 Assessment — HTTP Foundations"
+                )
         },
 
+
+        /* =====================================================
+           MODULE 02
+        ====================================================== */
 
         {
             id:
@@ -192,97 +638,87 @@ export const webApplicationSecurity = {
                 2,
 
             title:
-                "Authentication Security",
+                "Burp Suite and Manual Web Testing",
 
             description:
-                "Explore login workflows, password handling, account recovery and multi-factor authentication from a defensive testing perspective.",
+                "Use an intercepting proxy to understand, repeat and safely modify web traffic.",
 
             access:
                 "pro",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Authentication Workflows",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Authentication workflows should correctly verify identity while limiting information leakage, automated abuse and bypass opportunities."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Password and Recovery Controls",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Password-reset and account-recovery functions are security-critical because weak recovery controls can undermine an otherwise strong login process."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Multi-Factor Authentication",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "MFA adds an additional verification factor, but implementations should still be reviewed for enrollment, recovery, fallback and session-handling weaknesses."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                buildLesson(
+                    "lesson-01",
+                    "Intercepting Proxies",
+                    {
+                        what:
+                            "tools that sit between a browser and authorized application traffic so requests and responses can be inspected",
+
+                        why:
+                            "they make invisible HTTP details observable and testable",
+
+                        how:
+                            "the browser is configured to proxy traffic through the testing tool, which can intercept, forward and log HTTP messages"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-02",
+                    "Burp Proxy and HTTP History",
+                    {
+                        what:
+                            "Burp Suite features for capturing browser traffic and reviewing the request history",
+
+                        why:
+                            "understanding normal application behavior is essential before changing requests",
+
+                        how:
+                            "Proxy captures traffic while HTTP History provides a searchable record of observed messages"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-03",
+                    "Repeater and Controlled Request Modification",
+                    {
+                        what:
+                            "a workflow for sending the same authorized HTTP request repeatedly while changing selected values",
+
+                        why:
+                            "controlled changes reveal whether server-side assumptions can be bypassed",
+
+                        how:
+                            "send a captured request to Repeater, change one parameter or header, resend it and compare the response"
+                    }
+                )
+
+            ],
+
+            labActivities: [
+                buildLab(
+                    "lab-01",
+                    "Capture and Repeat Authorized HTTP Traffic",
+                    "Burp Suite and Manual Web Testing"
+                )
+            ],
+
+            moduleAssessment:
+                buildAssessment(
+                    "Module 2 Assessment — Burp Suite"
+                )
         },
 
+
+        /* =====================================================
+           MODULE 03
+        ====================================================== */
 
         {
             id:
@@ -292,97 +728,87 @@ export const webApplicationSecurity = {
                 3,
 
             title:
-                "Session Management",
+                "Authentication and Session Security",
 
             description:
-                "Learn how applications create, protect and terminate authenticated sessions.",
+                "Analyze login workflows, account recovery, session cookies and common identity failures.",
 
             access:
                 "pro",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Cookies and Session Tokens",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Session tokens represent authenticated state and should be unpredictable, protected during transport and stored using appropriate browser security attributes."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Session Lifecycle",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Secure applications manage session creation, renewal, timeout and logout consistently so old or stolen sessions cannot remain valid indefinitely."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Session Security Review",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "A session review examines cookie settings, token handling, logout behavior, timeout controls and whether sensitive transitions require additional verification."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                buildLesson(
+                    "lesson-01",
+                    "Authentication Workflow Testing",
+                    {
+                        what:
+                            "evaluating how an application verifies user identity",
+
+                        why:
+                            "authentication weaknesses may allow account takeover or unauthorized access",
+
+                        how:
+                            "map login inputs, responses, redirects, error handling, account states and server-side controls"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-02",
+                    "Session Management Weaknesses",
+                    {
+                        what:
+                            "security failures involving session creation, rotation, expiration or protection",
+
+                        why:
+                            "a stolen or reusable session identifier can bypass the password entirely",
+
+                        how:
+                            "observe whether sessions rotate after login, expire appropriately and use secure cookie attributes"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-03",
+                    "Password Reset and Account Recovery",
+                    {
+                        what:
+                            "workflows used when users cannot authenticate normally",
+
+                        why:
+                            "recovery mechanisms can become weaker alternative authentication paths",
+
+                        how:
+                            "evaluate identity verification, token lifetime, token reuse, user enumeration and recovery-session handling"
+                    }
+                )
+
+            ],
+
+            labActivities: [
+                buildLab(
+                    "lab-01",
+                    "Authentication and Session Review",
+                    "Authentication and Session Security"
+                )
+            ],
+
+            moduleAssessment:
+                buildAssessment(
+                    "Module 3 Assessment — Authentication and Sessions"
+                )
         },
 
+
+        /* =====================================================
+           MODULE 04
+        ====================================================== */
 
         {
             id:
@@ -392,97 +818,87 @@ export const webApplicationSecurity = {
                 4,
 
             title:
-                "Input Validation and Injection",
+                "Access Control and Authorization",
 
             description:
-                "Understand why untrusted input must be validated and how injection weaknesses can emerge.",
+                "Understand horizontal, vertical and object-level authorization failures.",
 
             access:
                 "pro",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Trust Boundaries and User Input",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Every point where user-controlled data enters an application should be treated as a trust boundary and handled according to the context in which the data will be used."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "SQL Injection Concepts",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "SQL injection can occur when untrusted input is incorporated into database queries unsafely. Parameterized queries and correct data-access patterns are key defenses."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Command and Interpreter Injection",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Applications that pass untrusted data to operating-system commands or interpreters can create serious security risk when separation and validation controls are weak."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                buildLesson(
+                    "lesson-01",
+                    "Authentication vs Authorization",
+                    {
+                        what:
+                            "the distinction between proving identity and deciding what that identity may access",
+
+                        why:
+                            "applications can authenticate users correctly while still exposing other users' or administrators' resources",
+
+                        how:
+                            "the server must enforce authorization on every protected action and object"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-02",
+                    "IDOR and Object-Level Authorization",
+                    {
+                        what:
+                            "a class of access-control weakness where changing an object identifier exposes another user's resource",
+
+                        why:
+                            "object identifiers are often user controlled but must never be treated as authorization",
+
+                        how:
+                            "the server should verify that the authenticated identity is permitted to access the requested object"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-03",
+                    "Vertical and Horizontal Privilege Boundaries",
+                    {
+                        what:
+                            "authorization boundaries between users at the same privilege level and users with different roles",
+
+                        why:
+                            "missing role checks can expose administrative or peer-user functionality",
+
+                        how:
+                            "compare requests between authorized training accounts and verify that the server enforces the intended role"
+                    }
+                )
+
+            ],
+
+            labActivities: [
+                buildLab(
+                    "lab-01",
+                    "Authorization Boundary Testing",
+                    "Access Control and Authorization"
+                )
+            ],
+
+            moduleAssessment:
+                buildAssessment(
+                    "Module 4 Assessment — Access Control"
+                )
         },
 
+
+        /* =====================================================
+           MODULE 05
+        ====================================================== */
 
         {
             id:
@@ -492,97 +908,90 @@ export const webApplicationSecurity = {
                 5,
 
             title:
-                "Cross-Site Scripting and Browser Security",
+                "Server-Side Input Validation",
 
             description:
-                "Explore browser-side trust boundaries, output encoding and script injection risks.",
+                "Learn how unsafe server-side input handling can create injection vulnerabilities.",
 
             access:
                 "pro",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Understanding XSS",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Cross-site scripting occurs when untrusted data is interpreted by a browser as executable script in a context where it should have remained data."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Stored, Reflected and DOM-Based XSS",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "XSS can appear through server responses, persisted content or client-side DOM processing. Each form requires understanding where untrusted input reaches an executable browser context."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Preventing XSS",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Context-aware output encoding, safe templating, input handling and browser controls such as Content Security Policy help reduce XSS risk."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                buildLesson(
+                    "lesson-01",
+                    "Input Validation and Injection Concepts",
+                    {
+                        what:
+                            "the security problem created when untrusted input changes the meaning of a server-side command or query",
+
+                        why:
+                            "applications frequently combine user-controlled data with interpreters such as SQL engines or operating-system commands",
+
+                        how:
+                            "secure applications separate data from executable syntax and validate input according to expected structure"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-02",
+                    "SQL Injection Fundamentals",
+                    {
+                        what:
+                            "a database-query injection vulnerability caused when untrusted input alters SQL structure",
+
+                        why:
+                            "successful SQL injection can expose or modify application data depending on context",
+
+                        how:
+                            "understand the vulnerable query model, compare normal and controlled lab inputs, and confirm server-side query separation",
+
+                        example:
+                            "In a purpose-built SQL injection lab, compare a normal search value with a deliberately malformed training input and observe the database error or changed response without accessing unrelated data."
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-03",
+                    "OS Command Injection Concepts",
+                    {
+                        what:
+                            "a vulnerability where application input reaches an operating-system command interpreter unsafely",
+
+                        why:
+                            "command injection can turn a web input into server-side operating-system execution",
+
+                        how:
+                            "secure implementations avoid shell interpretation where possible, use safe APIs and validate expected input tightly"
+                    }
+                )
+
+            ],
+
+            labActivities: [
+                buildLab(
+                    "lab-01",
+                    "Controlled Injection Validation",
+                    "Server-Side Input Validation"
+                )
+            ],
+
+            moduleAssessment:
+                buildAssessment(
+                    "Module 5 Assessment — Injection"
+                )
         },
 
+
+        /* =====================================================
+           MODULE 06
+        ====================================================== */
 
         {
             id:
@@ -592,97 +1001,87 @@ export const webApplicationSecurity = {
                 6,
 
             title:
-                "Authorization and Access Control",
+                "Cross-Site Scripting and Browser Trust",
 
             description:
-                "Learn how broken authorization can expose data or functionality to the wrong users.",
+                "Understand reflected, stored and DOM-based XSS and the browser security model.",
 
             access:
                 "pro",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Authentication vs Authorization",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Authentication establishes who a user is, while authorization determines what that user is permitted to access or perform."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Object-Level Authorization",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Applications should verify authorization on every sensitive object request rather than assuming that knowing or changing an identifier grants access."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Role and Function-Level Access",
-
-                    duration:
-                        "30 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Administrative and privileged functions should enforce authorization on the server side for every request."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                buildLesson(
+                    "lesson-01",
+                    "How Browsers Process HTML and JavaScript",
+                    {
+                        what:
+                            "the browser execution environment for markup, scripts, origins and DOM content",
+
+                        why:
+                            "XSS exists because user-controlled content can cross from data into executable browser context",
+
+                        how:
+                            "the browser parses HTML, builds the DOM and executes JavaScript according to origin and page context"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-02",
+                    "Reflected and Stored XSS",
+                    {
+                        what:
+                            "server-side XSS classes where untrusted content is returned immediately or stored and later rendered",
+
+                        why:
+                            "unsafe output encoding can allow attacker-controlled script execution in another user's browser",
+
+                        how:
+                            "secure applications encode output for the exact rendering context and avoid inserting untrusted HTML directly"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-03",
+                    "DOM-Based XSS and Client-Side Sinks",
+                    {
+                        what:
+                            "client-side script injection caused when browser JavaScript moves untrusted data into unsafe DOM APIs",
+
+                        why:
+                            "the server response can appear safe while vulnerable JavaScript creates the dangerous behavior in the browser",
+
+                        how:
+                            "trace untrusted sources such as URL values into DOM sinks and replace unsafe rendering APIs with safer alternatives"
+                    }
+                )
+
+            ],
+
+            labActivities: [
+                buildLab(
+                    "lab-01",
+                    "XSS Context and Output Encoding Lab",
+                    "Cross-Site Scripting and Browser Trust"
+                )
+            ],
+
+            moduleAssessment:
+                buildAssessment(
+                    "Module 6 Assessment — XSS"
+                )
         },
 
+
+        /* =====================================================
+           MODULE 07
+        ====================================================== */
 
         {
             id:
@@ -692,97 +1091,87 @@ export const webApplicationSecurity = {
                 7,
 
             title:
-                "Web Security Configuration",
+                "CSRF, CORS and Browser Security Controls",
 
             description:
-                "Review security headers, error handling, transport security and common configuration weaknesses.",
+                "Understand request-forgery risk, cross-origin policy and defensive browser controls.",
 
             access:
                 "pro",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Security Headers",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "HTTP security headers can help browsers enforce safer behavior for content loading, framing, transport and other browser security boundaries."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "TLS and Secure Transport",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Sensitive web traffic should use properly configured TLS so credentials, sessions and application data are protected while in transit."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Error Handling and Information Exposure",
-
-                    duration:
-                        "25 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Verbose errors, debug information and unnecessary technology details can reveal useful information to attackers and should be minimized in production."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                buildLesson(
+                    "lesson-01",
+                    "Cross-Site Request Forgery",
+                    {
+                        what:
+                            "a vulnerability where a user's authenticated browser is tricked into sending an unintended state-changing request",
+
+                        why:
+                            "browsers automatically attach some credentials such as cookies",
+
+                        how:
+                            "applications defend with anti-CSRF tokens, SameSite cookies and request-validation controls"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-02",
+                    "Same-Origin Policy and CORS",
+                    {
+                        what:
+                            "browser controls that govern whether one origin can read resources from another",
+
+                        why:
+                            "misconfigured CORS can expose authenticated API responses to unintended origins",
+
+                        how:
+                            "the browser evaluates origin headers and server CORS responses before exposing cross-origin content to scripts"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-03",
+                    "Security Headers and CSP",
+                    {
+                        what:
+                            "HTTP response headers that instruct browsers to apply additional security restrictions",
+
+                        why:
+                            "headers such as Content-Security-Policy, frame restrictions and MIME protections can reduce browser-side attack surface",
+
+                        how:
+                            "the server sends policy headers and the browser enforces them"
+                    }
+                )
+
+            ],
+
+            labActivities: [
+                buildLab(
+                    "lab-01",
+                    "Browser Security Controls Review",
+                    "CSRF, CORS and Browser Security Controls"
+                )
+            ],
+
+            moduleAssessment:
+                buildAssessment(
+                    "Module 7 Assessment — Browser Controls"
+                )
         },
 
+
+        /* =====================================================
+           MODULE 08
+        ====================================================== */
 
         {
             id:
@@ -792,97 +1181,569 @@ export const webApplicationSecurity = {
                 8,
 
             title:
-                "Web Application Security Capstone",
+                "File Handling and Path Security",
 
             description:
-                "Apply a structured application-security review to an authorized CWS Academy training application.",
+                "Assess uploads, downloads, path handling and server-side file-processing assumptions.",
 
             access:
                 "pro",
-
-            lessons: [
-
-                {
-                    id:
-                        "lesson-01",
-
-                    title:
-                        "Testing Plan and Scope",
-
-                    duration:
-                        "20 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "The capstone begins by defining application scope, roles, test accounts, permitted techniques and evidence requirements."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-02",
-
-                    title:
-                        "Conducting the Web Assessment",
-
-                    duration:
-                        "2–3 hours",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Students map functionality and review authentication, sessions, input handling and authorization within a controlled training environment."
-                        }
-                    ]
-                },
-
-                {
-                    id:
-                        "lesson-03",
-
-                    title:
-                        "Web Security Report",
-
-                    duration:
-                        "60 min",
-
-                    access:
-                        "pro",
-
-                    content: [
-                        {
-                            type:
-                                "paragraph",
-
-                            text:
-                                "Students document validated findings, impact, evidence, remediation recommendations and an executive summary."
-                        }
-                    ]
-                }
-
-            ],
 
             labs:
                 1,
 
             assessments:
-                1
+                1,
+
+            lessons: [
+
+                buildLesson(
+                    "lesson-01",
+                    "File Upload Security",
+                    {
+                        what:
+                            "controls governing user-supplied files stored or processed by a web application",
+
+                        why:
+                            "unsafe uploads can introduce executable content, malicious documents or unexpected server-side processing",
+
+                        how:
+                            "secure applications validate content, extension, size and storage location and prevent execution from upload directories"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-02",
+                    "Path Traversal Concepts",
+                    {
+                        what:
+                            "a path-handling weakness where user input escapes the intended directory boundary",
+
+                        why:
+                            "unsafe path construction can expose server files outside the application's intended storage location",
+
+                        how:
+                            "applications should use safe path APIs, allowlisted identifiers and fixed storage roots"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-03",
+                    "Download and Content-Disposition Security",
+                    {
+                        what:
+                            "security controls around files returned to users",
+
+                        why:
+                            "download endpoints can expose unauthorized files or unsafe content types",
+
+                        how:
+                            "the server must authorize the requested file and return safe content metadata"
+                    }
+                )
+
+            ],
+
+            labActivities: [
+                buildLab(
+                    "lab-01",
+                    "File Handling Security Review",
+                    "File Handling and Path Security"
+                )
+            ],
+
+            moduleAssessment:
+                buildAssessment(
+                    "Module 8 Assessment — File Security"
+                )
+        },
+
+
+        /* =====================================================
+           MODULE 09
+        ====================================================== */
+
+        {
+            id:
+                "module-09",
+
+            number:
+                9,
+
+            title:
+                "API Security",
+
+            description:
+                "Inspect JSON APIs, authorization, object access, input handling and rate-control assumptions.",
+
+            access:
+                "pro",
+
+            labs:
+                1,
+
+            assessments:
+                1,
+
+            lessons: [
+
+                buildLesson(
+                    "lesson-01",
+                    "REST and JSON API Foundations",
+                    {
+                        what:
+                            "HTTP-based application interfaces that commonly exchange structured JSON data",
+
+                        why:
+                            "modern front ends and mobile applications often depend heavily on APIs",
+
+                        how:
+                            "clients send HTTP requests to resource endpoints and receive structured responses"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-02",
+                    "API Authentication and Object Authorization",
+                    {
+                        what:
+                            "identity and permission controls applied to API endpoints and individual resources",
+
+                        why:
+                            "an authenticated API user must still be prevented from accessing objects belonging to another identity",
+
+                        how:
+                            "the API should validate both the caller and authorization for each requested object"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-03",
+                    "API Input, Rate and Error Handling",
+                    {
+                        what:
+                            "controls governing API request shape, frequency and failure responses",
+
+                        why:
+                            "weak validation, unlimited sensitive operations and verbose errors can increase exposure",
+
+                        how:
+                            "validate schemas, constrain sensitive operations and return controlled error messages"
+                    }
+                )
+
+            ],
+
+            labActivities: [
+                buildLab(
+                    "lab-01",
+                    "Authorized API Security Assessment",
+                    "API Security"
+                )
+            ],
+
+            moduleAssessment:
+                buildAssessment(
+                    "Module 9 Assessment — API Security"
+                )
+        },
+
+
+        /* =====================================================
+           MODULE 10
+        ====================================================== */
+
+        {
+            id:
+                "module-10",
+
+            number:
+                10,
+
+            title:
+                "Web Application Security Capstone",
+
+            description:
+                "Perform an end-to-end authorized assessment and write professional application-security findings.",
+
+            access:
+                "pro",
+
+            labs:
+                1,
+
+            assessments:
+                1,
+
+            lessons: [
+
+                buildLesson(
+                    "lesson-01",
+                    "Web Assessment Planning",
+                    {
+                        what:
+                            "defining application scope, accounts, functionality and test objectives before active testing",
+
+                        why:
+                            "web applications can contain many workflows and roles, so a clear test plan prevents gaps and scope mistakes",
+
+                        how:
+                            "map application roles, functions, trust boundaries and high-value workflows before deeper testing"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-02",
+                    "Execute the Web Assessment",
+                    {
+                        what:
+                            "applying the full CWS web-testing methodology to an authorized training application",
+
+                        why:
+                            "the capstone measures integrated reasoning rather than isolated vulnerability recognition",
+
+                        how:
+                            "map → capture → analyze → test authorization → validate inputs → inspect browser controls → assess APIs → collect evidence"
+                    }
+                ),
+
+                buildLesson(
+                    "lesson-03",
+                    "Reporting and Retest Planning",
+                    {
+                        what:
+                            "turning web-security observations into reproducible findings and future remediation checks",
+
+                        why:
+                            "the goal of testing is actionable risk reduction",
+
+                        how:
+                            "write affected endpoint, role, request/response evidence, impact, reproduction, remediation and retest steps"
+                    }
+                )
+
+            ],
+
+            labActivities: [
+                buildLab(
+                    "lab-01",
+                    "CWS Web Application Security Practical Capstone",
+                    "Web Application Security Capstone",
+                    {
+                        duration:
+                            "180 minutes",
+
+                        instructions: [
+                            "Confirm the application URL, accounts and scope.",
+                            "Map major application functions and trust boundaries.",
+                            "Capture representative requests in Burp Suite.",
+                            "Test authentication and session controls.",
+                            "Test at least one authorization boundary.",
+                            "Review server-side input handling.",
+                            "Review browser-side controls.",
+                            "Inspect one API workflow if present.",
+                            "Collect minimum necessary evidence.",
+                            "Write at least two professional findings where supported by evidence.",
+                            "Create a short executive summary and retest plan."
+                        ]
+                    }
+                )
+            ],
+
+            moduleAssessment:
+                buildAssessment(
+                    "Module 10 Assessment — Web Security Capstone"
+                )
         }
 
-    ]
+    ],
+
+
+    /* =========================================================
+       FINAL ASSESSMENT
+    ========================================================= */
+
+    finalAssessment: {
+
+        title:
+            "CWS Web Application Security Final Assessment",
+
+        description:
+            "Demonstrate practical understanding of HTTP, authentication, sessions, access control, input validation, browser security, APIs and professional reporting.",
+
+        passingScore:
+            80,
+
+        allowRetry:
+            true,
+
+        required:
+            true,
+
+        questions: [
+
+            {
+                question:
+                    "What should happen before modifying a web request?",
+                options: [
+                    "Understand the normal application flow and scope",
+                    "Run exploitation immediately",
+                    "Disable authentication",
+                    "Change every parameter"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What does an HTTP request contain?",
+                options: [
+                    "Method, path, headers and optionally a body",
+                    "Only HTML",
+                    "Only a status code",
+                    "Only cookies"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What is the role of a session cookie?",
+                options: [
+                    "Represent application state or an authenticated session",
+                    "Replace DNS",
+                    "Compile JavaScript",
+                    "Encrypt the server disk"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What is the purpose of Burp Repeater?",
+                options: [
+                    "Resend and modify captured authorized HTTP requests",
+                    "Host the production application",
+                    "Replace the database",
+                    "Create DNS records"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What is the difference between authentication and authorization?",
+                options: [
+                    "Authentication proves identity; authorization decides permitted actions",
+                    "They are identical",
+                    "Authorization only concerns passwords",
+                    "Authentication only concerns files"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What causes an IDOR-style weakness?",
+                options: [
+                    "The server trusts an object identifier without enforcing object-level authorization",
+                    "A missing CSS file",
+                    "An expired TLS certificate",
+                    "A slow DNS lookup"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What is the core problem in SQL injection?",
+                options: [
+                    "Untrusted input changes SQL query structure",
+                    "Cookies expire",
+                    "HTML is compressed",
+                    "DNS returns multiple addresses"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What is the safest SQL-injection validation approach?",
+                options: [
+                    "Use a purpose-built lab and the minimum input necessary to demonstrate altered query behavior",
+                    "Extract all available data",
+                    "Modify production records",
+                    "Ignore scope"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What is reflected XSS?",
+                options: [
+                    "Untrusted input is returned in a response and executed in browser context",
+                    "A database backup",
+                    "A firewall rule",
+                    "A DNS record"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What is DOM-based XSS?",
+                options: [
+                    "Client-side JavaScript moves untrusted data into an unsafe DOM sink",
+                    "A database-only vulnerability",
+                    "A mail-server issue",
+                    "An SSH weakness"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What does CSRF exploit?",
+                options: [
+                    "A browser's ability to send authenticated requests the user did not intend",
+                    "Only password hashes",
+                    "Only DNS",
+                    "Only TLS certificates"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What does CORS control?",
+                options: [
+                    "Whether browser scripts can read cross-origin responses",
+                    "Server file permissions",
+                    "Linux users",
+                    "Database indexes"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "Why is file upload validation important?",
+                options: [
+                    "User-supplied files can introduce dangerous content or unexpected processing",
+                    "Uploads never affect security",
+                    "Only filenames matter",
+                    "Browsers cannot upload files"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What is path traversal?",
+                options: [
+                    "Escaping an intended server-side directory boundary through unsafe path handling",
+                    "Following a browser redirect",
+                    "Changing a DNS record",
+                    "Refreshing a session"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What is object-level API authorization?",
+                options: [
+                    "Checking whether the authenticated caller may access the requested resource",
+                    "Checking only whether JSON is valid",
+                    "Checking DNS",
+                    "Checking CSS"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "Why should API errors be controlled?",
+                options: [
+                    "Verbose errors can reveal unnecessary implementation details",
+                    "Errors should always expose stack traces",
+                    "Errors replace authentication",
+                    "Errors are never logged"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What should determine severity of a web finding?",
+                options: [
+                    "Evidence, exploitability, exposure and business impact",
+                    "Only scanner output",
+                    "Only URL length",
+                    "Only HTTP method"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What should a professional web finding include?",
+                options: [
+                    "Endpoint, evidence, reproduction, impact and remediation",
+                    "Only a screenshot",
+                    "Only severity",
+                    "Only the tool name"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What is the purpose of a retest?",
+                options: [
+                    "Confirm that remediation resolved the original weakness",
+                    "Expand scope",
+                    "Delete old findings",
+                    "Create a new account"
+                ],
+                answer:
+                    0
+            },
+
+            {
+                question:
+                    "What best demonstrates web-security competence?",
+                options: [
+                    "Understanding application flow, testing assumptions safely, validating evidence and reporting clearly",
+                    "Running the most scanners",
+                    "Memorizing payloads only",
+                    "Changing every request value"
+                ],
+                answer:
+                    0
+            }
+
+        ]
+
+    }
 
 };
