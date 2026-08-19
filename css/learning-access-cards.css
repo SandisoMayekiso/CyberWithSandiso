@@ -1,0 +1,380 @@
+/* =========================================================
+   CWS ACADEMY
+   FREE / PRO LEARNING CARD SYSTEM
+   Shared by Labs and Assessments
+========================================================= */
+
+:root {
+    --cws-pro-gold: #f6c453;
+    --cws-pro-gold-soft: #ffdf83;
+    --cws-free-green: #00ffaa;
+}
+
+/* Access badge ------------------------------------------------ */
+
+.learning-access-badge {
+    min-height: 25px;
+    padding: 5px 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.62rem;
+    font-weight: 850;
+    line-height: 1;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.learning-access-badge.free {
+    color: #80ffd5;
+    border-color: rgba(0,255,170,.22);
+    background: rgba(0,255,170,.07);
+}
+
+.learning-access-badge.pro {
+    color: var(--cws-pro-gold-soft);
+    border-color: rgba(246,196,83,.33);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(246,196,83,.17),
+            rgba(142,91,10,.08)
+        );
+    box-shadow: 0 0 14px rgba(246,196,83,.07);
+}
+
+.learning-access-badge i {
+    font-size: .65rem;
+}
+
+/* Shared filters --------------------------------------------- */
+
+.learning-access-filters,
+.assessment-access-filters {
+    margin: 0 0 22px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.assessment-access-filter {
+    min-height: 36px;
+    padding: 0 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 9px;
+    color: rgba(255,255,255,.62);
+    background: rgba(255,255,255,.025);
+    font-family: "Inter", sans-serif;
+    font-size: .72rem;
+    font-weight: 750;
+    cursor: pointer;
+    transition: all 180ms ease;
+}
+
+.assessment-access-filter:hover,
+.assessment-access-filter.active {
+    color: #fff;
+    border-color: rgba(0,255,170,.20);
+    background: rgba(0,255,170,.07);
+}
+
+.assessment-access-filter.pro-filter:hover,
+.assessment-access-filter.pro-filter.active,
+.lab-filter.pro-filter:hover,
+.lab-filter.pro-filter.active {
+    color: var(--cws-pro-gold-soft);
+    border-color: rgba(246,196,83,.28);
+    background: rgba(246,196,83,.08);
+}
+
+/* LABS — FREE ------------------------------------------------ */
+
+.lab-card[data-access="free"] {
+    border-color: rgba(0,255,170,.11);
+}
+
+.lab-card[data-access="free"]:hover {
+    border-color: rgba(0,255,170,.24);
+}
+
+.lab-card[data-access="free"] .lab-icon {
+    color: var(--cws-free-green);
+    border-color: rgba(0,255,170,.16);
+    background: rgba(0,255,170,.055);
+}
+
+.lab-card[data-access="free"] .lab-category,
+.lab-card[data-access="free"] .lab-meta i {
+    color: var(--cws-free-green);
+}
+
+/* LABS — PRO ------------------------------------------------- */
+
+.lab-card[data-access="pro"] {
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(246,196,83,.21);
+    background:
+        radial-gradient(
+            circle at 92% 0%,
+            rgba(246,196,83,.07),
+            transparent 32%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(22,17,8,.98),
+            rgba(7,11,18,.98)
+        );
+    box-shadow:
+        inset 0 0 28px rgba(246,196,83,.018),
+        0 14px 34px rgba(0,0,0,.12);
+}
+
+.lab-card[data-access="pro"]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 18px;
+    right: 18px;
+    height: 1px;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(246,196,83,.58),
+            transparent
+        );
+}
+
+.lab-card[data-access="pro"]:hover {
+    border-color: rgba(246,196,83,.38);
+    box-shadow:
+        0 18px 42px rgba(0,0,0,.20),
+        0 0 24px rgba(246,196,83,.045);
+}
+
+.lab-card[data-access="pro"] .lab-icon {
+    color: var(--cws-pro-gold);
+    border-color: rgba(246,196,83,.23);
+    background: rgba(246,196,83,.075);
+    box-shadow: 0 0 18px rgba(246,196,83,.045);
+}
+
+.lab-card[data-access="pro"] .lab-category,
+.lab-card[data-access="pro"] .lab-meta i {
+    color: var(--cws-pro-gold);
+}
+
+.lab-card[data-access="pro"] .lab-start-btn {
+    color: var(--cws-pro-gold-soft);
+    border-color: rgba(246,196,83,.27);
+    background: rgba(246,196,83,.07);
+}
+
+.lab-card[data-access="pro"] .lab-start-btn:hover {
+    color: #171107;
+    border-color: var(--cws-pro-gold);
+    background:
+        linear-gradient(
+            135deg,
+            #ffe59a,
+            #f6c453
+        );
+}
+
+.lab-card.pro-locked {
+    border-color: rgba(246,196,83,.19);
+}
+
+.lab-card.pro-locked .lab-start-btn {
+    color: var(--cws-pro-gold-soft);
+}
+
+.lab-card.hidden {
+    display: none !important;
+}
+
+/* ASSESSMENTS — FREE ---------------------------------------- */
+
+.assessment-card[data-access="free"] {
+    border-color: rgba(0,255,170,.11);
+}
+
+.assessment-card[data-access="free"]:hover {
+    border-color: rgba(0,255,170,.24);
+}
+
+.assessment-card[data-access="free"] .assessment-card-icon {
+    color: var(--cws-free-green);
+    border-color: rgba(0,255,170,.17);
+    background: rgba(0,255,170,.06);
+}
+
+/* ASSESSMENTS — PRO ----------------------------------------- */
+
+.assessment-card[data-access="pro"] {
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(246,196,83,.21);
+    background:
+        radial-gradient(
+            circle at 92% 0%,
+            rgba(246,196,83,.07),
+            transparent 32%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(22,17,8,.98),
+            rgba(7,11,18,.98)
+        );
+}
+
+.assessment-card[data-access="pro"]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 18px;
+    right: 18px;
+    height: 1px;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(246,196,83,.58),
+            transparent
+        );
+}
+
+.assessment-card[data-access="pro"]:hover {
+    border-color: rgba(246,196,83,.38);
+    box-shadow:
+        0 18px 42px rgba(0,0,0,.20),
+        0 0 24px rgba(246,196,83,.045);
+}
+
+.assessment-card[data-access="pro"] .assessment-card-icon {
+    color: var(--cws-pro-gold);
+    border-color: rgba(246,196,83,.23);
+    background: rgba(246,196,83,.075);
+}
+
+.assessment-card[data-access="pro"] .assessment-start-btn {
+    color: var(--cws-pro-gold-soft);
+    border-color: rgba(246,196,83,.27);
+    background: rgba(246,196,83,.07);
+}
+
+.assessment-card[data-access="pro"] .assessment-start-btn:hover {
+    color: #171107;
+    border-color: var(--cws-pro-gold);
+    background:
+        linear-gradient(
+            135deg,
+            #ffe59a,
+            #f6c453
+        );
+}
+
+/* Card header can hold status + tier side by side. */
+.learning-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+}
+
+/* Locked Pro notice ----------------------------------------- */
+
+.learning-pro-lock-note {
+    margin-top: 13px;
+    padding: 10px 11px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    border: 1px solid rgba(246,196,83,.18);
+    border-radius: 9px;
+    color: #cdbb85;
+    background: rgba(246,196,83,.045);
+    font-size: .68rem;
+    line-height: 1.5;
+}
+
+.learning-pro-lock-note i {
+    margin-top: 2px;
+    color: var(--cws-pro-gold);
+}
+
+.learning-pro-lock-note strong {
+    color: var(--cws-pro-gold-soft);
+}
+
+/* Upgrade action -------------------------------------------- */
+
+.learning-upgrade-btn {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 14px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border: 1px solid rgba(246,196,83,.30);
+    border-radius: 9px;
+    color: var(--cws-pro-gold-soft);
+    background: rgba(246,196,83,.075);
+    font-family: "Inter", sans-serif;
+    font-size: .72rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: all 180ms ease;
+}
+
+.learning-upgrade-btn:hover {
+    color: #171107;
+    border-color: var(--cws-pro-gold);
+    background:
+        linear-gradient(
+            135deg,
+            #ffe59a,
+            #f6c453
+        );
+}
+
+/* Professional-capstone variation */
+.lab-card[data-stage="professional"],
+.assessment-card[data-stage="professional"] {
+    border-color: rgba(167,139,250,.28);
+    background:
+        radial-gradient(
+            circle at 92% 0%,
+            rgba(139,92,246,.10),
+            transparent 34%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(19,14,38,.98),
+            rgba(7,9,18,.98)
+        );
+}
+
+@media (max-width: 700px) {
+    .learning-card-badges {
+        justify-content: flex-start;
+    }
+
+    .learning-access-badge {
+        min-height: 23px;
+        font-size: .58rem;
+    }
+}
