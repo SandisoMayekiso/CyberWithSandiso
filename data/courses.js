@@ -39,8 +39,8 @@ import {
 
 
 import {
-    ethicalHackingFundamentals
-} from "./ethical-hacking-fundamentals.js";
+    ethicalHacking
+} from "./ethical-hacking.js";
 
 
 import {
@@ -92,8 +92,8 @@ export const courses = {
     [activeDirectoryFundamentals.id]:
         activeDirectoryFundamentals,
 
-    [ethicalHackingFundamentals.id]:
-        ethicalHackingFundamentals,
+    [ethicalHacking.id]:
+        ethicalHacking,
 
     [webApplicationSecurity.id]:
         webApplicationSecurity,
