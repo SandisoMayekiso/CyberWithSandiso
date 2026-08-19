@@ -62,6 +62,7 @@
         href="../css/assessments.css"
     >
 
+    <link rel="stylesheet" href="../css/learning-access-cards.css">
 </head>
 
 
@@ -404,6 +405,27 @@
                 0 Available
             </span>
 
+        </div>
+
+
+        <div
+            class="assessment-access-filters learning-access-filters"
+            role="group"
+            aria-label="Filter assessments by access level"
+        >
+            <button type="button" class="assessment-access-filter active" data-access-filter="all">
+                All
+            </button>
+
+            <button type="button" class="assessment-access-filter" data-access-filter="free">
+                <i class="fa-solid fa-unlock-keyhole"></i>
+                Free
+            </button>
+
+            <button type="button" class="assessment-access-filter pro-filter" data-access-filter="pro">
+                <i class="fa-solid fa-crown"></i>
+                Pro
+            </button>
         </div>
 
 
