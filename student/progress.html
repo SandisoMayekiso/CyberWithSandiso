@@ -21,6 +21,13 @@
 
     <title>My Progress | CWS Academy</title>
 
+    <!-- CWS ACADEMY UI FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+
+
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -55,14 +62,9 @@
 ========================================================= -->
 
 <header class="student-header">
-
     <nav class="student-nav">
 
-        <a
-            href="dashboard.html"
-            class="academy-logo"
-            aria-label="CWS Academy Dashboard"
-        >
+        <a href="dashboard.html" class="academy-logo" aria-label="CWS Academy Dashboard">
             <span class="logo-cws">CWS</span>
             <span class="logo-text">Academy</span>
         </a>
@@ -89,11 +91,7 @@
                 <span>Assessments</span>
             </a>
 
-            <a
-                href="progress.html"
-                class="active"
-                aria-current="page"
-            >
+            <a href="progress.html" class="active" aria-current="page">
                 <i class="fa-solid fa-chart-line"></i>
                 <span>Progress</span>
             </a>
@@ -103,35 +101,33 @@
                 <span>Certificates</span>
             </a>
 
+            <a href="profile.html">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </a>
+
         </div>
 
         <div class="student-nav-account">
 
-            <div class="progress-user">
-
-                <div class="progress-user-avatar">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-
-                <span id="studentName">
-                    Student
+            <div class="student-profile-chip">
+                <span class="student-profile-avatar" aria-hidden="true">
+                    <i class="fa-solid fa-user-shield"></i>
                 </span>
 
+                <span id="studentName" class="student-nav-name">
+                    Student
+                </span>
             </div>
 
-            <button
-                type="button"
-                id="logoutBtn"
-                class="dashboard-logout-btn"
-            >
+            <button type="button" id="logoutBtn" class="dashboard-logout-btn">
                 <i class="fa-solid fa-right-from-bracket"></i>
-                Logout
+                <span>Logout</span>
             </button>
 
         </div>
 
     </nav>
-
 </header>
 
 
