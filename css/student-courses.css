@@ -1857,3 +1857,145 @@ h3 {
         flex-direction: column;
     }
 }
+
+
+/* =========================================================
+   REQUIRED PREREQUISITE LOCKING
+========================================================= */
+
+.student-course-card.prerequisite-locked {
+    border-color: rgba(245, 158, 11, 0.20);
+}
+
+.student-course-card.prerequisite-locked::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+        linear-gradient(
+            180deg,
+            transparent 60%,
+            rgba(245, 158, 11, 0.025)
+        );
+}
+
+.course-prerequisite-lock-notice {
+    margin: 0 0 14px;
+    padding: 11px 12px;
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 9px;
+    align-items: start;
+    border: 1px solid rgba(245, 158, 11, 0.22);
+    border-radius: 10px;
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.06);
+}
+
+.course-prerequisite-lock-notice > i {
+    margin-top: 2px;
+}
+
+.course-prerequisite-lock-notice strong {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.69rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.course-prerequisite-lock-notice span {
+    display: block;
+    color: #b8aa86;
+    font-size: 0.68rem;
+    line-height: 1.5;
+}
+
+.course-action.prerequisite-required-action {
+    color: #fcd34d;
+    border-color: rgba(245, 158, 11, 0.30);
+    background: rgba(245, 158, 11, 0.08);
+}
+
+.course-action.prerequisite-required-action:hover {
+    color: #161005;
+    border-color: #fbbf24;
+    background:
+        linear-gradient(
+            135deg,
+            #fde68a,
+            #fbbf24
+        );
+}
+
+.course-prerequisite-item.completed {
+    opacity: 0.78;
+}
+
+.course-prerequisite-item.completed span {
+    text-decoration: none;
+}
+
+
+
+/* =========================================================
+   CWS COURSE STAGE LAYOUT — COMPACT
+   Keeps course cards at normal dashboard proportions.
+========================================================= */
+
+.course-stage-section {
+    width: 100%;
+    margin-bottom: 42px;
+}
+
+.course-stage-heading {
+    width: auto;
+    max-width: 100%;
+    min-height: 0;
+    margin: 0 0 18px;
+    padding: 15px 18px;
+    border-radius: 12px;
+}
+
+.course-stage-heading h3 {
+    margin: 3px 0 5px;
+    font-size: 1.15rem;
+}
+
+.course-stage-heading p {
+    font-size: 0.76rem;
+    line-height: 1.55;
+}
+
+.course-stage-grid {
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+}
+
+.course-stage-grid .student-course-card {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+}
+
+/* Never stretch a single capstone card across the whole screen. */
+.course-stage-professional .course-stage-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 1050px) {
+    .course-stage-grid,
+    .course-stage-professional .course-stage-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .course-stage-grid,
+    .course-stage-professional .course-stage-grid {
+        grid-template-columns: 1fr;
+    }
+}
