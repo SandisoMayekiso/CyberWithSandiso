@@ -31,7 +31,11 @@ import {
 
     collection,
 
-    getDocs
+    getDocs,
+
+    doc,
+
+    getDoc
 
 } from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -207,6 +211,27 @@ let pageInitialized =
 
 
 /* =========================================================
+   CWS PRO ACCESS
+
+   Supported Firestore user fields include:
+   plan: "pro"
+   access: "pro"
+   subscriptionTier: "pro"
+   subscriptionStatus: "active"
+   isPro: true
+
+   This keeps the catalogue compatible while the final
+   Paystack subscription workflow is being completed.
+========================================================= */
+
+let studentAccess = {
+    isPro: false,
+    plan: "free",
+    status: "free"
+};
+
+
+/* =========================================================
    USER NAME
 ========================================================= */
 
@@ -303,6 +328,239 @@ function displayStudent(user) {
 
     studentName.textContent =
         getUserName(user);
+
+}
+
+
+/* =========================================================
+   NORMALIZE ACCESS VALUE
+========================================================= */
+
+function normalizeAccessValue(value) {
+
+    return String(value || "")
+        .trim()
+        .toLowerCase();
+
+}
+
+
+/* =========================================================
+   LOAD STUDENT ACCESS
+========================================================= */
+
+async function loadStudentAccess(user) {
+
+    studentAccess = {
+        isPro: false,
+        plan: "free",
+        status: "free"
+    };
+
+
+    if (!db || !user) {
+
+        warn(
+            "Unable to check CWS Pro access."
+        );
+
+        return studentAccess;
+
+    }
+
+
+    try {
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                user.uid
+            );
+
+
+        const userSnapshot =
+            await getDoc(
+                userRef
+            );
+
+
+        if (!userSnapshot.exists()) {
+
+            log(
+                "No student profile document found. Using Free access."
+            );
+
+            return studentAccess;
+
+        }
+
+
+        const data =
+            userSnapshot.data() || {};
+
+
+        const plan =
+            normalizeAccessValue(
+                data.plan ||
+                data.subscriptionTier ||
+                data.access ||
+                data.membership
+            );
+
+
+        const status =
+            normalizeAccessValue(
+                data.subscriptionStatus ||
+                data.status
+            );
+
+
+        const explicitPro =
+            data.isPro === true ||
+            data.pro === true;
+
+
+        const proPlan =
+            [
+                "pro",
+                "cws-pro",
+                "cws_pro",
+                "premium"
+            ].includes(plan);
+
+
+        const inactiveStatus =
+            [
+                "cancelled",
+                "canceled",
+                "expired",
+                "inactive",
+                "failed",
+                "past_due",
+                "past-due"
+            ].includes(status);
+
+
+        studentAccess = {
+
+            isPro:
+                (explicitPro || proPlan) &&
+                !inactiveStatus,
+
+            plan:
+                plan || "free",
+
+            status:
+                status || (
+                    explicitPro || proPlan
+                        ? "active"
+                        : "free"
+                )
+
+        };
+
+
+        log(
+            "Student access loaded:",
+            studentAccess
+        );
+
+
+    } catch (err) {
+
+        error(
+            "Unable to load student access:",
+            err
+        );
+
+    }
+
+
+    return studentAccess;
+
+}
+
+
+/* =========================================================
+   COURSE ACCESS
+========================================================= */
+
+function studentCanAccessCourse(course) {
+
+    if (!course) {
+
+        return false;
+
+    }
+
+
+    if (
+        !isProCourse(
+            course.id
+        )
+    ) {
+
+        return true;
+
+    }
+
+
+    return studentAccess.isPro;
+
+}
+
+
+/* =========================================================
+   PRO COURSE LOCK
+========================================================= */
+
+function isProCourseLockedForStudent(course) {
+
+    return (
+        Boolean(course) &&
+        isProCourse(
+            course.id
+        ) &&
+        !studentCanAccessCourse(
+            course
+        )
+    );
+
+}
+
+
+/* =========================================================
+   PRICING URL
+========================================================= */
+
+function buildProPricingUrl(
+    courseId = ""
+) {
+
+    const params =
+        new URLSearchParams();
+
+
+    if (courseId) {
+
+        params.set(
+            "course",
+            courseId
+        );
+
+    }
+
+
+    params.set(
+        "from",
+        "student-courses"
+    );
+
+
+    return (
+        `../pages/pricing.html?${params.toString()}`
+    );
 
 }
 
@@ -769,11 +1027,8 @@ function sortCourses(
                     course => {
 
                         if (
-                            isProCourse(
-                                course.id
-                            ) &&
-                            isCourseLocked(
-                                course.id
+                            isProCourseLockedForStudent(
+                                course
                             )
                         ) {
 
@@ -877,11 +1132,8 @@ function updateCourseCatalogSummary() {
                     "available" &&
 
                 !(
-                    isProCourse(
-                        course.id
-                    ) &&
-                    isCourseLocked(
-                        course.id
+                    isProCourseLockedForStudent(
+                        course
                     )
                 )
 
@@ -896,11 +1148,8 @@ function updateCourseCatalogSummary() {
                     "planned" ||
 
                 (
-                    isProCourse(
-                        course.id
-                    ) &&
-                    isCourseLocked(
-                        course.id
+                    isProCourseLockedForStudent(
+                        course
                     )
                 )
 
@@ -994,9 +1243,8 @@ function createCourseCard(
 
 
     const isLockedPro =
-        isPro &&
-        isCourseLocked(
-            course.id
+        isProCourseLockedForStudent(
+            course
         );
 
 
@@ -1106,7 +1354,7 @@ function createCourseCard(
 
         status.appendChild(
             document.createTextNode(
-                " PRO"
+                " CWS PRO"
             )
         );
 
@@ -1430,37 +1678,29 @@ function createCourseCard(
 
         action =
             document.createElement(
-                "button"
+                "a"
             );
 
 
-        action.type =
-            "button";
-
-
         action.className =
-            "course-action pro-disabled";
+            "course-action pro-upgrade-action";
 
 
-        action.disabled =
-            true;
-
-
-        action.setAttribute(
-            "aria-disabled",
-            "true"
-        );
+        action.href =
+            buildProPricingUrl(
+                course.id
+            );
 
 
         action.title =
-            "CWS Academy Pro is coming soon";
+            "View CWS Pro access options";
 
 
         action.innerHTML = `
 
-            <i class="fa-solid fa-lock"></i>
+            <i class="fa-solid fa-crown"></i>
 
-            Pro Coming Soon
+            Unlock with CWS Pro
 
         `;
 
@@ -1626,11 +1866,8 @@ function matchesFilter(
 
 
     const isLockedPro =
-        isProCourse(
-            course.id
-        ) &&
-        isCourseLocked(
-            course.id
+        isProCourseLockedForStudent(
+            course
         );
 
 
@@ -2148,6 +2385,16 @@ async function initializeCoursesPage(
 ) {
 
     displayStudent(
+        user
+    );
+
+
+    /*
+       Load the student's Free / Pro access before building
+       the catalogue so course locking and sorting are correct.
+    */
+
+    await loadStudentAccess(
         user
     );
 
