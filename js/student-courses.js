@@ -1273,6 +1273,30 @@ function createCourseCard(
         "free";
 
 
+    if (isPro) {
+
+        card.classList.add(
+            "pro-course-card"
+        );
+
+        card.dataset.pro =
+            "true";
+
+    }
+
+
+    if (
+        isPro &&
+        !isLockedPro
+    ) {
+
+        card.classList.add(
+            "pro-access-active"
+        );
+
+    }
+
+
     if (isLockedPro) {
 
         card.classList.add(
@@ -1553,6 +1577,27 @@ function createCourseCard(
                             ? ""
                             : "s"
                     }`
+
+                )
+
+            );
+
+        }
+
+
+        if (
+            isPro &&
+            course.certificateEligible !==
+                false
+        ) {
+
+            meta.appendChild(
+
+                createMetaItem(
+
+                    "fa-solid fa-certificate",
+
+                    "Verified Pro Certificate"
 
                 )
 
