@@ -66,7 +66,15 @@ import {
 
     isCourseLocked,
 
-    getCourseDisplayStatus
+    getCourseDisplayStatus,
+
+    getCourseStage,
+
+    getCourseStageInfo,
+
+    getRequiredPrerequisites,
+
+    getRecommendedPrerequisites
 
 } from "../data/courses.js";
 
@@ -545,8 +553,13 @@ function buildProPricingUrl(
     );
 
 
+    /*
+     * Logged-in students should remain inside the student area.
+     * The public pricing page is for visitors who are not signed in.
+     */
+
     return (
-        `../pages/pricing.html?${params.toString()}`
+        `subscription.html?${params.toString()}`
     );
 
 }
@@ -1014,7 +1027,23 @@ function sortCourses(
                     course => {
 
                         if (
-                            isProCourseLockedForStudent(
+                            course.status ===
+                                "available" &&
+                            !isProCourseLockedForStudent(
+                                course
+                            ) &&
+                            !isCourseLockedByPrerequisites(
+                                course
+                            )
+                        ) {
+
+                            return 0;
+
+                        }
+
+
+                        if (
+                            isCourseLockedByPrerequisites(
                                 course
                             )
                         ) {
@@ -1023,16 +1052,19 @@ function sortCourses(
 
                         }
 
+
                         if (
-                            course.status ===
-                            "available"
+                            isProCourseLockedForStudent(
+                                course
+                            )
                         ) {
 
-                            return 0;
+                            return 2;
 
                         }
 
-                        return 2;
+
+                        return 3;
 
                     };
 
@@ -1210,6 +1242,106 @@ function createMetaItem(
 
 
 /* =========================================================
+   PREREQUISITE COMPLETION
+========================================================= */
+
+function isCourseCompleted(courseId) {
+
+    const progress =
+        getCourseProgress(
+            courseId
+        );
+
+
+    return (
+        progress?.completed ===
+        true
+    );
+
+}
+
+
+/* =========================================================
+   REQUIRED PREREQUISITE STATUS
+========================================================= */
+
+function getMissingRequiredPrerequisites(course) {
+
+    if (!course) {
+
+        return [];
+
+    }
+
+
+    return getRequiredPrerequisites(
+        course.id
+    )
+        .filter(
+            prerequisiteId =>
+                !isCourseCompleted(
+                    prerequisiteId
+                )
+        );
+
+}
+
+
+/* =========================================================
+   COURSE PREREQUISITE LOCK
+========================================================= */
+
+function isCourseLockedByPrerequisites(course) {
+
+    return (
+        getMissingRequiredPrerequisites(
+            course
+        ).length > 0
+    );
+
+}
+
+
+/* =========================================================
+   FIRST MISSING REQUIRED COURSE
+========================================================= */
+
+function getFirstMissingPrerequisite(course) {
+
+    const missing =
+        getMissingRequiredPrerequisites(
+            course
+        );
+
+
+    if (!missing.length) {
+
+        return null;
+
+    }
+
+
+    const prerequisiteId =
+        missing[0];
+
+
+    return (
+        courses[
+            prerequisiteId
+        ] ||
+        {
+            id:
+                prerequisiteId,
+
+            title:
+                prerequisiteId
+        }
+    );
+
+}
+
+
+/* =========================================================
    CREATE COURSE CARD
 ========================================================= */
 
@@ -1231,6 +1363,18 @@ function createCourseCard(
 
     const isLockedPro =
         isProCourseLockedForStudent(
+            course
+        );
+
+
+    const isPrerequisiteLocked =
+        isCourseLockedByPrerequisites(
+            course
+        );
+
+
+    const firstMissingPrerequisite =
+        getFirstMissingPrerequisite(
             course
         );
 
@@ -1286,7 +1430,26 @@ function createCourseCard(
         );
 
     }
-    else if (
+
+
+    if (
+        isPrerequisiteLocked
+    ) {
+
+        card.classList.add(
+            "prerequisite-locked"
+        );
+
+        card.setAttribute(
+            "data-prerequisite-locked",
+            "true"
+        );
+
+    }
+
+
+    if (
+        !isLockedPro &&
         course.status !==
         "available"
     ) {
@@ -1661,7 +1824,42 @@ function createCourseCard(
     let action;
 
 
-    if (isLockedPro) {
+    if (
+        isPrerequisiteLocked
+    ) {
+
+        action =
+            document.createElement(
+                "a"
+            );
+
+
+        action.className =
+            "course-action prerequisite-required-action";
+
+
+        action.href =
+            firstMissingPrerequisite?.id
+                ? buildCourseUrl(
+                    firstMissingPrerequisite.id
+                )
+                : "#";
+
+
+        action.innerHTML = `
+
+            <i class="fa-solid fa-lock"></i>
+
+            Complete ${
+                firstMissingPrerequisite?.title ||
+                "Required Course"
+            } First
+
+        `;
+
+    }
+
+    else     if (isLockedPro) {
 
         action =
             document.createElement(
@@ -1829,7 +2027,213 @@ function createCourseCard(
     );
 
 
-    return card;
+    
+    /* =====================================================
+       LEARNING PATH / PREREQUISITES
+    ====================================================== */
+
+    const requiredPrerequisites =
+        getRequiredPrerequisites(
+            course.id
+        );
+
+    const recommendedPrerequisites =
+        getRecommendedPrerequisites(
+            course.id
+        );
+
+    if (
+        requiredPrerequisites.length ||
+        recommendedPrerequisites.length
+    ) {
+
+        const prerequisitePanel =
+            document.createElement(
+                "div"
+            );
+
+        prerequisitePanel.className =
+            "course-prerequisite-status";
+
+
+        const prerequisiteTitle =
+            document.createElement(
+                "span"
+            );
+
+        prerequisiteTitle.className =
+            "course-prerequisite-title";
+
+        prerequisiteTitle.innerHTML =
+            '<i class="fa-solid fa-route"></i> Learning path';
+
+        prerequisitePanel.appendChild(
+            prerequisiteTitle
+        );
+
+
+        const addPrerequisite =
+            (
+                prerequisiteId,
+                type
+            ) => {
+
+                const prerequisiteCourse =
+                    courses[
+                        prerequisiteId
+                    ];
+
+                const prerequisiteProgress =
+                    getCourseProgress(
+                        prerequisiteId
+                    );
+
+                const complete =
+                    prerequisiteProgress?.completed ===
+                    true;
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+                item.className =
+                    `course-prerequisite-item ${type} ${
+                        complete
+                            ? "completed"
+                            : "incomplete"
+                    }`;
+
+                const icon =
+                    complete
+                        ? "fa-circle-check"
+                        : (
+                            type === "required"
+                                ? "fa-lock"
+                                : "fa-circle-info"
+                        );
+
+                item.innerHTML =
+                    `<i class="fa-solid ${icon}"></i>
+                     <span>${prerequisiteCourse?.title || prerequisiteId}</span>
+                     <strong>${complete ? "Completed" : (type === "required" ? "Required" : "Recommended")}</strong>`;
+
+                prerequisitePanel.appendChild(
+                    item
+                );
+
+            };
+
+
+        requiredPrerequisites.forEach(
+            prerequisiteId =>
+                addPrerequisite(
+                    prerequisiteId,
+                    "required"
+                )
+        );
+
+
+        recommendedPrerequisites.forEach(
+            prerequisiteId =>
+                addPrerequisite(
+                    prerequisiteId,
+                    "recommended"
+                )
+        );
+
+
+        const action =
+            card.querySelector(
+                ".course-action, .course-pro-actions"
+            );
+
+        if (action) {
+
+            card.insertBefore(
+                prerequisitePanel,
+                action
+            );
+
+        } else {
+
+            card.appendChild(
+                prerequisitePanel
+            );
+
+        }
+
+    }
+
+
+
+    if (
+        isPrerequisiteLocked
+    ) {
+
+        const prerequisiteNotice =
+            document.createElement(
+                "div"
+            );
+
+
+        prerequisiteNotice.className =
+            "course-prerequisite-lock-notice";
+
+
+        const missingNames =
+            getMissingRequiredPrerequisites(
+                course
+            )
+                .map(
+                    prerequisiteId =>
+                        courses[
+                            prerequisiteId
+                        ]?.title ||
+                        prerequisiteId
+                );
+
+
+        prerequisiteNotice.innerHTML = `
+            <i class="fa-solid fa-lock"></i>
+            <div>
+                <strong>Required prerequisite incomplete</strong>
+                <span>
+                    Complete ${
+                        missingNames.join(
+                            ", "
+                        )
+                    } before starting this course.
+                </span>
+            </div>
+        `;
+
+
+        const actionNode =
+            card.querySelector(
+                ".course-action, .course-pro-actions"
+            );
+
+
+        if (actionNode) {
+
+            card.insertBefore(
+                prerequisiteNotice,
+                actionNode
+            );
+
+        } else {
+
+            card.appendChild(
+                prerequisiteNotice
+            );
+
+        }
+
+    }
+
+
+return card;
 
 }
 
@@ -1953,17 +2357,51 @@ function matchesSearch(
 
 function getFilteredCourses() {
 
-    return courseCatalog.filter(
-        course =>
+    return courseCatalog.filter(course => {
 
-            matchesFilter(
-                course
-            ) &&
-
-            matchesSearch(
-                course
+        const level =
+            String(
+                course.levelKey ||
+                course.level ||
+                ""
             )
-    );
+                .trim()
+                .toLowerCase();
+
+        const stage =
+            getCourseStage(
+                course.id
+            );
+
+        const matchesFilter =
+            currentFilter === "all" ||
+            currentFilter === level ||
+            currentFilter === stage;
+
+        if (!matchesFilter) {
+            return false;
+        }
+
+        if (!currentSearch) {
+            return true;
+        }
+
+        const searchableText = [
+            course.title,
+            course.description,
+            course.level,
+            stage,
+            getCourseStageInfo(course.id)?.label
+        ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+
+        return searchableText.includes(
+            currentSearch
+        );
+
+    });
 
 }
 
@@ -1974,98 +2412,138 @@ function getFilteredCourses() {
 
 function renderCourseCatalog() {
 
-    if (
-        !studentCourseGrid
-    ) {
-
+    if (!studentCourseGrid) {
         return;
-
     }
 
-
-    studentCourseGrid.innerHTML =
-        "";
-
+    studentCourseGrid.innerHTML = "";
 
     const filteredCourses =
         getFilteredCourses();
 
+    if (!filteredCourses.length) {
 
-    if (
-        !filteredCourses.length
-    ) {
+        studentCourseGrid.hidden = true;
 
-        studentCourseGrid.hidden =
-            true;
-
-
-        if (
-            noCoursesMessage
-        ) {
-
-            noCoursesMessage.hidden =
-                false;
-
+        if (noCoursesMessage) {
+            noCoursesMessage.hidden = false;
         }
 
-
-        if (
-            noCoursesText
-        ) {
-
-            if (
+        if (noCoursesText) {
+            noCoursesText.textContent =
                 currentSearch
-            ) {
-
-                noCoursesText.textContent =
-
-                    `No courses match "${currentSearch}".`;
-
-            }
-
-            else {
-
-                noCoursesText.textContent =
-
-                    "No courses match the selected filters.";
-
-            }
-
+                    ? `No courses match "${currentSearch}".`
+                    : "No courses match the selected filters.";
         }
-
 
         return;
+    }
 
+    if (noCoursesMessage) {
+        noCoursesMessage.hidden = true;
     }
 
 
-    if (
-        noCoursesMessage
-    ) {
-
-        noCoursesMessage.hidden =
-            true;
-
-    }
+    const stageOrder = [
+        "foundation",
+        "pro",
+        "professional"
+    ];
 
 
-    filteredCourses.forEach(
-        course => {
+    stageOrder.forEach(stageId => {
 
-            studentCourseGrid.appendChild(
-
-                createCourseCard(
-                    course
-                )
-
+        const stageCourses =
+            filteredCourses.filter(
+                course =>
+                    getCourseStage(
+                        course.id
+                    ) ===
+                    stageId
             );
 
+        if (!stageCourses.length) {
+            return;
         }
-    );
 
 
-    studentCourseGrid.hidden =
-        false;
+        const stageInfo =
+            getCourseStageInfo(
+                stageCourses[0].id
+            );
+
+
+        const section =
+            document.createElement(
+                "section"
+            );
+
+        section.className =
+            `course-stage-section course-stage-${stageId}`;
+
+        section.dataset.stage =
+            stageId;
+
+
+        const heading =
+            document.createElement(
+                "div"
+            );
+
+        heading.className =
+            "course-stage-heading";
+
+        heading.innerHTML =
+            `<div>
+                <span class="course-stage-kicker">${stageInfo?.shortLabel || stageId}</span>
+                <h3>${stageInfo?.label || stageId}</h3>
+                <p>${stageInfo?.description || ""}</p>
+             </div>
+             <span class="course-stage-count">${stageCourses.length} Course${stageCourses.length === 1 ? "" : "s"}</span>`;
+
+
+        const grid =
+            document.createElement(
+                "div"
+            );
+
+        grid.className =
+            "course-stage-grid";
+
+
+        stageCourses.forEach(course => {
+
+            const card =
+                createCourseCard(
+                    course
+                );
+
+            card.dataset.stage =
+                stageId;
+
+            grid.appendChild(
+                card
+            );
+
+        });
+
+
+        section.appendChild(
+            heading
+        );
+
+        section.appendChild(
+            grid
+        );
+
+        studentCourseGrid.appendChild(
+            section
+        );
+
+    });
+
+
+    studentCourseGrid.hidden = false;
 
 }
 
