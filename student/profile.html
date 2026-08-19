@@ -20,7 +20,12 @@
     </title>
 
 
-    <!-- =====================================================
+        <!-- CWS ACADEMY UI FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+
+<!-- =====================================================
          FONT AWESOME
     ====================================================== -->
 
@@ -59,8 +64,6 @@
         href="../css/profile.css"
     >
 
-    <link rel="stylesheet" href="../css/cws-assistant.css">
-
 </head>
 
 
@@ -72,146 +75,72 @@
 ========================================================= -->
 
 <header class="student-header">
-
     <nav class="student-nav">
 
-
-        <!-- LOGO -->
-
-        <a
-            href="dashboard.html"
-            class="academy-logo"
-            aria-label="CWS Academy Dashboard"
-        >
-
-            <span class="logo-cws">
-                CWS
-            </span>
-
-            <span class="logo-text">
-                Academy
-            </span>
-
+        <a href="dashboard.html" class="academy-logo" aria-label="CWS Academy Dashboard">
+            <span class="logo-cws">CWS</span>
+            <span class="logo-text">Academy</span>
         </a>
-
-
-        <!-- NAVIGATION LINKS -->
 
         <div class="student-nav-links">
 
             <a href="dashboard.html">
-
                 <i class="fa-solid fa-house"></i>
-
-                <span>
-                    Dashboard
-                </span>
-
+                <span>Dashboard</span>
             </a>
-
 
             <a href="student-courses.html">
-
-                <i class="fa-solid fa-book"></i>
-
-                <span>
-                    Courses
-                </span>
-
+                <i class="fa-solid fa-book-open"></i>
+                <span>Courses</span>
             </a>
-
 
             <a href="labs.html">
-
                 <i class="fa-solid fa-flask"></i>
-
-                <span>
-                    Labs
-                </span>
-
+                <span>Labs</span>
             </a>
-
 
             <a href="assessments.html">
-
                 <i class="fa-solid fa-clipboard-check"></i>
-
-                <span>
-                    Assessments
-                </span>
-
+                <span>Assessments</span>
             </a>
-
 
             <a href="progress.html">
-
                 <i class="fa-solid fa-chart-line"></i>
-
-                <span>
-                    Progress
-                </span>
-
+                <span>Progress</span>
             </a>
-
 
             <a href="certificates.html">
-
                 <i class="fa-solid fa-certificate"></i>
-
-                <span>
-                    Certificates
-                </span>
-
+                <span>Certificates</span>
             </a>
 
-
-            <a
-                href="profile.html"
-                class="active"
-                aria-current="page"
-            >
-
+            <a href="profile.html" class="active" aria-current="page">
                 <i class="fa-solid fa-user"></i>
-
-                <span>
-                    Profile
-                </span>
-
+                <span>Profile</span>
             </a>
 
         </div>
 
-
-        <!-- ACCOUNT -->
-
         <div class="student-nav-account">
 
-            <span
-                id="studentName"
-                class="student-nav-name"
-            >
-                Student
-            </span>
-
-
-            <button
-                type="button"
-                id="logoutBtn"
-                class="dashboard-logout-btn"
-            >
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                <span>
-                    Logout
+            <div class="student-profile-chip">
+                <span class="student-profile-avatar" aria-hidden="true">
+                    <i class="fa-solid fa-user-shield"></i>
                 </span>
 
+                <span id="studentName" class="student-nav-name">
+                    Student
+                </span>
+            </div>
+
+            <button type="button" id="logoutBtn" class="dashboard-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
             </button>
 
         </div>
 
     </nav>
-
 </header>
 
 
@@ -529,20 +458,17 @@
                     </div>
 
 
-                    <button
-                        type="button"
+                    <a
+                        href="subscription.html"
                         id="manageSubscriptionBtn"
-                        class="profile-secondary-btn profile-pro-disabled"
-                        disabled
-                        aria-disabled="true"
-                        title="CWS Academy Pro is coming soon"
+                        class="profile-secondary-btn"
                     >
 
-                        <i class="fa-solid fa-lock"></i>
+                        <i class="fa-solid fa-arrow-up-right-dots"></i>
 
-                        Pro Coming Soon
+                        View Plans
 
-                    </button>
+                    </a>
 
                 </div>
 
@@ -624,36 +550,6 @@
 
                     <div class="profile-stat">
 
-                        <i class="fa-solid fa-flask"></i>
-
-                        <strong id="labsCompleted">
-                            0
-                        </strong>
-
-                        <span>
-                            Labs Completed
-                        </span>
-
-                    </div>
-
-
-                    <div class="profile-stat">
-
-                        <i class="fa-solid fa-clipboard-check"></i>
-
-                        <strong id="assessmentsCompleted">
-                            0
-                        </strong>
-
-                        <span>
-                            Assessments Completed
-                        </span>
-
-                    </div>
-
-
-                    <div class="profile-stat">
-
                         <i class="fa-solid fa-certificate"></i>
 
                         <strong id="certificatesEarned">
@@ -664,232 +560,9 @@
                             Certificates
                         </span>
 
-                        <small class="profile-stat-note">
-                            Available after eligible course completion
-                        </small>
-
                     </div>
 
                 </div>
-
-
-                <div class="profile-card-actions">
-
-                    <a
-                        href="progress.html"
-                        class="profile-secondary-btn"
-                    >
-
-                        <i class="fa-solid fa-chart-line"></i>
-
-                        View Full Progress
-
-                    </a>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =============================================
-                 LEARNING PREFERENCES
-            ============================================== -->
-
-            <article class="profile-card profile-card-wide">
-
-                <div class="profile-card-header">
-
-                    <div>
-
-                        <span class="dashboard-label">
-                            LEARNING PREFERENCES
-                        </span>
-
-                        <h2>
-                            Personalise Your Learning
-                        </h2>
-
-                    </div>
-
-                    <i class="fa-solid fa-sliders"></i>
-
-                </div>
-
-
-                <form
-                    id="learningPreferencesForm"
-                    class="profile-form"
-                >
-
-                    <div class="profile-form-grid">
-
-                        <div class="profile-form-group">
-
-                            <label for="learningGoalInput">
-                                Primary Learning Goal
-                            </label>
-
-                            <select
-                                id="learningGoalInput"
-                                name="learningGoal"
-                            >
-
-                                <option value="">
-                                    Select your goal
-                                </option>
-
-                                <option value="foundations">
-                                    Cybersecurity Foundations
-                                </option>
-
-                                <option value="pentesting">
-                                    Ethical Hacking / Penetration Testing
-                                </option>
-
-                                <option value="automation">
-                                    Security Automation
-                                </option>
-
-                                <option value="active-directory">
-                                    Active Directory Security
-                                </option>
-
-                                <option value="web-security">
-                                    Web Application Security
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="profile-form-group">
-
-                            <label for="experienceLevelInput">
-                                Experience Level
-                            </label>
-
-                            <select
-                                id="experienceLevelInput"
-                                name="experienceLevel"
-                            >
-
-                                <option value="">
-                                    Select your level
-                                </option>
-
-                                <option value="beginner">
-                                    Beginner
-                                </option>
-
-                                <option value="intermediate">
-                                    Intermediate
-                                </option>
-
-                                <option value="advanced">
-                                    Advanced
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-
-                    <fieldset class="profile-interest-fieldset">
-
-                        <legend>
-                            Topics of Interest
-                        </legend>
-
-                        <div class="profile-interest-grid">
-
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="interests"
-                                    value="networking"
-                                >
-                                <span>Networking</span>
-                            </label>
-
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="interests"
-                                    value="linux"
-                                >
-                                <span>Linux</span>
-                            </label>
-
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="interests"
-                                    value="python"
-                                >
-                                <span>Python</span>
-                            </label>
-
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="interests"
-                                    value="active-directory"
-                                >
-                                <span>Active Directory</span>
-                            </label>
-
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="interests"
-                                    value="web-security"
-                                >
-                                <span>Web Security</span>
-                            </label>
-
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="interests"
-                                    value="pentesting"
-                                >
-                                <span>Penetration Testing</span>
-                            </label>
-
-                        </div>
-
-                    </fieldset>
-
-
-                    <div
-                        id="learningPreferencesMessage"
-                        class="profile-message"
-                        hidden
-                        aria-live="polite"
-                    ></div>
-
-
-                    <div class="profile-form-actions">
-
-                        <button
-                            type="submit"
-                            id="saveLearningPreferencesBtn"
-                            class="profile-primary-btn"
-                        >
-
-                            <i class="fa-solid fa-floppy-disk"></i>
-
-                            Save Preferences
-
-                        </button>
-
-                    </div>
-
-                </form>
 
             </article>
 
@@ -974,50 +647,6 @@
 
                     </div>
 
-                    <div class="profile-security-item">
-
-                        <div>
-
-                            <strong>
-                                Sign-in Method
-                            </strong>
-
-                            <span id="signInMethod">
-                                Checking...
-                            </span>
-
-                        </div>
-
-                        <i
-                            class="fa-solid fa-key profile-security-static-icon"
-                            aria-hidden="true"
-                        ></i>
-
-                    </div>
-
-
-                    <div class="profile-security-item">
-
-                        <div>
-
-                            <strong>
-                                Last Sign In
-                            </strong>
-
-                            <span id="lastSignInAt">
-                                Checking...
-                            </span>
-
-                        </div>
-
-                        <i
-                            class="fa-solid fa-clock profile-security-static-icon"
-                            aria-hidden="true"
-                        ></i>
-
-                    </div>
-
-
                 </div>
 
             </article>
@@ -1064,27 +693,9 @@
                     </button>
 
 
-                    <div class="profile-account-support">
-
-                        <p>
-                            Account deletion is not currently available
-                            from the student dashboard.
-                        </p>
-
-                        <p>
-                            Need help with your account?
-                            Contact CWS Academy Support.
-                        </p>
-
-                        <a
-                            href="../pages/contact.html"
-                            class="profile-text-btn"
-                        >
-                            <i class="fa-solid fa-envelope"></i>
-                            Contact Support
-                        </a>
-
-                    </div>
+                    <p>
+                        Account deletion is not enabled yet. It should be implemented later with re-authentication and secure cleanup of associated account data.
+                    </p>
 
                 </div>
 
@@ -1123,8 +734,6 @@
     src="../js/profile.js"
 ></script>
 
-
-<script type="module" src="../js/cws-assistant.js"></script>
 
 </body>
 </html>
