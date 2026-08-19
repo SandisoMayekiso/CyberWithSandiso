@@ -1689,3 +1689,171 @@ h3 {
     }
 
 }
+
+/* =========================================================
+   CWS COURSE ARCHITECTURE
+   Foundation / Pro / Professional
+========================================================= */
+
+.student-course-grid {
+    display: block;
+}
+
+.course-stage-section {
+    margin-bottom: 52px;
+}
+
+.course-stage-heading {
+    margin-bottom: 20px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 15px;
+    background: rgba(255,255,255,.025);
+}
+
+.course-stage-heading h3 {
+    margin: 5px 0 7px;
+    color: #fff;
+    font-size: 1.35rem;
+}
+
+.course-stage-heading p {
+    max-width: 760px;
+    margin: 0;
+    color: rgba(255,255,255,.62);
+    font-size: .82rem;
+    line-height: 1.65;
+}
+
+.course-stage-kicker {
+    color: #00ffaa;
+    font-size: .65rem;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.course-stage-count {
+    flex: 0 0 auto;
+    padding: 7px 11px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 999px;
+    color: rgba(255,255,255,.72);
+    background: rgba(255,255,255,.035);
+    font-size: .7rem;
+    font-weight: 800;
+}
+
+.course-stage-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 20px;
+}
+
+/* Foundation identity */
+.course-stage-foundation .course-stage-heading {
+    border-color: rgba(0,255,170,.16);
+    background: linear-gradient(135deg,rgba(0,255,170,.055),rgba(5,12,20,.75));
+}
+
+/* Pro identity */
+.course-stage-pro .course-stage-heading {
+    border-color: rgba(246,196,83,.25);
+    background: linear-gradient(135deg,rgba(246,196,83,.09),rgba(19,14,7,.76));
+}
+.course-stage-pro .course-stage-kicker {
+    color: #f6c453;
+}
+
+/* Professional capstone identity */
+.course-stage-professional .course-stage-heading {
+    border-color: rgba(167,139,250,.28);
+    background: linear-gradient(135deg,rgba(139,92,246,.12),rgba(10,8,24,.82));
+}
+.course-stage-professional .course-stage-kicker {
+    color: #c4b5fd;
+}
+.student-course-card[data-stage="professional"] {
+    border-color: rgba(167,139,250,.24);
+    background: linear-gradient(145deg,rgba(25,18,48,.98),rgba(7,9,20,.98));
+}
+.student-course-card[data-stage="professional"] .course-icon,
+.student-course-card[data-stage="professional"] .course-meta i {
+    color: #c4b5fd;
+    border-color: rgba(167,139,250,.24);
+    background: rgba(139,92,246,.09);
+}
+
+/* Prerequisite status */
+.course-prerequisite-status {
+    margin: 0 0 16px;
+    padding: 13px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 10px;
+    background: rgba(0,0,0,.13);
+}
+
+.course-prerequisite-title {
+    margin-bottom: 9px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: rgba(255,255,255,.76);
+    font-size: .68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+}
+
+.course-prerequisite-item {
+    padding: 6px 0;
+    display: grid;
+    grid-template-columns: 16px minmax(0,1fr) auto;
+    align-items: center;
+    gap: 7px;
+    border-top: 1px solid rgba(255,255,255,.045);
+    color: #8fa0b3;
+    font-size: .67rem;
+}
+
+.course-prerequisite-item strong {
+    font-size: .6rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.course-prerequisite-item.completed i,
+.course-prerequisite-item.completed strong {
+    color: #86efac;
+}
+
+.course-prerequisite-item.required.incomplete i,
+.course-prerequisite-item.required.incomplete strong {
+    color: #fbbf24;
+}
+
+.course-prerequisite-item.recommended.incomplete i,
+.course-prerequisite-item.recommended.incomplete strong {
+    color: #93c5fd;
+}
+
+@media (max-width: 1050px) {
+    .course-stage-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .course-stage-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .course-stage-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
