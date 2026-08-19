@@ -1,10 +1,8 @@
 /* =========================================================
    CWS ACADEMY
-   ASSESSMENTS CONTROLLER
-   Unified Firestore Assessment Model
+   ASSESSMENTS PAGE
+   Dynamic Course Registry + FREE / PRO Access
 ========================================================= */
-
-"use strict";
 
 import {
     onAuthStateChanged,
@@ -22,660 +20,511 @@ import {
 } from "./firebase-config.js";
 
 import {
-    courses
+    courses,
+    getCourseStage
 } from "../data/courses.js";
+
+import {
+    getUserEntitlement
+} from "./access-control.js";
+
+
+const assessmentsGrid =
+    document.getElementById(
+        "assessmentsGrid"
+    );
+
+const noAssessments =
+    document.getElementById(
+        "noAssessments"
+    );
+
+const assessmentCount =
+    document.getElementById(
+        "assessmentCount"
+    );
+
+const availableAssessments =
+    document.getElementById(
+        "availableAssessments"
+    );
+
+const completedAssessments =
+    document.getElementById(
+        "completedAssessments"
+    );
+
+const averageScore =
+    document.getElementById(
+        "averageScore"
+    );
+
+const passedAssessments =
+    document.getElementById(
+        "passedAssessments"
+    );
+
+const resultsContainer =
+    document.getElementById(
+        "resultsContainer"
+    );
+
+const noResults =
+    document.getElementById(
+        "noResults"
+    );
+
+const studentName =
+    document.getElementById(
+        "studentName"
+    );
+
+const logoutBtn =
+    document.getElementById(
+        "logoutBtn"
+    );
 
 
 let currentUser = null;
+
+let currentEntitlement = {
+    plan: "free",
+    status: "active"
+};
+
 let progressMap = new Map();
-let assessmentItems = [];
-let initialized = false;
+
+let assessmentCatalog = [];
+
+let currentAccessFilter =
+    "all";
 
 
-const studentName =
-    document.getElementById("studentName");
+/* =========================================================
+   HELPERS
+========================================================= */
 
-const logoutBtn =
-    document.getElementById("logoutBtn");
-
-const assessmentsGrid =
-    document.getElementById("assessmentsGrid");
-
-const noAssessments =
-    document.getElementById("noAssessments");
-
-const assessmentCount =
-    document.getElementById("assessmentCount");
-
-const resultsContainer =
-    document.getElementById("resultsContainer");
-
-const noResults =
-    document.getElementById("noResults");
-
-const availableAssessments =
-    document.getElementById("availableAssessments");
-
-const completedAssessments =
-    document.getElementById("completedAssessments");
-
-const averageScore =
-    document.getElementById("averageScore");
-
-const passedAssessments =
-    document.getElementById("passedAssessments");
-
-
-function escapeHTML(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
+function normalize(value) {
+    return String(value || "")
+        .trim()
+        .toLowerCase();
 }
 
-
 function safeNumber(value) {
-
     const number = Number(value);
 
     return Number.isFinite(number)
         ? number
         : 0;
-
 }
 
-
 function getUserName(user) {
+    if (!user) return "Student";
 
-    if (user?.displayName?.trim()) {
+    if (
+        typeof user.displayName === "string" &&
+        user.displayName.trim()
+    ) {
         return user.displayName.trim();
     }
 
-    if (user?.email?.includes("@")) {
-
+    if (
+        typeof user.email === "string" &&
+        user.email.includes("@")
+    ) {
         return user.email
             .split("@")[0]
             .replace(/[._-]+/g, " ")
-            .trim()
-            .split(" ")
-            .map(
-                word =>
-                    word.charAt(0).toUpperCase() +
-                    word.slice(1)
-            )
-            .join(" ");
-
+            .replace(/\b\w/g, char =>
+                char.toUpperCase()
+            );
     }
 
     return "Student";
-
 }
 
-
-function getAllCourses() {
-
-    return courses
-        ? Object.values(courses)
-        : [];
-
+function hasActivePro() {
+    return (
+        normalize(currentEntitlement?.plan) === "pro" &&
+        ["active", "trialing"].includes(
+            normalize(currentEntitlement?.status)
+        )
+    );
 }
 
+function buildUpgradeUrl(courseId) {
+    const params = new URLSearchParams();
 
-function normalizeProgress(
-    courseId,
-    data = {}
+    if (courseId) {
+        params.set(
+            "course",
+            courseId
+        );
+    }
+
+    params.set(
+        "from",
+        "assessments"
+    );
+
+    return `subscription.html?${params.toString()}`;
+}
+
+function getProgress(courseId) {
+    return progressMap.get(courseId) || {};
+}
+
+function moduleAssessmentUrl(item) {
+    const params = new URLSearchParams({
+        course: item.courseId,
+        module: item.moduleId
+    });
+
+    return `module-assessment.html?${params.toString()}`;
+}
+
+function finalAssessmentUrl(item) {
+    const params = new URLSearchParams({
+        course: item.courseId
+    });
+
+    return `final-assessment.html?${params.toString()}`;
+}
+
+function getModuleAssessmentRecord(
+    item
 ) {
+    const progress =
+        getProgress(
+            item.courseId
+        );
 
-    return {
+    const map =
+        progress.moduleAssessments ||
+        progress.assessments ||
+        {};
 
-        courseId,
+    if (
+        map &&
+        typeof map === "object" &&
+        !Array.isArray(map)
+    ) {
+        return (
+            map[item.moduleId] ||
+            map[
+                `${item.moduleId}:${item.assessmentId}`
+            ] ||
+            null
+        );
+    }
 
-        completedLessons:
-            Array.isArray(data.completedLessons)
-                ? data.completedLessons
-                : [],
+    return null;
+}
 
-        completedLabs:
-            Array.isArray(data.completedLabs)
-                ? data.completedLabs
-                : [],
+function isAssessmentCompleted(item) {
+    const progress =
+        getProgress(
+            item.courseId
+        );
 
-        completedAssessments:
-            Array.isArray(data.completedAssessments)
-                ? data.completedAssessments
-                : [],
+    if (item.type === "final") {
+        return Boolean(
+            progress.finalAssessment?.passed ||
+            progress.finalAssessment?.completed
+        );
+    }
 
-        assessmentScores:
-            (
-                data.assessmentScores &&
-                typeof data.assessmentScores === "object"
-            )
-                ? data.assessmentScores
-                : {},
+    const completed =
+        Array.isArray(
+            progress.completedAssessments
+        )
+            ? progress.completedAssessments
+            : [];
 
-        finalAssessment:
-            (
-                data.finalAssessment &&
-                typeof data.finalAssessment === "object"
-            )
-                ? data.finalAssessment
-                : {
-                    score: 0,
-                    bestScore: 0,
-                    passed: false
-                },
+    const candidates = [
+        item.assessmentId,
+        item.moduleId,
+        `${item.moduleId}:${item.assessmentId}`,
+        `${item.courseId}:${item.moduleId}:${item.assessmentId}`
+    ];
 
-        started:
-            Boolean(data.started),
+    if (
+        candidates.some(key =>
+            completed.includes(key)
+        )
+    ) {
+        return true;
+    }
 
-        completed:
-            Boolean(data.completed),
+    const record =
+        getModuleAssessmentRecord(
+            item
+        );
 
-        updatedAt:
-            data.updatedAt || null
+    return Boolean(
+        record?.passed ||
+        record?.completed
+    );
+}
 
-    };
+function getAssessmentScore(item) {
+    const progress =
+        getProgress(
+            item.courseId
+        );
 
+    if (item.type === "final") {
+        const value =
+            progress.finalAssessment?.score;
+
+        return Number.isFinite(
+            Number(value)
+        )
+            ? Number(value)
+            : null;
+    }
+
+    const record =
+        getModuleAssessmentRecord(
+            item
+        );
+
+    const value =
+        record?.score ??
+        record?.bestScore;
+
+    return Number.isFinite(
+        Number(value)
+    )
+        ? Number(value)
+        : null;
 }
 
 
-async function loadProgress() {
+/* =========================================================
+   BUILD CATALOG
+========================================================= */
 
+function buildAssessmentCatalog() {
+    const catalog = [];
+
+    Object.values(courses || {}).forEach(course => {
+        const access =
+            normalize(course.access) === "pro"
+                ? "pro"
+                : "free";
+
+        const stage =
+            getCourseStage(
+                course.id
+            );
+
+        if (Array.isArray(course.modules)) {
+            course.modules.forEach(module => {
+                const assessment =
+                    module?.moduleAssessment;
+
+                if (!assessment) {
+                    return;
+                }
+
+                const assessmentId =
+                    assessment.id ||
+                    `${module.id}-assessment`;
+
+                catalog.push({
+                    key:
+                        `${course.id}:${module.id}:${assessmentId}`,
+
+                    type:
+                        "module",
+
+                    courseId:
+                        course.id,
+
+                    courseTitle:
+                        course.title,
+
+                    courseIcon:
+                        course.icon,
+
+                    moduleId:
+                        module.id,
+
+                    moduleTitle:
+                        module.title ||
+                        "Course Module",
+
+                    assessmentId,
+
+                    title:
+                        assessment.title ||
+                        `${module.title} Assessment`,
+
+                    description:
+                        assessment.description ||
+                        `Test your understanding of ${module.title}.`,
+
+                    questions:
+                        Array.isArray(
+                            assessment.questions
+                        )
+                            ? assessment.questions.length
+                            : safeNumber(
+                                assessment.questions
+                            ),
+
+                    duration:
+                        assessment.duration ||
+                        "Self-paced",
+
+                    passMark:
+                        safeNumber(
+                            assessment.passingScore ||
+                            assessment.passMark ||
+                            70
+                        ),
+
+                    access,
+                    stage,
+
+                    level:
+                        course.level ||
+                        "Course"
+                });
+            });
+        }
+
+        if (course.finalAssessment) {
+            const assessment =
+                course.finalAssessment;
+
+            catalog.push({
+                key:
+                    `${course.id}:final`,
+
+                type:
+                    "final",
+
+                courseId:
+                    course.id,
+
+                courseTitle:
+                    course.title,
+
+                courseIcon:
+                    course.icon,
+
+                moduleId:
+                    "",
+
+                moduleTitle:
+                    "Final Assessment",
+
+                assessmentId:
+                    "final",
+
+                title:
+                    assessment.title ||
+                    `${course.title} Final Assessment`,
+
+                description:
+                    assessment.description ||
+                    `Complete the final assessment for ${course.title}.`,
+
+                questions:
+                    Array.isArray(
+                        assessment.questions
+                    )
+                        ? assessment.questions.length
+                        : safeNumber(
+                            assessment.questions
+                        ),
+
+                duration:
+                    assessment.duration ||
+                    "Self-paced",
+
+                passMark:
+                    safeNumber(
+                        assessment.passingScore ||
+                        assessment.passMark ||
+                        75
+                    ),
+
+                access,
+                stage,
+
+                level:
+                    course.level ||
+                    "Course"
+            });
+        }
+    });
+
+    return catalog;
+}
+
+
+/* =========================================================
+   LOAD PROGRESS
+========================================================= */
+
+async function loadProgress(user) {
     progressMap = new Map();
 
-    if (!db || !currentUser) {
+    if (!db || !user) {
         return;
     }
 
     try {
-
-        const ref =
-            collection(
-                db,
-                "users",
-                currentUser.uid,
-                "courseProgress"
-            );
-
         const snapshot =
-            await getDocs(ref);
+            await getDocs(
+                collection(
+                    db,
+                    "users",
+                    user.uid,
+                    "courseProgress"
+                )
+            );
 
-        snapshot.forEach(
-            item => {
-
-                progressMap.set(
-                    item.id,
-                    normalizeProgress(
-                        item.id,
-                        item.data()
-                    )
-                );
-
-            }
-        );
-
+        snapshot.forEach(docSnapshot => {
+            progressMap.set(
+                docSnapshot.id,
+                docSnapshot.data() || {}
+            );
+        });
     }
-    catch (error) {
-
+    catch (err) {
         console.error(
-            "[CWS Assessments] Progress load failed:",
-            error
+            "[CWS Assessments] Unable to load progress:",
+            err
+        );
+    }
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+function createAssessmentCard(item) {
+    const completed =
+        isAssessmentCompleted(
+            item
         );
 
-    }
-
-}
-
-
-function getModuleLessonKeys(module) {
-
-    return (
-        Array.isArray(module?.lessons)
-            ? module.lessons
-            : []
-    )
-        .map(
-            lesson =>
-                `${module.id}:${lesson.id}`
+    const score =
+        getAssessmentScore(
+            item
         );
 
-}
-
-
-function getModuleActivityKeys(module) {
-
-    const activities = [
-        ...(
-            Array.isArray(module?.labActivities)
-                ? module.labActivities
-                : []
-        ),
-        ...(
-            Array.isArray(module?.practiceActivities)
-                ? module.practiceActivities
-                : []
-        )
-    ];
-
-    return activities.map(
-        activity =>
-            `${module.id}:${activity.id}`
-    );
-
-}
-
-
-function isModuleAssessmentUnlocked(
-    course,
-    module,
-    progress
-) {
-
-    if (!progress) {
-        return false;
-    }
-
-    const lessonsComplete =
-        getModuleLessonKeys(module)
-            .every(
-                key =>
-                    progress.completedLessons
-                        .includes(key)
-            );
-
-    const requireLabs =
-        Boolean(
-            course?.completionRules
-                ?.requireRequiredLabs
-        );
-
-    const activitiesComplete =
-        !requireLabs ||
-        getModuleActivityKeys(module)
-            .every(
-                key =>
-                    progress.completedLabs
-                        .includes(key)
-            );
-
-    return (
-        lessonsComplete &&
-        activitiesComplete
-    );
-
-}
-
-
-function isFinalAssessmentUnlocked(
-    course,
-    progress
-) {
-
-    if (!progress) {
-        return false;
-    }
-
-    const modules =
-        Array.isArray(course?.modules)
-            ? course.modules
-            : [];
-
-    for (const module of modules) {
-
-        if (
-            !getModuleLessonKeys(module)
-                .every(
-                    key =>
-                        progress.completedLessons
-                            .includes(key)
-                )
-        ) {
-            return false;
-        }
-
-        if (
-            course?.completionRules
-                ?.requireRequiredLabs &&
-            !getModuleActivityKeys(module)
-                .every(
-                    key =>
-                        progress.completedLabs
-                            .includes(key)
-                )
-        ) {
-            return false;
-        }
-
-        const hasAssessment =
-            module.moduleAssessment &&
-            Array.isArray(
-                module.moduleAssessment.questions
-            ) &&
-            module.moduleAssessment.questions.length;
-
-        if (
-            course?.completionRules
-                ?.requireAllModuleAssessments !== false &&
-            hasAssessment &&
-            !progress.completedAssessments
-                .includes(
-                    `${module.id}:assessment`
-                )
-        ) {
-            return false;
-        }
-
-    }
-
-    return true;
-
-}
-
-
-function getModuleScore(
-    progress,
-    moduleId
-) {
-
-    const key =
-        `${moduleId}:assessment`;
-
-    const value =
-        progress?.assessmentScores?.[key];
-
-    if (
-        value &&
-        typeof value === "object"
-    ) {
-
-        return safeNumber(
-            value.bestScore ??
-            value.score ??
-            0
-        );
-
-    }
-
-    return safeNumber(value);
-
-}
-
-
-function buildAssessmentItems() {
-
-    assessmentItems = [];
-
-    getAllCourses()
-        .forEach(
-            course => {
-
-                const progress =
-                    progressMap.get(course.id) ||
-                    normalizeProgress(
-                        course.id
-                    );
-
-                const modules =
-                    Array.isArray(course.modules)
-                        ? course.modules
-                        : [];
-
-                modules.forEach(
-                    (
-                        module,
-                        index
-                    ) => {
-
-                        const assessment =
-                            module.moduleAssessment;
-
-                        if (
-                            !assessment ||
-                            !Array.isArray(
-                                assessment.questions
-                            ) ||
-                            !assessment.questions.length
-                        ) {
-                            return;
-                        }
-
-                        const key =
-                            `${module.id}:assessment`;
-
-                        const completed =
-                            progress.completedAssessments
-                                .includes(key);
-
-                        const score =
-                            getModuleScore(
-                                progress,
-                                module.id
-                            );
-
-                        const passMark =
-                            safeNumber(
-                                assessment.passingScore ??
-                                assessment.passMark ??
-                                70
-                            );
-
-                        assessmentItems.push({
-
-                            id:
-                                `${course.id}:${key}`,
-
-                            type:
-                                "module",
-
-                            courseId:
-                                course.id,
-
-                            courseTitle:
-                                course.title,
-
-                            courseIcon:
-                                course.icon,
-
-                            moduleId:
-                                module.id,
-
-                            moduleTitle:
-                                module.title,
-
-                            moduleNumber:
-                                index + 1,
-
-                            title:
-                                assessment.title ||
-                                `${module.title} Assessment`,
-
-                            description:
-                                assessment.description ||
-                                `Test your understanding of ${module.title}.`,
-
-                            questions:
-                                assessment.questions.length,
-
-                            duration:
-                                assessment.duration ||
-                                "15–20 minutes",
-
-                            passMark,
-
-                            score,
-
-                            completed,
-
-                            passed:
-                                completed ||
-                                score >= passMark,
-
-                            unlocked:
-                                completed ||
-                                isModuleAssessmentUnlocked(
-                                    course,
-                                    module,
-                                    progress
-                                ),
-
-                            href:
-                                `module-assessment.html?course=${encodeURIComponent(
-                                    course.id
-                                )}&module=${encodeURIComponent(
-                                    module.id
-                                )}`,
-
-                            updatedAt:
-                                progress.updatedAt
-
-                        });
-
-                    }
-                );
-
-                if (
-                    course.finalAssessment &&
-                    Array.isArray(
-                        course.finalAssessment.questions
-                    ) &&
-                    course.finalAssessment.questions.length
-                ) {
-
-                    const final =
-                        progress.finalAssessment ||
-                        {};
-
-                    const score =
-                        safeNumber(
-                            final.bestScore ??
-                            final.score ??
-                            0
-                        );
-
-                    const passMark =
-                        safeNumber(
-                            course.finalAssessment
-                                .passingScore ??
-                            75
-                        );
-
-                    assessmentItems.push({
-
-                        id:
-                            `${course.id}:final`,
-
-                        type:
-                            "final",
-
-                        courseId:
-                            course.id,
-
-                        courseTitle:
-                            course.title,
-
-                        courseIcon:
-                            course.icon,
-
-                        moduleId:
-                            "",
-
-                        moduleTitle:
-                            "Course Final",
-
-                        moduleNumber:
-                            null,
-
-                        title:
-                            course.finalAssessment.title ||
-                            "Final Assessment",
-
-                        description:
-                            course.finalAssessment.description ||
-                            `Complete the final assessment for ${course.title}.`,
-
-                        questions:
-                            course.finalAssessment
-                                .questions.length,
-
-                        duration:
-                            course.finalAssessment.duration ||
-                            "45–60 minutes",
-
-                        passMark,
-
-                        score,
-
-                        completed:
-                            Boolean(
-                                final.passed
-                            ),
-
-                        passed:
-                            Boolean(
-                                final.passed
-                            ),
-
-                        unlocked:
-                            Boolean(
-                                final.passed ||
-                                isFinalAssessmentUnlocked(
-                                    course,
-                                    progress
-                                )
-                            ),
-
-                        href:
-                            `final-assessment.html?course=${encodeURIComponent(
-                                course.id
-                            )}`,
-
-                        updatedAt:
-                            progress.updatedAt
-
-                    });
-
-                }
-
-            }
-        );
-
-}
-
-
-function getRelevantAssessments() {
-
-    return assessmentItems.filter(
-        item => {
-
-            const progress =
-                progressMap.get(
-                    item.courseId
-                );
-
-            return Boolean(
-                progress &&
-                (
-                    progress.started ||
-                    progress.completedLessons.length ||
-                    progress.completedLabs.length ||
-                    progress.completedAssessments.length ||
-                    progress.finalAssessment?.passed
-                )
-            );
-
-        }
-    );
-
-}
-
-
-function createAssessmentCard(
-    assessment
-) {
+    const pro =
+        item.access === "pro";
+
+    const locked =
+        pro &&
+        !hasActivePro();
 
     const card =
         document.createElement(
@@ -683,108 +532,157 @@ function createAssessmentCard(
         );
 
     card.className =
-        "assessment-card";
+        `assessment-card ${
+            pro ? "pro-card" : "free-card"
+        } ${
+            locked ? "pro-locked" : ""
+        }`;
+
+    card.dataset.access =
+        item.access;
+
+    card.dataset.stage =
+        item.stage;
+
+    const accessBadge =
+        pro
+            ? `
+                <span class="learning-access-badge pro">
+                    <i class="fa-solid fa-crown"></i>
+                    PRO
+                </span>
+              `
+            : `
+                <span class="learning-access-badge free">
+                    <i class="fa-solid fa-unlock-keyhole"></i>
+                    FREE
+                </span>
+              `;
 
     const status =
-        assessment.passed
-            ? "Passed"
-            : assessment.unlocked
-                ? (
-                    assessment.score > 0
-                        ? "Retry"
-                        : "Available"
-                )
-                : "Locked";
+        completed
+            ? "Completed"
+            : "Available";
 
-    const statusClass =
-        assessment.passed
-            ? "completed"
-            : "";
+    const actionUrl =
+        item.type === "final"
+            ? finalAssessmentUrl(item)
+            : moduleAssessmentUrl(item);
 
-    const buttonLabel =
-        assessment.passed
-            ? "Review / Retake"
-            : assessment.unlocked
-                ? (
-                    assessment.score > 0
-                        ? "Retry Assessment"
-                        : "Start Assessment"
-                )
-                : "Locked";
+    const action =
+        locked
+            ? `
+                <div class="learning-pro-lock-note">
+                    <i class="fa-solid fa-lock"></i>
+
+                    <span>
+                        <strong>CWS Pro assessment</strong><br>
+                        Upgrade to access this assessment.
+                    </span>
+                </div>
+
+                <a
+                    href="${buildUpgradeUrl(item.courseId)}"
+                    class="learning-upgrade-btn"
+                >
+                    <span>
+                        <i class="fa-solid fa-crown"></i>
+                        Unlock with CWS Pro
+                    </span>
+
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+              `
+            : `
+                <a
+                    href="${actionUrl}"
+                    class="assessment-start-btn"
+                >
+                    <span>
+                        ${
+                            completed
+                                ? "Review Assessment"
+                                : "Start Assessment"
+                        }
+                    </span>
+
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+              `;
 
     card.innerHTML = `
-
         <div class="assessment-card-header">
 
             <div class="assessment-card-icon">
-                <i class="${escapeHTML(
-                    assessment.courseIcon ||
+                <i class="${
+                    item.courseIcon ||
                     "fa-solid fa-clipboard-check"
-                )}"></i>
+                }"></i>
             </div>
 
-            <span class="assessment-status ${statusClass}">
-                ${status}
-            </span>
+            <div class="learning-card-badges">
+                ${accessBadge}
+
+                <span
+                    class="assessment-status ${
+                        completed
+                            ? "completed"
+                            : ""
+                    }"
+                >
+                    ${status}
+                </span>
+            </div>
 
         </div>
 
 
         <div class="assessment-card-content">
 
-            <span class="assessments-eyebrow">
-                ${
-                    assessment.type === "final"
-                        ? "COURSE FINAL"
-                        : `MODULE ${String(
-                            assessment.moduleNumber
-                        ).padStart(2, "0")}`
-                }
+            <span class="assessment-course-label">
+                ${item.courseTitle}
             </span>
 
             <h3>
-                ${escapeHTML(
-                    assessment.title
-                )}
+                ${item.title}
             </h3>
 
             <p>
-                ${escapeHTML(
-                    assessment.description
-                )}
+                ${item.description}
             </p>
+
 
             <div class="assessment-meta">
 
                 <div class="assessment-meta-item">
                     <span>QUESTIONS</span>
                     <strong>
-                        ${assessment.questions}
+                        ${item.questions}
                     </strong>
                 </div>
 
                 <div class="assessment-meta-item">
                     <span>DURATION</span>
                     <strong>
-                        ${escapeHTML(
-                            assessment.duration
-                        )}
+                        ${item.duration}
                     </strong>
                 </div>
 
                 <div class="assessment-meta-item">
                     <span>PASS MARK</span>
                     <strong>
-                        ${assessment.passMark}%
+                        ${item.passMark}%
                     </strong>
                 </div>
 
                 <div class="assessment-meta-item">
-                    <span>COURSE</span>
+                    <span>TYPE</span>
                     <strong>
-                        ${escapeHTML(
-                            assessment.courseTitle
-                        )}
+                        ${
+                            item.type === "final"
+                                ? "FINAL"
+                                : "MODULE"
+                        }
                     </strong>
                 </div>
 
@@ -796,318 +694,113 @@ function createAssessmentCard(
         <div class="assessment-card-footer">
 
             <span class="assessment-score">
-
                 ${
-                    assessment.score > 0 ||
-                    assessment.passed
-                        ? `
-                            Best score:
-                            <strong>
-                                ${assessment.score}%
-                            </strong>
-                          `
-                        : assessment.unlocked
-                            ? "Ready when you are."
-                            : "Complete the prerequisites first."
+                    score !== null
+                        ? `Best score: <strong>${score}%</strong>`
+                        : "Ready when you are."
                 }
-
             </span>
-
-            <a
-                href="${
-                    assessment.unlocked
-                        ? assessment.href
-                        : "#"
-                }"
-                class="assessment-start-btn ${
-                    assessment.unlocked
-                        ? ""
-                        : "disabled"
-                }"
-                ${
-                    assessment.unlocked
-                        ? ""
-                        : 'aria-disabled="true" tabindex="-1"'
-                }
-            >
-                ${buttonLabel}
-                <i class="fa-solid ${
-                    assessment.unlocked
-                        ? "fa-arrow-right"
-                        : "fa-lock"
-                }"></i>
-            </a>
 
         </div>
 
+        ${action}
     `;
 
     return card;
-
 }
 
 
-function renderAssessments() {
+/* =========================================================
+   RENDER / FILTER
+========================================================= */
 
+function renderAssessments() {
     if (!assessmentsGrid) {
         return;
     }
 
-    assessmentsGrid.innerHTML =
-        "";
+    assessmentsGrid.innerHTML = "";
 
-    const relevant =
-        getRelevantAssessments();
+    const visible =
+        assessmentCatalog.filter(
+            item =>
+                currentAccessFilter === "all" ||
+                item.access === currentAccessFilter
+        );
+
+    visible.forEach(item => {
+        assessmentsGrid.appendChild(
+            createAssessmentCard(item)
+        );
+    });
 
     if (assessmentCount) {
-
-        const unlocked =
-            relevant.filter(
-                item =>
-                    item.unlocked
-            ).length;
-
         assessmentCount.textContent =
-            `${unlocked} Available`;
-
-    }
-
-    if (!relevant.length) {
-
-        if (noAssessments) {
-            noAssessments.hidden =
-                false;
-        }
-
-        return;
+            `${visible.length} Available`;
     }
 
     if (noAssessments) {
         noAssessments.hidden =
-            true;
+            visible.length !== 0;
     }
+}
 
-    relevant.forEach(
-        assessment => {
 
-            assessmentsGrid.appendChild(
-                createAssessmentCard(
-                    assessment
-                )
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+function renderStatistics() {
+    const available =
+        assessmentCatalog.length;
+
+    const completedItems =
+        assessmentCatalog.filter(
+            isAssessmentCompleted
+        );
+
+    const scores =
+        completedItems
+            .map(getAssessmentScore)
+            .filter(score =>
+                score !== null
             );
-
-        }
-    );
-
-}
-
-
-function getResultItems() {
-
-    return getRelevantAssessments()
-        .filter(
-            item =>
-                item.score > 0 ||
-                item.passed
-        )
-        .sort(
-            (
-                first,
-                second
-            ) =>
-                getTimestampValue(
-                    second.updatedAt
-                ) -
-                getTimestampValue(
-                    first.updatedAt
-                )
-        );
-
-}
-
-
-function createResultRow(
-    result
-) {
-
-    const row =
-        document.createElement(
-            "article"
-        );
-
-    row.className =
-        "assessment-result-row";
-
-    row.innerHTML = `
-
-        <div class="assessment-result-title">
-
-            <div class="assessment-result-icon">
-                <i class="fa-solid ${
-                    result.type === "final"
-                        ? "fa-trophy"
-                        : "fa-clipboard-check"
-                }"></i>
-            </div>
-
-            <div>
-
-                <strong>
-                    ${escapeHTML(
-                        result.title
-                    )}
-                </strong>
-
-                <small>
-                    ${escapeHTML(
-                        result.courseTitle
-                    )}
-                    • Pass mark:
-                    ${result.passMark}%
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <div class="assessment-result-score ${
-            result.passed
-                ? "pass"
-                : "fail"
-        }">
-            ${result.score}%
-        </div>
-
-
-        <span class="assessment-result-status ${
-            result.passed
-                ? ""
-                : "fail"
-        }">
-
-            ${
-                result.passed
-                    ? "PASSED"
-                    : "RETRY"
-            }
-
-        </span>
-
-
-        <span class="assessment-result-date">
-            ${
-                result.type === "final"
-                    ? "Final Assessment"
-                    : escapeHTML(
-                        result.moduleTitle
-                    )
-            }
-        </span>
-
-    `;
-
-    return row;
-
-}
-
-
-function renderResults() {
-
-    if (!resultsContainer) {
-        return;
-    }
-
-    resultsContainer.innerHTML =
-        "";
-
-    const results =
-        getResultItems();
-
-    if (!results.length) {
-
-        if (noResults) {
-            noResults.hidden =
-                false;
-        }
-
-        return;
-    }
-
-    if (noResults) {
-        noResults.hidden =
-            true;
-    }
-
-    results.forEach(
-        result => {
-
-            resultsContainer.appendChild(
-                createResultRow(
-                    result
-                )
-            );
-
-        }
-    );
-
-}
-
-
-function updateStatistics() {
-
-    const relevant =
-        getRelevantAssessments();
-
-    const unlocked =
-        relevant.filter(
-            item =>
-                item.unlocked
-        ).length;
-
-    const completed =
-        relevant.filter(
-            item =>
-                item.score > 0 ||
-                item.passed
-        ).length;
-
-    const passed =
-        relevant.filter(
-            item =>
-                item.passed
-        ).length;
-
-    const scored =
-        relevant.filter(
-            item =>
-                item.score > 0
-        );
 
     const average =
-        scored.length
+        scores.length
             ? Math.round(
-                scored.reduce(
-                    (
-                        total,
-                        item
-                    ) =>
-                        total +
-                        item.score,
+                scores.reduce(
+                    (sum, score) =>
+                        sum + score,
                     0
                 ) /
-                scored.length
+                scores.length
             )
             : 0;
 
+    const passed =
+        assessmentCatalog.filter(
+            item => {
+                const score =
+                    getAssessmentScore(item);
+
+                return (
+                    score !== null &&
+                    score >= item.passMark
+                );
+            }
+        ).length;
+
     if (availableAssessments) {
         availableAssessments.textContent =
-            String(unlocked);
+            String(available);
     }
 
     if (completedAssessments) {
         completedAssessments.textContent =
-            String(completed);
+            String(
+                completedItems.length
+            );
     }
 
     if (averageScore) {
@@ -1119,122 +812,243 @@ function updateStatistics() {
         passedAssessments.textContent =
             String(passed);
     }
-
 }
 
 
-function getTimestampValue(
-    timestamp
-) {
+/* =========================================================
+   RESULTS
+========================================================= */
 
-    if (!timestamp) {
-        return 0;
+function renderResults() {
+    if (!resultsContainer) {
+        return;
     }
 
-    if (
-        typeof timestamp.toMillis ===
-            "function"
-    ) {
-        return timestamp.toMillis();
+    resultsContainer.innerHTML = "";
+
+    const results =
+        assessmentCatalog
+            .map(item => ({
+                item,
+                score:
+                    getAssessmentScore(
+                        item
+                    )
+            }))
+            .filter(entry =>
+                entry.score !== null
+            );
+
+    if (noResults) {
+        noResults.hidden =
+            results.length !== 0;
     }
 
-    if (
-        typeof timestamp.seconds ===
-            "number"
-    ) {
-        return timestamp.seconds * 1000;
-    }
+    results
+        .sort(
+            (a, b) =>
+                b.score - a.score
+        )
+        .slice(0, 8)
+        .forEach(({item, score}) => {
+            const passed =
+                score >= item.passMark;
 
-    return 0;
+            const row =
+                document.createElement(
+                    "article"
+                );
 
+            row.className =
+                "assessment-result-row";
+
+            row.innerHTML = `
+                <div class="assessment-result-title">
+
+                    <div class="assessment-result-icon">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </div>
+
+                    <div>
+                        <strong>
+                            ${item.title}
+                        </strong>
+
+                        <small>
+                            ${item.courseTitle}
+                        </small>
+                    </div>
+
+                </div>
+
+                <div
+                    class="assessment-result-score ${
+                        passed
+                            ? "pass"
+                            : "fail"
+                    }"
+                >
+                    ${score}%
+                </div>
+
+                <span
+                    class="assessment-result-status ${
+                        passed
+                            ? ""
+                            : "fail"
+                    }"
+                >
+                    ${
+                        passed
+                            ? "PASSED"
+                            : "REVIEW"
+                    }
+                </span>
+
+                <span class="learning-access-badge ${item.access}">
+                    ${
+                        item.access === "pro"
+                            ? '<i class="fa-solid fa-crown"></i> PRO'
+                            : '<i class="fa-solid fa-unlock-keyhole"></i> FREE'
+                    }
+                </span>
+            `;
+
+            resultsContainer.appendChild(
+                row
+            );
+        });
 }
 
 
-async function initialiseAssessmentsPage() {
+/* =========================================================
+   FILTER EVENTS
+========================================================= */
 
-    await loadProgress();
+function bindAssessmentFilters() {
+    document
+        .querySelectorAll(
+            ".assessment-access-filter"
+        )
+        .forEach(button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    currentAccessFilter =
+                        button.dataset.accessFilter ||
+                        "all";
 
-    buildAssessmentItems();
+                    document
+                        .querySelectorAll(
+                            ".assessment-access-filter"
+                        )
+                        .forEach(item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                        );
 
-    updateStatistics();
+                    button.classList.add(
+                        "active"
+                    );
 
-    renderAssessments();
-
-    renderResults();
-
+                    renderAssessments();
+                }
+            );
+        });
 }
 
 
-async function logout() {
-
-    try {
-
-        await signOut(auth);
-
-        window.location.replace(
-            "../pages/login.html"
-        );
-
-    }
-    catch (error) {
-
-        console.error(
-            "[CWS Assessments] Logout failed:",
-            error
-        );
-
-    }
-
-}
-
+/* =========================================================
+   LOGOUT
+========================================================= */
 
 logoutBtn?.addEventListener(
     "click",
-    logout
+    async () => {
+        try {
+            await signOut(auth);
+
+            window.location.replace(
+                "../pages/login.html"
+            );
+        }
+        catch (err) {
+            console.error(
+                "[CWS Assessments] Logout failed:",
+                err
+            );
+        }
+    }
 );
 
 
+/* =========================================================
+   AUTH
+========================================================= */
+
 if (!auth) {
-
     window.location.replace(
-        "../pages/login.html"
+        "../pages/login.html?redirect=assessments"
     );
-
 }
 else {
-
     onAuthStateChanged(
         auth,
         async user => {
-
             if (!user) {
-
                 window.location.replace(
                     "../pages/login.html?redirect=assessments"
                 );
-
                 return;
-
             }
 
             currentUser = user;
 
             if (studentName) {
-
                 studentName.textContent =
                     getUserName(user);
-
             }
 
-            if (initialized) {
-                return;
+            try {
+                currentEntitlement =
+                    await getUserEntitlement(user) ||
+                    {
+                        plan: "free",
+                        status: "active"
+                    };
+            }
+            catch (err) {
+                console.error(
+                    "[CWS Assessments] Entitlement load failed:",
+                    err
+                );
+
+                currentEntitlement = {
+                    plan: "free",
+                    status: "active"
+                };
             }
 
-            initialized = true;
+            await loadProgress(user);
 
-            await initialiseAssessmentsPage();
+            assessmentCatalog =
+                buildAssessmentCatalog();
 
+            renderAssessments();
+            renderStatistics();
+            renderResults();
+            bindAssessmentFilters();
+
+            console.log(
+                "[CWS Assessments] Loaded",
+                {
+                    assessments:
+                        assessmentCatalog.length,
+                    plan:
+                        currentEntitlement.plan
+                }
+            );
         }
     );
-
 }
