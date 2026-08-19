@@ -23,7 +23,12 @@
     <title>Labs | CWS Academy</title>
 
 
-    <!-- =====================================================
+        <!-- CWS ACADEMY UI FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+
+<!-- =====================================================
          FONT AWESOME
     ====================================================== -->
 
@@ -63,12 +68,6 @@
         href="../css/labs.css"
     >
 
-    <!-- CWS ASSISTANT -->
-    <link
-        rel="stylesheet"
-        href="../css/cws-assistant.css"
-    >
-
 </head>
 
 
@@ -80,129 +79,72 @@
 ========================================================= -->
 
 <header class="student-header">
-
     <nav class="student-nav">
 
-        <!-- LOGO -->
-
-        <a
-            href="dashboard.html"
-            class="academy-logo"
-            aria-label="CWS Academy Dashboard"
-        >
-
-            <span class="logo-cws">
-                CWS
-            </span>
-
-            <span class="logo-text">
-                Academy
-            </span>
-
+        <a href="dashboard.html" class="academy-logo" aria-label="CWS Academy Dashboard">
+            <span class="logo-cws">CWS</span>
+            <span class="logo-text">Academy</span>
         </a>
-
-
-        <!-- NAVIGATION LINKS -->
 
         <div class="student-nav-links">
 
             <a href="dashboard.html">
-
                 <i class="fa-solid fa-house"></i>
-
-                Dashboard
-
+                <span>Dashboard</span>
             </a>
-
 
             <a href="student-courses.html">
-
-                <i class="fa-solid fa-book"></i>
-
-                Courses
-
+                <i class="fa-solid fa-book-open"></i>
+                <span>Courses</span>
             </a>
 
-
-            <a
-                href="labs.html"
-                class="active"
-                aria-current="page"
-            >
-
+            <a href="labs.html" class="active" aria-current="page">
                 <i class="fa-solid fa-flask"></i>
-
-                Labs
-
+                <span>Labs</span>
             </a>
-
 
             <a href="assessments.html">
-
                 <i class="fa-solid fa-clipboard-check"></i>
-
-                Assessments
-
+                <span>Assessments</span>
             </a>
-
 
             <a href="progress.html">
-
                 <i class="fa-solid fa-chart-line"></i>
-
-                Progress
-
+                <span>Progress</span>
             </a>
-
 
             <a href="certificates.html">
-
                 <i class="fa-solid fa-certificate"></i>
-
-                Certificates
-
+                <span>Certificates</span>
             </a>
 
-
             <a href="profile.html">
-
                 <i class="fa-solid fa-user"></i>
-
-                Profile
-
+                <span>Profile</span>
             </a>
 
         </div>
 
-
-        <!-- ACCOUNT -->
-
         <div class="student-nav-account">
 
-            <span
-                id="studentName"
-                class="student-nav-name"
-            >
-                Student
-            </span>
+            <div class="student-profile-chip">
+                <span class="student-profile-avatar" aria-hidden="true">
+                    <i class="fa-solid fa-user-shield"></i>
+                </span>
 
+                <span id="studentName" class="student-nav-name">
+                    Student
+                </span>
+            </div>
 
-            <button
-                type="button"
-                id="logoutBtn"
-                class="dashboard-logout-btn"
-            >
-
+            <button type="button" id="logoutBtn" class="dashboard-logout-btn">
                 <i class="fa-solid fa-right-from-bracket"></i>
-
-                Logout
-
+                <span>Logout</span>
             </button>
 
         </div>
 
     </nav>
-
 </header>
 
 
@@ -608,11 +550,6 @@
     src="../js/labs.js"
 ></script>
 
-
-<script
-    type="module"
-    src="../js/cws-assistant.js"
-></script>
 
 </body>
 </html>
