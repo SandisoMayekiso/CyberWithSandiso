@@ -60,7 +60,9 @@ import {
 
 import {
 
-    getCourse
+    getCourse,
+
+    getRequiredPrerequisites
 
 } from "../data/courses.js";
 
@@ -77,9 +79,7 @@ import {
 
     getRequiredAccess,
 
-    getAccessMessage,
-
-    getUpgradeUrl
+    getAccessMessage
 
 } from "./access-control.js";
 
@@ -324,6 +324,8 @@ let currentCourse = null;
 let currentProgress = null;
 
 let currentEntitlement = null;
+
+let currentPrerequisiteState = null;
 
 let courseInitialized = false;
 
@@ -2608,6 +2610,375 @@ function renderCourse(course) {
 
 
 /* =========================================================
+   INTERNAL PRO UPGRADE URL
+========================================================= */
+
+function buildInternalUpgradeUrl(
+    courseId = ""
+) {
+
+    const params =
+        new URLSearchParams();
+
+
+    if (courseId) {
+
+        params.set(
+            "course",
+            courseId
+        );
+
+    }
+
+
+    params.set(
+        "from",
+        "course-details"
+    );
+
+
+    return (
+        `subscription.html?${params.toString()}`
+    );
+
+}
+
+
+/* =========================================================
+   PREREQUISITE PROGRESS REF
+========================================================= */
+
+function getPrerequisiteProgressRef(
+    courseId
+) {
+
+    if (
+        !db ||
+        !currentUser ||
+        !courseId
+    ) {
+
+        return null;
+
+    }
+
+
+    return doc(
+
+        db,
+
+        "users",
+
+        currentUser.uid,
+
+        "courseProgress",
+
+        courseId
+
+    );
+
+}
+
+
+/* =========================================================
+   READ PREREQUISITE COMPLETION
+========================================================= */
+
+async function isPrerequisiteCompleted(
+    courseId
+) {
+
+    const progressRef =
+        getPrerequisiteProgressRef(
+            courseId
+        );
+
+
+    if (!progressRef) {
+
+        return false;
+
+    }
+
+
+    try {
+
+        const snapshot =
+            await getDoc(
+                progressRef
+            );
+
+
+        if (!snapshot.exists()) {
+
+            return false;
+
+        }
+
+
+        const data =
+            snapshot.data() || {};
+
+
+        return (
+            data.completed === true ||
+            data.certificateEligible === true ||
+            Number(
+                data.progressPercent ||
+                0
+            ) >= 100
+        );
+
+
+    } catch (err) {
+
+        error(
+            "Prerequisite progress check failed:",
+            {
+                courseId,
+                err
+            }
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================================================
+   CHECK REQUIRED PREREQUISITES
+========================================================= */
+
+async function checkRequiredPrerequisites(
+    course
+) {
+
+    const required =
+        getRequiredPrerequisites(
+            course?.id
+        );
+
+
+    if (!required.length) {
+
+        return {
+            allowed:
+                true,
+
+            required:
+                [],
+
+            missing:
+                []
+        };
+
+    }
+
+
+    const results =
+        await Promise.all(
+
+            required.map(
+                async prerequisiteId => {
+
+                    const completed =
+                        await isPrerequisiteCompleted(
+                            prerequisiteId
+                        );
+
+
+                    return {
+                        courseId:
+                            prerequisiteId,
+
+                        completed
+                    };
+
+                }
+            )
+
+        );
+
+
+    const missing =
+        results
+            .filter(
+                item =>
+                    !item.completed
+            )
+            .map(
+                item =>
+                    item.courseId
+            );
+
+
+    return {
+        allowed:
+            missing.length === 0,
+
+        required,
+
+        missing
+    };
+
+}
+
+
+/* =========================================================
+   COURSE DISPLAY NAME
+========================================================= */
+
+function getCourseDisplayName(
+    courseId
+) {
+
+    return (
+        getCourse(
+            courseId
+        )?.title ||
+        courseId
+    );
+
+}
+
+
+/* =========================================================
+   SHOW PREREQUISITE BLOCK
+========================================================= */
+
+function showPrerequisiteBlocked(
+    prerequisiteState
+) {
+
+    const missing =
+        Array.isArray(
+            prerequisiteState?.missing
+        )
+            ? prerequisiteState.missing
+            : [];
+
+
+    const names =
+        missing.map(
+            getCourseDisplayName
+        );
+
+
+    const message =
+        names.length === 1
+
+            ? `Complete ${names[0]} before starting ${currentCourse?.title || "this course"}.`
+
+            : `Complete these required courses before starting ${currentCourse?.title || "this course"}: ${names.join(", ")}.`;
+
+
+    showCourseNotFound(
+        message
+    );
+
+
+    if (!courseNotFound) {
+
+        return;
+
+    }
+
+
+    let actions =
+        courseNotFound.querySelector(
+            ".course-access-block-actions"
+        );
+
+
+    if (!actions) {
+
+        actions =
+            document.createElement(
+                "div"
+            );
+
+
+        actions.className =
+            "course-access-block-actions";
+
+
+        courseNotFound.appendChild(
+            actions
+        );
+
+    }
+
+
+    actions.innerHTML =
+        "";
+
+
+    if (missing.length) {
+
+        const firstRequired =
+            missing[0];
+
+
+        const prerequisiteLink =
+            document.createElement(
+                "a"
+            );
+
+
+        prerequisiteLink.className =
+            "course-action primary";
+
+
+        prerequisiteLink.href =
+            `course-details.html?course=${encodeURIComponent(
+                firstRequired
+            )}`;
+
+
+        prerequisiteLink.innerHTML =
+            `<i class="fa-solid fa-arrow-right"></i>
+             Continue with ${getCourseDisplayName(
+                 firstRequired
+             )}`;
+
+
+        actions.appendChild(
+            prerequisiteLink
+        );
+
+    }
+
+
+    const coursesLink =
+        document.createElement(
+            "a"
+        );
+
+
+    coursesLink.className =
+        "course-action secondary";
+
+
+    coursesLink.href =
+        "student-courses.html";
+
+
+    coursesLink.innerHTML =
+        `<i class="fa-solid fa-book-open"></i>
+         Back to Courses`;
+
+
+    actions.appendChild(
+        coursesLink
+    );
+
+}
+
+
+/* =========================================================
    COURSE ACCESS
 ========================================================= */
 
@@ -2641,7 +3012,6 @@ function redirectToUpgrade() {
 
 
     const requiredPlan =
-
         getRequiredAccess(
             currentCourse
         );
@@ -2666,7 +3036,6 @@ function redirectToUpgrade() {
 
 
     const message =
-
         getAccessMessage(
             requiredPlan
         );
@@ -2684,8 +3053,8 @@ function redirectToUpgrade() {
 
     window.location.replace(
 
-        getUpgradeUrl(
-            requiredPlan
+        buildInternalUpgradeUrl(
+            currentCourse.id
         )
 
     );
@@ -2712,6 +3081,29 @@ async function startCourse(
 
         error(
             "Cannot start course: currentCourse is null."
+        );
+
+        return;
+
+    }
+
+
+    /* =============================================
+       PREREQUISITE CHECK
+    ============================================== */
+
+    currentPrerequisiteState =
+        await checkRequiredPrerequisites(
+            currentCourse
+        );
+
+
+    if (
+        !currentPrerequisiteState.allowed
+    ) {
+
+        showPrerequisiteBlocked(
+            currentPrerequisiteState
         );
 
         return;
@@ -2983,6 +3375,35 @@ async function loadCourse() {
 
     currentCourse =
         course;
+
+
+    /* =============================================
+       REQUIRED PREREQUISITES
+    ============================================== */
+
+    currentPrerequisiteState =
+        await checkRequiredPrerequisites(
+            currentCourse
+        );
+
+
+    if (
+        !currentPrerequisiteState.allowed
+    ) {
+
+        warn(
+            "Required prerequisite incomplete:",
+            currentPrerequisiteState
+        );
+
+
+        showPrerequisiteBlocked(
+            currentPrerequisiteState
+        );
+
+        return;
+
+    }
 
 
     /* =============================================
