@@ -25,6 +25,11 @@ import {
 
 
 import {
+    windowsFundamentals
+} from "./windows-fundamentals.js";
+
+
+import {
     bashLinuxAutomation
 } from "./bash-linux-automation.js";
 
@@ -83,6 +88,9 @@ export const courses = {
 
     [linuxFundamentals.id]:
         linuxFundamentals,
+
+    [windowsFundamentals.id]:
+        windowsFundamentals,
 
     [bashLinuxAutomation.id]:
         bashLinuxAutomation,
@@ -148,6 +156,458 @@ function normalizeValue(value) {
     )
         .trim()
         .toLowerCase();
+
+}
+
+
+/* =========================================================
+   COURSE STAGES
+========================================================= */
+
+export const courseStages = {
+
+    foundation: {
+        id: "foundation",
+        label: "CWS Foundations",
+        shortLabel: "Foundation",
+        description: "Core cybersecurity, operating-system, networking and scripting foundations.",
+        order: 1
+    },
+
+    pro: {
+        id: "pro",
+        label: "CWS Pro Specializations",
+        shortLabel: "Pro",
+        description: "Hands-on offensive-security and specialist training.",
+        order: 2
+    },
+
+    professional: {
+        id: "professional",
+        label: "CWS Professional Capstone",
+        shortLabel: "Professional",
+        description: "Integrated multi-stage penetration-testing capstone work.",
+        order: 3
+    }
+
+};
+
+
+/* =========================================================
+   COURSE PATH DEFINITIONS
+
+   "required" prerequisites can be enforced by the student
+   interface. "recommended" prerequisites should be shown as
+   guidance but should not hard-lock experienced students.
+========================================================= */
+
+export const coursePath = {
+
+    "cybersecurity-fundamentals": {
+        stage: "foundation",
+        order: 1,
+        required: [],
+        recommended: []
+    },
+
+    "networking-fundamentals": {
+        stage: "foundation",
+        order: 2,
+        required: [
+            "cybersecurity-fundamentals"
+        ],
+        recommended: []
+    },
+
+    "linux-fundamentals": {
+        stage: "foundation",
+        order: 3,
+        required: [
+            "cybersecurity-fundamentals"
+        ],
+        recommended: [
+            "networking-fundamentals"
+        ]
+    },
+
+    "windows-fundamentals": {
+        stage: "foundation",
+        order: 4,
+        required: [
+            "cybersecurity-fundamentals"
+        ],
+        recommended: [
+            "networking-fundamentals"
+        ]
+    },
+
+    "bash-linux-automation": {
+        stage: "foundation",
+        order: 5,
+        required: [
+            "linux-fundamentals"
+        ],
+        recommended: [
+            "networking-fundamentals"
+        ]
+    },
+
+    "python-cybersecurity-fundamentals": {
+        stage: "foundation",
+        order: 6,
+        required: [
+            "cybersecurity-fundamentals"
+        ],
+        recommended: [
+            "networking-fundamentals"
+        ]
+    },
+
+    "active-directory-fundamentals": {
+        stage: "foundation",
+        order: 7,
+        required: [
+            "windows-fundamentals",
+            "networking-fundamentals"
+        ],
+        recommended: [
+            "cybersecurity-fundamentals"
+        ]
+    },
+
+    "ethical-hacking": {
+        stage: "pro",
+        order: 1,
+        required: [
+            "cybersecurity-fundamentals",
+            "networking-fundamentals",
+            "linux-fundamentals"
+        ],
+        recommended: [
+            "windows-fundamentals",
+            "bash-linux-automation",
+            "python-cybersecurity-fundamentals",
+            "active-directory-fundamentals"
+        ]
+    },
+
+    "web-application-security": {
+        stage: "pro",
+        order: 2,
+        required: [
+            "ethical-hacking",
+            "networking-fundamentals"
+        ],
+        recommended: [
+            "linux-fundamentals",
+            "python-cybersecurity-fundamentals"
+        ]
+    },
+
+    "linux-privilege-escalation": {
+        stage: "pro",
+        order: 3,
+        required: [
+            "ethical-hacking",
+            "linux-fundamentals"
+        ],
+        recommended: [
+            "bash-linux-automation"
+        ]
+    },
+
+    "active-directory-security-pentesting": {
+        stage: "pro",
+        order: 4,
+        required: [
+            "active-directory-fundamentals",
+            "ethical-hacking",
+            "networking-fundamentals"
+        ],
+        recommended: [
+            "windows-fundamentals",
+            "practical-penetration-testing",
+            "python-cybersecurity-fundamentals"
+        ]
+    },
+
+    "python-offensive-security": {
+        stage: "pro",
+        order: 5,
+        required: [
+            "python-cybersecurity-fundamentals",
+            "ethical-hacking"
+        ],
+        recommended: [
+            "bash-linux-automation",
+            "web-application-security"
+        ]
+    },
+
+    "practical-penetration-testing": {
+        stage: "professional",
+        order: 1,
+        required: [
+            "ethical-hacking",
+            "web-application-security",
+            "linux-privilege-escalation"
+        ],
+        recommended: [
+            "active-directory-security-pentesting",
+            "python-offensive-security",
+            "bash-linux-automation"
+        ]
+    }
+
+};
+
+
+/* =========================================================
+   GET COURSE PATH INFO
+========================================================= */
+
+export function getCoursePathInfo(courseId) {
+
+    const normalizedCourseId =
+        normalizeId(
+            courseId
+        );
+
+
+    if (!normalizedCourseId) {
+
+        return null;
+
+    }
+
+
+    const pathInfo =
+        coursePath[
+            normalizedCourseId
+        ];
+
+
+    if (!pathInfo) {
+
+        return null;
+
+    }
+
+
+    const stage =
+        courseStages[
+            pathInfo.stage
+        ] ||
+        null;
+
+
+    return {
+
+        courseId:
+            normalizedCourseId,
+
+        stage:
+            pathInfo.stage,
+
+        stageInfo:
+            stage,
+
+        order:
+            Number(
+                pathInfo.order ||
+                0
+            ),
+
+        required:
+            Array.isArray(
+                pathInfo.required
+            )
+                ? [
+                    ...pathInfo.required
+                ]
+                : [],
+
+        recommended:
+            Array.isArray(
+                pathInfo.recommended
+            )
+                ? [
+                    ...pathInfo.recommended
+                ]
+                : []
+
+    };
+
+}
+
+
+/* =========================================================
+   GET COURSE STAGE
+========================================================= */
+
+export function getCourseStage(courseId) {
+
+    return (
+        getCoursePathInfo(
+            courseId
+        )?.stage ||
+        "foundation"
+    );
+
+}
+
+
+/* =========================================================
+   GET COURSE STAGE INFO
+========================================================= */
+
+export function getCourseStageInfo(courseId) {
+
+    const stage =
+        getCourseStage(
+            courseId
+        );
+
+
+    return (
+        courseStages[
+            stage
+        ] ||
+        null
+    );
+
+}
+
+
+/* =========================================================
+   GET REQUIRED PREREQUISITES
+========================================================= */
+
+export function getRequiredPrerequisites(courseId) {
+
+    return (
+        getCoursePathInfo(
+            courseId
+        )?.required ||
+        []
+    );
+
+}
+
+
+/* =========================================================
+   GET RECOMMENDED PREREQUISITES
+========================================================= */
+
+export function getRecommendedPrerequisites(courseId) {
+
+    return (
+        getCoursePathInfo(
+            courseId
+        )?.recommended ||
+        []
+    );
+
+}
+
+
+/* =========================================================
+   GET COURSES BY STAGE
+========================================================= */
+
+export function getCoursesByStage(stageId) {
+
+    const normalizedStageId =
+        normalizeValue(
+            stageId
+        );
+
+
+    if (
+        !courseStages[
+            normalizedStageId
+        ]
+    ) {
+
+        return [];
+
+    }
+
+
+    return getCourses()
+        .filter(
+            course =>
+                getCourseStage(
+                    course.id
+                ) ===
+                normalizedStageId
+        )
+        .sort(
+            (a, b) => {
+
+                const pathA =
+                    getCoursePathInfo(
+                        a.id
+                    );
+
+                const pathB =
+                    getCoursePathInfo(
+                        b.id
+                    );
+
+
+                return (
+                    Number(
+                        pathA?.order ||
+                        999
+                    ) -
+                    Number(
+                        pathB?.order ||
+                        999
+                    )
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   GET FOUNDATION COURSES
+========================================================= */
+
+export function getFoundationCourses() {
+
+    return getCoursesByStage(
+        "foundation"
+    );
+
+}
+
+
+/* =========================================================
+   GET PRO SPECIALIZATION COURSES
+========================================================= */
+
+export function getProSpecializationCourses() {
+
+    return getCoursesByStage(
+        "pro"
+    );
+
+}
+
+
+/* =========================================================
+   GET PROFESSIONAL CAPSTONE COURSES
+========================================================= */
+
+export function getProfessionalCourses() {
+
+    return getCoursesByStage(
+        "professional"
+    );
 
 }
 
@@ -941,7 +1401,27 @@ export function getCourseSummary(courseId) {
 
         certificateEligible:
             course.certificateEligible ===
-                true
+                true,
+
+        stage:
+            getCourseStage(
+                course.id
+            ),
+
+        stageInfo:
+            getCourseStageInfo(
+                course.id
+            ),
+
+        requiredPrerequisites:
+            getRequiredPrerequisites(
+                course.id
+            ),
+
+        recommendedPrerequisites:
+            getRecommendedPrerequisites(
+                course.id
+            )
 
     };
 
