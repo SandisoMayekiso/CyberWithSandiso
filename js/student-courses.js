@@ -371,24 +371,32 @@ async function loadStudentAccess(user) {
 
     try {
 
-        const userRef =
+        /*
+         * Source of truth:
+         * entitlements/{uid}
+         *
+         * This document is written only by the trusted Paystack
+         * backend after server-side transaction verification.
+         */
+
+        const entitlementRef =
             doc(
                 db,
-                "users",
+                "entitlements",
                 user.uid
             );
 
 
-        const userSnapshot =
+        const entitlementSnapshot =
             await getDoc(
-                userRef
+                entitlementRef
             );
 
 
-        if (!userSnapshot.exists()) {
+        if (!entitlementSnapshot.exists()) {
 
             log(
-                "No student profile document found. Using Free access."
+                "No entitlement document found. Using Free access."
             );
 
             return studentAccess;
@@ -397,72 +405,51 @@ async function loadStudentAccess(user) {
 
 
         const data =
-            userSnapshot.data() || {};
+            entitlementSnapshot.data() || {};
 
 
         const plan =
             normalizeAccessValue(
-                data.plan ||
-                data.subscriptionTier ||
-                data.access ||
-                data.membership
+                data.plan
             );
 
 
         const status =
             normalizeAccessValue(
-                data.subscriptionStatus ||
                 data.status
             );
 
 
-        const explicitPro =
-            data.isPro === true ||
-            data.pro === true;
-
-
         const proPlan =
-            [
-                "pro",
-                "cws-pro",
-                "cws_pro",
-                "premium"
-            ].includes(plan);
+            plan === "pro";
 
 
-        const inactiveStatus =
+        const activeStatus =
             [
-                "cancelled",
-                "canceled",
-                "expired",
-                "inactive",
-                "failed",
-                "past_due",
-                "past-due"
-            ].includes(status);
+                "active",
+                "trialing"
+            ].includes(
+                status
+            );
 
 
         studentAccess = {
 
             isPro:
-                (explicitPro || proPlan) &&
-                !inactiveStatus,
+                proPlan &&
+                activeStatus,
 
             plan:
                 plan || "free",
 
             status:
-                status || (
-                    explicitPro || proPlan
-                        ? "active"
-                        : "free"
-                )
+                status || "inactive"
 
         };
 
 
         log(
-            "Student access loaded:",
+            "Student entitlement loaded:",
             studentAccess
         );
 
@@ -470,7 +457,7 @@ async function loadStudentAccess(user) {
     } catch (err) {
 
         error(
-            "Unable to load student access:",
+            "Unable to load student entitlement:",
             err
         );
 
