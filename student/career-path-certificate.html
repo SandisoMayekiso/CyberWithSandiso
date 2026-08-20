@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CWS Academy verified career path certificate.">
+    <title>CWS Academy | Career Path Certificate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/career-path-certificate.css">
+</head>
+<body class="student-page career-certificate-page">
+
+<header class="student-header">
+<nav class="student-nav">
+<a href="dashboard.html" class="academy-logo"><span class="logo-cws">CWS</span><span class="logo-text">Academy</span></a>
+<div class="student-nav-links">
+<a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+<a href="student-courses.html"><i class="fa-solid fa-book-open"></i><span>Courses</span></a>
+<a href="learning-paths.html" class="active" aria-current="page"><i class="fa-solid fa-route"></i><span>Paths</span></a>
+<a href="labs.html"><i class="fa-solid fa-flask"></i><span>Labs</span></a>
+<a href="assessments.html"><i class="fa-solid fa-clipboard-check"></i><span>Assessments</span></a>
+<a href="progress.html"><i class="fa-solid fa-chart-line"></i><span>Progress</span></a>
+<a href="certificates.html"><i class="fa-solid fa-certificate"></i><span>Certificates</span></a>
+<a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+</div>
+<div class="student-nav-account">
+<div class="student-profile-chip"><span class="student-profile-avatar"><i class="fa-solid fa-user-shield"></i></span><span id="studentName" class="student-nav-name">Student</span><span id="studentPlanBadge" class="student-plan-badge free">FREE</span></div>
+<button type="button" id="logoutBtn" class="dashboard-logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
+</div>
+</nav>
+</header>
+
+<main class="career-certificate-main">
+<section id="certificateLoading" class="career-certificate-message"><i class="fa-solid fa-spinner fa-spin"></i> Verifying career path completion...</section>
+
+<section id="certificateLocked" class="career-certificate-locked" hidden>
+<i class="fa-solid fa-lock"></i>
+<h1>Career Path Certificate Locked</h1>
+<p id="certificateLockedText">Complete the full learning path and pass the required capstone.</p>
+<a href="learning-paths.html" class="career-certificate-action secondary"><i class="fa-solid fa-route"></i> Back to Learning Paths</a>
+</section>
+
+<section id="certificateContent" hidden>
+<div class="career-certificate-page-heading">
+<div>
+<span class="career-certificate-eyebrow">CWS ACADEMY • PROFESSIONAL PATH CREDENTIAL</span>
+<h1>Career Path Certificate</h1>
+<p>Verified completion of a complete CWS Academy career learning pathway and practical capstone.</p>
+</div>
+<div class="career-certificate-actions">
+<button type="button" id="printCertificateBtn" class="career-certificate-action primary"><i class="fa-solid fa-file-pdf"></i> Print / Save PDF</button>
+<button type="button" id="copyCredentialBtn" class="career-certificate-action secondary"><i class="fa-solid fa-copy"></i> Copy Credential ID</button>
+</div>
+</div>
+
+<article id="careerCertificateDocument" class="career-certificate-document">
+<div class="career-certificate-border outer"></div>
+<div class="career-certificate-border inner"></div>
+
+<div class="career-certificate-top">
+<div class="career-certificate-brand">
+<span class="career-certificate-brand-mark"><i class="fa-solid fa-shield-halved"></i></span>
+<div><strong>CWS ACADEMY</strong><span>CyberWithSandiso</span></div>
+</div>
+<div class="career-certificate-verified"><i class="fa-solid fa-circle-check"></i> VERIFIED PATH</div>
+</div>
+
+<div class="career-certificate-center">
+<span class="career-certificate-kicker">CERTIFICATE OF PROFESSIONAL PATH COMPLETION</span>
+<p>This credential is proudly awarded to</p>
+<h2 id="certificateStudent">Student</h2>
+<div class="career-certificate-rule"></div>
+<p>for successfully completing the</p>
+<h1 id="certificatePath">Career Learning Path</h1>
+<p id="certificateDescription" class="career-certificate-description"></p>
+</div>
+
+<div class="career-certificate-details">
+<div><span>CAPSTONE SCORE</span><strong id="certificateScore">—</strong></div>
+<div><span>ISSUED</span><strong id="certificateDate">—</strong></div>
+<div><span>CREDENTIAL ID</span><strong id="certificateCredential">—</strong></div>
+</div>
+
+<div class="career-certificate-bottom">
+<div class="career-certificate-signature"><div class="career-signature-line"></div><strong>CyberWithSandiso</strong><span>CWS Academy</span></div>
+<div class="career-certificate-seal"><i class="fa-solid fa-award"></i><strong>CWS</strong><span>CAREER PATH</span></div>
+<div class="career-certificate-path-badge"><i class="fa-solid fa-route"></i><strong id="certificatePathBadge">PROFESSIONAL PATH</strong><span>Courses + Capstone Completed</span></div>
+</div>
+</article>
+</section>
+</main>
+
+<script type="module" src="../js/topbar-plan.js"></script>
+<script type="module" src="../js/career-path-certificate.js"></script>
+</body>
+</html>
