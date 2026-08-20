@@ -207,54 +207,78 @@
             <div class="report-builder">
 
                 <div class="report-field">
-                    <label for="executiveSummary">
-                        Executive Summary
-                    </label>
-
-                    <textarea
-                        id="executiveSummary"
-                        rows="6"
-                        placeholder="Summarize the engagement, major risks and overall security posture..."
-                    ></textarea>
+                    <label for="methodologySummary">Scope &amp; Methodology</label>
+                    <textarea id="methodologySummary" rows="5" placeholder="Describe the approved scope, methodology and how testing remained controlled..."></textarea>
                 </div>
-
 
                 <div class="report-field">
-                    <label for="findingsSummary">
-                        Findings Summary
-                    </label>
-
-                    <textarea
-                        id="findingsSummary"
-                        rows="8"
-                        placeholder="Summarize your evidence-backed findings, affected assets and remediation..."
-                    ></textarea>
+                    <label for="executiveSummary">Executive Summary</label>
+                    <textarea id="executiveSummary" rows="6" placeholder="Summarize the engagement, major risks and overall security posture..."></textarea>
+                    <small id="executiveWordCount" class="report-field-note">0 words • minimum 80</small>
                 </div>
 
+                <div class="report-field">
+                    <label for="attackSurfaceSummary">Attack Surface Summary</label>
+                    <textarea id="attackSurfaceSummary" rows="5" placeholder="Summarize discovered hosts, services, applications and entry points..."></textarea>
+                </div>
+
+                <div class="findings-builder">
+                    <div class="findings-builder-heading">
+                        <div>
+                            <span>TECHNICAL FINDINGS</span>
+                            <h3>Evidence-backed findings</h3>
+                        </div>
+
+                        <button type="button" id="addFindingBtn" class="capstone-btn secondary">
+                            <i class="fa-solid fa-plus"></i>
+                            Add Finding
+                        </button>
+                    </div>
+
+                    <div id="findingsContainer"></div>
+
+                    <p class="report-field-note">
+                        A minimum of two complete findings is required.
+                    </p>
+                </div>
 
                 <div class="report-requirements">
                     <strong>Required report sections</strong>
                     <ul id="reportRequirements"></ul>
                 </div>
 
+                <label class="integrity-declaration">
+                    <input type="checkbox" id="integrityDeclaration">
+                    <span>
+                        I confirm that this submission reflects my own authorized
+                        lab work and that the evidence recorded here corresponds
+                        to the CWS capstone environment.
+                    </span>
+                </label>
 
-                <button
-                    type="button"
-                    id="saveCapstoneBtn"
-                    class="capstone-btn secondary"
-                >
+                <section class="grading-panel">
+                    <div class="grading-panel-heading">
+                        <div>
+                            <span>AUTOMATED RUBRIC</span>
+                            <h3>Submission readiness</h3>
+                        </div>
+                        <strong id="rubricScore">0%</strong>
+                    </div>
+
+                    <div id="rubricBreakdown" class="rubric-breakdown"></div>
+                    <div id="rubricGateMessage" class="rubric-gate-message">
+                        Complete the report to calculate readiness.
+                    </div>
+                </section>
+
+                <button type="button" id="saveCapstoneBtn" class="capstone-btn secondary">
                     <i class="fa-solid fa-floppy-disk"></i>
                     Save Progress
                 </button>
 
-
-                <button
-                    type="button"
-                    id="submitCapstoneBtn"
-                    class="capstone-btn primary"
-                >
+                <button type="button" id="submitCapstoneBtn" class="capstone-btn primary">
                     <i class="fa-solid fa-flag-checkered"></i>
-                    Submit Capstone
+                    Submit for Grading
                 </button>
 
                 <p id="capstoneMessage" class="capstone-form-message" hidden></p>
