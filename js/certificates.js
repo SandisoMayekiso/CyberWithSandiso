@@ -1,3 +1,9 @@
+/* =========================================================
+   CWS ACADEMY
+   CERTIFICATES CONTROLLER
+   Dynamic Course Registry + Firestore Progress
+========================================================= */
+
 "use strict";
 
 import {
@@ -15,309 +21,607 @@ import {
     db
 } from "./firebase-config.js";
 
-import * as CourseRegistry
-from "../data/courses.js";
+import {
+    courses
+} from "../data/courses.js";
 
+import {
+    getLearningPath
+} from "../data/learning-paths.js";
 
-const studentName = document.getElementById("studentName");
-const logoutBtn = document.getElementById("logoutBtn");
-const pageMessage = document.getElementById("certificatePageMessage");
-const pageMessageTitle = document.getElementById("certificatePageMessageTitle");
-const pageMessageText = document.getElementById("certificatePageMessageText");
-const earnedGrid = document.getElementById("earnedCertificatesGrid");
-const upcomingGrid = document.getElementById("upcomingCertificatesGrid");
-const noCertificates = document.getElementById("noCertificates");
-const earnedCertificateCount = document.getElementById("earnedCertificateCount");
-const certificatesEarned = document.getElementById("certificatesEarned");
-const certificatesAvailable = document.getElementById("certificatesAvailable");
-const coursesCompleted = document.getElementById("coursesCompleted");
-const achievementCount = document.getElementById("achievementCount");
 
 let currentUser = null;
 let progressMap = new Map();
-let certificateRecords = [];
+
+let careerPathCredentials = [];
+
+let certificates = [];
+
 let certificatePaths = [];
+
 let initialized = false;
 
 
+const studentName =
+    document.getElementById("studentName");
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
+
 function escapeHTML(value) {
+
     return String(value ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+
 }
 
 
 function clamp(value) {
+
     const number = Number(value);
-    if (!Number.isFinite(number)) return 0;
-    return Math.min(Math.max(Math.round(number), 0), 100);
-}
 
-
-function showPageMessage(title, text) {
-    if (!pageMessage) return;
-    if (pageMessageTitle) pageMessageTitle.textContent = title;
-    if (pageMessageText) pageMessageText.textContent = text;
-    pageMessage.hidden = false;
-}
-
-
-function hidePageMessage() {
-    if (pageMessage) pageMessage.hidden = true;
-}
-
-
-function getUserName(user) {
-    if (typeof user?.displayName === "string" && user.displayName.trim()) {
-        return user.displayName.trim();
+    if (!Number.isFinite(number)) {
+        return 0;
     }
 
-    if (typeof user?.email === "string" && user.email.includes("@")) {
-        const raw = user.email
-            .split("@")[0]
-            .replace(/[._-]+/g, " ")
-            .trim();
+    return Math.min(
+        Math.max(
+            Math.round(number),
+            0
+        ),
+        100
+    );
 
-        if (raw) {
-            return raw.split(" ")
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(" ");
-        }
-    }
-
-    return "Student";
-}
-
-
-function normalizeCourseCollection(value) {
-    if (Array.isArray(value)) {
-        return value.filter(
-            course => course && typeof course === "object"
-        );
-    }
-
-    if (value && typeof value === "object") {
-        return Object.values(value).filter(
-            course =>
-                course &&
-                typeof course === "object" &&
-                (course.id || course.title)
-        );
-    }
-
-    return [];
 }
 
 
 function getAllCourses() {
-    const candidates = [
-        CourseRegistry.courses,
-        CourseRegistry.COURSES,
-        CourseRegistry.courseRegistry,
-        CourseRegistry.COURSE_REGISTRY,
-        CourseRegistry.allCourses
-    ];
 
-    for (const candidate of candidates) {
-        const normalized = normalizeCourseCollection(candidate);
-        if (normalized.length) return normalized;
-    }
+    return courses
+        ? Object.values(courses)
+        : [];
 
-    if (typeof CourseRegistry.getAllCourses === "function") {
-        try {
-            const normalized = normalizeCourseCollection(
-                CourseRegistry.getAllCourses()
-            );
-            if (normalized.length) return normalized;
-        } catch (error) {
-            console.warn("[CWS Certificates] getAllCourses() failed:", error);
-        }
-    }
-
-    for (const value of Object.values(CourseRegistry)) {
-        const normalized = normalizeCourseCollection(value);
-        if (
-            normalized.length &&
-            normalized.some(course => Array.isArray(course.modules))
-        ) {
-            return normalized;
-        }
-    }
-
-    return [];
 }
 
 
-function normalizeProgress(courseId, data = {}) {
+function getUserName(user) {
+
+    if (user?.displayName?.trim()) {
+        return user.displayName.trim();
+    }
+
+    if (user?.email?.includes("@")) {
+
+        return user.email
+            .split("@")[0]
+            .replace(/[._-]+/g, " ")
+            .trim()
+            .split(" ")
+            .map(
+                word =>
+                    word.charAt(0).toUpperCase() +
+                    word.slice(1)
+            )
+            .join(" ");
+
+    }
+
+    return "Student";
+
+}
+
+
+function normalizeProgress(
+    courseId,
+    data = {}
+) {
+
     return {
+
         courseId,
-        completedLessons: Array.isArray(data.completedLessons) ? data.completedLessons : [],
-        completedLabs: Array.isArray(data.completedLabs) ? data.completedLabs : [],
-        completedAssessments: Array.isArray(data.completedAssessments) ? data.completedAssessments : [],
+
+        completedLessons:
+            Array.isArray(data.completedLessons)
+                ? data.completedLessons
+                : [],
+
+        completedLabs:
+            Array.isArray(data.completedLabs)
+                ? data.completedLabs
+                : [],
+
+        completedAssessments:
+            Array.isArray(data.completedAssessments)
+                ? data.completedAssessments
+                : [],
+
         finalAssessment:
-            data.finalAssessment && typeof data.finalAssessment === "object"
+            (
+                data.finalAssessment &&
+                typeof data.finalAssessment === "object"
+            )
                 ? data.finalAssessment
-                : { score: 0, bestScore: 0, passed: false },
-        progressPercent: Number(data.progressPercent || 0),
-        started: Boolean(data.started),
-        completed: Boolean(data.completed),
-        certificateEligible: Boolean(data.certificateEligible),
+                : {
+                    score: 0,
+                    bestScore: 0,
+                    passed: false
+                },
+
+        progressPercent:
+            Number(data.progressPercent || 0),
+
+        started:
+            Boolean(data.started),
+
+        completed:
+            Boolean(data.completed),
+
+        certificateEligible:
+            Boolean(data.certificateEligible),
+
         certificate:
-            data.certificate && typeof data.certificate === "object"
+            (
+                data.certificate &&
+                typeof data.certificate === "object"
+            )
                 ? data.certificate
                 : {},
-        completedAt: data.completedAt || null,
-        updatedAt: data.updatedAt || null
+
+        completedAt:
+            data.completedAt || null,
+
+        updatedAt:
+            data.updatedAt || null
+
     };
+
 }
 
 
 async function loadProgress() {
+
     progressMap = new Map();
 
-    if (!db || !currentUser) return;
+    if (!db || !currentUser) {
+        return;
+    }
 
     try {
-        const ref = collection(
-            db,
-            "users",
-            currentUser.uid,
-            "courseProgress"
-        );
 
-        const snapshot = await getDocs(ref);
-
-        snapshot.forEach(item => {
-            progressMap.set(
-                item.id,
-                normalizeProgress(item.id, item.data())
+        const ref =
+            collection(
+                db,
+                "users",
+                currentUser.uid,
+                "courseProgress"
             );
-        });
-    } catch (error) {
-        console.error("[CWS Certificates] Firestore progress load failed:", error);
-        showPageMessage(
-            "Progress unavailable",
-            "The page loaded, but CWS Academy could not read your Firestore course progress."
+
+        const snapshot =
+            await getDocs(ref);
+
+        snapshot.forEach(
+            item => {
+
+                progressMap.set(
+                    item.id,
+                    normalizeProgress(
+                        item.id,
+                        item.data()
+                    )
+                );
+
+            }
         );
+
     }
+    catch (error) {
+
+        console.error(
+            "[CWS Certificates] Failed to load progress:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CAREER PATH CREDENTIALS
+========================================================= */
+
+function normalizeCareerPathCredential(
+    pathId,
+    data = {}
+) {
+
+    const path =
+        getLearningPath(
+            pathId
+        );
+
+
+    return {
+
+        pathId,
+
+        pathTitle:
+            data.pathTitle ||
+            path?.title ||
+            "CWS Career Path",
+
+        shortTitle:
+            path?.shortTitle ||
+            data.pathTitle ||
+            "Career Path",
+
+        description:
+            path?.description ||
+            "Verified completion of a CWS Academy career learning path and practical capstone.",
+
+        credentialTitle:
+            data.credentialTitle ||
+            path?.credentialTitle ||
+            `CWS ${data.pathTitle || path?.title || "Career Path"} Certificate`,
+
+        credentialId:
+            data.credentialId ||
+            "",
+
+        issuedAt:
+            data.issuedAt ||
+            data.createdAt ||
+            data.updatedAt ||
+            null,
+
+        capstoneScore:
+            Number(
+                data.capstoneScore ||
+                0
+            ),
+
+        status:
+            String(
+                data.status ||
+                "verified"
+            )
+                .trim()
+                .toLowerCase()
+
+    };
+
+}
+
+
+async function loadCareerPathCredentials() {
+
+    careerPathCredentials =
+        [];
+
+
+    if (
+        !db ||
+        !currentUser
+    ) {
+        return;
+    }
+
+
+    try {
+
+        const ref =
+            collection(
+                db,
+                "users",
+                currentUser.uid,
+                "careerPathCertificates"
+            );
+
+
+        const snapshot =
+            await getDocs(
+                ref
+            );
+
+
+        snapshot.forEach(
+            item => {
+
+                const credential =
+                    normalizeCareerPathCredential(
+                        item.id,
+                        item.data()
+                    );
+
+
+                if (
+                    credential.status ===
+                    "verified"
+                ) {
+
+                    careerPathCredentials.push(
+                        credential
+                    );
+
+                }
+
+            }
+        );
+
+
+        careerPathCredentials.sort(
+            (
+                a,
+                b
+            ) => {
+
+                const dateA =
+                    timestampToDate(
+                        a.issuedAt
+                    )?.getTime() ||
+                    0;
+
+                const dateB =
+                    timestampToDate(
+                        b.issuedAt
+                    )?.getTime() ||
+                    0;
+
+
+                return (
+                    dateB -
+                    dateA
+                );
+
+            }
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "[CWS Certificates] Failed to load career-path credentials:",
+            error
+        );
+
+    }
+
 }
 
 
 function getModuleActivities(module) {
+
     return [
-        ...(Array.isArray(module?.labActivities) ? module.labActivities : []),
-        ...(Array.isArray(module?.practiceActivities) ? module.practiceActivities : [])
+        ...(
+            Array.isArray(module?.labActivities)
+                ? module.labActivities
+                : []
+        ),
+        ...(
+            Array.isArray(module?.practiceActivities)
+                ? module.practiceActivities
+                : []
+        )
     ];
+
 }
 
 
-function getCourseRequirements(course) {
+function getRequirements(course) {
+
     const lessonKeys = [];
-    const activityKeys = [];
+    const labKeys = [];
     const assessmentKeys = [];
 
-    const modules = Array.isArray(course?.modules)
-        ? course.modules
-        : [];
-
-    modules.forEach(module => {
-        const lessons = Array.isArray(module.lessons)
-            ? module.lessons
+    const modules =
+        Array.isArray(course?.modules)
+            ? course.modules
             : [];
 
-        lessons.forEach(lesson => {
-            lessonKeys.push(`${module.id}:${lesson.id}`);
-        });
+    modules.forEach(
+        module => {
 
-        if (course?.completionRules?.requireRequiredLabs) {
-            getModuleActivities(module).forEach(activity => {
-                activityKeys.push(`${module.id}:${activity.id}`);
-            });
+            (
+                Array.isArray(module.lessons)
+                    ? module.lessons
+                    : []
+            )
+                .forEach(
+                    lesson => {
+
+                        lessonKeys.push(
+                            `${module.id}:${lesson.id}`
+                        );
+
+                    }
+                );
+
+            if (
+                course?.completionRules
+                    ?.requireRequiredLabs
+            ) {
+
+                getModuleActivities(module)
+                    .forEach(
+                        activity => {
+
+                            labKeys.push(
+                                `${module.id}:${activity.id}`
+                            );
+
+                        }
+                    );
+
+            }
+
+            const assessment =
+                module.moduleAssessment;
+
+            if (
+                course?.completionRules
+                    ?.requireAllModuleAssessments !== false &&
+                assessment &&
+                Array.isArray(
+                    assessment.questions
+                ) &&
+                assessment.questions.length
+            ) {
+
+                assessmentKeys.push(
+                    `${module.id}:assessment`
+                );
+
+            }
+
         }
-
-        const assessment = module.moduleAssessment;
-
-        if (
-            course?.completionRules?.requireAllModuleAssessments !== false &&
-            assessment &&
-            Array.isArray(assessment.questions) &&
-            assessment.questions.length
-        ) {
-            assessmentKeys.push(`${module.id}:assessment`);
-        }
-    });
+    );
 
     return {
         lessonKeys,
-        activityKeys,
+        labKeys,
         assessmentKeys,
-        finalRequired: Boolean(course?.finalAssessment)
+        finalRequired:
+            Boolean(
+                course?.finalAssessment
+            )
     };
+
 }
 
 
-function calculateCourseProgress(course, progress) {
-    if (!progress) return 0;
+function calculateCourseProgress(
+    course,
+    progress
+) {
 
-    const requirements = getCourseRequirements(course);
+    if (!progress) {
+        return 0;
+    }
+
+    const requirements =
+        getRequirements(course);
 
     const total =
         requirements.lessonKeys.length +
-        requirements.activityKeys.length +
+        requirements.labKeys.length +
         requirements.assessmentKeys.length +
-        (requirements.finalRequired ? 1 : 0);
+        (
+            requirements.finalRequired
+                ? 1
+                : 0
+        );
 
     if (!total) {
-        return clamp(progress.progressPercent);
+        return clamp(
+            progress.progressPercent
+        );
     }
 
-    const lessons = requirements.lessonKeys.filter(
-        key => progress.completedLessons.includes(key)
-    ).length;
+    const completedLessons =
+        requirements.lessonKeys.filter(
+            key =>
+                progress.completedLessons
+                    .includes(key)
+        ).length;
 
-    const activities = requirements.activityKeys.filter(
-        key => progress.completedLabs.includes(key)
-    ).length;
+    const completedLabs =
+        requirements.labKeys.filter(
+            key =>
+                progress.completedLabs
+                    .includes(key)
+        ).length;
 
-    const assessments = requirements.assessmentKeys.filter(
-        key => progress.completedAssessments.includes(key)
-    ).length;
+    const completedAssessments =
+        requirements.assessmentKeys.filter(
+            key =>
+                progress.completedAssessments
+                    .includes(key)
+        ).length;
 
-    const final = requirements.finalRequired && progress.finalAssessment?.passed
-        ? 1
-        : 0;
+    const finalCompleted =
+        requirements.finalRequired &&
+        progress.finalAssessment?.passed
+            ? 1
+            : 0;
 
     return clamp(
-        (lessons + activities + assessments + final) /
+        (
+            completedLessons +
+            completedLabs +
+            completedAssessments +
+            finalCompleted
+        ) /
         total *
         100
     );
+
 }
 
 
-function toDate(value) {
-    if (!value) return null;
+function isCertificateEarned(
+    course,
+    progress
+) {
 
-    if (typeof value.toDate === "function") {
+    if (!progress) {
+        return false;
+    }
+
+    return Boolean(
+        progress.certificateEligible ||
+        progress.completed
+    );
+
+}
+
+
+function timestampToDate(value) {
+
+    if (!value) {
+        return null;
+    }
+
+    if (
+        typeof value.toDate ===
+            "function"
+    ) {
         return value.toDate();
     }
 
-    if (typeof value.seconds === "number") {
-        return new Date(value.seconds * 1000);
+    if (
+        typeof value.seconds ===
+            "number"
+    ) {
+        return new Date(
+            value.seconds * 1000
+        );
     }
 
-    const parsed = new Date(value);
-    return Number.isNaN(parsed.getTime()) ? null : parsed;
+    const date =
+        new Date(value);
+
+    return Number.isNaN(
+        date.getTime()
+    )
+        ? null
+        : date;
+
 }
 
 
-function formatDate(value) {
-    const date = toDate(value);
+function formatCertificateDate(value) {
 
-    if (!date) return "Completion recorded";
+    const date =
+        timestampToDate(value);
+
+    if (!date) {
+        return "Completion recorded";
+    }
 
     return date.toLocaleDateString(
         undefined,
@@ -327,206 +631,729 @@ function formatDate(value) {
             day: "numeric"
         }
     );
+
 }
 
 
-function isCertificateEarned(progress) {
-    return Boolean(
-        progress &&
-        (progress.completed || progress.certificateEligible)
-    );
+function createCredentialId(
+    course,
+    progress
+) {
+
+    if (
+        progress?.certificate
+            ?.credentialId
+    ) {
+        return String(
+            progress.certificate
+                .credentialId
+        );
+    }
+
+    const uidPart =
+        currentUser?.uid
+            ? currentUser.uid
+                .slice(0, 8)
+                .toUpperCase()
+            : "STUDENT";
+
+    const coursePart =
+        String(course.id)
+            .replace(/[^a-z0-9]/gi, "")
+            .slice(0, 8)
+            .toUpperCase();
+
+    return `CWS-${coursePart}-${uidPart}`;
+
 }
 
 
 function buildCertificateData() {
-    certificateRecords = [];
+
+    certificates = [];
     certificatePaths = [];
 
-    const allCourses = getAllCourses();
+    getAllCourses()
+        .forEach(
+            course => {
 
-    if (!allCourses.length) {
-        showPageMessage(
-            "Course catalogue unavailable",
-            "The Certificates page is working, but no course collection could be found in data/courses.js."
+                const progress =
+                    progressMap.get(
+                        course.id
+                    ) || null;
+
+                const percentage =
+                    calculateCourseProgress(
+                        course,
+                        progress
+                    );
+
+                const earned =
+                    isCertificateEarned(
+                        course,
+                        progress
+                    );
+
+                const path = {
+
+                    id:
+                        course.id,
+
+                    title:
+                        course.title,
+
+                    description:
+                        course.description ||
+                        "CWS Academy learning pathway.",
+
+                    icon:
+                        course.icon ||
+                        "fa-solid fa-certificate",
+
+                    level:
+                        String(
+                            course.level ||
+                            "Course"
+                        ).toUpperCase(),
+
+                    progress:
+                        percentage,
+
+                    status:
+                        earned
+                            ? "Earned"
+                            : course.status ===
+                                "available"
+                                ? (
+                                    progress?.started
+                                        ? "In Progress"
+                                        : "Available"
+                                )
+                                : "Planned",
+
+                    earned,
+
+                    started:
+                        Boolean(
+                            progress?.started
+                        )
+
+                };
+
+                certificatePaths.push(
+                    path
+                );
+
+                if (!earned) {
+                    return;
+                }
+
+                certificates.push({
+
+                    id:
+                        course.id,
+
+                    title:
+                        course.title,
+
+                    description:
+                        course.description ||
+                        "CWS Academy course completion certificate.",
+
+                    level:
+                        path.level,
+
+                    issuedDate:
+                        progress?.certificate
+                            ?.issuedAt ||
+                        progress?.completedAt ||
+                        progress?.updatedAt,
+
+                    credentialId:
+                        createCredentialId(
+                            course,
+                            progress
+                        ),
+
+                    courseCompleted:
+                        Boolean(
+                            progress?.completed
+                        ),
+
+                    finalScore:
+                        Number(
+                            progress?.finalAssessment
+                                ?.bestScore ??
+                            progress?.finalAssessment
+                                ?.score ??
+                            0
+                        )
+
+                });
+
+            }
         );
+
+}
+
+
+function updateCertificateStatistics() {
+
+    const earnedElement =
+        document.getElementById(
+            "certificatesEarned"
+        );
+
+    const availableElement =
+        document.getElementById(
+            "certificatesAvailable"
+        );
+
+    const coursesElement =
+        document.getElementById(
+            "coursesCompleted"
+        );
+
+    const achievementsElement =
+        document.getElementById(
+            "achievementCount"
+        );
+
+    const completedCourses =
+        certificatePaths.filter(
+            path =>
+                path.progress >= 100 ||
+                path.earned
+        ).length;
+
+    const activePaths =
+        certificatePaths.filter(
+            path =>
+                path.status !== "Planned"
+        ).length;
+
+    const totalEarnedCredentials =
+        certificates.length +
+        careerPathCredentials.length;
+
+
+    if (earnedElement) {
+        earnedElement.textContent =
+            String(
+                totalEarnedCredentials
+            );
+    }
+
+    if (availableElement) {
+        availableElement.textContent =
+            String(
+                activePaths
+            );
+    }
+
+    if (coursesElement) {
+        coursesElement.textContent =
+            String(
+                completedCourses
+            );
+    }
+
+    if (achievementsElement) {
+        achievementsElement.textContent =
+            String(
+                totalEarnedCredentials
+            );
+    }
+
+}
+
+
+/* =========================================================
+   PROFESSIONAL CREDENTIAL CARDS
+========================================================= */
+
+function createProfessionalCredentialCard(
+    credential
+) {
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    card.className =
+        "professional-credential-card";
+
+
+    const issuedDate =
+        formatCertificateDate(
+            credential.issuedAt
+        );
+
+
+    card.innerHTML = `
+
+        <div class="professional-credential-preview">
+
+            <div class="professional-credential-seal">
+
+                <i class="fa-solid fa-award"></i>
+
+            </div>
+
+
+            <div class="professional-credential-preview-copy">
+
+                <span>
+                    CWS ACADEMY • PROFESSIONAL PATH
+                </span>
+
+                <strong>
+                    ${escapeHTML(
+                        credential.pathTitle
+                    )}
+                </strong>
+
+                <small>
+                    Courses + Capstone Verified
+                </small>
+
+            </div>
+
+
+            <span class="professional-verified-badge">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                VERIFIED
+
+            </span>
+
+        </div>
+
+
+        <div class="professional-credential-content">
+
+            <span class="professional-credential-label">
+
+                <i class="fa-solid fa-route"></i>
+
+                CAREER PATH CERTIFICATE
+
+            </span>
+
+
+            <h3>
+                ${escapeHTML(
+                    credential.credentialTitle
+                )}
+            </h3>
+
+
+            <p>
+                ${escapeHTML(
+                    credential.description
+                )}
+            </p>
+
+
+            <div class="professional-credential-meta">
+
+                <span>
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Issued ${escapeHTML(
+                        issuedDate
+                    )}
+                </span>
+
+                ${
+                    credential.capstoneScore > 0
+                        ? `
+                            <span>
+                                <i class="fa-solid fa-flag-checkered"></i>
+                                Capstone ${credential.capstoneScore}%
+                            </span>
+                          `
+                        : ""
+                }
+
+                <span>
+                    <i class="fa-solid fa-shield-halved"></i>
+                    ${escapeHTML(
+                        credential.credentialId ||
+                        "Verified credential"
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="professional-credential-actions">
+
+                <a
+                    href="career-path-certificate.html?path=${encodeURIComponent(
+                        credential.pathId
+                    )}"
+                    class="professional-credential-view-btn"
+                >
+                    <i class="fa-solid fa-award"></i>
+                    View Professional Credential
+                </a>
+
+                <a
+                    href="learning-paths.html"
+                    class="certificate-secondary-btn"
+                >
+                    <i class="fa-solid fa-route"></i>
+                    View Path
+                </a>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    return card;
+
+}
+
+
+function renderProfessionalCredentials() {
+
+    const container =
+        document.getElementById(
+            "professionalCredentialsGrid"
+        );
+
+
+    const emptyState =
+        document.getElementById(
+            "noProfessionalCredentials"
+        );
+
+
+    const count =
+        document.getElementById(
+            "professionalCredentialCount"
+        );
+
+
+    if (!container) {
         return;
     }
 
-    allCourses.forEach(course => {
-        if (!course?.id) return;
 
-        const progress = progressMap.get(course.id) || null;
-        const percent = calculateCourseProgress(course, progress);
-        const earned = isCertificateEarned(progress);
+    container.innerHTML =
+        "";
 
-        const available =
-            course.status !== "planned" &&
-            course.status !== "coming-soon";
 
-        certificatePaths.push({
-            id: course.id,
-            title: course.title || course.id,
-            description: course.description || "CWS Academy learning pathway.",
-            icon: course.icon || "fa-solid fa-certificate",
-            level: String(course.level || "Course").toUpperCase(),
-            progress: percent,
-            status: earned
-                ? "Earned"
-                : available
-                    ? (progress?.started ? "In Progress" : "Available")
-                    : "Planned",
-            earned,
-            started: Boolean(progress?.started),
-            available
-        });
+    if (count) {
 
-        if (!earned) return;
+        count.textContent =
+            `${careerPathCredentials.length} Earned`;
 
-        certificateRecords.push({
-            id: course.id,
-            title: course.title || course.id,
-            description: course.description || "CWS Academy course completion certificate.",
-            issueDate:
-                progress?.certificate?.issuedAt ||
-                progress?.completedAt ||
-                progress?.updatedAt
-        });
-    });
+    }
 
-    hidePageMessage();
+
+    if (
+        !careerPathCredentials.length
+    ) {
+
+        if (emptyState) {
+            emptyState.hidden =
+                false;
+        }
+
+
+        return;
+
+    }
+
+
+    if (emptyState) {
+        emptyState.hidden =
+            true;
+    }
+
+
+    careerPathCredentials.forEach(
+        credential => {
+
+            container.appendChild(
+                createProfessionalCredentialCard(
+                    credential
+                )
+            );
+
+        }
+    );
+
 }
 
 
-function updateStatistics() {
-    const available = certificatePaths.filter(path => path.available).length;
-    const completed = certificateRecords.length;
+/* =========================================================
+   COURSE CERTIFICATE CARDS
+========================================================= */
 
-    if (certificatesEarned) certificatesEarned.textContent = String(completed);
-    if (certificatesAvailable) certificatesAvailable.textContent = String(available);
-    if (coursesCompleted) coursesCompleted.textContent = String(completed);
-    if (achievementCount) achievementCount.textContent = String(completed);
-}
+function createCertificateCard(
+    certificate
+) {
 
+    const card =
+        document.createElement(
+            "article"
+        );
 
-function createCertificateCard(certificate) {
-    const card = document.createElement("article");
-    card.className = "certificate-card";
+    card.className =
+        "certificate-card";
+
+    const date =
+        formatCertificateDate(
+            certificate.issuedDate
+        );
 
     card.innerHTML = `
+
         <div class="certificate-preview">
+
             <div class="certificate-preview-icon">
                 <i class="fa-solid fa-certificate"></i>
             </div>
-            <small>CWS ACADEMY</small>
-            <strong>${escapeHTML(certificate.title)}</strong>
+
+            <small>
+                CWS ACADEMY
+            </small>
+
+            <strong>
+                ${escapeHTML(
+                    certificate.title
+                )}
+            </strong>
+
         </div>
 
+
         <div class="certificate-card-content">
-            <h3>${escapeHTML(certificate.title)}</h3>
-            <p>${escapeHTML(certificate.description)}</p>
+
+            <h3>
+                ${escapeHTML(
+                    certificate.title
+                )}
+            </h3>
+
+            <p>
+                ${escapeHTML(
+                    certificate.description
+                )}
+            </p>
+
 
             <div class="certificate-meta">
+
                 <span>
                     <i class="fa-solid fa-calendar"></i>
-                    ${escapeHTML(formatDate(certificate.issueDate))}
+                    ${escapeHTML(date)}
                 </span>
 
                 <span>
                     <i class="fa-solid fa-shield-halved"></i>
                     Verified
                 </span>
+
             </div>
 
+
             <div class="certificate-card-actions">
-                <a
-                    href="certificate.html?course=${encodeURIComponent(certificate.id)}"
+
+                <button
+                    type="button"
                     class="certificate-view-btn"
+                    data-certificate-id="${escapeHTML(
+                        certificate.id
+                    )}"
                 >
+
                     <i class="fa-solid fa-eye"></i>
                     View Certificate
-                </a>
+
+                </button>
+
             </div>
+
         </div>
+
     `;
 
     return card;
+
 }
 
 
 function renderEarnedCertificates() {
-    if (!earnedGrid) return;
 
-    earnedGrid.innerHTML = "";
+    const container =
+        document.getElementById(
+            "earnedCertificatesGrid"
+        );
 
-    if (earnedCertificateCount) {
-        earnedCertificateCount.textContent =
-            `${certificateRecords.length} Earned`;
-    }
+    const emptyState =
+        document.getElementById(
+            "noCertificates"
+        );
 
-    if (!certificateRecords.length) {
-        if (noCertificates) noCertificates.hidden = false;
+    const count =
+        document.getElementById(
+            "earnedCertificateCount"
+        );
+
+    if (!container) {
         return;
     }
 
-    if (noCertificates) noCertificates.hidden = true;
+    container.innerHTML = "";
 
-    certificateRecords.forEach(certificate => {
-        earnedGrid.appendChild(
-            createCertificateCard(certificate)
-        );
-    });
+    if (count) {
+
+        count.textContent =
+            `${certificates.length} Earned`;
+
+    }
+
+    if (!certificates.length) {
+
+        if (emptyState) {
+            emptyState.hidden =
+                false;
+        }
+
+        return;
+    }
+
+    if (emptyState) {
+        emptyState.hidden =
+            true;
+    }
+
+    certificates.forEach(
+        certificate => {
+
+            container.appendChild(
+                createCertificateCard(
+                    certificate
+                )
+            );
+
+        }
+    );
+
 }
 
 
-function createUpcomingCard(path) {
-    const card = document.createElement("article");
-    card.className = "upcoming-certificate-card";
+function createUpcomingCertificateCard(
+    path
+) {
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+    card.className =
+        "upcoming-certificate-card";
+
+    const statusClass =
+        path.earned
+            ? "completed"
+            : path.status === "Planned"
+                ? "planned"
+                : "";
 
     card.innerHTML = `
+
         <div class="upcoming-icon">
-            <i class="${escapeHTML(path.icon)}"></i>
+            <i class="${escapeHTML(
+                path.icon
+            )}"></i>
         </div>
+
 
         <span class="course-level">
-            ${escapeHTML(path.level)}
+            ${escapeHTML(
+                path.level
+            )}
         </span>
 
-        <h3>${escapeHTML(path.title)}</h3>
 
-        <p>${escapeHTML(path.description)}</p>
+        <h3>
+            ${escapeHTML(
+                path.title
+            )}
+        </h3>
+
+
+        <p>
+            ${escapeHTML(
+                path.description
+            )}
+        </p>
+
 
         <div class="upcoming-progress-label">
-            <span>${escapeHTML(path.status)}</span>
-            <strong>${path.progress}%</strong>
+
+            <span>
+                ${escapeHTML(
+                    path.status
+                )}
+            </span>
+
+            <strong>
+                ${path.progress}%
+            </strong>
+
         </div>
 
+
         <div class="upcoming-progress-track">
+
             <div
-                class="upcoming-progress-bar"
+                class="upcoming-progress-bar ${statusClass}"
                 style="width:${path.progress}%"
             ></div>
+
         </div>
+
 
         ${
             path.earned
                 ? `
-                    <a
-                        href="certificate.html?course=${encodeURIComponent(path.id)}"
+                    <button
+                        type="button"
                         class="certificate-view-btn"
-                        style="margin-top:16px;"
+                        data-certificate-id="${escapeHTML(
+                            path.id
+                        )}"
                     >
                         <i class="fa-solid fa-certificate"></i>
                         View Earned Certificate
-                    </a>
+                    </button>
                   `
-                : path.available
+                : path.status !== "Planned"
                     ? `
                         <a
-                            href="course-details.html?course=${encodeURIComponent(path.id)}"
+                            href="course-details.html?course=${encodeURIComponent(
+                                path.id
+                            )}"
                             class="certificate-secondary-btn"
                             style="margin-top:16px;"
                         >
-                            ${path.started ? "Continue Course" : "View Course"}
+                            ${
+                                path.started
+                                    ? "Continue Course"
+                                    : "Start Course"
+                            }
                             <i class="fa-solid fa-arrow-right"></i>
                         </a>
                       `
@@ -540,94 +1367,404 @@ function createUpcomingCard(path) {
                         </span>
                       `
         }
+
     `;
 
     return card;
+
 }
 
 
-function renderUpcoming() {
-    if (!upcomingGrid) return;
+function renderUpcomingCertificates() {
 
-    upcomingGrid.innerHTML = "";
-
-    certificatePaths.forEach(path => {
-        upcomingGrid.appendChild(
-            createUpcomingCard(path)
+    const container =
+        document.getElementById(
+            "upcomingCertificatesGrid"
         );
-    });
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    certificatePaths.forEach(
+        path => {
+
+            container.appendChild(
+                createUpcomingCertificateCard(
+                    path
+                )
+            );
+
+        }
+    );
+
+}
+
+
+function createCertificateModal() {
+
+    if (
+        document.getElementById(
+            "certificateModal"
+        )
+    ) {
+        return;
+    }
+
+    const modal =
+        document.createElement(
+            "div"
+        );
+
+    modal.id =
+        "certificateModal";
+
+    modal.className =
+        "certificate-modal";
+
+    modal.hidden = true;
+
+    modal.innerHTML = `
+
+        <div
+            class="certificate-modal-content"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="certificateModalTitle"
+        >
+
+            <button
+                type="button"
+                class="certificate-modal-close"
+                id="certificateModalClose"
+                aria-label="Close certificate"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+
+            <div
+                id="certificateModalBody"
+                class="certificate-modal-preview"
+            ></div>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(
+        modal
+    );
+
+    document
+        .getElementById(
+            "certificateModalClose"
+        )
+        ?.addEventListener(
+            "click",
+            closeCertificateModal
+        );
+
+    modal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target === modal
+            ) {
+                closeCertificateModal();
+            }
+
+        }
+    );
+
+}
+
+
+function openCertificateModal(
+    certificateId
+) {
+
+    const certificate =
+        certificates.find(
+            item =>
+                item.id ===
+                certificateId
+        );
+
+    if (!certificate) {
+        return;
+    }
+
+    const modal =
+        document.getElementById(
+            "certificateModal"
+        );
+
+    const body =
+        document.getElementById(
+            "certificateModalBody"
+        );
+
+    if (!modal || !body) {
+        return;
+    }
+
+    const date =
+        formatCertificateDate(
+            certificate.issuedDate
+        );
+
+    const name =
+        getUserName(
+            currentUser
+        );
+
+    body.innerHTML = `
+
+        <i class="fa-solid fa-certificate"></i>
+
+        <span class="certificates-eyebrow">
+            CWS ACADEMY
+        </span>
+
+        <h2 id="certificateModalTitle">
+            Certificate of Completion
+        </h2>
+
+        <p>
+            This certifies that
+        </p>
+
+        <h3>
+            ${escapeHTML(name)}
+        </h3>
+
+        <p>
+            has successfully completed
+        </p>
+
+        <h2>
+            ${escapeHTML(
+                certificate.title
+            )}
+        </h2>
+
+        <p>
+            ${escapeHTML(
+                certificate.description
+            )}
+        </p>
+
+        ${
+            certificate.finalScore > 0
+                ? `
+                    <p>
+                        Final assessment:
+                        <strong>
+                            ${certificate.finalScore}%
+                        </strong>
+                    </p>
+                  `
+                : ""
+        }
+
+        <p>
+            Issued:
+            <strong>
+                ${escapeHTML(date)}
+            </strong>
+        </p>
+
+        <p>
+            Credential ID:
+            <strong>
+                ${escapeHTML(
+                    certificate.credentialId
+                )}
+            </strong>
+        </p>
+
+        <p>
+            <i class="fa-solid fa-shield-halved"></i>
+            CWS Academy verified achievement
+        </p>
+
+    `;
+
+    modal.hidden = false;
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+function closeCertificateModal() {
+
+    const modal =
+        document.getElementById(
+            "certificateModal"
+        );
+
+    if (!modal) {
+        return;
+    }
+
+    modal.hidden = true;
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+function setupCertificateActions() {
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    "[data-certificate-id]"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            openCertificateModal(
+                button.dataset
+                    .certificateId
+            );
+
+        }
+    );
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape"
+            ) {
+                closeCertificateModal();
+            }
+
+        }
+    );
+
 }
 
 
 function updateJourneySteps() {
-    const steps = document.querySelectorAll(
-        ".certificate-path-step"
-    );
 
-    if (!steps.length) return;
+    const steps =
+        document.querySelectorAll(
+            ".certificate-path-step"
+        );
 
-    const allProgress = [...progressMap.values()];
+    if (!steps.length) {
+        return;
+    }
+
+    const allProgress =
+        [...progressMap.values()];
+
+    const hasStarted =
+        allProgress.some(
+            progress =>
+                progress.started ||
+                progress.completedLessons.length
+        );
+
+    const hasLessons =
+        allProgress.some(
+            progress =>
+                progress.completedLessons.length
+        );
+
+    const hasLabs =
+        allProgress.some(
+            progress =>
+                progress.completedLabs.length
+        );
+
+    const hasAssessments =
+        allProgress.some(
+            progress =>
+                progress.completedAssessments.length ||
+                progress.finalAssessment?.passed
+        );
+
+    const hasCertificate =
+        certificates.length > 0;
 
     const states = [
-        allProgress.some(progress =>
-            progress.started ||
-            progress.completedLessons.length
-        ),
-        allProgress.some(progress =>
-            progress.completedLessons.length
-        ),
-        allProgress.some(progress =>
-            progress.completedLabs.length
-        ),
-        allProgress.some(progress =>
-            progress.completedAssessments.length ||
-            progress.finalAssessment?.passed
-        ),
-        certificateRecords.length > 0
+        hasStarted,
+        hasLessons,
+        hasLabs,
+        hasAssessments,
+        hasCertificate
     ];
 
-    steps.forEach((step, index) => {
-        const done = Boolean(states[index]);
+    steps.forEach(
+        (
+            step,
+            index
+        ) => {
 
-        step.classList.toggle("active", done);
-        step.classList.toggle("completed", done);
-    });
-}
+            step.classList.toggle(
+                "active",
+                Boolean(
+                    states[index]
+                )
+            );
 
+            step.classList.toggle(
+                "completed",
+                Boolean(
+                    states[index]
+                )
+            );
 
-async function initializeCertificatesPage() {
-    showPageMessage(
-        "Loading certificates",
-        "Reading your CWS Academy course progress."
+        }
     );
 
-    await loadProgress();
-
-    buildCertificateData();
-    updateStatistics();
-    renderEarnedCertificates();
-    renderUpcoming();
-    updateJourneySteps();
 }
 
 
 async function logout() {
+
     try {
-        if (logoutBtn) logoutBtn.disabled = true;
+
+        if (logoutBtn) {
+            logoutBtn.disabled = true;
+        }
 
         await signOut(auth);
 
         window.location.replace(
             "../pages/login.html"
         );
-    } catch (error) {
+
+    }
+    catch (error) {
+
         console.error(
             "[CWS Certificates] Logout failed:",
             error
         );
 
-        if (logoutBtn) logoutBtn.disabled = false;
+        if (logoutBtn) {
+            logoutBtn.disabled = false;
+        }
+
     }
+
 }
 
 
@@ -637,45 +1774,73 @@ logoutBtn?.addEventListener(
 );
 
 
+async function initialiseCertificatesPage() {
+
+    createCertificateModal();
+
+    setupCertificateActions();
+
+    await Promise.all([
+        loadProgress(),
+        loadCareerPathCredentials()
+    ]);
+
+    buildCertificateData();
+
+    updateCertificateStatistics();
+
+    renderProfessionalCredentials();
+
+    renderEarnedCertificates();
+
+    renderUpcomingCertificates();
+
+    updateJourneySteps();
+
+}
+
+
 if (!auth) {
+
     window.location.replace(
         "../pages/login.html"
     );
-} else {
+
+}
+else {
+
     onAuthStateChanged(
         auth,
         async user => {
+
             if (!user) {
+
                 window.location.replace(
                     "../pages/login.html?redirect=certificates"
                 );
+
                 return;
+
             }
 
             currentUser = user;
 
             if (studentName) {
+
                 studentName.textContent =
                     getUserName(user);
+
             }
 
-            if (initialized) return;
+            if (initialized) {
+                return;
+            }
 
             initialized = true;
 
-            try {
-                await initializeCertificatesPage();
-            } catch (error) {
-                console.error(
-                    "[CWS Certificates] Initialization failed:",
-                    error
-                );
+            await initialiseCertificatesPage();
 
-                showPageMessage(
-                    "Certificates could not be loaded",
-                    "The page itself is working, but course data failed to load. Check the browser console for the exact error."
-                );
-            }
         }
     );
+
 }
