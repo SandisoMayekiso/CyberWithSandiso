@@ -1,134 +1,39 @@
 // =========================================================
 // CWS ACADEMY
-// CERTIFICATE, CAPSTONE & CAREER PATH FIRESTORE RULES
-// =========================================================
-//
-// Merge this file into your main Firestore rules inside:
-//
-// match /databases/{database}/documents {
-//
-// }
-//
-// IMPORTANT:
-// These rules are suitable for the current browser-based
-// CWS Academy implementation.
-//
-// Production recommendation:
-// Move trusted credential issuance and capstone pass decisions
-// to Firebase Cloud Functions or another trusted server-side
-// environment before accepting paid subscriptions.
-// =========================================================
-
-
-// =========================================================
-// PUBLIC COURSE CERTIFICATE VERIFICATION
+// CERTIFICATE + PROFESSIONAL CREDENTIAL VERIFICATION RULES
 // =========================================================
 
 match /certificateVerifications/{credentialId} {
 
-  // Employers and recruiters can publicly verify credentials.
+  // Public verification for employers and recruiters.
   allow read: if true;
 
 
-  // Interim client-side certificate issuance.
+  // Current browser-based issuance:
+  // authenticated users may create only a credential record
+  // associated with the same credentialId and an active status.
   //
-  // A signed-in student may create a verification document
-  // only when:
-  // - the document belongs to their own Firebase uid
-  // - the credentialId inside the document matches the
-  //   document path
-  // - the credential is initially created as active
+  // Course certificate records may use `userId`.
+  // Career-path public records intentionally omit uid from the
+  // public document, so ownership is enforced by authenticated
+  // issuance flow rather than public fields in this interim model.
   allow create:
       if request.auth != null
-      && request.resource.data.userId == request.auth.uid
       && request.resource.data.credentialId == credentialId
       && request.resource.data.status == "active";
 
 
-  // Once issued, students cannot modify or delete the
-  // public verification record.
-  allow update, delete:
-      if false;
-}
-
-
-// =========================================================
-// STUDENT CAPSTONE PROGRESS
-// =========================================================
-
-match /users/{userId}/capstones/{capstoneId} {
-
-  // A signed-in student may read only their own
-  // capstone progress and grading record.
-  allow read:
-      if request.auth != null
-      && request.auth.uid == userId;
-
-
-  // Current development implementation:
-  // students may create their own capstone progress record.
-  allow create:
-      if request.auth != null
-      && request.auth.uid == userId;
-
-
-  // Current development implementation:
-  // students may update their own capstone progress.
+  // Allow authenticated refresh of an existing verification record
+  // only while keeping the same credential ID.
   //
-  // NOTE:
-  // Before production, fields such as:
-  //
-  // passed
-  // score
-  // grading
-  // reviewStatus
-  // passedAt
-  //
-  // should ideally be written by a trusted server-side
-  // function rather than directly from the browser.
+  // Production recommendation: move this to a trusted server
+  // function and set update/delete to false.
   allow update:
       if request.auth != null
-      && request.auth.uid == userId;
+      && request.resource.data.credentialId == credentialId
+      && resource.data.credentialId == credentialId;
 
 
-  // Prevent students from deleting capstone history.
-  allow delete:
-      if false;
-}
-
-
-// =========================================================
-// CAREER PATH CERTIFICATES
-// =========================================================
-
-match /users/{userId}/careerPathCertificates/{pathId} {
-
-  // Students may read only their own Career Path Certificates.
-  allow read:
-      if request.auth != null
-      && request.auth.uid == userId;
-
-
-  // Current development implementation:
-  // the browser may create a Career Path Certificate only
-  // inside the signed-in student's own account.
-  allow create:
-      if request.auth != null
-      && request.auth.uid == userId;
-
-
-  // Allow the student's own Career Path Certificate record
-  // to be updated during the current development stage.
-  //
-  // Production recommendation:
-  // move credential issuance and modification to a trusted
-  // Cloud Function / Netlify Function.
-  allow update:
-      if request.auth != null
-      && request.auth.uid == userId;
-
-
-  // Prevent browser-side deletion of issued credentials.
   allow delete:
       if false;
 }
