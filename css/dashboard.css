@@ -2678,3 +2678,37 @@
         padding-inline: 5px;
     }
 }
+
+
+/* =========================================================
+   CWS ACADEMY — PATHS NAV INTEGRATION
+========================================================= */
+
+/*
+   The extra Paths destination adds one more item to the
+   desktop navigation. Slightly tighten spacing before the
+   icon-only breakpoint so the full menu remains usable.
+*/
+
+@media (max-width: 1380px) and (min-width: 1001px) {
+
+    .student-nav {
+        gap: 12px;
+    }
+
+    .student-nav-links {
+        gap: 3px;
+    }
+
+    .student-nav-links a {
+        padding-inline: 8px;
+        gap: 6px;
+        font-size: 0.72rem;
+    }
+
+    .student-nav-links a i {
+        width: 15px;
+        font-size: 0.80rem;
+    }
+
+}
