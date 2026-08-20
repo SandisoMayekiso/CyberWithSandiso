@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CWS Academy career learning paths."
+    >
+
+    <title>
+        Learning Paths | CWS Academy
+    </title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Orbitron:wght@600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/learning-paths.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/cws-assistant.css"
+    >
+
+</head>
+
+
+<body class="student-page learning-paths-page">
+
+<header class="student-header">
+
+    <nav class="student-nav">
+
+        <a
+            href="dashboard.html"
+            class="academy-logo"
+            aria-label="CWS Academy Dashboard"
+        >
+            <span class="logo-cws">CWS</span>
+            <span class="logo-text">Academy</span>
+        </a>
+
+
+        <div class="student-nav-links">
+
+            <a href="dashboard.html">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="student-courses.html">
+                <i class="fa-solid fa-book-open"></i>
+                <span>Courses</span>
+            </a>
+
+            <a
+                href="learning-paths.html"
+                class="active"
+                aria-current="page"
+            >
+                <i class="fa-solid fa-route"></i>
+                <span>Paths</span>
+            </a>
+
+            <a href="labs.html">
+                <i class="fa-solid fa-flask"></i>
+                <span>Labs</span>
+            </a>
+
+            <a href="assessments.html">
+                <i class="fa-solid fa-clipboard-check"></i>
+                <span>Assessments</span>
+            </a>
+
+            <a href="progress.html">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Progress</span>
+            </a>
+
+            <a href="certificates.html">
+                <i class="fa-solid fa-certificate"></i>
+                <span>Certificates</span>
+            </a>
+
+            <a href="profile.html">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </a>
+
+        </div>
+
+
+        <div class="student-nav-account">
+
+            <div class="student-profile-chip">
+
+                <span
+                    class="student-profile-avatar"
+                    aria-hidden="true"
+                >
+                    <i class="fa-solid fa-user-shield"></i>
+                </span>
+
+                <span
+                    id="studentName"
+                    class="student-nav-name"
+                >
+                    Student
+                </span>
+
+                <span
+                    id="studentPlanBadge"
+                    class="student-plan-badge free"
+                    title="CWS Academy Free"
+                >
+                    FREE
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="logoutBtn"
+                class="dashboard-logout-btn"
+            >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="learning-paths-main">
+
+    <section class="paths-hero">
+
+        <div class="paths-hero-copy">
+
+            <span class="paths-eyebrow">
+                CWS ACADEMY • CAREER PATHS
+            </span>
+
+            <h1>
+                Learn with a
+                <span>destination.</span>
+            </h1>
+
+            <p>
+                Follow structured cybersecurity learning journeys,
+                see exactly where you are, and continue from your
+                next incomplete requirement.
+            </p>
+
+        </div>
+
+
+        <div class="paths-hero-icon">
+            <i class="fa-solid fa-route"></i>
+        </div>
+
+    </section>
+
+
+    <section
+        id="pathsLoading"
+        class="paths-message"
+    >
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Reading your learning progress...
+    </section>
+
+
+    <section
+        id="pathsContent"
+        hidden
+    >
+
+        <div class="paths-section-heading">
+
+            <div>
+                <span>YOUR CAREER JOURNEYS</span>
+
+                <h2>
+                    Learning Paths
+                </h2>
+
+                <p>
+                    Complete courses, practical work and capstones
+                    in a deliberate progression.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div
+            id="learningPathsGrid"
+            class="learning-paths-grid"
+        ></div>
+
+    </section>
+
+</main>
+
+
+<footer class="student-footer">
+    <p>
+        © 2026 CWS Academy. Part of the CyberWithSandiso ecosystem.
+    </p>
+</footer>
+
+
+<script
+    type="module"
+    src="../js/topbar-plan.js"
+></script>
+
+<script
+    type="module"
+    src="../js/learning-paths.js"
+></script>
+
+<script
+    type="module"
+    src="../js/cws-assistant.js"
+></script>
+
+</body>
+
+</html>
