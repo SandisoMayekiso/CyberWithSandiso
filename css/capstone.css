@@ -1,0 +1,366 @@
+/* =========================================================
+   CWS ACADEMY — CAPSTONE
+========================================================= */
+
+.capstone-page {
+    background:
+        radial-gradient(circle at 88% 5%, rgba(139,92,246,.07), transparent 28%),
+        #050910;
+}
+
+.capstone-main {
+    width: min(1380px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 40px 0 80px;
+}
+
+.capstone-message,
+.capstone-locked {
+    padding: 28px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 16px;
+    color: #91a0b1;
+    background: rgba(255,255,255,.02);
+    font-family: "Inter", sans-serif;
+}
+
+.capstone-locked {
+    max-width: 720px;
+    margin: 60px auto;
+    text-align: center;
+}
+
+.capstone-locked > i {
+    color: #f6c453;
+    font-size: 2rem;
+}
+
+.capstone-locked h1 {
+    margin: 14px 0 8px;
+    color: #fff;
+    font-family: "Orbitron", sans-serif;
+}
+
+.capstone-hero {
+    padding: 34px;
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    align-items: center;
+    gap: 30px;
+    border: 1px solid rgba(167,139,250,.23);
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at 90% 10%, rgba(139,92,246,.14), transparent 30%),
+        linear-gradient(145deg, rgba(19,14,38,.98), rgba(6,10,17,.98));
+}
+
+.capstone-eyebrow,
+.capstone-panel-label,
+.capstone-section-heading span {
+    color: #c4b5fd;
+    font-family: "Inter", sans-serif;
+    font-size: .66rem;
+    font-weight: 850;
+    letter-spacing: .1em;
+}
+
+.capstone-hero h1 {
+    margin: 10px 0;
+    color: #fff;
+    font-family: "Orbitron", sans-serif;
+    font-size: clamp(1.8rem,4vw,3rem);
+}
+
+.capstone-hero p {
+    max-width: 800px;
+    margin: 0;
+    color: #9aa8b7;
+    line-height: 1.7;
+    font-family: "Inter", sans-serif;
+}
+
+.capstone-meta {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.capstone-meta span {
+    padding: 6px 9px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 999px;
+    color: #aeb9c5;
+    background: rgba(255,255,255,.025);
+    font: 700 .66rem "Inter", sans-serif;
+}
+
+.capstone-progress-ring {
+    width: 120px;
+    height: 120px;
+    display: grid;
+    place-content: center;
+    border: 1px solid rgba(167,139,250,.28);
+    border-radius: 50%;
+    color: #fff;
+    background: rgba(139,92,246,.08);
+    text-align: center;
+}
+
+.capstone-progress-ring strong {
+    font: 800 1.55rem "Orbitron", sans-serif;
+}
+
+.capstone-progress-ring span {
+    margin-top: 3px;
+    color: #9b8fc7;
+    font: 800 .55rem "Inter", sans-serif;
+    letter-spacing: .08em;
+}
+
+.capstone-grid,
+.scope-grid,
+.objective-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 18px;
+}
+
+.capstone-panel,
+.scope-card,
+.objective-card,
+.report-builder {
+    padding: 22px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 15px;
+    background: rgba(255,255,255,.018);
+}
+
+.capstone-panel h2,
+.capstone-section-heading h2,
+.scope-card h3,
+.objective-card h3 {
+    color: #fff;
+    font-family: "Inter", sans-serif;
+}
+
+.capstone-panel p,
+.scope-card li,
+.objective-card p {
+    color: #8493a4;
+    font: 400 .8rem/1.65 "Inter", sans-serif;
+}
+
+.capstone-section {
+    margin-top: 38px;
+}
+
+.capstone-section-heading {
+    margin-bottom: 15px;
+}
+
+.capstone-section-heading h2 {
+    margin: 5px 0;
+    font-size: 1.25rem;
+}
+
+.capstone-section-heading p {
+    margin: 0;
+    color: #7e8c9c;
+    font: 400 .78rem/1.6 "Inter", sans-serif;
+}
+
+.scope-card.in-scope {
+    border-color: rgba(0,255,170,.14);
+}
+
+.scope-card.in-scope h3 i {
+    color: #00ffaa;
+}
+
+.scope-card.out-scope {
+    border-color: rgba(248,113,113,.13);
+}
+
+.scope-card.out-scope h3 i {
+    color: #f87171;
+}
+
+.objective-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+}
+
+.objective-card {
+    min-height: 145px;
+}
+
+.objective-number {
+    color: #c4b5fd;
+    font: 800 .64rem "Orbitron", sans-serif;
+}
+
+.objective-card h3 {
+    margin: 11px 0 7px;
+    font-size: .9rem;
+}
+
+.capstone-task-list {
+    display: grid;
+    gap: 10px;
+}
+
+.capstone-task {
+    padding: 14px;
+    display: grid;
+    grid-template-columns: auto minmax(0,1fr) auto;
+    gap: 12px;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,.065);
+    border-radius: 12px;
+    background: rgba(255,255,255,.015);
+}
+
+.capstone-task input {
+    width: 18px;
+    height: 18px;
+    accent-color: #00ffaa;
+}
+
+.capstone-task h3 {
+    margin: 0 0 3px;
+    color: #edf3f8;
+    font: 700 .82rem "Inter", sans-serif;
+}
+
+.capstone-task span {
+    color: #718094;
+    font: 600 .65rem "Inter", sans-serif;
+}
+
+.capstone-task.completed {
+    border-color: rgba(0,255,170,.14);
+    background: rgba(0,255,170,.025);
+}
+
+.evidence-badge {
+    padding: 5px 7px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 999px;
+    color: #7d8b99;
+    font: 800 .55rem "Inter", sans-serif;
+}
+
+.evidence-badge.required {
+    color: #ffdf83;
+    border-color: rgba(246,196,83,.18);
+    background: rgba(246,196,83,.04);
+}
+
+.report-builder {
+    max-width: 1000px;
+}
+
+.report-field + .report-field {
+    margin-top: 16px;
+}
+
+.report-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #dce4ec;
+    font: 700 .75rem "Inter", sans-serif;
+}
+
+.report-field textarea {
+    width: 100%;
+    resize: vertical;
+    padding: 13px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    outline: none;
+    color: #edf4f8;
+    background: #080d14;
+    font: 400 .8rem/1.6 "Inter", sans-serif;
+}
+
+.report-field textarea:focus {
+    border-color: rgba(0,255,170,.28);
+}
+
+.report-requirements {
+    margin: 18px 0;
+    padding: 15px;
+    border: 1px solid rgba(246,196,83,.13);
+    border-radius: 10px;
+    color: #9b8b62;
+    background: rgba(246,196,83,.035);
+    font: 400 .75rem/1.6 "Inter", sans-serif;
+}
+
+.capstone-btn {
+    min-height: 44px;
+    margin: 6px 8px 0 0;
+    padding: 0 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 9px;
+    font: 800 .74rem "Inter", sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.capstone-btn.primary {
+    color: #160e02;
+    border-color: #f6c453;
+    background: linear-gradient(135deg,#ffe59a,#f6c453);
+}
+
+.capstone-btn.secondary {
+    color: #e4eaf0;
+    background: rgba(255,255,255,.025);
+}
+
+.capstone-form-message {
+    margin-top: 15px;
+    color: #9baabb;
+    font: 600 .75rem "Inter", sans-serif;
+}
+
+.capstone-form-message.success {
+    color: #80ffd5;
+}
+
+.capstone-form-message.error {
+    color: #fca5a5;
+}
+
+@media (max-width: 850px) {
+    .capstone-main {
+        width: min(100% - 24px,1380px);
+    }
+
+    .capstone-hero,
+    .capstone-grid,
+    .scope-grid,
+    .objective-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .capstone-progress-ring {
+        width: 90px;
+        height: 90px;
+    }
+
+    .capstone-task {
+        grid-template-columns: auto minmax(0,1fr);
+    }
+
+    .evidence-badge {
+        grid-column: 2;
+        justify-self: start;
+    }
+}
