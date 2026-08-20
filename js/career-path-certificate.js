@@ -1,154 +1,922 @@
 import { onAuthStateChanged, signOut }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
 import { doc, getDoc, setDoc, serverTimestamp }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
 import { auth, db } from "./firebase-config.js";
 import { getLearningPath } from "../data/learning-paths.js";
 import { getCourse } from "../data/courses.js";
 
-const q=new URLSearchParams(location.search);
-const pathId=q.get("path")||"junior-penetration-tester";
-const $=id=>document.getElementById(id);
 
-const loading=$("certificateLoading"), locked=$("certificateLocked"),
-lockedText=$("certificateLockedText"), content=$("certificateContent"),
-studentName=$("studentName"), logoutBtn=$("logoutBtn"),
-certificateStudent=$("certificateStudent"), certificatePath=$("certificatePath"),
-certificateDescription=$("certificateDescription"), certificateScore=$("certificateScore"),
-certificateDate=$("certificateDate"), certificateCredential=$("certificateCredential"),
-certificatePathBadge=$("certificatePathBadge"), printBtn=$("printCertificateBtn"),
-copyBtn=$("copyCredentialBtn");
+const query =
+    new URLSearchParams(
+        window.location.search
+    );
 
-let currentUser=null,currentPath=null,currentCredential=null;
+const pathId =
+    query.get("path") ||
+    "junior-penetration-tester";
 
-function userName(u){
-    if(u?.displayName?.trim()) return u.displayName.trim();
-    if(u?.email?.includes("@")) return u.email.split("@")[0].replace(/[._-]+/g," ").replace(/\b\w/g,c=>c.toUpperCase());
-    return "Student";
-}
 
-function formatDate(v){
-    return new Date(v).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
-}
+const $ =
+    id =>
+        document.getElementById(id);
 
-function credentialId(path){
-    const prefix=path.id.split("-").map(x=>x[0]?.toUpperCase()||"").join("").slice(0,5);
-    const d=new Date();
-    const date=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}`;
-    const rand=Math.random().toString(36).slice(2,8).toUpperCase();
-    return `CWS-${prefix}-${date}-${rand}`;
-}
 
-async function courseComplete(id){
-    const s=await getDoc(doc(db,"users",currentUser.uid,"courseProgress",id));
-    if(!s.exists()) return false;
-    const x=s.data()||{};
-    return x.completed===true||x.certificateEligible===true||Number(x.progressPercent||0)>=100;
-}
+const loading =
+    $("certificateLoading");
 
-async function verify(){
-    const courses=currentPath.stages.filter(s=>s.type==="course"&&s.required!==false);
-    const checks=await Promise.all(courses.map(async s=>({id:s.courseId,done:await courseComplete(s.courseId)})));
-    const missing=checks.filter(x=>!x.done).map(x=>getCourse(x.id)?.title||x.id);
+const locked =
+    $("certificateLocked");
 
-    const cap=currentPath.stages.find(s=>s.type==="capstone");
-    let capData=null;
-    if(cap?.capstoneId){
-        const s=await getDoc(doc(db,"users",currentUser.uid,"capstones",cap.capstoneId));
-        if(s.exists()) capData=s.data()||null;
+const lockedText =
+    $("certificateLockedText");
+
+const content =
+    $("certificateContent");
+
+const studentName =
+    $("studentName");
+
+const logoutBtn =
+    $("logoutBtn");
+
+const certificateStudent =
+    $("certificateStudent");
+
+const certificatePath =
+    $("certificatePath");
+
+const certificateDescription =
+    $("certificateDescription");
+
+const certificateScore =
+    $("certificateScore");
+
+const certificateDate =
+    $("certificateDate");
+
+const certificateCredential =
+    $("certificateCredential");
+
+const certificatePathBadge =
+    $("certificatePathBadge");
+
+const printBtn =
+    $("printCertificateBtn");
+
+const copyBtn =
+    $("copyCredentialBtn");
+
+const copyVerificationBtn =
+    $("copyVerificationBtn");
+
+const openVerificationBtn =
+    $("openCareerVerificationBtn");
+
+const verifyUrlText =
+    $("careerVerifyUrl");
+
+const qrCanvas =
+    $("careerCertificateQr");
+
+
+let currentUser =
+    null;
+
+let currentPath =
+    null;
+
+let currentCredential =
+    null;
+
+let verificationUrl =
+    "";
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function getUserName(
+    user
+) {
+
+    if (
+        user?.displayName?.trim()
+    ) {
+        return user.displayName.trim();
     }
+
+
+    if (
+        user?.email?.includes("@")
+    ) {
+
+        return user.email
+            .split("@")[0]
+            .replace(/[._-]+/g," ")
+            .replace(
+                /\b\w/g,
+                character =>
+                    character.toUpperCase()
+            );
+
+    }
+
+
+    return "Student";
+
+}
+
+
+function formatDate(
+    value
+) {
+
+    return new Date(
+        value
+    )
+        .toLocaleDateString(
+            undefined,
+            {
+                year:
+                    "numeric",
+
+                month:
+                    "long",
+
+                day:
+                    "numeric"
+            }
+        );
+
+}
+
+
+function createCredentialId(
+    path
+) {
+
+    const prefix =
+        path.id
+            .split("-")
+            .map(
+                part =>
+                    part[0]?.toUpperCase() ||
+                    ""
+            )
+            .join("")
+            .slice(0,5);
+
+
+    const date =
+        new Date();
+
+
+    const datePart =
+        `${date.getFullYear()}${String(
+            date.getMonth()+1
+        ).padStart(2,"0")}${String(
+            date.getDate()
+        ).padStart(2,"0")}`;
+
+
+    const random =
+        Math.random()
+            .toString(36)
+            .slice(2,8)
+            .toUpperCase();
+
+
+    return (
+        `CWS-${prefix}-${datePart}-${random}`
+    );
+
+}
+
+
+function buildVerificationUrl(
+    credentialId
+) {
+
+    const url =
+        new URL(
+            "../pages/verify-certificate.html",
+            window.location.href
+        );
+
+
+    url.searchParams.set(
+        "credential",
+        credentialId
+    );
+
+
+    return url.href;
+
+}
+
+
+/* =========================================================
+   ELIGIBILITY
+========================================================= */
+
+async function courseComplete(
+    courseId
+) {
+
+    const snapshot =
+        await getDoc(
+            doc(
+                db,
+                "users",
+                currentUser.uid,
+                "courseProgress",
+                courseId
+            )
+        );
+
+
+    if (!snapshot.exists()) {
+        return false;
+    }
+
+
+    const data =
+        snapshot.data() ||
+        {};
+
+
+    return (
+        data.completed === true ||
+        data.certificateEligible === true ||
+        Number(
+            data.progressPercent ||
+            0
+        ) >= 100
+    );
+
+}
+
+
+async function verifyPathCompletion() {
+
+    const requiredCourses =
+        currentPath.stages.filter(
+            stage =>
+                stage.type === "course" &&
+                stage.required !== false
+        );
+
+
+    const courseChecks =
+        await Promise.all(
+            requiredCourses.map(
+                async stage => ({
+                    courseId:
+                        stage.courseId,
+
+                    complete:
+                        await courseComplete(
+                            stage.courseId
+                        )
+                })
+            )
+        );
+
+
+    const missing =
+        courseChecks
+            .filter(
+                item =>
+                    !item.complete
+            )
+            .map(
+                item =>
+                    getCourse(
+                        item.courseId
+                    )?.title ||
+                    item.courseId
+            );
+
+
+    const capstoneStage =
+        currentPath.stages.find(
+            stage =>
+                stage.type === "capstone"
+        );
+
+
+    let capstone =
+        null;
+
+
+    if (
+        capstoneStage?.capstoneId
+    ) {
+
+        const snapshot =
+            await getDoc(
+                doc(
+                    db,
+                    "users",
+                    currentUser.uid,
+                    "capstones",
+                    capstoneStage.capstoneId
+                )
+            );
+
+
+        if (
+            snapshot.exists()
+        ) {
+
+            capstone =
+                snapshot.data() ||
+                null;
+
+        }
+
+    }
+
 
     return {
-        allowed:missing.length===0 && (!cap || capData?.passed===true),
+        allowed:
+            missing.length === 0 &&
+            (
+                !capstoneStage ||
+                capstone?.passed ===
+                    true
+            ),
+
         missing,
-        capstonePassed:!cap||capData?.passed===true,
-        capstone:capData
-    };
-}
 
-async function getOrCreate(result){
-    const ref=doc(db,"users",currentUser.uid,"careerPathCertificates",currentPath.id);
-    const s=await getDoc(ref);
-    if(s.exists()) return s.data();
-
-    const now=new Date().toISOString();
-    const c={
-        pathId:currentPath.id,
-        pathTitle:currentPath.title,
-        credentialTitle:currentPath.credentialTitle||`CWS ${currentPath.title} Path Certificate`,
-        credentialId:credentialId(currentPath),
-        issuedAt:now,
-        capstoneScore:Number(result.capstone?.score||0),
-        status:"verified"
+        capstone
     };
 
-    await setDoc(ref,{...c,createdAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
-    return c;
 }
 
-function render(c){
-    const n=userName(currentUser);
-    if(studentName) studentName.textContent=n;
-    certificateStudent.textContent=n;
-    certificatePath.textContent=`${currentPath.title} Path`;
-    certificateDescription.textContent=currentPath.description;
-    certificateScore.textContent=c.capstoneScore?`${c.capstoneScore}%`:"Completed";
-    certificateDate.textContent=formatDate(c.issuedAt);
-    certificateCredential.textContent=c.credentialId;
-    certificatePathBadge.textContent=(currentPath.shortTitle||currentPath.title).toUpperCase();
-    currentCredential=c;
-    loading.hidden=true;
-    content.hidden=false;
-}
 
-printBtn?.addEventListener("click",()=>window.print());
+/* =========================================================
+   PRIVATE CREDENTIAL
+========================================================= */
 
-copyBtn?.addEventListener("click",async()=>{
-    if(!currentCredential?.credentialId) return;
-    try{
-        await navigator.clipboard.writeText(currentCredential.credentialId);
-        copyBtn.innerHTML='<i class="fa-solid fa-circle-check"></i> Copied';
-        setTimeout(()=>copyBtn.innerHTML='<i class="fa-solid fa-copy"></i> Copy Credential ID',1800);
-    }catch{
-        window.prompt("Copy credential ID:",currentCredential.credentialId);
+async function getOrCreateCredential(
+    eligibility
+) {
+
+    const credentialRef =
+        doc(
+            db,
+            "users",
+            currentUser.uid,
+            "careerPathCertificates",
+            currentPath.id
+        );
+
+
+    const snapshot =
+        await getDoc(
+            credentialRef
+        );
+
+
+    if (
+        snapshot.exists()
+    ) {
+
+        return snapshot.data();
+
     }
-});
 
-logoutBtn?.addEventListener("click",async()=>{
-    await signOut(auth);
-    location.replace("../pages/login.html");
-});
 
-if(!auth){
-    location.replace("../pages/login.html");
-}else{
-    onAuthStateChanged(auth,async user=>{
-        if(!user){ location.replace("../pages/login.html"); return; }
-        currentUser=user;
-        currentPath=getLearningPath(pathId);
+    const issuedAt =
+        new Date()
+            .toISOString();
 
-        if(!currentPath){
-            loading.hidden=true; locked.hidden=false;
-            lockedText.textContent="This CWS learning path could not be found.";
+
+    const credential = {
+
+        pathId:
+            currentPath.id,
+
+        pathTitle:
+            currentPath.title,
+
+        credentialTitle:
+            currentPath.credentialTitle ||
+            `CWS ${currentPath.title} Path Certificate`,
+
+        credentialId:
+            createCredentialId(
+                currentPath
+            ),
+
+        issuedAt,
+
+        capstoneScore:
+            Number(
+                eligibility
+                    .capstone
+                    ?.score ||
+                0
+            ),
+
+        status:
+            "verified"
+    };
+
+
+    await setDoc(
+        credentialRef,
+        {
+            ...credential,
+
+            createdAt:
+                serverTimestamp(),
+
+            updatedAt:
+                serverTimestamp()
+        },
+        {
+            merge:
+                true
+        }
+    );
+
+
+    return credential;
+
+}
+
+
+/* =========================================================
+   PUBLIC VERIFICATION RECORD
+========================================================= */
+
+async function publishPublicVerification(
+    credential
+) {
+
+    /*
+       Public verification contains ONLY fields deliberately
+       intended for recruiters/employers. No email, UID,
+       private courseProgress or capstone evidence is exposed.
+    */
+
+    const publicRecord = {
+
+        credentialId:
+            credential.credentialId,
+
+        credentialType:
+            "career-path",
+
+        tier:
+            "professional",
+
+        status:
+            "active",
+
+        studentName:
+            getUserName(
+                currentUser
+            ),
+
+        pathId:
+            currentPath.id,
+
+        pathTitle:
+            currentPath.title,
+
+        credentialTitle:
+            credential.credentialTitle,
+
+        description:
+            currentPath.description,
+
+        capstonePassed:
+            true,
+
+        capstoneScore:
+            Number(
+                credential.capstoneScore ||
+                0
+            ),
+
+        issuedAt:
+            credential.issuedAt,
+
+        issuer:
+            "CWS Academy",
+
+        ecosystem:
+            "CyberWithSandiso",
+
+        verificationVersion:
+            1
+    };
+
+
+    await setDoc(
+        doc(
+            db,
+            "certificateVerifications",
+            credential.credentialId
+        ),
+        {
+            ...publicRecord,
+
+            createdAt:
+                serverTimestamp(),
+
+            updatedAt:
+                serverTimestamp()
+        },
+        {
+            merge:
+                true
+        }
+    );
+
+}
+
+
+/* =========================================================
+   QR
+========================================================= */
+
+async function renderQr() {
+
+    if (
+        !qrCanvas ||
+        !verificationUrl
+    ) {
+        return;
+    }
+
+
+    if (
+        typeof QRCode ===
+        "undefined"
+    ) {
+
+        console.warn(
+            "[CWS Career Certificate] QR library unavailable."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        await QRCode.toCanvas(
+            qrCanvas,
+            verificationUrl,
+            {
+                width:
+                    116,
+
+                margin:
+                    1
+            }
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "[CWS Career Certificate] QR generation failed:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+async function renderCredential(
+    credential
+) {
+
+    const name =
+        getUserName(
+            currentUser
+        );
+
+
+    if (studentName) {
+        studentName.textContent =
+            name;
+    }
+
+
+    certificateStudent.textContent =
+        name;
+
+
+    certificatePath.textContent =
+        `${currentPath.title} Path`;
+
+
+    certificateDescription.textContent =
+        currentPath.description;
+
+
+    certificateScore.textContent =
+        credential.capstoneScore
+            ? `${credential.capstoneScore}%`
+            : "Passed";
+
+
+    certificateDate.textContent =
+        formatDate(
+            credential.issuedAt
+        );
+
+
+    certificateCredential.textContent =
+        credential.credentialId;
+
+
+    certificatePathBadge.textContent =
+        (
+            currentPath.shortTitle ||
+            currentPath.title
+        )
+            .toUpperCase();
+
+
+    currentCredential =
+        credential;
+
+
+    verificationUrl =
+        buildVerificationUrl(
+            credential.credentialId
+        );
+
+
+    if (verifyUrlText) {
+        verifyUrlText.textContent =
+            verificationUrl;
+    }
+
+
+    if (openVerificationBtn) {
+        openVerificationBtn.href =
+            verificationUrl;
+    }
+
+
+    await renderQr();
+
+
+    loading.hidden =
+        true;
+
+
+    content.hidden =
+        false;
+
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+printBtn?.addEventListener(
+    "click",
+    () =>
+        window.print()
+);
+
+
+copyBtn?.addEventListener(
+    "click",
+    async () => {
+
+        if (
+            !currentCredential?.credentialId
+        ) {
             return;
         }
 
-        try{
-            const result=await verify();
 
-            if(!result.allowed){
-                loading.hidden=true; locked.hidden=false;
-                lockedText.textContent=result.missing.length
-                    ? `Complete these required courses first: ${result.missing.join(", ")}.`
-                    : "Pass the required career-path capstone before this certificate can be issued.";
+        try {
+
+            await navigator.clipboard.writeText(
+                currentCredential.credentialId
+            );
+
+            copyBtn.innerHTML =
+                '<i class="fa-solid fa-circle-check"></i> Copied';
+
+            setTimeout(
+                () => {
+                    copyBtn.innerHTML =
+                        '<i class="fa-solid fa-copy"></i> Copy Credential ID';
+                },
+                1600
+            );
+
+        }
+        catch {
+
+            window.prompt(
+                "Copy credential ID:",
+                currentCredential.credentialId
+            );
+
+        }
+
+    }
+);
+
+
+copyVerificationBtn?.addEventListener(
+    "click",
+    async () => {
+
+        if (!verificationUrl) {
+            return;
+        }
+
+
+        try {
+
+            await navigator.clipboard.writeText(
+                verificationUrl
+            );
+
+            copyVerificationBtn.innerHTML =
+                '<i class="fa-solid fa-circle-check"></i> Link Copied';
+
+            setTimeout(
+                () => {
+                    copyVerificationBtn.innerHTML =
+                        '<i class="fa-solid fa-link"></i> Copy Verification Link';
+                },
+                1600
+            );
+
+        }
+        catch {
+
+            window.prompt(
+                "Copy verification link:",
+                verificationUrl
+            );
+
+        }
+
+    }
+);
+
+
+logoutBtn?.addEventListener(
+    "click",
+    async () => {
+
+        await signOut(
+            auth
+        );
+
+        window.location.replace(
+            "../pages/login.html"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+if (!auth) {
+
+    window.location.replace(
+        "../pages/login.html"
+    );
+
+}
+else {
+
+    onAuthStateChanged(
+        auth,
+        async user => {
+
+            if (!user) {
+
+                window.location.replace(
+                    "../pages/login.html"
+                );
+
                 return;
+
             }
 
-            render(await getOrCreate(result));
-        }catch(e){
-            console.error(e);
-            loading.hidden=true; locked.hidden=false;
-            lockedText.textContent="The career-path credential could not be verified at this time.";
+
+            currentUser =
+                user;
+
+
+            currentPath =
+                getLearningPath(
+                    pathId
+                );
+
+
+            if (!currentPath) {
+
+                loading.hidden =
+                    true;
+
+                locked.hidden =
+                    false;
+
+                lockedText.textContent =
+                    "This CWS learning path could not be found.";
+
+                return;
+
+            }
+
+
+            try {
+
+                const eligibility =
+                    await verifyPathCompletion();
+
+
+                if (
+                    !eligibility.allowed
+                ) {
+
+                    loading.hidden =
+                        true;
+
+                    locked.hidden =
+                        false;
+
+
+                    lockedText.textContent =
+                        eligibility.missing.length
+                            ? `Complete these required courses first: ${eligibility.missing.join(", ")}.`
+                            : "Pass the required career-path capstone before this certificate can be issued.";
+
+
+                    return;
+
+                }
+
+
+                const credential =
+                    await getOrCreateCredential(
+                        eligibility
+                    );
+
+
+                await publishPublicVerification(
+                    credential
+                );
+
+
+                await renderCredential(
+                    credential
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "[CWS Career Certificate] Verification setup failed:",
+                    error
+                );
+
+
+                loading.hidden =
+                    true;
+
+                locked.hidden =
+                    false;
+
+                lockedText.textContent =
+                    "The career-path credential could not be prepared for verification.";
+
+            }
+
         }
-    });
+    );
+
 }
