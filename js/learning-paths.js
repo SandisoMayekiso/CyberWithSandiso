@@ -68,6 +68,9 @@ let currentEntitlement = {
 let progressMap =
     new Map();
 
+let capstoneProgressMap =
+    new Map();
+
 
 /* =========================================================
    HELPERS
@@ -662,13 +665,25 @@ function getPathState(
                     stage.type === "capstone"
                 ) {
 
+                    const capstoneProgress =
+                        capstoneProgressMap.get(
+                            stage.capstoneId ||
+                            stage.id
+                        ) ||
+                        {};
+
                     return {
                         ...stage,
                         index,
                         progress:
-                            0,
+                            Number(
+                                capstoneProgress.score ||
+                                0
+                            ),
                         completed:
-                            false
+                            capstoneProgress.passed ===
+                            true,
+                        capstoneProgress
                     };
 
                 }
@@ -703,13 +718,6 @@ function getPathState(
         );
 
 
-    /*
-     * Career-path progress currently measures the six
-     * live course stages. The capstone is displayed as a
-     * future required milestone but is not counted until
-     * the capstone engine exists.
-     */
-
     const courseProgressTotal =
         courseStages.reduce(
             (
@@ -731,11 +739,48 @@ function getPathState(
         );
 
 
+    const capstoneStages =
+        stageStates.filter(
+            stage =>
+                stage.type === "capstone"
+        );
+
+
+    const capstoneProgressTotal =
+        capstoneStages.reduce(
+            (
+                total,
+                stage
+            ) =>
+                total +
+                (
+                    stage.completed
+                        ? 100
+                        : Math.min(
+                            99,
+                            Number(
+                                stage.progress ||
+                                0
+                            )
+                        )
+                ),
+            0
+        );
+
+
+    const measurableStages =
+        courseStages.length +
+        capstoneStages.length;
+
+
     const progressPercent =
-        courseStages.length
+        measurableStages
             ? Math.round(
-                courseProgressTotal /
-                courseStages.length
+                (
+                    courseProgressTotal +
+                    capstoneProgressTotal
+                ) /
+                measurableStages
             )
             : 0;
 
@@ -829,7 +874,8 @@ function getPathState(
 
 
         if (
-            capstoneStage?.capstoneId
+            capstoneStage?.capstoneId &&
+            !capstoneStage.completed
         ) {
 
             nextStep = {
@@ -837,12 +883,30 @@ function getPathState(
                     "capstone",
 
                 label:
-                    "Start Capstone Penetration Test",
+                    capstoneStage.capstoneProgress?.submitted
+                        ? "Continue Capstone"
+                        : "Start Capstone Penetration Test",
 
                 url:
                     `capstone.html?capstone=${encodeURIComponent(
                         capstoneStage.capstoneId
                     )}`
+            };
+
+        }
+        else if (
+            capstoneStage?.completed
+        ) {
+
+            nextStep = {
+                type:
+                    "credential",
+
+                label:
+                    "Career Path Certificate Ready",
+
+                url:
+                    "certificates.html"
             };
 
         }
@@ -1240,6 +1304,33 @@ async function loadProgress(
         documentSnapshot => {
 
             progressMap.set(
+                documentSnapshot.id,
+                documentSnapshot.data() || {}
+            );
+
+        }
+    );
+
+
+    capstoneProgressMap =
+        new Map();
+
+
+    const capstoneSnapshot =
+        await getDocs(
+            collection(
+                db,
+                "users",
+                user.uid,
+                "capstones"
+            )
+        );
+
+
+    capstoneSnapshot.forEach(
+        documentSnapshot => {
+
+            capstoneProgressMap.set(
                 documentSnapshot.id,
                 documentSnapshot.data() || {}
             );
