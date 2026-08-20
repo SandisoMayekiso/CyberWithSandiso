@@ -62,6 +62,15 @@ import {
 
 
 /* =========================================================
+   VIDEO LESSON REGISTRY
+========================================================= */
+
+import {
+    getVideoLesson
+} from "../data/video-lessons.js";
+
+
+/* =========================================================
    ACCESS CONTROL
 ========================================================= */
 
@@ -354,6 +363,12 @@ const previousLessonBtn =
 const nextLessonBtn =
     document.getElementById(
         "nextLessonBtn"
+    );
+
+
+const cwsVideoLesson =
+    document.getElementById(
+        "cwsVideoLesson"
     );
 
 
@@ -1413,6 +1428,742 @@ function updateCourseProgressUI() {
 
 
 /* =========================================================
+   VIDEO LESSON SYSTEM
+========================================================= */
+
+let currentVideoPlayer = null;
+let lastVideoSavedSecond = 0;
+
+
+function normalizeAccessValue(value) {
+
+    return String(
+        value || ""
+    )
+        .trim()
+        .toLowerCase();
+
+}
+
+
+function userHasActivePro() {
+
+    return (
+        normalizeAccessValue(
+            currentEntitlement?.plan
+        ) === "pro" &&
+        [
+            "active",
+            "trialing"
+        ].includes(
+            normalizeAccessValue(
+                currentEntitlement?.status
+            )
+        )
+    );
+
+}
+
+
+function getCurrentVideoConfig() {
+
+    if (
+        !currentCourse ||
+        !currentModule ||
+        !currentLesson
+    ) {
+
+        return null;
+
+    }
+
+
+    return getVideoLesson(
+        currentCourse.id,
+        currentModule.id,
+        currentLesson.id
+    );
+
+}
+
+
+function getVideoProgressRef(videoConfig) {
+
+    if (
+        !db ||
+        !currentUser ||
+        !videoConfig
+    ) {
+
+        return null;
+
+    }
+
+
+    return doc(
+        db,
+        "users",
+        currentUser.uid,
+        "videoProgress",
+        videoConfig.id
+    );
+
+}
+
+
+async function loadVideoProgress(videoConfig) {
+
+    const ref =
+        getVideoProgressRef(
+            videoConfig
+        );
+
+
+    if (!ref) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        const snapshot =
+            await getDoc(
+                ref
+            );
+
+
+        return snapshot.exists()
+            ? snapshot.data()
+            : null;
+
+    }
+    catch (err) {
+
+        warn(
+            "Video progress load failed:",
+            err
+        );
+
+
+        return null;
+
+    }
+
+}
+
+
+async function saveVideoProgress(
+    videoConfig,
+    forceComplete = false
+) {
+
+    if (
+        !currentVideoPlayer ||
+        !videoConfig
+    ) {
+
+        return;
+
+    }
+
+
+    const ref =
+        getVideoProgressRef(
+            videoConfig
+        );
+
+
+    if (!ref) {
+
+        return;
+
+    }
+
+
+    const duration =
+        Number(
+            currentVideoPlayer.duration ||
+            0
+        );
+
+
+    const currentTime =
+        Number(
+            currentVideoPlayer.currentTime ||
+            0
+        );
+
+
+    const percentage =
+        duration > 0
+            ? Math.min(
+                100,
+                Math.round(
+                    currentTime /
+                    duration *
+                    100
+                )
+            )
+            : 0;
+
+
+    const completed =
+        forceComplete ||
+        percentage >= 90;
+
+
+    try {
+
+        await setDoc(
+            ref,
+            {
+                videoId:
+                    videoConfig.id,
+
+                courseId:
+                    currentCourse.id,
+
+                moduleId:
+                    currentModule.id,
+
+                lessonId:
+                    currentLesson.id,
+
+                currentTime,
+
+                duration,
+
+                percentage,
+
+                completed,
+
+                updatedAt:
+                    serverTimestamp(),
+
+                ...(completed
+                    ? {
+                        completedAt:
+                            serverTimestamp()
+                    }
+                    : {})
+            },
+            {
+                merge:
+                    true
+            }
+        );
+
+    }
+    catch (err) {
+
+        warn(
+            "Video progress save failed:",
+            err
+        );
+
+    }
+
+}
+
+
+function renderVideoLocked(videoConfig) {
+
+    if (!cwsVideoLesson) {
+
+        return;
+
+    }
+
+
+    cwsVideoLesson.hidden =
+        false;
+
+
+    cwsVideoLesson.innerHTML = `
+
+        <section class="cws-video-card locked">
+
+            <div class="cws-video-lock-icon">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+
+            <div class="cws-video-lock-copy">
+
+                <span>
+                    CWS PRO VIDEO LESSON
+                </span>
+
+                <h2>
+                    ${escapeHTML(
+                        videoConfig.title ||
+                        currentLesson.title
+                    )}
+                </h2>
+
+                <p>
+                    This guided video lesson is available
+                    to active CWS Pro students.
+                </p>
+
+            </div>
+
+            <a
+                class="cws-video-upgrade-btn"
+                href="subscription.html?course=${encodeURIComponent(
+                    currentCourse.id
+                )}&from=lesson"
+            >
+                <i class="fa-solid fa-crown"></i>
+                Unlock with CWS Pro
+            </a>
+
+        </section>
+
+    `;
+
+}
+
+
+function formatVideoChapterTime(seconds) {
+
+    const safeSeconds =
+        Math.max(
+            0,
+            Number(seconds) || 0
+        );
+
+
+    const minutes =
+        Math.floor(
+            safeSeconds / 60
+        );
+
+
+    const remainder =
+        Math.floor(
+            safeSeconds % 60
+        );
+
+
+    return (
+        `${minutes}:${String(
+            remainder
+        ).padStart(
+            2,
+            "0"
+        )}`
+    );
+
+}
+
+
+async function renderVideoLesson() {
+
+    if (!cwsVideoLesson) {
+
+        return;
+
+    }
+
+
+    currentVideoPlayer =
+        null;
+
+
+    lastVideoSavedSecond =
+        0;
+
+
+    const videoConfig =
+        getCurrentVideoConfig();
+
+
+    if (!videoConfig) {
+
+        cwsVideoLesson.hidden =
+            true;
+
+
+        cwsVideoLesson.innerHTML =
+            "";
+
+
+        return;
+
+    }
+
+
+    const requiresPro =
+        normalizeAccessValue(
+            videoConfig.access
+        ) === "pro";
+
+
+    if (
+        requiresPro &&
+        !userHasActivePro()
+    ) {
+
+        renderVideoLocked(
+            videoConfig
+        );
+
+
+        return;
+
+    }
+
+
+    const videoUrl =
+        String(
+            videoConfig.videoUrl ||
+            ""
+        ).trim();
+
+
+    const chapters =
+        Array.isArray(
+            videoConfig.chapters
+        )
+            ? videoConfig.chapters
+            : [];
+
+
+    cwsVideoLesson.hidden =
+        false;
+
+
+    cwsVideoLesson.innerHTML = `
+
+        <section class="cws-video-card">
+
+            <div class="cws-video-heading">
+
+                <div>
+
+                    <span class="cws-video-eyebrow">
+
+                        ${
+                            requiresPro
+                                ? '<i class="fa-solid fa-crown"></i> CWS PRO VIDEO'
+                                : '<i class="fa-solid fa-circle-play"></i> VIDEO LESSON'
+                        }
+
+                    </span>
+
+                    <h2>
+                        ${escapeHTML(
+                            videoConfig.title ||
+                            currentLesson.title
+                        )}
+                    </h2>
+
+                    <p>
+                        ${escapeHTML(
+                            videoConfig.description ||
+                            ""
+                        )}
+                    </p>
+
+                </div>
+
+                <span class="cws-video-duration">
+                    <i class="fa-regular fa-clock"></i>
+                    ${escapeHTML(
+                        videoConfig.duration ||
+                        "Video"
+                    )}
+                </span>
+
+            </div>
+
+
+            ${
+                videoUrl
+                    ? `
+                        <div class="cws-video-player-shell">
+
+                            <video
+                                id="cwsLessonVideo"
+                                class="cws-video-player"
+                                controls
+                                preload="metadata"
+                                playsinline
+                                ${
+                                    videoConfig.poster
+                                        ? `poster="${escapeHTML(
+                                            videoConfig.poster
+                                        )}"`
+                                        : ""
+                                }
+                            >
+                                <source
+                                    src="${escapeHTML(
+                                        videoUrl
+                                    )}"
+                                >
+
+                                Your browser does not support HTML5 video.
+
+                            </video>
+
+                        </div>
+                    `
+                    : `
+                        <div class="cws-video-coming-soon">
+
+                            <i class="fa-solid fa-video"></i>
+
+                            <h3>
+                                Video lesson coming soon
+                            </h3>
+
+                            <p>
+                                The written lesson remains available.
+                                Add the final video URL in
+                                <code>data/video-lessons.js</code>
+                                when your CWS recording is ready.
+                            </p>
+
+                        </div>
+                    `
+            }
+
+
+            ${
+                chapters.length
+                    ? `
+                        <div class="cws-video-chapters">
+
+                            <span>
+                                VIDEO CHAPTERS
+                            </span>
+
+                            <div>
+
+                                ${chapters
+                                    .map(
+                                        chapter => `
+                                            <button
+                                                type="button"
+                                                class="cws-video-chapter"
+                                                data-time="${Number(
+                                                    chapter.time ||
+                                                    0
+                                                )}"
+                                            >
+                                                <span>
+                                                    ${formatVideoChapterTime(
+                                                        chapter.time
+                                                    )}
+                                                </span>
+
+                                                <strong>
+                                                    ${escapeHTML(
+                                                        chapter.label ||
+                                                        "Chapter"
+                                                    )}
+                                                </strong>
+                                            </button>
+                                        `
+                                    )
+                                    .join("")}
+
+                            </div>
+
+                        </div>
+                    `
+                    : ""
+            }
+
+
+            ${
+                videoConfig.transcript
+                    ? `
+                        <details class="cws-video-transcript">
+
+                            <summary>
+                                <i class="fa-solid fa-align-left"></i>
+                                Video Transcript
+                            </summary>
+
+                            <div>
+                                ${videoConfig.transcript}
+                            </div>
+
+                        </details>
+                    `
+                    : ""
+            }
+
+        </section>
+
+    `;
+
+
+    if (!videoUrl) {
+
+        return;
+
+    }
+
+
+    currentVideoPlayer =
+        document.getElementById(
+            "cwsLessonVideo"
+        );
+
+
+    if (!currentVideoPlayer) {
+
+        return;
+
+    }
+
+
+    const savedProgress =
+        await loadVideoProgress(
+            videoConfig
+        );
+
+
+    if (
+        savedProgress &&
+        Number(
+            savedProgress.currentTime ||
+            0
+        ) > 0
+    ) {
+
+        currentVideoPlayer.addEventListener(
+            "loadedmetadata",
+            () => {
+
+                const resumeTime =
+                    Math.min(
+                        Number(
+                            savedProgress.currentTime
+                        ),
+                        Math.max(
+                            0,
+                            currentVideoPlayer.duration -
+                            3
+                        )
+                    );
+
+
+                if (
+                    Number.isFinite(
+                        resumeTime
+                    )
+                ) {
+
+                    currentVideoPlayer.currentTime =
+                        resumeTime;
+
+                }
+
+            },
+            {
+                once:
+                    true
+            }
+        );
+
+    }
+
+
+    currentVideoPlayer.addEventListener(
+        "timeupdate",
+        () => {
+
+            const second =
+                Math.floor(
+                    currentVideoPlayer.currentTime
+                );
+
+
+            if (
+                second -
+                lastVideoSavedSecond >= 15
+            ) {
+
+                lastVideoSavedSecond =
+                    second;
+
+
+                saveVideoProgress(
+                    videoConfig
+                );
+
+            }
+
+        }
+    );
+
+
+    currentVideoPlayer.addEventListener(
+        "pause",
+        () =>
+            saveVideoProgress(
+                videoConfig
+            )
+    );
+
+
+    currentVideoPlayer.addEventListener(
+        "ended",
+        () =>
+            saveVideoProgress(
+                videoConfig,
+                true
+            )
+    );
+
+
+    cwsVideoLesson
+        .querySelectorAll(
+            ".cws-video-chapter"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        if (!currentVideoPlayer) {
+
+                            return;
+
+                        }
+
+
+                        currentVideoPlayer.currentTime =
+                            Number(
+                                button.dataset.time ||
+                                0
+                            );
+
+
+                        currentVideoPlayer
+                            .play()
+                            .catch(
+                                () => {}
+                            );
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
    RENDER LESSON
 ========================================================= */
 
@@ -1628,6 +2379,8 @@ function renderLesson() {
 
 
     renderIntroduction();
+
+    renderVideoLesson();
 
     renderObjectives();
 
