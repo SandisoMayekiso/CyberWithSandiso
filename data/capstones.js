@@ -181,7 +181,31 @@ export const capstones = {
             "Reproduction / validation evidence",
             "Remediation recommendation",
             "Retest recommendation"
-        ]
+        ],
+
+        gradingRubric: {
+            passingScore: 80,
+
+            mandatoryGates: {
+                requireAllTasks: true,
+                minimumFindings: 2,
+                minimumExecutiveSummaryWords: 80,
+                requireEvidenceForFindings: true,
+                requireRemediationForFindings: true,
+                requireRetestForFindings: true,
+                requireAcademicIntegrityDeclaration: true
+            },
+
+            weights: {
+                taskCompletion: 20,
+                evidenceQuality: 15,
+                methodology: 10,
+                executiveSummary: 15,
+                technicalFindings: 25,
+                remediationAndRetest: 10,
+                professionalCompleteness: 5
+            }
+        }
 
     }
 
