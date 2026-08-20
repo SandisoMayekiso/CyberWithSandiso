@@ -24,7 +24,9 @@ import {
 
 import {
     doc,
-    getDoc
+    getDoc,
+    setDoc,
+    serverTimestamp
 } from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -922,6 +924,182 @@ function buildVerificationUrl(
 
 
 /* =========================================================
+   PUBLIC COURSE CERTIFICATE VERIFICATION
+========================================================= */
+
+async function publishCourseVerificationRecord() {
+
+    if (
+        !db ||
+        !currentUser ||
+        !currentCourse ||
+        !currentProgress ||
+        !currentCredentialId
+    ) {
+        return false;
+    }
+
+
+    const issueDate =
+        toDate(
+            getIssueDateValue()
+        ) ||
+        new Date();
+
+
+    const access =
+        String(
+            currentCourse.access ||
+            currentCourse.plan ||
+            "free"
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const tier =
+        access === "pro"
+            ? "pro"
+            : "course";
+
+
+    const publicRecord = {
+
+        credentialId:
+            currentCredentialId,
+
+        credentialType:
+            "course",
+
+        tier,
+
+        status:
+            "active",
+
+        /*
+         * userId is included for compatibility with the current
+         * Firestore ownership rule during client-side issuance.
+         * The public verification page does not display it.
+         */
+        userId:
+            currentUser.uid,
+
+        studentName:
+            getUserName(
+                currentUser
+            ),
+
+        courseId:
+            currentCourse.id,
+
+        courseTitle:
+            currentCourse.title ||
+            "CWS Academy Course",
+
+        credentialTitle:
+            access === "pro"
+                ? `CWS Pro Certificate — ${currentCourse.title}`
+                : `CWS Course Certificate — ${currentCourse.title}`,
+
+        description:
+            currentCourse.description ||
+            "CWS Academy course completion credential.",
+
+        finalScore:
+            getFinalScore(),
+
+        issuedAt:
+            issueDate.toISOString(),
+
+        issuer:
+            "CWS Academy",
+
+        ecosystem:
+            "CyberWithSandiso",
+
+        verificationVersion:
+            1
+
+    };
+
+
+    try {
+
+        const verificationRef =
+            doc(
+                db,
+                "certificateVerifications",
+                currentCredentialId
+            );
+
+
+        const existing =
+            await getDoc(
+                verificationRef
+            );
+
+
+        /*
+         * Old deployed Firestore rules may allow create but deny
+         * update. If a verification document already exists, do
+         * not rewrite it from the browser.
+         */
+        if (
+            existing.exists()
+        ) {
+
+            console.log(
+                "[CWS Certificate] Public verification record already exists:",
+                currentCredentialId
+            );
+
+
+            return true;
+
+        }
+
+
+        await setDoc(
+            verificationRef,
+            {
+                ...publicRecord,
+
+                createdAt:
+                    serverTimestamp()
+            }
+        );
+
+
+        console.log(
+            "[CWS Certificate] Public verification record created:",
+            currentCredentialId
+        );
+
+
+        return true;
+
+    }
+    catch (error) {
+
+        /*
+         * Do not break certificate viewing if public verification
+         * cannot be published. Log the exact Firebase error so the
+         * Firestore rule can be corrected independently.
+         */
+        console.error(
+            "[CWS Certificate] Public verification record could not be created:",
+            error
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================================================
    QR CODE
 ========================================================= */
 
@@ -1026,172 +1204,10 @@ async function renderQrCode() {
 
 
 /* =========================================================
-   CERTIFICATE THEME
-========================================================= */
-
-function isCurrentCoursePro() {
-
-    return (
-        String(
-            currentCourse?.access ||
-            ""
-        )
-            .trim()
-            .toLowerCase() ===
-            "pro" ||
-
-        currentCourse?.proOnly ===
-            true
-    );
-
-}
-
-
-function applyCertificateTheme() {
-
-    const isPro =
-        isCurrentCoursePro();
-
-
-    const documentElement =
-        document.getElementById(
-            "certificateDocument"
-        );
-
-
-    document.body.classList.toggle(
-        "pro-certificate-page",
-        isPro
-    );
-
-
-    if (documentElement) {
-
-        documentElement.classList.toggle(
-            "pro-certificate",
-            isPro
-        );
-
-    }
-
-
-    const eyebrow =
-        document.querySelector(
-            ".certificate-page-heading .certificate-eyebrow"
-        );
-
-
-    if (eyebrow) {
-
-        eyebrow.textContent =
-            isPro
-                ? "CWS ACADEMY • PRO VERIFIED ACHIEVEMENT"
-                : "CWS ACADEMY • VERIFIED ACHIEVEMENT";
-
-    }
-
-
-    const pageHeading =
-        document.querySelector(
-            ".certificate-page-heading h1"
-        );
-
-
-    if (pageHeading) {
-
-        pageHeading.textContent =
-            isPro
-                ? "CWS Pro Certificate"
-                : "Course Certificate";
-
-    }
-
-
-    const verifiedBadge =
-        document.querySelector(
-            ".certificate-verified-badge"
-        );
-
-
-    if (verifiedBadge) {
-
-        verifiedBadge.innerHTML =
-            isPro
-                ? `
-                    <i class="fa-solid fa-crown"></i>
-                    CWS PRO VERIFIED
-                  `
-                : `
-                    <i class="fa-solid fa-circle-check"></i>
-                    VERIFIED
-                  `;
-
-    }
-
-
-    const kicker =
-        document.querySelector(
-            ".certificate-kicker"
-        );
-
-
-    if (kicker) {
-
-        kicker.textContent =
-            isPro
-                ? "CWS PRO • VERIFIED CERTIFICATE OF COMPLETION"
-                : "CERTIFICATE OF COMPLETION";
-
-    }
-
-
-    const brand =
-        document.querySelector(
-            ".certificate-brand"
-        );
-
-
-    if (
-        isPro &&
-        brand &&
-        !brand.querySelector(
-            ".pro-certificate-ribbon"
-        )
-    ) {
-
-        const ribbon =
-            document.createElement(
-                "span"
-            );
-
-
-        ribbon.className =
-            "pro-certificate-ribbon";
-
-
-        ribbon.innerHTML = `
-            <i class="fa-solid fa-crown"></i>
-            PREMIUM PRACTICAL TRAINING
-        `;
-
-
-        brand.appendChild(
-            ribbon
-        );
-
-    }
-
-}
-
-
-/* =========================================================
    RENDER CERTIFICATE
 ========================================================= */
 
 async function renderCertificate() {
-
-    applyCertificateTheme();
-
 
     const name =
         getUserName(
@@ -1299,6 +1315,16 @@ async function renderCertificate() {
             )}`;
 
     }
+
+
+    /*
+     * Ensure an earned course certificate has a real public
+     * Firestore verification document before exposing its QR/link.
+     *
+     * Existing certificates are backfilled automatically the next
+     * time the student opens the certificate page.
+     */
+    await publishCourseVerificationRecord();
 
 
     await renderQrCode();
@@ -1636,30 +1662,14 @@ async function downloadCertificatePdf() {
                 .getHeight();
 
 
-        const isProCertificate =
-            isCurrentCoursePro();
-
-
-        const accentColor =
-            isProCertificate
-                ? [246, 196, 83]
-                : [220, 48, 48];
-
-
-        const accentDarkColor =
-            isProCertificate
-                ? [183, 121, 31]
-                : [160, 24, 24];
-
-
         /*
          * BACKGROUND
          */
 
         pdf.setFillColor(
-            isProCertificate ? 11 : 10,
-            isProCertificate ? 9 : 10,
-            isProCertificate ? 5 : 10
+            10,
+            10,
+            10
         );
 
 
@@ -1677,7 +1687,9 @@ async function downloadCertificatePdf() {
          */
 
         pdf.setDrawColor(
-            ...accentDarkColor
+            160,
+            24,
+            24
         );
 
 
@@ -1719,7 +1731,9 @@ async function downloadCertificatePdf() {
          */
 
         pdf.setTextColor(
-            ...accentColor
+            220,
+            48,
+            48
         );
 
 
@@ -1773,9 +1787,7 @@ async function downloadCertificatePdf() {
 
 
         pdf.text(
-            isProCertificate
-                ? "CWS PRO VERIFIED"
-                : "VERIFIED ACHIEVEMENT",
+            "VERIFIED ACHIEVEMENT",
             width - 20,
             24,
             {
@@ -1790,7 +1802,9 @@ async function downloadCertificatePdf() {
          */
 
         pdf.setTextColor(
-            ...accentColor
+            211,
+            37,
+            37
         );
 
 
@@ -1800,9 +1814,7 @@ async function downloadCertificatePdf() {
 
 
         pdf.text(
-            isProCertificate
-                ? "CWS PRO • CERTIFICATE OF COMPLETION"
-                : "CERTIFICATE OF COMPLETION",
+            "CERTIFICATE OF COMPLETION",
             width / 2,
             49,
             {
@@ -1891,7 +1903,9 @@ async function downloadCertificatePdf() {
 
 
         pdf.setDrawColor(
-            ...accentDarkColor
+            175,
+            26,
+            26
         );
 
 
