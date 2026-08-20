@@ -1480,18 +1480,18 @@ function createCertificateCard(
 
             <div class="certificate-card-actions">
 
-                <button
-                    type="button"
-                    class="certificate-view-btn"
-                    data-certificate-id="${escapeHTML(
+                <a
+                    href="certificate-view.html?course=${encodeURIComponent(
+                        certificate.courseId ||
                         certificate.id
                     )}"
+                    class="certificate-view-btn"
                 >
 
                     <i class="fa-solid fa-eye"></i>
                     View Certificate
 
-                </button>
+                </a>
 
             </div>
 
@@ -1641,16 +1641,15 @@ function createUpcomingCertificateCard(
         ${
             path.earned
                 ? `
-                    <button
-                        type="button"
-                        class="certificate-view-btn"
-                        data-certificate-id="${escapeHTML(
+                    <a
+                        href="certificate-view.html?course=${encodeURIComponent(
                             path.id
                         )}"
+                        class="certificate-view-btn"
                     >
                         <i class="fa-solid fa-certificate"></i>
                         View Earned Certificate
-                    </button>
+                    </a>
                   `
                 : path.status !== "Planned"
                     ? `
@@ -2088,9 +2087,11 @@ logoutBtn?.addEventListener(
 
 async function initialiseCertificatesPage() {
 
-    createCertificateModal();
-
-    setupCertificateActions();
+    /*
+       Course certificates now open the dedicated
+       certificate-view.html page instead of the legacy modal.
+       This avoids the old modal locking body scrolling.
+    */
 
     await Promise.all([
         loadProgress(),
