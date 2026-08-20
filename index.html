@@ -79,6 +79,137 @@
         href="css/cws-assistant.css"
     >
 
+
+    <style>
+        /* ==================================================
+           PUBLIC CREDENTIAL VERIFICATION
+        =================================================== */
+
+        .nav-verify-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.42rem;
+        }
+
+        .nav-verify-link i {
+            color: #00ffaa;
+            font-size: 0.82em;
+        }
+
+        .credential-verification-preview {
+            padding: 5rem 1.5rem;
+        }
+
+        .credential-verification-card {
+            width: min(1120px, 100%);
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 1.5rem;
+            border: 1px solid rgba(0, 255, 170, 0.16);
+            border-radius: 18px;
+            background:
+                radial-gradient(
+                    circle at 90% 0%,
+                    rgba(0, 255, 170, 0.07),
+                    transparent 30%
+                ),
+                rgba(8, 15, 22, 0.88);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+        }
+
+        .credential-verification-icon {
+            width: 68px;
+            height: 68px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(0, 255, 170, 0.2);
+            border-radius: 16px;
+            color: #00ffaa;
+            background: rgba(0, 255, 170, 0.055);
+            font-size: 1.55rem;
+        }
+
+        .credential-verification-copy h2 {
+            margin: 0.35rem 0 0.55rem;
+        }
+
+        .credential-verification-copy p {
+            max-width: 720px;
+            margin: 0;
+            opacity: 0.78;
+            line-height: 1.65;
+        }
+
+        .credential-verification-points {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem 1rem;
+        }
+
+        .credential-verification-points span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.82rem;
+            opacity: 0.82;
+        }
+
+        .credential-verification-points i {
+            color: #00ffaa;
+        }
+
+        .credential-verification-action {
+            width: min(260px, 100%);
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .credential-verification-action .btn-primary {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .credential-verification-action small {
+            opacity: 0.58;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        @media (max-width: 860px) {
+            .credential-verification-card {
+                grid-template-columns: auto minmax(0, 1fr);
+            }
+
+            .credential-verification-action {
+                grid-column: 2;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .credential-verification-preview {
+                padding: 3.5rem 1rem;
+            }
+
+            .credential-verification-card {
+                padding: 1.35rem;
+                grid-template-columns: 1fr;
+            }
+
+            .credential-verification-icon,
+            .credential-verification-action {
+                grid-column: 1;
+            }
+
+            .credential-verification-action {
+                width: 100%;
+            }
+        }
+    </style>
+
 </head>
 
 
@@ -129,6 +260,16 @@
                 <li>
                     <a href="pages/pricing.html">
                         Free vs Pro
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                        href="pages/verify.html"
+                        class="nav-verify-link"
+                    >
+                        <i class="fa-solid fa-certificate"></i>
+                        Verify Credential
                     </a>
                 </li>
 
@@ -1630,6 +1771,81 @@
 
 
         <!-- ==================================================
+             PUBLIC CREDENTIAL VERIFICATION
+        =================================================== -->
+
+        <section
+            class="credential-verification-preview"
+            id="credential-verification"
+        >
+
+            <div class="credential-verification-card">
+
+                <div class="credential-verification-icon">
+                    <i class="fa-solid fa-certificate"></i>
+                </div>
+
+                <div class="credential-verification-copy">
+
+                    <span class="section-kicker">
+                        PUBLIC CREDENTIAL VERIFICATION
+                    </span>
+
+                    <h2>
+                        Verify a CWS Academy Credential
+                    </h2>
+
+                    <p>
+                        Employers, recruiters and other third parties
+                        can independently verify eligible CWS Academy
+                        credentials using the credential ID shown on
+                        the certificate. No student account is required.
+                    </p>
+
+                    <div class="credential-verification-points">
+
+                        <span>
+                            <i class="fa-solid fa-circle-check"></i>
+                            Public verification
+                        </span>
+
+                        <span>
+                            <i class="fa-solid fa-shield-halved"></i>
+                            Credential status
+                        </span>
+
+                        <span>
+                            <i class="fa-solid fa-user-check"></i>
+                            Recipient details
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="credential-verification-action">
+
+                    <a
+                        href="pages/verify.html"
+                        class="btn-primary"
+                    >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Verify Credential
+                    </a>
+
+                    <small>
+                        Enter a CWS credential ID or follow the
+                        verification link shown on a certificate.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
              FAQ
         =================================================== -->
 
@@ -1881,6 +2097,10 @@
 
                 <a href="pages/contact.html">
                     Contact
+                </a>
+
+                <a href="pages/verify.html">
+                    Verify Credential
                 </a>
 
             </div>
