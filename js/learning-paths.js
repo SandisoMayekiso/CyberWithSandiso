@@ -819,6 +819,35 @@ function getPathState(
         }
 
     }
+    else {
+
+        const capstoneStage =
+            stageStates.find(
+                stage =>
+                    stage.type === "capstone"
+            );
+
+
+        if (
+            capstoneStage?.capstoneId
+        ) {
+
+            nextStep = {
+                type:
+                    "capstone",
+
+                label:
+                    "Start Capstone Penetration Test",
+
+                url:
+                    `capstone.html?capstone=${encodeURIComponent(
+                        capstoneStage.capstoneId
+                    )}`
+            };
+
+        }
+
+    }
 
 
     return {
