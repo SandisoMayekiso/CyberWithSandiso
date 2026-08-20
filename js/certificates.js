@@ -797,6 +797,318 @@ function buildCertificateData() {
 }
 
 
+/* =========================================================
+   CREDENTIAL JOURNEY
+========================================================= */
+
+function getEarnedCourseCertificates() {
+    return certificates.filter(
+        certificate =>
+            certificate.earned === true
+    );
+}
+
+function getEarnedProCertificates() {
+    return getEarnedCourseCertificates()
+        .filter(
+            certificate => {
+                const course =
+                    courses[
+                        certificate.courseId
+                    ];
+
+                return (
+                    String(
+                        course?.access ||
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase() ===
+                    "pro"
+                );
+            }
+        );
+}
+
+function setCredentialTierState(
+    element,
+    earned,
+    label = ""
+) {
+    if (!element) {
+        return;
+    }
+
+    element.classList.toggle(
+        "earned",
+        earned
+    );
+
+    element.classList.toggle(
+        "locked",
+        !earned
+    );
+
+    const status =
+        element.querySelector(
+            ".credential-tier-status"
+        );
+
+    if (!status) {
+        return;
+    }
+
+    status.innerHTML =
+        earned
+            ? `
+                <i class="fa-solid fa-circle-check"></i>
+                <span>${escapeHTML(label || "Earned")}</span>
+              `
+            : `
+                <i class="fa-solid fa-lock"></i>
+                <span>Locked</span>
+              `;
+}
+
+function renderCredentialJourney() {
+    const courseTier =
+        document.getElementById(
+            "credentialTierCourse"
+        );
+
+    const proTier =
+        document.getElementById(
+            "credentialTierPro"
+        );
+
+    const careerTier =
+        document.getElementById(
+            "credentialTierCareer"
+        );
+
+    const currentLevel =
+        document.getElementById(
+            "credentialCurrentLevel"
+        );
+
+    const nextMilestone =
+        document.getElementById(
+            "credentialNextMilestone"
+        );
+
+    const nextAction =
+        document.getElementById(
+            "credentialNextAction"
+        );
+
+    const earnedCourseCertificates =
+        getEarnedCourseCertificates();
+
+    const earnedProCertificates =
+        getEarnedProCertificates();
+
+    const hasCourseCredential =
+        earnedCourseCertificates.length > 0;
+
+    const hasProCredential =
+        earnedProCertificates.length > 0;
+
+    const hasCareerCredential =
+        careerPathCredentials.length > 0;
+
+    setCredentialTierState(
+        courseTier,
+        hasCourseCredential,
+        hasCourseCredential
+            ? `${earnedCourseCertificates.length} Earned`
+            : ""
+    );
+
+    setCredentialTierState(
+        proTier,
+        hasProCredential,
+        hasProCredential
+            ? `${earnedProCertificates.length} Earned`
+            : ""
+    );
+
+    setCredentialTierState(
+        careerTier,
+        hasCareerCredential,
+        hasCareerCredential
+            ? `${careerPathCredentials.length} Earned`
+            : ""
+    );
+
+    let levelLabel =
+        "Getting Started";
+
+    let nextTitle =
+        "Earn your first Course Certificate";
+
+    let nextText =
+        "Complete an eligible CWS Academy course to unlock your first verified credential.";
+
+    let nextHref =
+        "student-courses.html";
+
+    let nextButton =
+        "Browse Courses";
+
+    let nextIcon =
+        "fa-book-open";
+
+    if (
+        hasCourseCredential &&
+        !hasProCredential
+    ) {
+        levelLabel =
+            "Course Certificate";
+
+        nextTitle =
+            "Progress to a CWS Pro Certificate";
+
+        nextText =
+            "Complete an eligible CWS Pro course and its required assessments and practical work.";
+
+        nextHref =
+            "student-courses.html";
+
+        nextButton =
+            "Explore Pro Courses";
+
+        nextIcon =
+            "fa-crown";
+    }
+
+    if (
+        hasProCredential &&
+        !hasCareerCredential
+    ) {
+        levelLabel =
+            "CWS Pro Certificate";
+
+        nextTitle =
+            "Complete a professional Career Path";
+
+        nextText =
+            "Finish the required learning path and pass its practical capstone to earn the highest CWS credential tier.";
+
+        nextHref =
+            "learning-paths.html";
+
+        nextButton =
+            "Continue Career Path";
+
+        nextIcon =
+            "fa-route";
+    }
+
+    if (hasCareerCredential) {
+        levelLabel =
+            "Career Path Certificate";
+
+        const latest =
+            careerPathCredentials[0];
+
+        nextTitle =
+            "Professional credential earned";
+
+        nextText =
+            latest
+                ? `${latest.pathTitle} is now a verified CWS Career Path credential. Continue building additional specializations as new paths become available.`
+                : "Your CWS professional career-path credential has been issued.";
+
+        nextHref =
+            latest?.pathId
+                ? `career-path-certificate.html?path=${encodeURIComponent(
+                    latest.pathId
+                )}`
+                : "learning-paths.html";
+
+        nextButton =
+            "View Professional Credential";
+
+        nextIcon =
+            "fa-award";
+    }
+
+    if (currentLevel) {
+        currentLevel.innerHTML = `
+            <span>CURRENT LEVEL</span>
+            <strong>${escapeHTML(levelLabel)}</strong>
+        `;
+
+        currentLevel.classList.toggle(
+            "professional",
+            hasCareerCredential
+        );
+
+        currentLevel.classList.toggle(
+            "pro",
+            hasProCredential &&
+            !hasCareerCredential
+        );
+    }
+
+    if (nextMilestone) {
+        const icon =
+            nextMilestone.querySelector(
+                ".credential-next-icon i"
+            );
+
+        const heading =
+            nextMilestone.querySelector(
+                "h3"
+            );
+
+        const copy =
+            nextMilestone.querySelector(
+                "p"
+            );
+
+        if (icon) {
+            icon.className =
+                `fa-solid ${nextIcon}`;
+        }
+
+        if (heading) {
+            heading.textContent =
+                nextTitle;
+        }
+
+        if (copy) {
+            copy.textContent =
+                nextText;
+        }
+
+        nextMilestone.classList.toggle(
+            "professional-earned",
+            hasCareerCredential
+        );
+    }
+
+    if (nextAction) {
+        nextAction.href =
+            nextHref;
+
+        nextAction.innerHTML = `
+            ${escapeHTML(nextButton)}
+            <i class="fa-solid fa-arrow-right"></i>
+        `;
+
+        nextAction.classList.toggle(
+            "professional",
+            hasCareerCredential
+        );
+    }
+}
+
+
+/* =========================================================
+   CERTIFICATE STATISTICS
+========================================================= */
+
 function updateCertificateStatistics() {
 
     const earnedElement =
@@ -1788,6 +2100,8 @@ async function initialiseCertificatesPage() {
     buildCertificateData();
 
     updateCertificateStatistics();
+
+    renderCredentialJourney();
 
     renderProfessionalCredentials();
 
