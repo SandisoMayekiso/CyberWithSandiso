@@ -903,12 +903,10 @@ function getPathState(
                     "credential",
 
                 label:
-                    "View Career Path Certificate",
+                    "Career Path Certificate Ready",
 
                 url:
-                    `career-path-certificate.html?path=${encodeURIComponent(
-                        path.id
-                    )}`
+                    "certificates.html"
             };
 
         }
@@ -1110,18 +1108,7 @@ function renderPathCard(
 
 
     card.className =
-        `learning-path-card ${
-            path.status === "planned"
-                ? "path-planned"
-                : "path-active"
-        }`;
-
-    card.dataset.pathOrder =
-        String(
-            path.displayOrder ||
-            path.order ||
-            ""
-        ).padStart(2, "0");
+        "learning-path-card";
 
 
     const stages =
@@ -1179,28 +1166,9 @@ function renderPathCard(
 
             <div class="path-card-title">
 
-                <div class="path-card-kicker-row">
-                    <span class="path-card-kicker">
-                        ${path.category.toUpperCase()}
-                    </span>
-
-                    <span class="path-availability-badge ${
-                        path.status === "planned"
-                            ? "planned"
-                            : "active"
-                    }">
-                        <i class="fa-solid ${
-                            path.status === "planned"
-                                ? "fa-clock"
-                                : "fa-circle-check"
-                        }"></i>
-                        ${
-                            path.status === "planned"
-                                ? "Planned"
-                                : "Active"
-                        }
-                    </span>
-                </div>
+                <span class="path-card-kicker">
+                    ${path.category.toUpperCase()}
+                </span>
 
                 <h3>
                     ${path.title} Path
@@ -1348,27 +1316,48 @@ async function loadProgress(
         new Map();
 
 
-    const capstoneSnapshot =
-        await getDocs(
-            collection(
-                db,
-                "users",
-                user.uid,
-                "capstones"
-            )
-        );
+    /*
+       Capstone progress is a newer collection than courseProgress.
+       If the deployed Firestore rules have not yet been updated,
+       do not allow that permission error to break the entire
+       Learning Paths page. The path will still render using
+       course progress, while capstone status remains unavailable
+       until the rules are updated.
+    */
 
+    try {
 
-    capstoneSnapshot.forEach(
-        documentSnapshot => {
-
-            capstoneProgressMap.set(
-                documentSnapshot.id,
-                documentSnapshot.data() || {}
+        const capstoneSnapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "users",
+                    user.uid,
+                    "capstones"
+                )
             );
 
-        }
-    );
+
+        capstoneSnapshot.forEach(
+            documentSnapshot => {
+
+                capstoneProgressMap.set(
+                    documentSnapshot.id,
+                    documentSnapshot.data() || {}
+                );
+
+            }
+        );
+
+    }
+    catch (err) {
+
+        console.warn(
+            "[CWS Paths] Capstone progress unavailable:",
+            err
+        );
+
+    }
 
 }
 
