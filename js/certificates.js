@@ -1486,6 +1486,10 @@ function createCertificateCard(
                         certificate.id
                     )}"
                     class="certificate-view-btn"
+                    data-course-id="${escapeHTML(
+                        certificate.courseId ||
+                        certificate.id
+                    )}"
                 >
 
                     <i class="fa-solid fa-eye"></i>
@@ -1646,6 +1650,9 @@ function createUpcomingCertificateCard(
                             path.id
                         )}"
                         class="certificate-view-btn"
+                        data-course-id="${escapeHTML(
+                            path.id
+                        )}"
                     >
                         <i class="fa-solid fa-certificate"></i>
                         View Earned Certificate
@@ -1714,256 +1721,77 @@ function renderUpcomingCertificates() {
 }
 
 
-function createCertificateModal() {
+/* =========================================================
+   CERTIFICATE NAVIGATION
+========================================================= */
 
-    if (
-        document.getElementById(
-            "certificateModal"
-        )
-    ) {
-        return;
-    }
-
-    const modal =
-        document.createElement(
-            "div"
-        );
-
-    modal.id =
-        "certificateModal";
-
-    modal.className =
-        "certificate-modal";
-
-    modal.hidden = true;
-
-    modal.innerHTML = `
-
-        <div
-            class="certificate-modal-content"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="certificateModalTitle"
-        >
-
-            <button
-                type="button"
-                class="certificate-modal-close"
-                id="certificateModalClose"
-                aria-label="Close certificate"
-            >
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-
-            <div
-                id="certificateModalBody"
-                class="certificate-modal-preview"
-            ></div>
-
-        </div>
-
-    `;
-
-    document.body.appendChild(
-        modal
-    );
-
-    document
-        .getElementById(
-            "certificateModalClose"
-        )
-        ?.addEventListener(
-            "click",
-            closeCertificateModal
-        );
-
-    modal.addEventListener(
-        "click",
-        event => {
-
-            if (
-                event.target === modal
-            ) {
-                closeCertificateModal();
-            }
-
-        }
-    );
-
-}
-
-
-function openCertificateModal(
-    certificateId
-) {
-
-    const certificate =
-        certificates.find(
-            item =>
-                item.id ===
-                certificateId
-        );
-
-    if (!certificate) {
-        return;
-    }
-
-    const modal =
-        document.getElementById(
-            "certificateModal"
-        );
-
-    const body =
-        document.getElementById(
-            "certificateModalBody"
-        );
-
-    if (!modal || !body) {
-        return;
-    }
-
-    const date =
-        formatCertificateDate(
-            certificate.issuedDate
-        );
-
-    const name =
-        getUserName(
-            currentUser
-        );
-
-    body.innerHTML = `
-
-        <i class="fa-solid fa-certificate"></i>
-
-        <span class="certificates-eyebrow">
-            CWS ACADEMY
-        </span>
-
-        <h2 id="certificateModalTitle">
-            Certificate of Completion
-        </h2>
-
-        <p>
-            This certifies that
-        </p>
-
-        <h3>
-            ${escapeHTML(name)}
-        </h3>
-
-        <p>
-            has successfully completed
-        </p>
-
-        <h2>
-            ${escapeHTML(
-                certificate.title
-            )}
-        </h2>
-
-        <p>
-            ${escapeHTML(
-                certificate.description
-            )}
-        </p>
-
-        ${
-            certificate.finalScore > 0
-                ? `
-                    <p>
-                        Final assessment:
-                        <strong>
-                            ${certificate.finalScore}%
-                        </strong>
-                    </p>
-                  `
-                : ""
-        }
-
-        <p>
-            Issued:
-            <strong>
-                ${escapeHTML(date)}
-            </strong>
-        </p>
-
-        <p>
-            Credential ID:
-            <strong>
-                ${escapeHTML(
-                    certificate.credentialId
-                )}
-            </strong>
-        </p>
-
-        <p>
-            <i class="fa-solid fa-shield-halved"></i>
-            CWS Academy verified achievement
-        </p>
-
-    `;
-
-    modal.hidden = false;
-
-    document.body.style.overflow =
-        "hidden";
-
-}
-
-
-function closeCertificateModal() {
-
-    const modal =
-        document.getElementById(
-            "certificateModal"
-        );
-
-    if (!modal) {
-        return;
-    }
-
-    modal.hidden = true;
-
-    document.body.style.overflow =
-        "";
-
-}
-
-
-function setupCertificateActions() {
+/*
+ * Course certificates use the dedicated certificate-view.html
+ * page. Do not create or open a modal here.
+ *
+ * The explicit click handler is intentional: it gives us one
+ * predictable navigation path even if older cached markup still
+ * contains a button instead of an anchor.
+ */
+function setupCertificateNavigation() {
 
     document.addEventListener(
         "click",
         event => {
 
-            const button =
+            const control =
                 event.target.closest(
-                    "[data-certificate-id]"
+                    ".certificate-view-btn"
                 );
 
-            if (!button) {
+
+            if (!control) {
                 return;
             }
 
-            openCertificateModal(
-                button.dataset
-                    .certificateId
-            );
 
-        }
-    );
+            const courseId =
+                control.dataset.courseId ||
+                control.dataset.certificateId ||
+                "";
 
-    document.addEventListener(
-        "keydown",
-        event => {
 
-            if (
-                event.key === "Escape"
-            ) {
-                closeCertificateModal();
+            if (!courseId) {
+
+                /*
+                 * A correctly-rendered anchor already has a valid
+                 * href, so allow normal browser navigation.
+                 */
+                if (
+                    control.tagName === "A" &&
+                    control.getAttribute("href")
+                ) {
+                    return;
+                }
+
+
+                console.warn(
+                    "[CWS Certificates] Certificate course ID missing."
+                );
+
+
+                return;
             }
+
+
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            const target =
+                `certificate-view.html?course=${encodeURIComponent(
+                    courseId
+                )}`;
+
+
+            window.location.assign(
+                target
+            );
 
         }
     );
@@ -2087,11 +1915,7 @@ logoutBtn?.addEventListener(
 
 async function initialiseCertificatesPage() {
 
-    /*
-       Course certificates now open the dedicated
-       certificate-view.html page instead of the legacy modal.
-       This avoids the old modal locking body scrolling.
-    */
+    setupCertificateNavigation();
 
     await Promise.all([
         loadProgress(),
