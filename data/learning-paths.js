@@ -26,6 +26,9 @@ export const learningPaths = {
         order:
             10,
 
+        displayOrder:
+            1,
+
         icon:
             "fa-solid fa-shield-halved",
 
@@ -101,6 +104,9 @@ export const learningPaths = {
 
         order:
             20,
+
+        displayOrder:
+            2,
 
         icon:
             "fa-solid fa-user-secret",
@@ -202,6 +208,9 @@ export const learningPaths = {
         order:
             30,
 
+        displayOrder:
+            3,
+
         icon:
             "fa-solid fa-code",
 
@@ -264,6 +273,9 @@ export const learningPaths = {
 
         order:
             40,
+
+        displayOrder:
+            4,
 
         icon:
             "fa-solid fa-building-shield",
@@ -328,10 +340,12 @@ export function getLearningPaths() {
         .sort(
             (a, b) =>
                 Number(
+                    a.displayOrder ||
                     a.order ||
                     999
                 ) -
                 Number(
+                    b.displayOrder ||
                     b.order ||
                     999
                 )
