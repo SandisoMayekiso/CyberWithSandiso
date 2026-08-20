@@ -1,293 +1,91 @@
-/* =========================================================
-   CWS ACADEMY
-   PUBLIC CREDENTIAL VERIFICATION
-   File: js/verify-certificate.js
-========================================================= */
-
-"use strict";
-
-
-/* =========================================================
-   FIRESTORE
-========================================================= */
-
 import {
     doc,
     getDoc
-} from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-/* =========================================================
-   FIREBASE CONFIG
-========================================================= */
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 import {
     db
 } from "./firebase-config.js";
 
 
-/* =========================================================
-   DOM
-========================================================= */
-
-const verificationForm =
-    document.getElementById(
-        "verificationForm"
+const params =
+    new URLSearchParams(
+        window.location.search
     );
 
-const credentialInput =
-    document.getElementById(
-        "credentialInput"
-    );
-
-const verifyCredentialBtn =
-    document.getElementById(
-        "verifyCredentialBtn"
-    );
-
-const verificationFormMessage =
-    document.getElementById(
-        "verificationFormMessage"
-    );
-
-const verificationLoading =
-    document.getElementById(
-        "verificationLoading"
-    );
-
-const verificationNotFound =
-    document.getElementById(
-        "verificationNotFound"
-    );
-
-const verificationNotFoundText =
-    document.getElementById(
-        "verificationNotFoundText"
-    );
-
-const verificationResult =
-    document.getElementById(
-        "verificationResult"
-    );
-
-const verifiedCourse =
-    document.getElementById(
-        "verifiedCourse"
-    );
-
-const verifiedStudent =
-    document.getElementById(
-        "verifiedStudent"
-    );
-
-const verifiedCourseField =
-    document.getElementById(
-        "verifiedCourseField"
-    );
-
-const verifiedDate =
-    document.getElementById(
-        "verifiedDate"
-    );
-
-const verifiedCredential =
-    document.getElementById(
-        "verifiedCredential"
-    );
-
-const verifiedScore =
-    document.getElementById(
-        "verifiedScore"
-    );
-
-const verifiedStatus =
-    document.getElementById(
-        "verifiedStatus"
+const credentialId =
+    params.get(
+        "credential"
     );
 
 
-/* =========================================================
-   CREDENTIAL NORMALIZATION
-========================================================= */
-
-function normalizeCredential(value) {
-
-    return String(
-        value || ""
-    )
-        .trim()
-        .replace(
-            /\s+/g,
-            ""
-        )
-        .toUpperCase();
-
-}
+const $ =
+    id =>
+        document.getElementById(id);
 
 
-/* =========================================================
-   VALIDATE CREDENTIAL FORMAT
-========================================================= */
+const loading =
+    $("verificationLoading");
 
-function isReasonableCredential(value) {
+const errorState =
+    $("verificationError");
 
-    const credential =
-        normalizeCredential(
-            value
-        );
+const errorText =
+    $("verificationErrorText");
 
+const content =
+    $("verificationContent");
 
-    if (
-        credential.length <
-        8
-    ) {
+const card =
+    $("verificationCard");
 
-        return false;
+const tierLabel =
+    $("verificationTierLabel");
 
-    }
+const credentialTitle =
+    $("verificationCredentialTitle");
 
+const student =
+    $("verificationStudent");
 
-    return /^[A-Z0-9-]+$/
-        .test(
-            credential
-        );
+const professionalDetails =
+    $("verificationProfessionalDetails");
 
-}
+const path =
+    $("verificationPath");
 
+const capstone =
+    $("verificationCapstone");
 
-/* =========================================================
-   PAGE STATES
-========================================================= */
+const score =
+    $("verificationScore");
 
-function resetResults() {
+const issued =
+    $("verificationIssued");
 
-    if (verificationLoading) {
+const credentialIdEl =
+    $("verificationCredentialId");
 
-        verificationLoading.hidden =
-            true;
+const issuer =
+    $("verificationIssuer");
 
-    }
-
-
-    if (verificationNotFound) {
-
-        verificationNotFound.hidden =
-            true;
-
-    }
+const description =
+    $("verificationDescription");
 
 
-    if (verificationResult) {
-
-        verificationResult.hidden =
-            true;
-
-    }
-
-
-    if (verificationFormMessage) {
-
-        verificationFormMessage.hidden =
-            true;
-
-        verificationFormMessage.textContent =
-            "";
-
-    }
-
-}
-
-
-function setLoading(isLoading) {
-
-    if (verificationLoading) {
-
-        verificationLoading.hidden =
-            !isLoading;
-
-    }
-
-
-    if (verifyCredentialBtn) {
-
-        verifyCredentialBtn.disabled =
-            isLoading;
-
-
-        verifyCredentialBtn.innerHTML =
-            isLoading
-                ? `
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                    Checking
-                  `
-                : `
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    Verify
-                  `;
-
-    }
-
-}
-
-
-function showFormMessage(message) {
-
-    if (!verificationFormMessage) {
-
-        return;
-
-    }
-
-
-    verificationFormMessage.textContent =
-        message;
-
-
-    verificationFormMessage.hidden =
-        false;
-
-}
-
-
-/* =========================================================
-   DATE
-========================================================= */
-
-function toDate(value) {
+function formatDate(
+    value
+) {
 
     if (!value) {
-
-        return null;
-
-    }
-
-
-    if (
-        typeof value.toDate ===
-            "function"
-    ) {
-
-        return value.toDate();
-
-    }
-
-
-    if (
-        typeof value.seconds ===
-            "number"
-    ) {
-
-        return new Date(
-            value.seconds *
-            1000
-        );
-
+        return "—";
     }
 
 
     const date =
-        new Date(value);
+        new Date(
+            value
+        );
 
 
     if (
@@ -295,27 +93,7 @@ function toDate(value) {
             date.getTime()
         )
     ) {
-
-        return null;
-
-    }
-
-
-    return date;
-
-}
-
-
-function formatDate(value) {
-
-    const date =
-        toDate(value);
-
-
-    if (!date) {
-
-        return "Recorded";
-
+        return "—";
     }
 
 
@@ -336,230 +114,54 @@ function formatDate(value) {
 }
 
 
-/* =========================================================
-   SHOW INVALID
-========================================================= */
-
-function showNotFound(
-    message =
-        "No active CWS Academy verification record was found for this credential ID."
+function showError(
+    message
 ) {
 
-    if (
-        verificationNotFoundText
-    ) {
+    loading.hidden =
+        true;
 
-        verificationNotFoundText
-            .textContent =
-            message;
+    errorState.hidden =
+        false;
 
-    }
-
-
-    if (verificationNotFound) {
-
-        verificationNotFound.hidden =
-            false;
-
-    }
+    errorText.textContent =
+        message;
 
 }
 
 
-/* =========================================================
-   SHOW VERIFIED
-========================================================= */
+async function verifyCredential() {
 
-function showVerified(
-    credential,
-    data
-) {
+    if (!credentialId) {
 
-    const courseTitle =
-        String(
-            data.courseTitle ||
-            "CWS Academy Certificate"
+        showError(
+            "No credential ID was supplied."
         );
-
-
-    const learner =
-        String(
-            data.studentName ||
-            "Learner"
-        );
-
-
-    const score =
-        Number(
-            data.finalScore ||
-            0
-        );
-
-
-    const status =
-        String(
-            data.status ||
-            "active"
-        );
-
-
-    if (verifiedCourse) {
-
-        verifiedCourse.textContent =
-            courseTitle;
-
-    }
-
-
-    if (verifiedStudent) {
-
-        verifiedStudent.textContent =
-            learner;
-
-    }
-
-
-    if (verifiedCourseField) {
-
-        verifiedCourseField.textContent =
-            courseTitle;
-
-    }
-
-
-    if (verifiedDate) {
-
-        verifiedDate.textContent =
-            formatDate(
-                data.issuedAt
-            );
-
-    }
-
-
-    if (verifiedCredential) {
-
-        verifiedCredential.textContent =
-            credential;
-
-    }
-
-
-    if (verifiedScore) {
-
-        verifiedScore.textContent =
-            score > 0
-                ? `${score}%`
-                : "Passed";
-
-    }
-
-
-    if (verifiedStatus) {
-
-        verifiedStatus.textContent =
-            status === "active"
-                ? "Verified"
-                : status;
-
-    }
-
-
-    if (verificationResult) {
-
-        verificationResult.hidden =
-            false;
-
-    }
-
-}
-
-
-/* =========================================================
-   VERIFY
-========================================================= */
-
-async function verifyCredential(
-    rawCredential
-) {
-
-    resetResults();
-
-
-    const credential =
-        normalizeCredential(
-            rawCredential
-        );
-
-
-    if (credentialInput) {
-
-        credentialInput.value =
-            credential;
-
-    }
-
-
-    if (
-        !isReasonableCredential(
-            credential
-        )
-    ) {
-
-        showFormMessage(
-            "Enter a valid CWS Academy credential ID."
-        );
-
 
         return;
 
     }
-
-
-    if (!db) {
-
-        showNotFound(
-            "The verification service is currently unavailable."
-        );
-
-
-        return;
-
-    }
-
-
-    setLoading(
-        true
-    );
 
 
     try {
 
-        const ref =
-            doc(
-                db,
-                "certificateVerifications",
-                credential
-            );
-
-
         const snapshot =
             await getDoc(
-                ref
+                doc(
+                    db,
+                    "certificateVerifications",
+                    credentialId
+                )
             );
-
-
-        setLoading(
-            false
-        );
 
 
         if (
             !snapshot.exists()
         ) {
 
-            showNotFound();
-
+            showError(
+                "No active CWS credential could be found for this ID."
+            );
 
             return;
 
@@ -571,83 +173,127 @@ async function verifyCredential(
             {};
 
 
-        /*
-         * Only explicitly active credentials are treated as
-         * successfully verified.
-         */
-
         if (
             String(
                 data.status ||
                 ""
             )
+                .trim()
                 .toLowerCase() !==
             "active"
         ) {
 
-            showNotFound(
-                "This credential exists but is not currently active."
+            showError(
+                "This credential is not currently active."
             );
-
 
             return;
 
         }
 
 
-        /*
-         * Defensive consistency check.
-         */
-
-        if (
-            data.credentialId &&
-            normalizeCredential(
-                data.credentialId
-            ) !==
-            credential
-        ) {
-
-            console.warn(
-                "[CWS Verify] Credential document mismatch."
-            );
+        const professional =
+            data.credentialType ===
+                "career-path" ||
+            data.tier ===
+                "professional";
 
 
-            showNotFound(
-                "The credential record could not be validated."
-            );
-
-
-            return;
-
-        }
-
-
-        showVerified(
-            credential,
-            data
+        card.classList.toggle(
+            "professional",
+            professional
         );
+
+
+        tierLabel.textContent =
+            professional
+                ? "VERIFIED PROFESSIONAL CREDENTIAL"
+                : (
+                    data.tier === "pro"
+                        ? "VERIFIED CWS PRO CERTIFICATE"
+                        : "VERIFIED COURSE CERTIFICATE"
+                );
+
+
+        credentialTitle.textContent =
+            data.credentialTitle ||
+            data.courseTitle ||
+            "CWS Academy Credential";
+
+
+        student.textContent =
+            data.studentName ||
+            "CWS Academy Student";
+
+
+        issued.textContent =
+            formatDate(
+                data.issuedAt
+            );
+
+
+        credentialIdEl.textContent =
+            data.credentialId ||
+            credentialId;
+
+
+        issuer.textContent =
+            data.issuer ||
+            "CWS Academy";
+
+
+        description.textContent =
+            data.description ||
+            "This credential has an active CWS Academy public verification record.";
+
+
+        if (professional) {
+
+            professionalDetails.hidden =
+                false;
+
+
+            path.textContent =
+                data.pathTitle ||
+                "Professional Career Path";
+
+
+            capstone.textContent =
+                data.capstonePassed
+                    ? "PASSED"
+                    : "—";
+
+
+            score.textContent =
+                Number(
+                    data.capstoneScore ||
+                    0
+                ) > 0
+                    ? `${Number(
+                        data.capstoneScore
+                    )}%`
+                    : "Passed";
+
+        }
+
+
+        loading.hidden =
+            true;
+
+        content.hidden =
+            false;
 
     }
     catch (error) {
 
         console.error(
-            "[CWS Verify] Verification failed:",
+            "[CWS Verification] Verification failed:",
             error
         );
 
 
-        setLoading(
-            false
-        );
-
-
-        /*
-         * Do not claim a credential is invalid merely because
-         * Firestore failed or security rules blocked the read.
-         */
-
-        showNotFound(
-            "The verification service could not complete this request. Please try again."
+        showError(
+            "Credential verification is temporarily unavailable."
         );
 
     }
@@ -655,100 +301,4 @@ async function verifyCredential(
 }
 
 
-/* =========================================================
-   UPDATE URL
-========================================================= */
-
-function updateCredentialUrl(
-    credential
-) {
-
-    try {
-
-        const url =
-            new URL(
-                window.location.href
-            );
-
-
-        url.searchParams.set(
-            "credential",
-            normalizeCredential(
-                credential
-            )
-        );
-
-
-        window.history
-            .replaceState(
-                {},
-                "",
-                url
-            );
-
-    }
-    catch (error) {
-
-        console.warn(
-            "[CWS Verify] URL update failed:",
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   FORM
-========================================================= */
-
-verificationForm
-    ?.addEventListener(
-        "submit",
-        event => {
-
-            event.preventDefault();
-
-
-            const credential =
-                credentialInput
-                    ?.value ||
-                "";
-
-
-            updateCredentialUrl(
-                credential
-            );
-
-
-            verifyCredential(
-                credential
-            );
-
-        }
-    );
-
-
-/* =========================================================
-   INITIAL URL CREDENTIAL
-========================================================= */
-
-const initialCredential =
-    new URLSearchParams(
-        window.location.search
-    )
-        .get(
-            "credential"
-        );
-
-
-if (
-    initialCredential
-) {
-
-    verifyCredential(
-        initialCredential
-    );
-
-}
+verifyCredential();
