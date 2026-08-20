@@ -55,6 +55,7 @@
 <div class="career-certificate-actions">
 <button type="button" id="printCertificateBtn" class="career-certificate-action primary"><i class="fa-solid fa-file-pdf"></i> Print / Save PDF</button>
 <button type="button" id="copyCredentialBtn" class="career-certificate-action secondary"><i class="fa-solid fa-copy"></i> Copy Credential ID</button>
+<button type="button" id="copyVerificationBtn" class="career-certificate-action secondary"><i class="fa-solid fa-link"></i> Copy Verification Link</button>
 </div>
 </div>
 
@@ -88,13 +89,45 @@
 
 <div class="career-certificate-bottom">
 <div class="career-certificate-signature"><div class="career-signature-line"></div><strong>CyberWithSandiso</strong><span>CWS Academy</span></div>
-<div class="career-certificate-seal"><i class="fa-solid fa-award"></i><strong>CWS</strong><span>CAREER PATH</span></div>
+<div class="career-certificate-qr">
+<canvas id="careerCertificateQr" width="116" height="116" aria-label="Career credential verification QR code"></canvas>
+<span>SCAN TO VERIFY</span>
+</div>
 <div class="career-certificate-path-badge"><i class="fa-solid fa-route"></i><strong id="certificatePathBadge">PROFESSIONAL PATH</strong><span>Courses + Capstone Completed</span></div>
 </div>
 </article>
+
+<section class="career-certificate-verification-panel">
+    <div>
+        <span class="career-certificate-eyebrow">PUBLIC VERIFICATION</span>
+        <h2>Recruiter-ready credential verification</h2>
+        <p>
+            Employers and recruiters can verify this professional CWS credential
+            without signing in to CWS Academy.
+        </p>
+
+        <div class="career-certificate-verification-meta">
+            <span><i class="fa-solid fa-shield-halved"></i> Public verification enabled</span>
+            <span id="careerVerifyUrl">Verification URL</span>
+        </div>
+    </div>
+
+    <a
+        id="openCareerVerificationBtn"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="career-certificate-action primary"
+    >
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        Verify Credential
+    </a>
+</section>
+
 </section>
 </main>
 
+<script src="https://unpkg.com/qrcode@1.5.4/build/qrcode.js"></script>
 <script type="module" src="../js/topbar-plan.js"></script>
 <script type="module" src="../js/career-path-certificate.js"></script>
 </body>
