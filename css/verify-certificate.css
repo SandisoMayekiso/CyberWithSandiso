@@ -1,353 +1,332 @@
 /* =========================================================
-   CWS ACADEMY
-   PUBLIC CREDENTIAL VERIFICATION
-   File: css/verify-certificate.css
+   CWS ACADEMY — PUBLIC CREDENTIAL VERIFICATION
 ========================================================= */
 
-.verification-page {
-    min-height: 100vh;
-    margin: 0;
-    background:
-        radial-gradient(
-            circle at 50% 0%,
-            rgba(190, 21, 21, 0.14),
-            transparent 32rem
-        ),
-        #090909;
-    color: #f3f3f3;
+:root {
+    --verify-bg: #050910;
+    --verify-panel: #0b1119;
+    --verify-border: rgba(255,255,255,.075);
+    --verify-green: #00ffaa;
+    --verify-gold: #f6c453;
 }
 
+* {
+    box-sizing: border-box;
+}
+
+body.verification-page {
+    margin: 0;
+    color: #edf3f8;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(0,255,170,.05), transparent 30%),
+        var(--verify-bg);
+    font-family: "Inter", sans-serif;
+}
 
 .verification-header {
     min-height: 72px;
+    padding: 0 max(24px,calc((100vw - 1240px)/2));
     display: flex;
     align-items: center;
-    padding: 0 28px;
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    background: rgba(7,7,7,.82);
-    backdrop-filter: blur(12px);
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    background: rgba(5,9,16,.88);
+    backdrop-filter: blur(16px);
 }
 
-
-.verification-brand {
+.verification-logo {
     display: inline-flex;
     align-items: center;
-    gap: 11px;
+    gap: 8px;
     color: #fff;
     text-decoration: none;
 }
 
-
-.verification-brand > i {
-    color: #d72828;
-    font-size: 1.25rem;
+.verification-logo span {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(0,255,170,.2);
+    border-radius: 10px;
+    color: var(--verify-green);
+    font: 800 .7rem "Orbitron",sans-serif;
+    background: rgba(0,255,170,.045);
 }
 
-
-.verification-brand strong,
-.verification-brand small {
-    display: block;
+.verification-logo strong {
+    font: 750 .9rem "Orbitron",sans-serif;
 }
 
-
-.verification-brand strong {
-    letter-spacing: .08em;
+.verification-header-label {
+    color: #718094;
+    font-size: .68rem;
+    font-weight: 750;
 }
-
-
-.verification-brand small {
-    margin-top: 2px;
-    color: #858585;
-}
-
 
 .verification-main {
-    width: min(900px, calc(100% - 32px));
+    width: min(1080px,calc(100% - 32px));
     margin: 0 auto;
-    padding: 72px 0 90px;
+    padding: 54px 0 80px;
 }
-
 
 .verification-hero {
+    max-width: 720px;
+    margin: 0 auto 26px;
     text-align: center;
 }
-
 
 .verification-eyebrow {
-    color: #d72828;
-    font-size: .7rem;
-    font-weight: 900;
-    letter-spacing: .14em;
-}
-
-
-.verification-hero h1 {
-    margin: 10px 0 12px;
-    font-size: clamp(2rem, 5vw, 3.5rem);
-}
-
-
-.verification-hero > p {
-    max-width: 680px;
-    margin: 0 auto;
-    color: #a7a7a7;
-    line-height: 1.7;
-}
-
-
-.verification-form {
-    max-width: 680px;
-    margin: 34px auto 0;
-    text-align: left;
-}
-
-
-.verification-form label {
-    display: block;
-    margin-bottom: 8px;
-    color: #aaa;
-    font-size: .75rem;
-    font-weight: 800;
-}
-
-
-.verification-input-row {
-    display: grid;
-    grid-template-columns: minmax(0,1fr) auto;
-    gap: 9px;
-}
-
-
-.verification-input-row input {
-    min-height: 52px;
-    padding: 0 15px;
-    border: 1px solid rgba(255,255,255,.11);
-    border-radius: 10px;
-    outline: none;
-    background: #111;
-    color: #fff;
-    font: inherit;
-}
-
-
-.verification-input-row input:focus {
-    border-color: rgba(215,40,40,.8);
-    box-shadow: 0 0 0 3px rgba(215,40,40,.08);
-}
-
-
-.verification-input-row button {
-    min-height: 52px;
-    padding: 0 20px;
-    border: 1px solid #c32121;
-    border-radius: 10px;
-    background: #c32121;
-    color: #fff;
-    font: inherit;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-
-.verification-input-row button:disabled {
-    opacity: .65;
-    cursor: wait;
-}
-
-
-.verification-form-message {
-    margin: 9px 0 0;
-    color: #e05a5a;
-    font-size: .78rem;
-}
-
-
-.verification-state,
-.verification-result,
-.verification-info {
-    margin-top: 30px;
-    padding: 24px;
-    border: 1px solid rgba(255,255,255,.09);
-    border-radius: 14px;
-    background: #101010;
-}
-
-
-.verification-state {
-    text-align: center;
-}
-
-
-.verification-state > i {
-    color: #d72828;
-    font-size: 1.3rem;
-}
-
-
-.verification-state h2 {
-    margin: 10px 0 5px;
-}
-
-
-.verification-state p {
-    margin: 0;
-    color: #999;
-}
-
-
-.verification-result {
-    display: grid;
-    grid-template-columns: auto minmax(0,1fr);
-    gap: 18px;
-}
-
-
-.verification-result-icon {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    font-size: 1.35rem;
-}
-
-
-.verification-result.valid {
-    border-color: rgba(80,210,135,.28);
-}
-
-
-.verification-result.valid
-.verification-result-icon {
-    background: rgba(80,210,135,.08);
-    color: #55d28a;
-}
-
-
-.verification-result.invalid {
-    border-color: rgba(211,38,38,.28);
-}
-
-
-.verification-result.invalid
-.verification-result-icon {
-    background: rgba(211,38,38,.08);
-    color: #e13b3b;
-}
-
-
-.verification-result-content > span,
-.verification-result.invalid span {
-    color: #55d28a;
-    font-size: .7rem;
-    font-weight: 900;
-    letter-spacing: .12em;
-}
-
-
-.verification-result.invalid span {
-    color: #e13b3b;
-}
-
-
-.verification-result h2 {
-    margin: 5px 0 8px;
-}
-
-
-.verification-result p {
-    margin: 0;
-    color: #aaa;
-    line-height: 1.6;
-}
-
-
-.verification-grid {
-    display: grid;
-    grid-template-columns:
-        repeat(2, minmax(0,1fr));
-    gap: 10px;
-    margin-top: 22px;
-}
-
-
-.verification-grid > div {
-    padding: 14px;
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: 9px;
-    background: rgba(255,255,255,.018);
-}
-
-
-.verification-grid small,
-.verification-grid strong {
-    display: block;
-}
-
-
-.verification-grid small {
-    color: #737373;
-    font-size: .62rem;
-    font-weight: 900;
+    color: var(--verify-green);
+    font-size: .64rem;
+    font-weight: 850;
     letter-spacing: .1em;
 }
 
+.verification-hero h1 {
+    margin: 10px 0;
+    color: #fff;
+    font: 800 clamp(2rem,5vw,3.6rem) "Orbitron",sans-serif;
+}
 
-.verification-grid strong {
+.verification-hero p {
+    margin: 0;
+    color: #8493a4;
+    line-height: 1.65;
+}
+
+.verification-state {
+    max-width: 760px;
+    margin: 25px auto;
+    padding: 24px;
+    border: 1px solid var(--verify-border);
+    border-radius: 14px;
+    color: #98a5b3;
+    background: rgba(255,255,255,.02);
+    text-align: center;
+}
+
+.verification-state > i {
+    margin-bottom: 8px;
+    color: var(--verify-green);
+    font-size: 1.3rem;
+}
+
+.verification-state.error > i {
+    color: #fca5a5;
+}
+
+.verification-card {
+    overflow: hidden;
+    border: 1px solid rgba(0,255,170,.16);
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at 90% 5%, rgba(0,255,170,.07), transparent 26%),
+        linear-gradient(145deg,#0b121b,#080d14);
+    box-shadow: 0 28px 70px rgba(0,0,0,.28);
+}
+
+.verification-card.professional {
+    border-color: rgba(246,196,83,.32);
+    background:
+        radial-gradient(circle at 90% 5%, rgba(246,196,83,.11), transparent 26%),
+        linear-gradient(145deg,#171107,#0b0d11);
+}
+
+.verification-card-top {
+    padding: 28px;
+    display: grid;
+    grid-template-columns: auto minmax(0,1fr) auto;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.verification-seal {
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(0,255,170,.18);
+    border-radius: 14px;
+    color: var(--verify-green);
+    background: rgba(0,255,170,.055);
+    font-size: 1.25rem;
+}
+
+.professional .verification-seal {
+    color: var(--verify-gold);
+    border-color: rgba(246,196,83,.25);
+    background: rgba(246,196,83,.07);
+}
+
+.verification-card-top span {
+    color: #7f8e9e;
+    font-size: .58rem;
+    font-weight: 850;
+    letter-spacing: .09em;
+}
+
+.verification-card-top h2 {
+    margin: 5px 0 0;
+    color: #fff;
+    font: 800 1.15rem "Orbitron",sans-serif;
+}
+
+.verification-active-badge {
+    padding: 7px 9px;
+    border: 1px solid rgba(0,255,170,.18);
+    border-radius: 999px;
+    color: #80ffd5;
+    background: rgba(0,255,170,.05);
+    font-size: .56rem;
+    font-weight: 850;
+}
+
+.professional .verification-active-badge {
+    color: #ffdf83;
+    border-color: rgba(246,196,83,.25);
+    background: rgba(246,196,83,.06);
+}
+
+.verification-student {
+    padding: 38px 28px 28px;
+    text-align: center;
+}
+
+.verification-student span {
+    color: #708092;
+    font-size: .58rem;
+    font-weight: 850;
+    letter-spacing: .1em;
+}
+
+.verification-student h3 {
+    margin: 8px 0 0;
+    color: #fff;
+    font: 800 clamp(1.6rem,4vw,2.4rem) "Orbitron",sans-serif;
+}
+
+.verification-professional-details,
+.verification-details {
+    padding: 0 28px 28px;
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 10px;
+}
+
+.verification-professional-details > div,
+.verification-details > div {
+    padding: 13px;
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 10px;
+    background: rgba(255,255,255,.015);
+}
+
+.verification-professional-details span,
+.verification-details span,
+.verification-professional-details strong,
+.verification-details strong {
+    display: block;
+}
+
+.verification-professional-details span,
+.verification-details span {
+    color: #69798b;
+    font-size: .55rem;
+    font-weight: 850;
+    letter-spacing: .07em;
+}
+
+.verification-professional-details strong,
+.verification-details strong {
     margin-top: 5px;
-    overflow-wrap: anywhere;
+    color: #e9f0f6;
+    font-size: .72rem;
 }
 
-
-.verification-info {
+.verification-proof {
+    margin: 0 28px 28px;
+    padding: 16px;
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    color: #949494;
-    font-size: .82rem;
+    gap: 11px;
+    border: 1px solid rgba(0,255,170,.13);
+    border-radius: 11px;
+    background: rgba(0,255,170,.025);
 }
 
-
-.verification-info > i {
-    margin-top: 3px;
-    color: #d72828;
+.professional .verification-proof {
+    border-color: rgba(246,196,83,.16);
+    background: rgba(246,196,83,.035);
 }
 
-
-.verification-info strong {
-    color: #ddd;
+.verification-proof > i {
+    color: var(--verify-green);
 }
 
+.professional .verification-proof > i {
+    color: var(--verify-gold);
+}
 
-.verification-info p {
+.verification-proof strong {
+    color: #fff;
+}
+
+.verification-proof p {
     margin: 4px 0 0;
+    color: #8291a1;
+    font-size: .7rem;
+    line-height: 1.55;
+}
+
+.verification-about {
+    margin-top: 20px;
+    padding: 20px;
+    display: flex;
+    gap: 14px;
+    border: 1px solid var(--verify-border);
+    border-radius: 13px;
+    color: #8c9aaa;
+    background: rgba(255,255,255,.018);
+}
+
+.verification-about > i {
+    color: var(--verify-green);
+    margin-top: 3px;
+}
+
+.verification-about h2 {
+    margin: 0 0 5px;
+    color: #fff;
+    font-size: .9rem;
+}
+
+.verification-about p {
+    margin: 0;
+    font-size: .72rem;
     line-height: 1.6;
 }
 
-
 .verification-footer {
-    padding: 24px;
-    border-top: 1px solid rgba(255,255,255,.07);
-    color: #6f6f6f;
+    padding: 28px;
+    color: #5f6d7d;
     text-align: center;
-    font-size: .78rem;
+    font-size: .65rem;
 }
 
-
-@media (max-width: 650px) {
-
-    .verification-main {
-        padding-top: 48px;
+@media (max-width: 700px) {
+    .verification-card-top {
+        grid-template-columns: auto minmax(0,1fr);
     }
 
-    .verification-input-row,
-    .verification-grid {
+    .verification-active-badge {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .verification-professional-details,
+    .verification-details {
         grid-template-columns: 1fr;
     }
-
-    .verification-result {
-        grid-template-columns: 1fr;
-    }
-
 }
