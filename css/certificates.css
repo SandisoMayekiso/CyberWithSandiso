@@ -825,3 +825,312 @@
     }
 
 }
+
+
+/* =========================================================
+   CWS ACADEMY — DYNAMIC CREDENTIAL JOURNEY
+========================================================= */
+
+.credential-journey-section {
+    margin: 0 0 38px;
+    padding: 28px;
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at 88% 0%, rgba(0,255,170,.055), transparent 28%),
+        rgba(255,255,255,.018);
+}
+
+.credential-journey-heading {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.credential-journey-heading > div:first-child > span {
+    color: #00ffaa;
+    font: 850 .65rem "Inter",sans-serif;
+    letter-spacing: .1em;
+}
+
+.credential-journey-heading h2 {
+    margin: 6px 0;
+    color: #fff;
+}
+
+.credential-journey-heading p {
+    max-width: 760px;
+    margin: 0;
+    color: #8392a2;
+    font-size: .78rem;
+    line-height: 1.6;
+}
+
+.credential-current-level {
+    min-width: 180px;
+    padding: 12px 14px;
+    border: 1px solid rgba(0,255,170,.16);
+    border-radius: 12px;
+    background: rgba(0,255,170,.045);
+    text-align: right;
+}
+
+.credential-current-level span,
+.credential-current-level strong {
+    display: block;
+}
+
+.credential-current-level span {
+    color: #6b8f81;
+    font: 800 .55rem "Inter",sans-serif;
+    letter-spacing: .08em;
+}
+
+.credential-current-level strong {
+    margin-top: 4px;
+    color: #8affd7;
+    font: 800 .78rem "Inter",sans-serif;
+}
+
+.credential-current-level.pro,
+.credential-current-level.professional {
+    border-color: rgba(246,196,83,.25);
+    background: rgba(246,196,83,.055);
+}
+
+.credential-current-level.pro strong,
+.credential-current-level.professional strong {
+    color: #ffdf83;
+}
+
+.credential-tier-grid {
+    display: grid;
+    gap: 8px;
+}
+
+.credential-tier-card {
+    min-height: 120px;
+    padding: 17px 18px;
+    display: grid;
+    grid-template-columns: 44px 48px minmax(0,1fr) auto;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid rgba(255,255,255,.065);
+    border-radius: 13px;
+    background: rgba(255,255,255,.014);
+}
+
+.credential-tier-card.locked {
+    opacity: .62;
+}
+
+.credential-tier-card.earned {
+    opacity: 1;
+    border-color: rgba(0,255,170,.18);
+    background: rgba(0,255,170,.025);
+}
+
+.credential-tier-card.pro-tier.earned,
+.credential-tier-card.career-tier.earned {
+    border-color: rgba(246,196,83,.28);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(246,196,83,.07),
+            rgba(255,255,255,.012)
+        );
+}
+
+.credential-tier-number {
+    color: #657383;
+    font: 800 .7rem "Orbitron",sans-serif;
+}
+
+.credential-tier-card.earned .credential-tier-number {
+    color: #00ffaa;
+}
+
+.credential-tier-card.pro-tier.earned .credential-tier-number,
+.credential-tier-card.career-tier.earned .credential-tier-number {
+    color: #f6c453;
+}
+
+.credential-tier-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 11px;
+    color: #718092;
+    background: rgba(255,255,255,.02);
+}
+
+.credential-tier-card.earned .credential-tier-icon {
+    color: #00ffaa;
+    border-color: rgba(0,255,170,.18);
+    background: rgba(0,255,170,.055);
+}
+
+.credential-tier-card.pro-tier.earned .credential-tier-icon,
+.credential-tier-card.career-tier.earned .credential-tier-icon {
+    color: #f6c453;
+    border-color: rgba(246,196,83,.24);
+    background: rgba(246,196,83,.065);
+}
+
+.credential-tier-content > span {
+    color: #687787;
+    font: 800 .56rem "Inter",sans-serif;
+    letter-spacing: .08em;
+}
+
+.credential-tier-content h3 {
+    margin: 4px 0 5px;
+    color: #edf3f8;
+    font-size: .91rem;
+}
+
+.credential-tier-content p {
+    margin: 0;
+    color: #748394;
+    font-size: .7rem;
+    line-height: 1.5;
+}
+
+.highest-tier-label {
+    margin-top: 7px;
+    display: block;
+    color: #d6ad54;
+    font: 850 .55rem "Inter",sans-serif;
+    letter-spacing: .07em;
+}
+
+.credential-tier-status {
+    min-width: 90px;
+    padding: 7px 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 999px;
+    color: #6f7c8a;
+    background: rgba(255,255,255,.02);
+    font: 800 .57rem "Inter",sans-serif;
+    text-transform: uppercase;
+}
+
+.credential-tier-card.earned .credential-tier-status {
+    color: #80ffd5;
+    border-color: rgba(0,255,170,.18);
+    background: rgba(0,255,170,.05);
+}
+
+.credential-tier-card.pro-tier.earned .credential-tier-status,
+.credential-tier-card.career-tier.earned .credential-tier-status {
+    color: #ffdf83;
+    border-color: rgba(246,196,83,.22);
+    background: rgba(246,196,83,.055);
+}
+
+.credential-tier-connector {
+    height: 22px;
+    display: grid;
+    place-items: center;
+    color: rgba(0,255,170,.42);
+}
+
+.credential-tier-connector.pro {
+    color: rgba(246,196,83,.46);
+}
+
+.credential-next-milestone {
+    margin-top: 22px;
+    padding: 17px;
+    display: grid;
+    grid-template-columns: 44px minmax(0,1fr) auto;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid rgba(0,255,170,.12);
+    border-radius: 13px;
+    background: rgba(0,255,170,.025);
+}
+
+.credential-next-milestone.professional-earned {
+    border-color: rgba(246,196,83,.23);
+    background: rgba(246,196,83,.055);
+}
+
+.credential-next-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(0,255,170,.17);
+    border-radius: 10px;
+    color: #00ffaa;
+    background: rgba(0,255,170,.05);
+}
+
+.professional-earned .credential-next-icon {
+    color: #f6c453;
+    border-color: rgba(246,196,83,.22);
+    background: rgba(246,196,83,.06);
+}
+
+.credential-next-milestone span {
+    color: #668b7f;
+    font: 850 .55rem "Inter",sans-serif;
+    letter-spacing: .08em;
+}
+
+.credential-next-milestone h3 {
+    margin: 4px 0;
+    color: #fff;
+    font-size: .86rem;
+}
+
+.credential-next-milestone p {
+    margin: 0;
+    color: #798899;
+    font-size: .69rem;
+    line-height: 1.5;
+}
+
+.certificate-primary-btn.professional {
+    color: #171006;
+    border-color: #f6c453;
+    background: linear-gradient(135deg,#ffe59a,#f6c453);
+}
+
+@media (max-width:760px) {
+    .credential-journey-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .credential-current-level {
+        text-align: left;
+    }
+
+    .credential-tier-card {
+        grid-template-columns: 36px 42px minmax(0,1fr);
+    }
+
+    .credential-tier-status {
+        grid-column: 3;
+        justify-self: start;
+    }
+
+    .credential-next-milestone {
+        grid-template-columns: 42px minmax(0,1fr);
+    }
+
+    .credential-next-milestone .certificate-primary-btn {
+        grid-column: 2;
+        justify-self: start;
+    }
+}
