@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CWS Academy penetration testing capstone.">
+    <title>Capstone | CWS Academy</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/capstone.css">
+</head>
+
+<body class="student-page capstone-page">
+
+<header class="student-header">
+    <nav class="student-nav">
+
+        <a href="dashboard.html" class="academy-logo" aria-label="CWS Academy Dashboard">
+            <span class="logo-cws">CWS</span>
+            <span class="logo-text">Academy</span>
+        </a>
+
+        <div class="student-nav-links">
+            <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+            <a href="student-courses.html"><i class="fa-solid fa-book-open"></i><span>Courses</span></a>
+            <a href="learning-paths.html" class="active" aria-current="page"><i class="fa-solid fa-route"></i><span>Paths</span></a>
+            <a href="labs.html"><i class="fa-solid fa-flask"></i><span>Labs</span></a>
+            <a href="assessments.html"><i class="fa-solid fa-clipboard-check"></i><span>Assessments</span></a>
+            <a href="progress.html"><i class="fa-solid fa-chart-line"></i><span>Progress</span></a>
+            <a href="certificates.html"><i class="fa-solid fa-certificate"></i><span>Certificates</span></a>
+            <a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        </div>
+
+        <div class="student-nav-account">
+
+            <div class="student-profile-chip">
+                <span class="student-profile-avatar" aria-hidden="true">
+                    <i class="fa-solid fa-user-shield"></i>
+                </span>
+
+                <span id="studentName" class="student-nav-name">Student</span>
+
+                <span id="studentPlanBadge" class="student-plan-badge free">
+                    FREE
+                </span>
+            </div>
+
+            <button type="button" id="logoutBtn" class="dashboard-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+
+    </nav>
+</header>
+
+
+<main class="capstone-main">
+
+    <section id="capstoneLoading" class="capstone-message">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Preparing capstone engagement...
+    </section>
+
+
+    <section id="capstoneLocked" class="capstone-locked" hidden>
+        <i class="fa-solid fa-lock"></i>
+        <h1>Capstone Locked</h1>
+        <p id="capstoneLockedText">
+            Complete the required learning path before starting this capstone.
+        </p>
+        <a href="learning-paths.html" class="capstone-btn secondary">
+            Back to Learning Paths
+        </a>
+    </section>
+
+
+    <section id="capstoneContent" hidden>
+
+        <section class="capstone-hero">
+
+            <div>
+                <span class="capstone-eyebrow">
+                    CWS ACADEMY • PROFESSIONAL CAPSTONE
+                </span>
+
+                <h1 id="capstoneTitle">
+                    Penetration Testing Capstone
+                </h1>
+
+                <p id="capstoneDescription"></p>
+
+                <div class="capstone-meta">
+                    <span id="capstoneClient"></span>
+                    <span id="capstoneType"></span>
+                    <span id="capstoneDuration"></span>
+                </div>
+            </div>
+
+            <div class="capstone-progress-ring">
+                <strong id="capstoneProgress">0%</strong>
+                <span>COMPLETE</span>
+            </div>
+
+        </section>
+
+
+        <section class="capstone-grid">
+
+            <article class="capstone-panel">
+                <span class="capstone-panel-label">ENGAGEMENT BRIEF</span>
+                <h2>Client Scenario</h2>
+                <p id="capstoneScenario"></p>
+            </article>
+
+
+            <article class="capstone-panel">
+                <span class="capstone-panel-label">RULES OF ENGAGEMENT</span>
+                <h2>Authorized Testing Rules</h2>
+                <ul id="capstoneRules"></ul>
+            </article>
+
+        </section>
+
+
+        <section class="capstone-section">
+
+            <div class="capstone-section-heading">
+                <div>
+                    <span>SCOPE</span>
+                    <h2>Assessment Boundaries</h2>
+                </div>
+            </div>
+
+            <div class="scope-grid">
+
+                <article class="scope-card in-scope">
+                    <h3><i class="fa-solid fa-circle-check"></i> In Scope</h3>
+                    <ul id="inScopeList"></ul>
+                </article>
+
+                <article class="scope-card out-scope">
+                    <h3><i class="fa-solid fa-ban"></i> Out of Scope</h3>
+                    <ul id="outScopeList"></ul>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <section class="capstone-section">
+
+            <div class="capstone-section-heading">
+                <div>
+                    <span>OBJECTIVES</span>
+                    <h2>What You Must Demonstrate</h2>
+                </div>
+            </div>
+
+            <div id="capstoneObjectives" class="objective-grid"></div>
+
+        </section>
+
+
+        <section class="capstone-section">
+
+            <div class="capstone-section-heading">
+
+                <div>
+                    <span>PRACTICAL WORK</span>
+                    <h2>Capstone Tasks</h2>
+                    <p>
+                        Mark tasks complete only after you have performed the work
+                        and recorded the required evidence.
+                    </p>
+                </div>
+
+            </div>
+
+            <div id="capstoneTasks" class="capstone-task-list"></div>
+
+        </section>
+
+
+        <section class="capstone-section">
+
+            <div class="capstone-section-heading">
+                <div>
+                    <span>EVIDENCE & REPORTING</span>
+                    <h2>Final Submission</h2>
+                    <p>
+                        Store your evidence locally for now, then record your report
+                        summary below. File upload can be added when CWS moves to its
+                        production Netlify/Firebase workflow.
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="report-builder">
+
+                <div class="report-field">
+                    <label for="executiveSummary">
+                        Executive Summary
+                    </label>
+
+                    <textarea
+                        id="executiveSummary"
+                        rows="6"
+                        placeholder="Summarize the engagement, major risks and overall security posture..."
+                    ></textarea>
+                </div>
+
+
+                <div class="report-field">
+                    <label for="findingsSummary">
+                        Findings Summary
+                    </label>
+
+                    <textarea
+                        id="findingsSummary"
+                        rows="8"
+                        placeholder="Summarize your evidence-backed findings, affected assets and remediation..."
+                    ></textarea>
+                </div>
+
+
+                <div class="report-requirements">
+                    <strong>Required report sections</strong>
+                    <ul id="reportRequirements"></ul>
+                </div>
+
+
+                <button
+                    type="button"
+                    id="saveCapstoneBtn"
+                    class="capstone-btn secondary"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Progress
+                </button>
+
+
+                <button
+                    type="button"
+                    id="submitCapstoneBtn"
+                    class="capstone-btn primary"
+                >
+                    <i class="fa-solid fa-flag-checkered"></i>
+                    Submit Capstone
+                </button>
+
+                <p id="capstoneMessage" class="capstone-form-message" hidden></p>
+
+            </div>
+
+        </section>
+
+    </section>
+
+</main>
+
+
+<script type="module" src="../js/topbar-plan.js"></script>
+<script type="module" src="../js/capstone.js"></script>
+
+</body>
+</html>
