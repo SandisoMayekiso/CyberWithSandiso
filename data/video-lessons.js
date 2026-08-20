@@ -3,28 +3,27 @@
    VIDEO LESSON REGISTRY
    File: data/video-lessons.js
 
-   Add video lessons here without changing the lesson engine.
+   IMPORTANT:
+   The key includes course + module + lesson because CWS
+   courses commonly reuse IDs such as lesson-01 in modules.
 ========================================================= */
 
 export const videoLessons = {
 
     /*
-     * Example FREE video lesson
-     *
-     * Replace the demo URLs with your own hosted video URLs
-     * when CWS moves to Netlify / production hosting.
-     */
-
-    "cybersecurity-fundamentals:introduction-to-cybersecurity": {
+    "cybersecurity-fundamentals:module-01:lesson-01": {
 
         id:
-            "cybersecurity-fundamentals:introduction-to-cybersecurity",
+            "cybersecurity-fundamentals:module-01:lesson-01",
 
         courseId:
             "cybersecurity-fundamentals",
 
+        moduleId:
+            "module-01",
+
         lessonId:
-            "introduction-to-cybersecurity",
+            "lesson-01",
 
         access:
             "free",
@@ -33,14 +32,11 @@ export const videoLessons = {
             "Introduction to Cybersecurity",
 
         description:
-            "A guided introduction to cybersecurity, threats, risk and the role of defensive and offensive security.",
+            "A guided introduction to the lesson.",
 
         duration:
             "08:00",
 
-        provider:
-            "cws",
-
         videoUrl:
             "",
 
@@ -52,120 +48,42 @@ export const videoLessons = {
 
         chapters: [
             {
-                time:
-                    0,
-
-                label:
-                    "What cybersecurity means"
+                time: 0,
+                label: "Introduction"
             },
             {
-                time:
-                    120,
-
-                label:
-                    "Threats, vulnerabilities and risk"
-            },
-            {
-                time:
-                    300,
-
-                label:
-                    "Defensive vs offensive security"
-            }
-        ]
-
-    },
-
-
-    /*
-     * Example PRO video lesson.
-     *
-     * This stays locked for Free students even if the written
-     * lesson itself is visible as a preview.
-     */
-
-    "ethical-hacking:reconnaissance": {
-
-        id:
-            "ethical-hacking:reconnaissance",
-
-        courseId:
-            "ethical-hacking",
-
-        lessonId:
-            "reconnaissance",
-
-        access:
-            "pro",
-
-        title:
-            "Reconnaissance in Practice",
-
-        description:
-            "A practical walkthrough of authorized reconnaissance methodology, evidence collection and documentation.",
-
-        duration:
-            "12:00",
-
-        provider:
-            "cws",
-
-        videoUrl:
-            "",
-
-        poster:
-            "",
-
-        transcript:
-            "",
-
-        chapters: [
-            {
-                time:
-                    0,
-
-                label:
-                    "Engagement scope"
-            },
-            {
-                time:
-                    140,
-
-                label:
-                    "Passive reconnaissance"
-            },
-            {
-                time:
-                    360,
-
-                label:
-                    "Active reconnaissance"
-            },
-            {
-                time:
-                    600,
-
-                label:
-                    "Recording findings"
+                time: 120,
+                label: "Core concepts"
             }
         ]
 
     }
+    */
 
 };
 
 
-/* =========================================================
-   HELPERS
-========================================================= */
-
 export function getVideoLesson(
     courseId,
+    moduleId,
     lessonId
 ) {
 
     const key =
-        `${String(courseId || "").trim()}:${String(lessonId || "").trim()}`;
+        [
+            courseId,
+            moduleId,
+            lessonId
+        ]
+            .map(
+                value =>
+                    String(
+                        value || ""
+                    )
+                        .trim()
+                        .toLowerCase()
+            )
+            .join(":");
 
 
     return (
@@ -178,12 +96,14 @@ export function getVideoLesson(
 
 export function hasVideoLesson(
     courseId,
+    moduleId,
     lessonId
 ) {
 
     return Boolean(
         getVideoLesson(
             courseId,
+            moduleId,
             lessonId
         )
     );
