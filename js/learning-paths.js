@@ -903,10 +903,12 @@ function getPathState(
                     "credential",
 
                 label:
-                    "Career Path Certificate Ready",
+                    "View Career Path Certificate",
 
                 url:
-                    "certificates.html"
+                    `career-path-certificate.html?path=${encodeURIComponent(
+                        path.id
+                    )}`
             };
 
         }
@@ -1108,7 +1110,18 @@ function renderPathCard(
 
 
     card.className =
-        "learning-path-card";
+        `learning-path-card ${
+            path.status === "planned"
+                ? "path-planned"
+                : "path-active"
+        }`;
+
+    card.dataset.pathOrder =
+        String(
+            path.displayOrder ||
+            path.order ||
+            ""
+        ).padStart(2, "0");
 
 
     const stages =
@@ -1166,9 +1179,28 @@ function renderPathCard(
 
             <div class="path-card-title">
 
-                <span class="path-card-kicker">
-                    ${path.category.toUpperCase()}
-                </span>
+                <div class="path-card-kicker-row">
+                    <span class="path-card-kicker">
+                        ${path.category.toUpperCase()}
+                    </span>
+
+                    <span class="path-availability-badge ${
+                        path.status === "planned"
+                            ? "planned"
+                            : "active"
+                    }">
+                        <i class="fa-solid ${
+                            path.status === "planned"
+                                ? "fa-clock"
+                                : "fa-circle-check"
+                        }"></i>
+                        ${
+                            path.status === "planned"
+                                ? "Planned"
+                                : "Active"
+                        }
+                    </span>
+                </div>
 
                 <h3>
                     ${path.title} Path
