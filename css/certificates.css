@@ -536,3 +536,292 @@
         flex-direction: column;
     }
 }
+
+
+/* =========================================================
+   CWS ACADEMY
+   PROFESSIONAL CAREER PATH CREDENTIALS
+========================================================= */
+
+.professional-credentials-section {
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(246,196,83,.18);
+    background:
+        radial-gradient(
+            circle at 92% 5%,
+            rgba(246,196,83,.065),
+            transparent 28%
+        ),
+        rgba(255,255,255,.018);
+}
+
+.professional-credentials-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 32px;
+    right: 32px;
+    height: 1px;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(246,196,83,.62),
+            transparent
+        );
+}
+
+.professional-credentials-section
+.certificate-section-heading > div > span {
+    color: #f6c453;
+}
+
+.certificate-count-badge.professional {
+    color: #ffdf83;
+    border-color: rgba(246,196,83,.28);
+    background: rgba(246,196,83,.065);
+}
+
+.professional-credentials-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0,1fr)
+        );
+    gap: 18px;
+}
+
+.professional-credential-card {
+    overflow: hidden;
+    border: 1px solid rgba(246,196,83,.21);
+    border-radius: 15px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(23,17,7,.98),
+            rgba(10,10,11,.98)
+        );
+    box-shadow:
+        0 16px 34px rgba(0,0,0,.14),
+        inset 0 0 26px rgba(246,196,83,.015);
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.professional-credential-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(246,196,83,.38);
+    box-shadow:
+        0 20px 44px rgba(0,0,0,.22),
+        0 0 24px rgba(246,196,83,.045);
+}
+
+.professional-credential-preview {
+    position: relative;
+    min-height: 185px;
+    padding: 26px;
+    display: grid;
+    grid-template-columns:
+        auto minmax(0,1fr);
+    align-items: center;
+    gap: 17px;
+    border-bottom: 1px solid rgba(246,196,83,.13);
+    background:
+        radial-gradient(
+            circle at 14% 50%,
+            rgba(246,196,83,.115),
+            transparent 12rem
+        ),
+        linear-gradient(
+            135deg,
+            #171107,
+            #0d0c0a
+        );
+}
+
+.professional-credential-seal {
+    width: 76px;
+    height: 76px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(246,196,83,.35);
+    border-radius: 50%;
+    color: #f6c453;
+    background: rgba(246,196,83,.075);
+    box-shadow:
+        0 0 28px rgba(246,196,83,.075);
+    font-size: 1.65rem;
+}
+
+.professional-credential-preview-copy span,
+.professional-credential-preview-copy strong,
+.professional-credential-preview-copy small {
+    display: block;
+}
+
+.professional-credential-preview-copy span {
+    color: #d3ad57;
+    font: 850 .58rem "Inter",sans-serif;
+    letter-spacing: .1em;
+}
+
+.professional-credential-preview-copy strong {
+    margin: 7px 0 5px;
+    color: #fff7df;
+    font:
+        800 1.05rem
+        "Orbitron",
+        sans-serif;
+}
+
+.professional-credential-preview-copy small {
+    color: #998967;
+    font:
+        650 .64rem
+        "Inter",
+        sans-serif;
+}
+
+.professional-verified-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    padding: 6px 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid rgba(246,196,83,.24);
+    border-radius: 999px;
+    color: #ffdf83;
+    background: rgba(246,196,83,.065);
+    font:
+        850 .54rem
+        "Inter",
+        sans-serif;
+    letter-spacing: .06em;
+}
+
+.professional-credential-content {
+    padding: 21px;
+}
+
+.professional-credential-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #f6c453;
+    font:
+        850 .6rem
+        "Inter",
+        sans-serif;
+    letter-spacing: .08em;
+}
+
+.professional-credential-content h3 {
+    margin: 8px 0;
+    color: #fff;
+}
+
+.professional-credential-content p {
+    margin: 0;
+    color: #929292;
+    line-height: 1.65;
+}
+
+.professional-credential-meta {
+    margin-top: 16px;
+    display: grid;
+    gap: 7px;
+}
+
+.professional-credential-meta span {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #a09477;
+    font-size: .68rem;
+}
+
+.professional-credential-meta i {
+    width: 15px;
+    color: #f6c453;
+    text-align: center;
+}
+
+.professional-credential-actions {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.professional-credential-view-btn {
+    min-height: 44px;
+    padding: 0 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid #f6c453;
+    border-radius: 10px;
+    color: #171006;
+    background:
+        linear-gradient(
+            135deg,
+            #ffe59a,
+            #f6c453
+        );
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.professional-credential-view-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 20px rgba(246,196,83,.12);
+}
+
+.certificate-empty-icon.professional {
+    color: #f6c453;
+    border-color: rgba(246,196,83,.27);
+    background: rgba(246,196,83,.065);
+}
+
+.empty-label.professional {
+    color: #f6c453;
+}
+
+.professional-empty {
+    border-color: rgba(246,196,83,.11);
+    background: rgba(246,196,83,.018);
+}
+
+@media (max-width: 900px) {
+
+    .professional-credentials-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 560px) {
+
+    .professional-credential-preview {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+
+    .professional-verified-badge {
+        position: static;
+        width: fit-content;
+        grid-column: 1;
+    }
+
+}
