@@ -1481,7 +1481,7 @@ function createCertificateCard(
             <div class="certificate-card-actions">
 
                 <a
-                    href="certificate-view.html?course=${encodeURIComponent(
+                    href="certificate.html?course=${encodeURIComponent(
                         certificate.courseId ||
                         certificate.id
                     )}"
@@ -1646,7 +1646,7 @@ function createUpcomingCertificateCard(
             path.earned
                 ? `
                     <a
-                        href="certificate-view.html?course=${encodeURIComponent(
+                        href="certificate.html?course=${encodeURIComponent(
                             path.id
                         )}"
                         class="certificate-view-btn"
@@ -1784,7 +1784,7 @@ function setupCertificateNavigation() {
 
 
             const target =
-                `certificate-view.html?course=${encodeURIComponent(
+                `certificate.html?course=${encodeURIComponent(
                     courseId
                 )}`;
 
