@@ -22,6 +22,8 @@
     >
 
     <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="../css/design-system.css">
     <link rel="stylesheet" href="../css/lesson.css">
     <link rel="stylesheet" href="../css/module-assessment.css">
     <link rel="stylesheet" href="../css/final-assessment.css">
@@ -254,7 +256,7 @@
                     <span>
                         <i class="fa-regular fa-clock"></i>
                         <strong id="assessmentDurationMeta">
-                            45–60 minutes
+                            45â€“60 minutes
                         </strong>
                     </span>
 
@@ -281,7 +283,7 @@
                 </span>
 
                 <strong id="bestScore">
-                    —
+                    â€”
                 </strong>
 
                 <p>
@@ -389,6 +391,31 @@
                 </div>
 
 
+                <div class="assessment-session-panel final-session-panel" aria-label="Final assessment progress">
+                    <div class="assessment-session-copy">
+                        <span class="dashboard-label">YOUR ATTEMPT</span>
+                        <strong><span id="answeredQuestions">0</span> of <span id="totalQuestions">0</span> answered</strong>
+                        <small id="assessmentDraftStatus" aria-live="polite">Answers are saved for this browser session.</small>
+                    </div>
+
+                    <div class="assessment-session-progress" aria-hidden="true">
+                        <span id="assessmentProgressFill"></span>
+                    </div>
+
+                    <div class="assessment-trust-note">
+                        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                        <span>Server-verified scoring and completion</span>
+                    </div>
+                </div>
+
+
+                <nav
+                    id="assessmentQuestionNav"
+                    class="assessment-question-nav"
+                    aria-label="Final assessment question navigation"
+                ></nav>
+
+
                 <form id="finalAssessmentForm">
 
                     <div
@@ -405,6 +432,10 @@
                         <i class="fa-solid fa-paper-plane"></i>
                         Submit Final Assessment
                     </button>
+
+                    <p class="assessment-submit-note">
+                        Submit only when you are ready. The secure assessment service verifies your score and completion status.
+                    </p>
 
                 </form>
 
