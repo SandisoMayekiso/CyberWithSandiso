@@ -174,6 +174,12 @@ const headerCourseTitle =
     );
 
 
+const lessonBrandLink =
+    document.getElementById(
+        "lessonBrandLink"
+    );
+
+
 const headerCourseCategory =
     document.getElementById(
         "headerCourseCategory"
@@ -2198,6 +2204,24 @@ function renderLesson() {
         headerCourseCategory,
         currentCourse.category
     );
+
+
+    if (lessonBrandLink) {
+
+        const params =
+            new URLSearchParams();
+
+
+        params.set(
+            "course",
+            currentCourse.id
+        );
+
+
+        lessonBrandLink.href =
+            `course-details.html?${params.toString()}`;
+
+    }
 
 
     setText(
