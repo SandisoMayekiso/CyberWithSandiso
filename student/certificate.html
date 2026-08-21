@@ -7,51 +7,16 @@
 
     <title>CWS Academy | Certificate</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="../css/design-system.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/certificate-view.css">
     <link rel="stylesheet" href="../css/cws-assistant.css">
-
-<style>
-@media print {
-
-    body.certificate-print-mode {
-        background: #ffffff !important;
-    }
-
-    body.certificate-print-mode .student-header,
-    body.certificate-print-mode .certificate-page-heading,
-    body.certificate-print-mode .certificate-verification-panel,
-    body.certificate-print-mode #cwsAssistant,
-    body.certificate-print-mode .student-footer {
-        display: none !important;
-    }
-
-    body.certificate-print-mode .certificate-view-main,
-    body.certificate-print-mode #certificateContent {
-        display: block !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    body.certificate-print-mode .cws-certificate {
-        width: 100% !important;
-        max-width: none !important;
-        min-height: 0 !important;
-        margin: 0 !important;
-        box-shadow: none !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
-    }
-
-    @page {
-        size: A4 landscape;
-        margin: 8mm;
-    }
-}
-</style>
 
 </head>
 
@@ -68,18 +33,27 @@
         <div class="student-nav-links">
             <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
             <a href="student-courses.html"><i class="fa-solid fa-book-open"></i><span>Courses</span></a>
+            <a href="learning-paths.html"><i class="fa-solid fa-route"></i><span>Paths</span></a>
+            <a href="labs.html"><i class="fa-solid fa-flask"></i><span>Labs</span></a>
+            <a href="assessments.html"><i class="fa-solid fa-clipboard-check"></i><span>Assessments</span></a>
+            <a href="progress.html"><i class="fa-solid fa-chart-line"></i><span>Progress</span></a>
             <a href="certificates.html" class="active" aria-current="page">
                 <i class="fa-solid fa-certificate"></i>
                 <span>Certificates</span>
             </a>
+            <a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
         </div>
 
         <div class="student-nav-account">
-            <span id="studentName">Student</span>
+            <div class="student-profile-chip">
+                <span class="student-profile-avatar" aria-hidden="true"><i class="fa-solid fa-user-shield"></i></span>
+                <span id="studentName" class="student-nav-name">Student</span>
+                <span id="studentPlanBadge" class="student-plan-badge free">FREE</span>
+            </div>
 
             <button type="button" id="logoutBtn" class="dashboard-logout-btn">
                 <i class="fa-solid fa-right-from-bracket"></i>
-                Logout
+                <span>Logout</span>
             </button>
         </div>
 
@@ -108,7 +82,7 @@
 
         <div class="certificate-page-heading">
             <div>
-                <span class="certificate-eyebrow">CWS ACADEMY • VERIFIED ACHIEVEMENT</span>
+                <span class="certificate-eyebrow">CWS ACADEMY â€¢ VERIFIED ACHIEVEMENT</span>
                 <h1>Course Certificate</h1>
                 <p>View, download or share your CWS Academy achievement.</p>
             </div>
@@ -137,6 +111,11 @@
                 <button type="button" id="copyVerificationBtn" class="certificate-action secondary">
                     <i class="fa-solid fa-link"></i>
                     Copy Verification Link
+                </button>
+
+                <button type="button" id="copyCredentialBtn" class="certificate-action secondary">
+                    <i class="fa-solid fa-copy"></i>
+                    Copy Credential ID
                 </button>
 
                 <a
@@ -194,17 +173,17 @@
             <div class="certificate-details">
                 <div>
                     <span>FINAL ASSESSMENT</span>
-                    <strong id="certificateScore">—</strong>
+                    <strong id="certificateScore">â€”</strong>
                 </div>
 
                 <div>
                     <span>ISSUED</span>
-                    <strong id="certificateDate">—</strong>
+                    <strong id="certificateDate">â€”</strong>
                 </div>
 
                 <div>
                     <span>CREDENTIAL ID</span>
-                    <strong id="certificateCredential">—</strong>
+                    <strong id="certificateCredential">â€”</strong>
                 </div>
             </div>
 
@@ -257,6 +236,31 @@
             </a>
         </section>
 
+        <section class="certificate-trust-panel" aria-label="Credential trust information">
+            <div>
+                <i class="fa-solid fa-server" aria-hidden="true"></i>
+                <span>ISSUANCE</span>
+                <strong>Server Verified</strong>
+            </div>
+            <div>
+                <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
+                <span>ISSUER</span>
+                <strong id="certificateIssuer">CWS Academy</strong>
+            </div>
+            <div>
+                <i class="fa-solid fa-certificate" aria-hidden="true"></i>
+                <span>TYPE</span>
+                <strong id="certificateType">Course Certificate</strong>
+            </div>
+            <div>
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                <span>STATUS</span>
+                <strong id="certificateTrustStatus">Active</strong>
+            </div>
+        </section>
+
+        <p id="certificateActionStatus" class="certificate-action-status" aria-live="polite"></p>
+
     </section>
 
 </main>
@@ -266,7 +270,8 @@
     onerror="this.onerror=function(){this.onerror=null;this.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';};this.src='https://cdn.jsdelivr.net/npm/jspdf@4.2.1/dist/jspdf.umd.min.js';"
 ></script>
 <script src="https://unpkg.com/qrcode@1.5.4/build/qrcode.js"></script>
-<script type="module" src="../js/certificate-view.js"></script>
+<script type="module" src="../js/topbar-plan.js"></script>
+<script type="module" src="../js/certificate-view.js?v=20260821-credential-upgrade"></script>
 
 <script
     type="module"
