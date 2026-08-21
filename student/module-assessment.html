@@ -28,6 +28,8 @@
         href="../css/style.css"
     >
 
+    <link rel="stylesheet" href="../css/design-system.css">
+
     <!-- Lesson Shared Styles -->
     <link
         rel="stylesheet"
@@ -314,7 +316,7 @@
                 </span>
 
                 <strong id="bestScore">
-                    —
+                    â€”
                 </strong>
 
                 <p>
@@ -395,6 +397,31 @@
                 </div>
 
 
+                <div class="assessment-session-panel" aria-label="Assessment progress">
+                    <div class="assessment-session-copy">
+                        <span class="dashboard-label">YOUR ATTEMPT</span>
+                        <strong><span id="answeredQuestions">0</span> of <span id="totalQuestions">0</span> answered</strong>
+                        <small id="assessmentDraftStatus" aria-live="polite">Answers are saved for this browser session.</small>
+                    </div>
+
+                    <div class="assessment-session-progress" aria-hidden="true">
+                        <span id="assessmentProgressFill"></span>
+                    </div>
+
+                    <div class="assessment-trust-note">
+                        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                        <span>Scored securely by CWS Academy</span>
+                    </div>
+                </div>
+
+
+                <nav
+                    id="assessmentQuestionNav"
+                    class="assessment-question-nav"
+                    aria-label="Assessment question navigation"
+                ></nav>
+
+
                 <form id="moduleAssessmentForm">
 
                     <div
@@ -411,6 +438,10 @@
                         <i class="fa-solid fa-paper-plane"></i>
                         Submit Assessment
                     </button>
+
+                    <p class="assessment-submit-note">
+                        Review every answer before submitting. Your result is verified by the secure assessment service.
+                    </p>
 
                 </form>
 
