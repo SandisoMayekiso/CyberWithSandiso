@@ -1,270 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="description" content="Verify a CWS Academy certificate credential.">
-
+    <meta name="description" content="Verify a CWS Academy course or career-path credential by its unique credential ID.">
     <meta name="author" content="CyberWithSandiso">
-
+    <meta name="robots" content="index,follow">
     <title>Verify Credential | CWS Academy</title>
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    >
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/design-system.css">
     <link rel="stylesheet" href="../css/verify-certificate.css">
-    <link rel="stylesheet" href="../css/cws-assistant.css">
-
 </head>
 
 <body class="verification-page">
 
 <header class="verification-header">
-
-    <a
-        href="../index.html"
-        class="verification-brand"
-        aria-label="CyberWithSandiso home"
-    >
-
-        <i class="fa-solid fa-shield-halved"></i>
-
-        <span>
-            <strong>CWS ACADEMY</strong>
-            <small>CyberWithSandiso</small>
-        </span>
-
+    <a href="../index.html" class="verification-logo" aria-label="CyberWithSandiso home">
+        <span>CWS</span>
+        <strong>Academy</strong>
     </a>
 
+    <span class="verification-header-label">
+        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+        Public Credential Registry
+    </span>
 </header>
-
 
 <main class="verification-main">
 
     <section class="verification-hero">
-
-        <span class="verification-eyebrow">
-            PUBLIC CREDENTIAL VERIFICATION
-        </span>
-
-        <h1>
-            Verify a CWS Academy Certificate
-        </h1>
-
+        <span class="verification-eyebrow">PUBLIC CREDENTIAL VERIFICATION</span>
+        <h1>Verify a CWS Credential</h1>
         <p>
-            Enter a CWS Academy credential ID or scan the QR code
-            on a certificate to confirm that its verification record exists.
+            Confirm a course, CWS Pro or professional career-path credential
+            using the unique ID printed on the certificate.
         </p>
 
-
-        <form
-            id="verificationForm"
-            class="verification-form"
-            novalidate
-        >
-
-            <label for="credentialInput">
-                Credential ID
-            </label>
-
+        <form id="verificationForm" class="verification-form" novalidate>
+            <label for="credentialInput">Credential ID</label>
 
             <div class="verification-input-row">
-
+                <i class="fa-solid fa-key" aria-hidden="true"></i>
                 <input
                     type="text"
                     id="credentialInput"
                     name="credential"
                     autocomplete="off"
+                    autocapitalize="characters"
                     spellcheck="false"
-                    placeholder="CWS-CYBERSEC-XXXXXX"
+                    inputmode="text"
+                    maxlength="80"
+                    placeholder="CWS-COURSE-XXXXXXXXXXXXXXXXXX"
+                    aria-describedby="credentialHelp verificationFormMessage"
                     required
                 >
 
-
-                <button
-                    type="submit"
-                    id="verifyCredentialBtn"
-                >
-                    <i class="fa-solid fa-magnifying-glass"></i>
+                <button type="submit" id="verifyCredentialBtn">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                     Verify
                 </button>
-
             </div>
 
+            <p id="credentialHelp" class="verification-help">
+                Credential IDs are case-insensitive and begin with <strong>CWS-</strong>.
+            </p>
 
             <p
                 id="verificationFormMessage"
                 class="verification-form-message"
                 hidden
+                role="alert"
                 aria-live="polite"
             ></p>
-
         </form>
 
+        <div class="verification-trust-row" aria-label="Verification safeguards">
+            <span><i class="fa-solid fa-database"></i> Live registry check</span>
+            <span><i class="fa-solid fa-lock"></i> Direct-ID lookup only</span>
+            <span><i class="fa-solid fa-user-shield"></i> Server-issued records</span>
+        </div>
     </section>
 
+    <section id="verificationLoading" class="verification-state" hidden aria-live="polite">
+        <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+        <h2>Checking the credential registry...</h2>
+        <p>This normally takes only a moment.</p>
+    </section>
 
-    <section
-        id="verificationLoading"
-        class="verification-state"
-        hidden
-        aria-live="polite"
-    >
-
-        <i class="fa-solid fa-spinner fa-spin"></i>
-
-        <h2>Checking credential...</h2>
-
-        <p>
-            Looking for a matching CWS Academy verification record.
+    <section id="verificationNotFound" class="verification-state error" hidden aria-live="polite">
+        <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+        <h2>Credential not verified</h2>
+        <p id="verificationNotFoundText">
+            No active CWS Academy record was found for this credential ID.
         </p>
-
+        <button type="button" id="tryAnotherCredentialBtn" class="verification-secondary-action">
+            <i class="fa-solid fa-rotate-left"></i>
+            Try another ID
+        </button>
     </section>
 
-
-    <section
-        id="verificationNotFound"
-        class="verification-result invalid"
-        hidden
-        aria-live="polite"
-    >
-
-        <div class="verification-result-icon">
-            <i class="fa-solid fa-circle-xmark"></i>
-        </div>
-
-
-        <div>
-
-            <span>NOT VERIFIED</span>
-
-            <h2>Credential not found</h2>
-
-            <p id="verificationNotFoundText">
-                No active CWS Academy verification record was found for this
-                credential ID.
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <section
-        id="verificationResult"
-        class="verification-result valid"
-        hidden
-        aria-live="polite"
-    >
-
-        <div class="verification-result-icon">
-            <i class="fa-solid fa-circle-check"></i>
-        </div>
-
-
-        <div class="verification-result-content">
-
-            <span>VERIFIED CREDENTIAL</span>
-
-            <h2 id="verifiedCourse">
-                Course
-            </h2>
-
-            <p>
-                This credential matches an active CWS Academy
-                CWS Academy credential verification record.
-            </p>
-
-
-            <div class="verification-grid">
-
-                <div>
-                    <small>LEARNER</small>
-                    <strong id="verifiedStudent">—</strong>
-                </div>
-
-                <div>
-                    <small>COURSE / PATH</small>
-                    <strong id="verifiedCourseField">—</strong>
-                </div>
-
-                <div>
-                    <small>ISSUED</small>
-                    <strong id="verifiedDate">—</strong>
-                </div>
-
-                <div>
-                    <small>CREDENTIAL ID</small>
-                    <strong id="verifiedCredential">—</strong>
-                </div>
-
-                <div>
-                    <small>FINAL ASSESSMENT</small>
-                    <strong id="verifiedScore">—</strong>
-                </div>
-
-                <div>
-                    <small>STATUS</small>
-                    <strong id="verifiedStatus">Verified</strong>
-                </div>
-
+    <article id="verificationResult" class="verification-card" hidden aria-live="polite">
+        <div class="verification-card-top">
+            <div class="verification-seal">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
             </div>
 
-        </div>
+            <div>
+                <span>VERIFIED CWS ACADEMY CREDENTIAL</span>
+                <h2 id="verifiedCourse">CWS Academy Credential</h2>
+            </div>
 
-    </section>
-
-
-    <section class="verification-info">
-
-        <i class="fa-solid fa-circle-info"></i>
-
-        <div>
-
-            <strong>
-                About credential verification
+            <strong id="verifiedStatus" class="verification-active-badge">
+                <i class="fa-solid fa-circle-check"></i>
+                ACTIVE
             </strong>
-
-            <p>
-                This page confirms whether a credential ID exists in the
-                CWS Academy verification database and whether its status
-                is active.
-            </p>
-
         </div>
 
+        <div class="verification-student">
+            <span>CREDENTIAL AWARDED TO</span>
+            <h3 id="verifiedStudent">CWS Academy Student</h3>
+        </div>
+
+        <div class="verification-details">
+            <div><span>COURSE / PATH</span><strong id="verifiedCourseField">â€”</strong></div>
+            <div><span>ISSUED</span><strong id="verifiedDate">â€”</strong></div>
+            <div><span>RESULT</span><strong id="verifiedScore">â€”</strong></div>
+            <div><span>CREDENTIAL ID</span><strong id="verifiedCredential">â€”</strong></div>
+            <div><span>ISSUER</span><strong id="verifiedIssuer">CWS Academy</strong></div>
+            <div><span>RECORD TYPE</span><strong id="verifiedType">Course Certificate</strong></div>
+        </div>
+
+        <div class="verification-proof">
+            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+            <div>
+                <strong>Registry match confirmed</strong>
+                <p>
+                    This page located an active, server-issued record matching
+                    the credential ID. The displayed record is read-only.
+                </p>
+            </div>
+        </div>
+
+        <div class="verification-actions">
+            <button type="button" id="copyVerifiedCredentialBtn" class="verification-primary-action">
+                <i class="fa-solid fa-copy"></i>
+                Copy Credential ID
+            </button>
+            <button type="button" id="copyVerificationPageBtn" class="verification-secondary-action">
+                <i class="fa-solid fa-link"></i>
+                Copy Verification Link
+            </button>
+        </div>
+
+        <p id="verificationActionStatus" class="verification-action-status" aria-live="polite"></p>
+    </article>
+
+    <section class="verification-about">
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        <div>
+            <h2>How CWS verification works</h2>
+            <p>
+                CWS Academy issues credentials only after the protected learning
+                backend verifies the required course or career-path completion.
+                A missing or inactive record must not be treated as verified.
+            </p>
+        </div>
     </section>
 
 </main>
 
-
 <footer class="verification-footer">
-
-    <p>
-        © 2026 CWS Academy.
-        Part of the CyberWithSandiso ecosystem.
-    </p>
-
+    <p>Â© 2026 CWS Academy. Part of the CyberWithSandiso ecosystem.</p>
 </footer>
 
-
-<script
-    type="module"
-    src="../js/verify-certificate.js"
-></script>
-
-<script
-    type="module"
-    src="../js/cws-assistant.js"
-></script>
-
+<script type="module" src="../js/verify-certificate.js?v=20260821-credential-upgrade"></script>
 </body>
-
 </html>
