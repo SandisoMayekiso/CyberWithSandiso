@@ -157,6 +157,24 @@ const courseNotFoundMessage =
     );
 
 
+const courseStateLabel =
+    document.getElementById(
+        "courseStateLabel"
+    );
+
+
+const courseStateTitle =
+    document.getElementById(
+        "courseStateTitle"
+    );
+
+
+const courseBackLink =
+    document.getElementById(
+        "courseBackLink"
+    );
+
+
 const courseContent =
     document.getElementById(
         "courseContent"
@@ -509,7 +527,14 @@ function showLoading() {
 
 function showCourseNotFound(
     message =
-        "The course you're looking for does not exist, is unavailable, or has not yet been released."
+        "The course you're looking for does not exist, is unavailable, or has not yet been released.",
+    {
+        label =
+            "COURSE UNAVAILABLE",
+
+        title =
+            "Course Not Found"
+    } = {}
 ) {
 
     if (courseLoading) {
@@ -534,6 +559,22 @@ function showCourseNotFound(
             message;
 
     }
+
+
+    setText(
+        courseStateLabel,
+        label
+    );
+
+
+    setText(
+        courseStateTitle,
+        title
+    );
+
+
+    document.title =
+        `${title} | CWS Academy`;
 
 
     if (courseNotFound) {
@@ -1374,7 +1415,7 @@ function updateProgressUI() {
             }
 
             courseProgressText.textContent =
-                `${parts.join(" • ")}.`;
+                `${parts.join(" â€¢ ")}.`;
         }
     }
 
@@ -2089,100 +2130,102 @@ function renderModules(
                 "course-module-extras";
 
 
-            const labCount =
-                Number(
-                    module.labs || 0
+            const activities =
+                getModuleActivities(
+                    module
                 );
 
 
-            if (labCount > 0) {
+            activities.forEach(
+                activity => {
 
-                const lab =
-                    document.createElement(
-                        "a"
+                    const activityLink =
+                        document.createElement(
+                            "a"
+                        );
+
+
+                    const params =
+                        new URLSearchParams();
+
+
+                    params.set(
+                        "course",
+                        currentCourse.id
                     );
 
 
-                const params =
-                    new URLSearchParams();
+                    params.set(
+                        "module",
+                        module.id
+                    );
 
 
-                params.set(
-                    "course",
-                    currentCourse.id
-                );
-
-
-                params.set(
-                    "module",
-                    module.id
-                );
-
-
-                const firstActivity =
-                    getModuleActivities(module)[0];
-
-                if (firstActivity) {
                     params.set(
                         "activity",
-                        firstActivity.id
+                        activity.id
                     );
-                }
-
-                lab.href =
-                    `lab-activity.html?${params.toString()}`;
 
 
-                lab.className =
-                    "course-module-extra lab";
+                    activityLink.href =
+                        `lab-activity.html?${params.toString()}`;
 
 
-                lab.innerHTML = `
-
-                    <span class="course-module-extra-icon">
-
-                        <i class="fa-solid fa-flask"></i>
-
-                    </span>
+                    activityLink.className =
+                        "course-module-extra lab";
 
 
-                    <span class="course-module-extra-content">
+                    activityLink.innerHTML = `
 
-                        <strong>
+                        <span class="course-module-extra-icon">
 
-                            ${
-                                labCount === 1
-                                    ? "Practical Lab"
-                                    : `${labCount} Practical Labs`
-                            }
+                            <i class="fa-solid fa-flask"></i>
 
-                        </strong>
-
-                        <span>
-                            Apply this module practically
                         </span>
 
-                    </span>
 
-                `;
+                        <span class="course-module-extra-content">
+
+                            <strong></strong>
+
+                            <span>
+                                Apply this module practically
+                            </span>
+
+                        </span>
+
+                    `;
 
 
-                extras.appendChild(
-                    lab
-                );
+                    setText(
+                        activityLink.querySelector(
+                            "strong"
+                        ),
+                        activity.title ||
+                            "Practical Activity"
+                    );
 
-            }
+
+                    extras.appendChild(
+                        activityLink
+                    );
+
+                }
+            );
 
 
-            const assessmentCount =
-                Number(
-                    module.assessments ||
-                    0
+            const hasModuleAssessment =
+                Boolean(
+                    module.moduleAssessment &&
+                    Array.isArray(
+                        module.moduleAssessment.questions
+                    ) &&
+                    module.moduleAssessment.questions.length
                 );
 
 
             if (
-                assessmentCount > 0
+                hasModuleAssessment
             ) {
 
                 const assessment =
@@ -2228,11 +2271,7 @@ function renderModules(
 
                         <strong>
 
-                            ${
-                                assessmentCount === 1
-                                    ? "Module Assessment"
-                                    : `${assessmentCount} Assessments`
-                            }
+                            Module Assessment
 
                         </strong>
 
@@ -2303,6 +2342,85 @@ function renderModules(
 
         }
     );
+
+
+    if (
+        currentCourse?.finalAssessment
+    ) {
+
+        const finalAssessmentWrapper =
+            document.createElement(
+                "div"
+            );
+
+
+        finalAssessmentWrapper.className =
+            "course-module-extras course-final-assessment";
+
+
+        finalAssessmentWrapper.style.gridTemplateColumns =
+            "1fr";
+
+
+        const finalAssessmentLink =
+            document.createElement(
+                "a"
+            );
+
+
+        const params =
+            new URLSearchParams();
+
+
+        params.set(
+            "course",
+            currentCourse.id
+        );
+
+
+        finalAssessmentLink.href =
+            `final-assessment.html?${params.toString()}`;
+
+
+        finalAssessmentLink.className =
+            "course-module-extra assessment";
+
+
+        finalAssessmentLink.innerHTML = `
+
+            <span class="course-module-extra-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </span>
+
+            <span class="course-module-extra-content">
+                <strong></strong>
+                <span>
+                    Complete the final course assessment
+                </span>
+            </span>
+
+        `;
+
+
+        setText(
+            finalAssessmentLink.querySelector(
+                "strong"
+            ),
+            currentCourse.finalAssessment.title ||
+                "Final Assessment"
+        );
+
+
+        finalAssessmentWrapper.appendChild(
+            finalAssessmentLink
+        );
+
+
+        courseModules.appendChild(
+            finalAssessmentWrapper
+        );
+
+    }
 
 }
 
@@ -2448,7 +2566,7 @@ function renderCourse(course) {
     setText(
         courseInfoLevel,
         course.level ||
-        "—"
+        "â€”"
     );
 
 
@@ -2513,10 +2631,10 @@ function renderCourse(course) {
 
         courseInfoLabs,
 
-        `${labs} Lab${
+        `${labs} Activit${
             labs === 1
-                ? ""
-                : "s"
+                ? "y"
+                : "ies"
         }`
 
     );
@@ -2876,8 +2994,19 @@ function showPrerequisiteBlocked(
 
 
     showCourseNotFound(
-        message
+        message,
+        {
+            label:
+                "PREREQUISITES REQUIRED",
+
+            title:
+                "Complete Required Courses"
+        }
     );
+
+
+    document.title =
+        `Prerequisites Required | ${currentCourse?.title || "Course"} | CWS Academy`;
 
 
     if (!courseNotFound) {
@@ -2952,28 +3081,18 @@ function showPrerequisiteBlocked(
     }
 
 
-    const coursesLink =
-        document.createElement(
-            "a"
+    if (courseBackLink) {
+
+        courseBackLink.className =
+            "course-action secondary";
+
+
+        actions.appendChild(
+            courseBackLink
         );
 
+    }
 
-    coursesLink.className =
-        "course-action secondary";
-
-
-    coursesLink.href =
-        "student-courses.html";
-
-
-    coursesLink.innerHTML =
-        `<i class="fa-solid fa-book-open"></i>
-         Back to Courses`;
-
-
-    actions.appendChild(
-        coursesLink
-    );
 
 }
 
