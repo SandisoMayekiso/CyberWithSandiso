@@ -24,10 +24,27 @@ function buildLesson({
     practicePrompts = []
 }) {
 
+    const normalizedTitle =
+        String(
+            title || ""
+        )
+            .trim()
+            .replace(
+                /\?+$/,
+                ""
+            );
+
+
+    const topicName =
+        normalizedTitle.replace(
+            /^What Is\s+/i,
+            ""
+        );
+
     const resolvedWhy =
         whyItMatters ||
         security ||
-        `${title} matters because cybersecurity decisions depend on understanding how the concept changes risk, exposure, trust or defensive capability.`;
+        `${topicName} matters because cybersecurity decisions depend on understanding how the concept changes risk, exposure, trust or defensive capability.`;
 
     const resolvedHow =
         howItWorks ||
@@ -38,7 +55,7 @@ function buildLesson({
         commonMistakes.length
             ? commonMistakes
             : [
-                `Memorizing the definition of ${title} without connecting it to a realistic asset, threat or business process.`,
+                `Memorizing the definition of ${topicName} without connecting it to a realistic asset, threat or business process.`,
                 "Assuming one security control is enough instead of considering prevention, detection, response and recovery together.",
                 "Treating a technical finding as automatically high risk without considering exposure, likelihood, asset value and impact."
             ];
@@ -58,7 +75,7 @@ function buildLesson({
         practicePrompts.length
             ? practicePrompts
             : [
-                `Explain ${title} in your own words without reading the lesson.`,
+                `Explain ${topicName} in your own words without reading the lesson.`,
                 "Create one realistic scenario where the concept reduces risk.",
                 "Create one realistic scenario where the relevant control fails or is misconfigured.",
                 "Name one preventive control and one detective control connected to this topic.",
@@ -68,7 +85,7 @@ function buildLesson({
     const supplementalQuiz = [
         {
             question:
-                `Which approach shows the strongest understanding of ${title}?`,
+                `Which approach shows the strongest understanding of ${topicName}?`,
             options: [
                 "Memorize the definition only.",
                 "Connect the concept to assets, threats, controls, evidence and business impact.",
@@ -80,7 +97,7 @@ function buildLesson({
         },
         {
             question:
-                `When reviewing ${title} in a real environment, what should a security professional do first?`,
+                `When reviewing ${topicName} in a real environment, what should a security professional do first?`,
             options: [
                 "Change the configuration immediately.",
                 "Define the expected behavior and gather relevant evidence.",
@@ -92,7 +109,7 @@ function buildLesson({
         },
         {
             question:
-                `Why should ${title} be considered together with other security controls?`,
+                `Why should ${topicName} be considered together with other security controls?`,
             options: [
                 "Because defense in depth reduces dependence on a single control.",
                 "Because individual controls never need monitoring.",
@@ -120,6 +137,16 @@ function buildLesson({
                 )
             );
 
+
+    const questionHeading =
+        /^(what|who|why|how|when|where|which|can|does|do|is|are)\b/i
+            .test(
+                normalizedTitle
+            )
+                ? `${normalizedTitle}?`
+                : `What Is ${normalizedTitle}?`;
+
+
     return {
 
         id,
@@ -131,17 +158,17 @@ function buildLesson({
 
         subtitle:
             subtitle ||
-            `Develop a practical understanding of ${title}.`,
+            `Develop a practical understanding of ${topicName}.`,
 
         objectives:
             objectives.length
                 ? objectives
                 : [
-                    `Explain ${title} in your own words.`,
-                    `Describe why ${title} matters in cybersecurity.`,
-                    `Explain how ${title} works in a realistic environment.`,
-                    `Recognize common mistakes or failure conditions related to ${title}.`,
-                    `Identify evidence or controls used to verify ${title} in practice.`
+                    `Explain ${topicName} in your own words.`,
+                    `Describe why ${topicName} matters in cybersecurity.`,
+                    `Explain how ${topicName} works in a realistic environment.`,
+                    `Recognize common mistakes or failure conditions related to ${topicName}.`,
+                    `Identify evidence or controls used to verify ${topicName} in practice.`
                 ],
 
         introduction: `
@@ -158,7 +185,7 @@ function buildLesson({
         `,
 
         body: `
-            <h2>What Is ${title}?</h2>
+            <h2>${questionHeading}</h2>
 
             <p>${overview}</p>
 
@@ -297,7 +324,7 @@ function buildLesson({
 
             <p>
                 The goal is not memorization. You should be able to recognize
-                ${title} in a realistic environment, explain its relationship
+                ${topicName} in a realistic environment, explain its relationship
                 to risk and identify how security teams would prevent, detect,
                 investigate or respond to problems involving it.
             </p>
@@ -382,7 +409,7 @@ export const cybersecurityFundamentals = {
     id: "cybersecurity-fundamentals",
     title: "Cybersecurity Fundamentals",
     overviewTitle: "Build Your Cybersecurity Foundation",
-    category: "CWS ACADEMY • CYBERSECURITY",
+    category: "CWS ACADEMY â€¢ CYBERSECURITY",
     level: "Beginner",
     levelKey: "beginner",
     status: "available",
@@ -390,9 +417,9 @@ export const cybersecurityFundamentals = {
     icon: "fa-solid fa-shield-halved",
     description: "Build a deep practical foundation in cybersecurity concepts, threats, vulnerabilities, risk, controls, identity, network and endpoint security, ethics and defensive decision-making.",
     longDescription: "Cybersecurity Fundamentals teaches the core concepts students need before progressing into networking, Linux, defensive security, ethical hacking and penetration testing. Every lesson follows a what, why, how, example, verification and practice model so students learn to reason about assets, threats, vulnerabilities, risk, controls and evidence rather than memorizing definitions. The course connects technical concepts to realistic defensive decisions, business impact, professional ethics and incident-response thinking.",
-    duration: "40–50 Hours",
+    duration: "40â€“50 Hours",
     estimatedLessons: 45,
-    learningStandard: "Deep Explanation • Scenario Analysis • Security Context • Verification • Practice",
+    learningStandard: "Deep Explanation â€¢ Scenario Analysis â€¢ Security Context â€¢ Verification â€¢ Practice",
     lessonMethod: [
         "What the concept is",
         "Why the concept exists",
@@ -458,7 +485,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 1 Assessment — Introduction to Cybersecurity",
+                title: "Module 1 Assessment â€” Introduction to Cybersecurity",
                 questions: [
                     {
                         question: "Which statement best describes cybersecurity?",
@@ -515,7 +542,7 @@ export const cybersecurityFundamentals = {
             lessons: [
                 buildLesson({
                     id: "lesson-01", title: "What Is Cybersecurity?", duration: "20 minutes", icon: "fa-solid fa-shield-halved",
-                    subtitle: "Develop a deeper understanding of What Is Cybersecurity? and its role in practical cybersecurity.",
+                    subtitle: "Develop a deeper understanding of cybersecurity and its role in protecting digital assets, systems and services.",
                     overview: "Cybersecurity is the discipline of protecting information, systems, networks, applications and digital services from events that could expose, alter, interrupt or destroy them. It combines technology, people, processes and governance because no single tool can protect an organization on its own.",
                     explanation: "Security work begins by identifying assets and understanding how they are used. Assets include data, user accounts, devices, servers, cloud services, software, intellectual property and business processes. Once assets are known, security teams consider the threats that could affect them, the weaknesses that may be exploited and the consequences of a successful incident.",
                     security: "A useful way to think about cybersecurity is as continuous risk management rather than a one-time installation of security software. Systems change, new vulnerabilities are discovered, employees join or leave, attackers adapt, and organizations adopt new technologies, so protection must also evolve.",
@@ -570,7 +597,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 2 Assessment — The CIA Triad",
+                title: "Module 2 Assessment â€” The CIA Triad",
                 questions: [
                     {
                         question: "Which security objective is primarily concerned with preventing unauthorized disclosure?",
@@ -662,7 +689,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 3 Assessment — Threats and Attack Types",
+                title: "Module 3 Assessment â€” Threats and Attack Types",
                 questions: [
                     {
                         question: "What is the main difference between a threat and a vulnerability?",
@@ -777,7 +804,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 4 Assessment — Vulnerabilities and Risk",
+                title: "Module 4 Assessment â€” Vulnerabilities and Risk",
                 questions: [
                     {
                         question: "What is a vulnerability?",
@@ -879,7 +906,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 5 Assessment — Security Controls",
+                title: "Module 5 Assessment â€” Security Controls",
                 questions: [
                     {
                         question: "Which is a technical security control?",
@@ -971,7 +998,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 6 Assessment — Authentication and Access Control",
+                title: "Module 6 Assessment â€” Authentication and Access Control",
                 questions: [
                     {
                         question: "Authentication answers which question?",
@@ -1072,7 +1099,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 7 Assessment — Network Security Fundamentals",
+                title: "Module 7 Assessment â€” Network Security Fundamentals",
                 questions: [
                     {
                         question: "What is the primary purpose of a firewall?",
@@ -1182,7 +1209,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 8 Assessment — Endpoint and System Security",
+                title: "Module 8 Assessment â€” Endpoint and System Security",
                 questions: [
                     {
                         question: "What is the goal of system hardening?",
@@ -1269,7 +1296,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 9 Assessment — Security Policies and Ethics",
+                title: "Module 9 Assessment â€” Security Policies and Ethics",
                 questions: [
                     {
                         question: "What is the purpose of a security policy?",
@@ -1367,7 +1394,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 10 Assessment — Cybersecurity Foundations Review",
+                title: "Module 10 Assessment â€” Cybersecurity Foundations Review",
                 passingScore: 75,
                 questions: [
                     {
@@ -1451,7 +1478,7 @@ export const cybersecurityFundamentals = {
         id: "final-assessment",
         title: "Cybersecurity Fundamentals Final Assessment",
         type: "Final Assessment",
-        duration: "45–60 minutes",
+        duration: "45â€“60 minutes",
         passingScore: 75,
         allowRetry: true,
         description: "A scenario-focused assessment covering the major concepts taught across all ten modules.",
