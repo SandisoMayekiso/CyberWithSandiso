@@ -401,3 +401,613 @@
     }
 
 }
+
+
+/* =========================================================
+   PREMIUM LAB WORKSPACE
+========================================================= */
+
+.lab-activity-page-body {
+    background:
+        radial-gradient(circle at 85% 12%, rgba(0,255,170,.05), transparent 28%),
+        #050910;
+}
+
+.activity-workspace-overview {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr)) minmax(260px,.72fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.activity-overview-card,
+.activity-progress-card {
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background:
+        linear-gradient(145deg, rgba(14,26,34,.94), rgba(7,14,21,.98));
+    box-shadow: 0 18px 45px rgba(0,0,0,.18);
+}
+
+.activity-overview-card {
+    display: grid;
+    grid-template-columns: auto minmax(0,1fr);
+    gap: 14px;
+}
+
+.activity-overview-card[hidden] {
+    display: none;
+}
+
+.activity-overview-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(0,255,170,.18);
+    border-radius: 12px;
+    color: var(--accent);
+    background: rgba(0,255,170,.055);
+}
+
+.activity-overview-card h2,
+.activity-progress-card h2 {
+    margin: 6px 0 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.activity-overview-card p,
+.activity-progress-card p {
+    margin: 0;
+    color: var(--text-soft);
+    font-size: .8rem;
+    line-height: 1.7;
+}
+
+.activity-progress-card {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    border-color: rgba(0,255,170,.13);
+}
+
+.activity-checklist-ring {
+    --activity-progress: 0;
+    position: relative;
+    flex: 0 0 96px;
+    width: 96px;
+    height: 96px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background:
+        conic-gradient(var(--accent) calc(var(--activity-progress) * 1%), rgba(255,255,255,.06) 0);
+}
+
+.activity-checklist-ring::after {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 1px solid rgba(255,255,255,.055);
+    border-radius: inherit;
+    background: #091119;
+}
+
+.activity-checklist-ring > div {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.activity-checklist-ring strong,
+.activity-checklist-ring span {
+    display: block;
+}
+
+.activity-checklist-ring strong {
+    color: #fff;
+    font: 800 1.1rem "Orbitron", sans-serif;
+}
+
+.activity-checklist-ring span {
+    margin-top: 3px;
+    color: var(--text-muted);
+    font: 800 .46rem "Inter", sans-serif;
+    letter-spacing: .1em;
+}
+
+.activity-prerequisite-list {
+    display: grid;
+    gap: 7px;
+}
+
+.activity-prerequisite-item {
+    display: grid;
+    grid-template-columns: 18px minmax(0,1fr);
+    gap: 9px;
+    align-items: start;
+    color: var(--text-soft);
+    font-size: .76rem;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.activity-prerequisite-item input {
+    margin-top: 2px;
+    accent-color: var(--accent);
+}
+
+.activity-card {
+    overflow: hidden;
+    background:
+        linear-gradient(155deg, rgba(13,23,31,.98), rgba(6,12,19,.99));
+    box-shadow: 0 24px 65px rgba(0,0,0,.2);
+}
+
+.activity-workspace-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.activity-tool-btn {
+    min-height: 40px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: var(--text-secondary);
+    background: rgba(255,255,255,.025);
+    font: 750 .7rem "Inter", sans-serif;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.activity-tool-btn:hover {
+    border-color: rgba(0,255,170,.28);
+    color: var(--accent);
+    background: rgba(0,255,170,.055);
+    transform: translateY(-1px);
+}
+
+.activity-tool-btn.primary {
+    border-color: rgba(0,255,170,.26);
+    color: #03120d;
+    background: var(--accent);
+}
+
+.activity-step-list li {
+    padding: 0;
+    overflow: hidden;
+    transition: border-color .2s ease, background .2s ease;
+}
+
+.activity-step-list li::before {
+    top: 20px;
+}
+
+.activity-step-list li.is-complete {
+    border-color: rgba(0,255,170,.2);
+    background: rgba(0,255,170,.035);
+}
+
+.activity-step-list li.is-complete::before {
+    color: var(--accent);
+}
+
+.activity-step-check {
+    min-height: 62px;
+    padding: 17px 17px 17px 56px;
+    display: grid;
+    grid-template-columns: 24px minmax(0,1fr);
+    gap: 12px;
+    align-items: start;
+    cursor: pointer;
+}
+
+.activity-step-check input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.activity-step-control {
+    width: 23px;
+    height: 23px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 7px;
+    color: transparent;
+    background: rgba(255,255,255,.025);
+    transition: .2s ease;
+}
+
+.activity-step-control i {
+    font-size: .63rem;
+}
+
+.activity-step-check input:checked + .activity-step-control {
+    border-color: var(--accent);
+    color: #03120d;
+    background: var(--accent);
+}
+
+.activity-step-check input:focus-visible + .activity-step-control {
+    outline: 3px solid rgba(0,255,170,.16);
+    outline-offset: 2px;
+}
+
+.activity-step-text {
+    color: var(--text-soft);
+    font-size: .8rem;
+    line-height: 1.65;
+}
+
+.is-complete .activity-step-text {
+    color: #8fa99f;
+}
+
+.activity-reflection-item {
+    grid-template-columns: 38px minmax(0,1fr);
+    padding: 16px;
+}
+
+.activity-reflection-response p {
+    margin: 0 0 10px;
+    color: var(--text-secondary);
+}
+
+.activity-reflection-response textarea,
+.activity-notes-field textarea {
+    width: 100%;
+    resize: vertical;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    color: var(--text-primary);
+    background: rgba(3,9,15,.7);
+    font: 500 .76rem/1.65 "Inter", sans-serif;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.activity-reflection-response textarea {
+    min-height: 96px;
+    padding: 12px;
+}
+
+.activity-reflection-response textarea:focus,
+.activity-notes-field textarea:focus {
+    border-color: rgba(0,255,170,.42);
+    box-shadow: 0 0 0 3px rgba(0,255,170,.055);
+}
+
+.activity-evidence-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.activity-evidence-item {
+    padding: 13px;
+    display: grid;
+    grid-template-columns: 30px minmax(0,1fr);
+    gap: 10px;
+    align-items: start;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-soft);
+    background: rgba(255,255,255,.014);
+    font-size: .74rem;
+    line-height: 1.55;
+}
+
+.activity-evidence-item i {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    color: var(--accent);
+    background: rgba(0,255,170,.055);
+}
+
+.activity-notes-field,
+.activity-notes-field > span {
+    display: block;
+}
+
+.activity-notes-field > span {
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: .7rem;
+    font-weight: 750;
+}
+
+.activity-notes-field textarea {
+    min-height: 160px;
+    padding: 14px;
+}
+
+.activity-notes-footer {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.activity-notes-footer small {
+    color: var(--text-muted);
+    font-size: .65rem;
+}
+
+.activity-console-card {
+    margin-top: 28px;
+    border: 1px solid rgba(0,255,170,.14);
+    border-radius: 13px;
+    overflow: hidden;
+    background: #04090e;
+}
+
+.activity-console-card summary {
+    padding: 15px 17px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: #dce8e4;
+    background: rgba(0,255,170,.035);
+    font: 750 .75rem "Inter", sans-serif;
+    cursor: pointer;
+}
+
+.activity-console-card summary span {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.activity-console-card summary i {
+    color: var(--accent);
+}
+
+.activity-console-card summary small {
+    color: var(--text-muted);
+    font-size: .59rem;
+}
+
+.activity-console-body {
+    padding: 16px;
+}
+
+.activity-console-body > p {
+    margin: 0 0 12px;
+    color: var(--text-muted);
+    font-size: .68rem;
+    line-height: 1.6;
+}
+
+.activity-console-output {
+    min-height: 170px;
+    max-height: 320px;
+    padding: 15px;
+    overflow: auto;
+    border: 1px solid rgba(255,255,255,.05);
+    border-radius: 9px 9px 0 0;
+    color: #a9c4ba;
+    background: #020507;
+    font: 500 .72rem/1.65 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.activity-console-line.command {
+    margin-top: 7px;
+    color: var(--accent);
+}
+
+.activity-console-form {
+    display: grid;
+    grid-template-columns: auto minmax(0,1fr) auto;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,.07);
+    border-top: 0;
+    border-radius: 0 0 9px 9px;
+    background: #07100f;
+}
+
+.activity-console-form > span {
+    padding-left: 13px;
+    color: var(--accent);
+    font: 600 .67rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.activity-console-form input {
+    min-width: 0;
+    padding: 13px 8px;
+    border: 0;
+    outline: none;
+    color: #dce8e4;
+    background: transparent;
+    font: 500 .72rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.activity-console-form button {
+    align-self: stretch;
+    padding: 0 16px;
+    border: 0;
+    border-left: 1px solid rgba(255,255,255,.07);
+    color: var(--accent);
+    background: rgba(0,255,170,.05);
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.activity-completion-panel {
+    padding: 24px;
+    border: 1px solid rgba(0,255,170,.13);
+    border-radius: 13px;
+    background: linear-gradient(135deg, rgba(0,255,170,.045), rgba(255,255,255,.012));
+}
+
+.activity-dialog-open {
+    overflow: hidden;
+}
+
+.activity-dialog-backdrop {
+    position: fixed;
+    z-index: 10000;
+    inset: 0;
+    padding: 20px;
+    display: grid;
+    place-items: center;
+    background: rgba(0,4,8,.82);
+    backdrop-filter: blur(10px);
+}
+
+.activity-dialog-backdrop[hidden] {
+    display: none;
+}
+
+.activity-dialog {
+    width: min(520px, 100%);
+    padding: 28px;
+    border: 1px solid rgba(0,255,170,.17);
+    border-radius: 16px;
+    background: linear-gradient(150deg, #101b23, #060c12);
+    box-shadow: 0 30px 90px rgba(0,0,0,.55);
+}
+
+.activity-dialog-icon {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 16px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(0,255,170,.2);
+    border-radius: 14px;
+    color: var(--accent);
+    background: rgba(0,255,170,.06);
+}
+
+.activity-dialog h2 {
+    margin: 7px 0 9px;
+    color: #fff;
+    font: 750 1.2rem "Inter", sans-serif;
+}
+
+.activity-dialog > p {
+    margin: 0;
+    color: var(--text-soft);
+    font-size: .78rem;
+    line-height: 1.65;
+}
+
+.activity-authorization-check {
+    margin: 20px 0;
+    padding: 14px;
+    display: grid;
+    grid-template-columns: 18px minmax(0,1fr);
+    gap: 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    background: rgba(255,255,255,.018);
+    font-size: .73rem;
+    line-height: 1.55;
+    cursor: pointer;
+}
+
+.activity-authorization-check input {
+    margin-top: 2px;
+    accent-color: var(--accent);
+}
+
+.activity-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+}
+
+.activity-dialog-actions .lesson-primary-btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+@media (max-width: 1050px) {
+    .activity-workspace-overview {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+
+    .activity-progress-card {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 720px) {
+    .activity-workspace-overview,
+    .activity-evidence-list {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-progress-card {
+        grid-column: auto;
+    }
+
+    .activity-overview-card {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-notes-footer,
+    .activity-dialog-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .activity-tool-btn,
+    .activity-dialog-actions .lesson-primary-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 520px) {
+    .activity-card,
+    .activity-dialog {
+        padding: 20px;
+    }
+
+    .activity-progress-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .activity-step-check {
+        padding: 16px 14px 16px 50px;
+    }
+
+    .activity-console-form {
+        grid-template-columns: 1fr auto;
+    }
+
+    .activity-console-form > span {
+        grid-column: 1 / -1;
+        padding: 10px 12px 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .activity-tool-btn,
+    .activity-step-list li,
+    .activity-step-control {
+        transition: none;
+    }
+}
