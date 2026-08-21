@@ -11,7 +11,7 @@
 
     <meta
         name="description"
-        content="CWS Academy practical cybersecurity activity"
+        content="Complete a guided CWS Academy cybersecurity lab with an interactive checklist, evidence notes and safe practice console."
     >
 
     <title>CWS Academy | Practical Activity</title>
@@ -22,6 +22,8 @@
     >
 
     <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="../css/design-system.css">
     <link rel="stylesheet" href="../css/lesson.css">
     <link rel="stylesheet" href="../css/lab-activity.css">
     <link rel="stylesheet" href="../css/cws-assistant.css">
@@ -295,13 +297,80 @@
                 </h2>
 
                 <p>
+                    <span id="activitySafetyText">
                     CWS Academy practical exercises are for learning, testing
                     and authorized security practice. Do not scan, probe,
                     access or test third-party systems without explicit
                     permission.
+                    </span>
                 </p>
 
             </div>
+
+        </section>
+
+
+        <!-- LAB WORKSPACE OVERVIEW -->
+
+        <section class="activity-workspace-overview">
+
+            <article
+                id="activityScenarioSection"
+                class="activity-overview-card scenario"
+                hidden
+            >
+                <span class="activity-overview-icon">
+                    <i class="fa-solid fa-briefcase"></i>
+                </span>
+                <div>
+                    <span class="dashboard-label">SCENARIO</span>
+                    <h2>Your lab context</h2>
+                    <p id="activityScenario"></p>
+                </div>
+            </article>
+
+            <article
+                id="activityPrerequisitesSection"
+                class="activity-overview-card prerequisites"
+                hidden
+            >
+                <span class="activity-overview-icon">
+                    <i class="fa-solid fa-list-check"></i>
+                </span>
+                <div>
+                    <span class="dashboard-label">BEFORE YOU BEGIN</span>
+                    <h2>Prerequisites</h2>
+                    <div
+                        id="activityPrerequisites"
+                        class="activity-prerequisite-list"
+                    ></div>
+                </div>
+            </article>
+
+            <aside class="activity-progress-card">
+                <div
+                    id="activityChecklistRing"
+                    class="activity-checklist-ring"
+                    style="--activity-progress:0;"
+                    role="progressbar"
+                    aria-label="Lab checklist progress"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="0"
+                >
+                    <div>
+                        <strong id="activityChecklistPercent">0%</strong>
+                        <span>CHECKLIST</span>
+                    </div>
+                </div>
+                <div>
+                    <span class="dashboard-label">WORKSPACE STATUS</span>
+                    <h2 id="activityChecklistTitle">Ready to begin</h2>
+                    <p id="activityChecklistMeta">
+                        Check each instruction as you complete it.
+                    </p>
+                </div>
+            </aside>
 
         </section>
 
@@ -329,6 +398,25 @@
                     id="activityObjectiveText"
                     class="activity-objective-text"
                 ></p>
+
+                <div class="activity-workspace-actions">
+                    <button
+                        type="button"
+                        id="downloadActivityBtn"
+                        class="activity-tool-btn"
+                    >
+                        <i class="fa-solid fa-download"></i>
+                        Download Lab Notes
+                    </button>
+                    <button
+                        type="button"
+                        id="resetActivityWorkspaceBtn"
+                        class="activity-tool-btn"
+                    >
+                        <i class="fa-solid fa-rotate-left"></i>
+                        Reset Local Checklist
+                    </button>
+                </div>
 
 
                 <div class="activity-section">
@@ -368,6 +456,82 @@
                     ></div>
 
                 </div>
+
+
+                <div
+                    id="evidenceSection"
+                    class="activity-section"
+                    hidden
+                >
+
+                    <span class="dashboard-label">EVIDENCE</span>
+
+                    <h2>Capture what proves your work</h2>
+
+                    <div
+                        id="activityEvidenceList"
+                        class="activity-evidence-list"
+                    ></div>
+
+                    <label class="activity-notes-field" for="activityEvidenceNotes">
+                        <span>Private evidence notes</span>
+                        <textarea
+                            id="activityEvidenceNotes"
+                            rows="7"
+                            placeholder="Record commands, observations, findings and evidence references. These notes stay in this browser."
+                        ></textarea>
+                    </label>
+
+                    <div class="activity-notes-footer">
+                        <small id="activityNotesStatus">Saved locally on this device.</small>
+                        <button
+                            type="button"
+                            id="saveActivityNotesBtn"
+                            class="activity-tool-btn primary"
+                        >
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            Save Notes
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <details class="activity-console-card">
+
+                    <summary>
+                        <span>
+                            <i class="fa-solid fa-terminal"></i>
+                            Safe Practice Console
+                        </span>
+                        <small>Browser simulation</small>
+                    </summary>
+
+                    <div class="activity-console-body">
+                        <p>
+                            This console is a learning simulation. It cannot
+                            access your computer, network or external systems.
+                        </p>
+                        <div
+                            id="activityConsoleOutput"
+                            class="activity-console-output"
+                            aria-live="polite"
+                        >Type <strong>help</strong> to view safe simulated commands.</div>
+                        <form id="activityConsoleForm" class="activity-console-form">
+                            <span aria-hidden="true">student@cws-lab:~$</span>
+                            <input
+                                id="activityConsoleInput"
+                                type="text"
+                                autocomplete="off"
+                                spellcheck="false"
+                                aria-label="Practice console command"
+                                placeholder="help"
+                            >
+                            <button type="submit">Run</button>
+                        </form>
+                    </div>
+
+                </details>
 
 
                 <div class="activity-completion-panel">
@@ -446,6 +610,57 @@
 
 
     </main>
+
+
+    <!-- COMPLETION CONFIRMATION -->
+
+    <div
+        id="activityCompletionDialog"
+        class="activity-dialog-backdrop"
+        hidden
+    >
+        <section
+            class="activity-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="activityDialogTitle"
+        >
+            <span class="activity-dialog-icon">
+                <i class="fa-solid fa-flag-checkered"></i>
+            </span>
+            <span class="dashboard-label">CONFIRM COMPLETION</span>
+            <h2 id="activityDialogTitle">Finish this practical activity?</h2>
+            <p id="activityDialogText">
+                Complete every instruction in your local checklist before
+                saving this activity to your course progress.
+            </p>
+            <label class="activity-authorization-check">
+                <input type="checkbox" id="activityAuthorizationCheck">
+                <span>
+                    I completed this activity only in an environment I own
+                    or had explicit permission to test.
+                </span>
+            </label>
+            <div class="activity-dialog-actions">
+                <button
+                    type="button"
+                    id="cancelActivityCompletionBtn"
+                    class="activity-tool-btn"
+                >
+                    Continue Working
+                </button>
+                <button
+                    type="button"
+                    id="confirmActivityCompletionBtn"
+                    class="lesson-primary-btn"
+                    disabled
+                >
+                    <i class="fa-solid fa-check"></i>
+                    Confirm Completion
+                </button>
+            </div>
+        </section>
+    </div>
 
 
     <script
