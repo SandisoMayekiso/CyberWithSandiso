@@ -1,0 +1,122 @@
+/* =========================================================
+   CWS ACADEMY
+   SHARED RESPONSIVE FALLBACKS
+
+   Kept intentionally small. Page-specific responsive rules
+   remain in their own stylesheets while this file guarantees
+   reliable public navigation and common layouts.
+========================================================= */
+
+@media (max-width: 960px) {
+    .navbar {
+        position: relative;
+        min-height: 70px;
+    }
+
+    .menu-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+        margin-left: auto;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 0.7rem;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.04);
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .nav-links {
+        position: absolute;
+        top: calc(100% + 0.7rem);
+        right: 0;
+        left: 0;
+        z-index: 100;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.35rem;
+        padding: 0.8rem;
+        border: 1px solid rgba(34, 211, 238, 0.2);
+        border-radius: 1rem;
+        background: rgba(5, 16, 24, 0.98);
+        box-shadow: 0 24px 55px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(18px);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links li,
+    .nav-links a {
+        width: 100%;
+    }
+
+    .nav-links a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        padding: 0.7rem 0.85rem;
+        border-radius: 0.6rem;
+    }
+
+    .nav-auth {
+        margin-left: auto;
+    }
+
+    .academy-course-grid,
+    .course-grid,
+    .features-grid,
+    .footer-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 680px) {
+    .navbar,
+    .hero-content,
+    .courses-hero-content,
+    .section-heading,
+    .footer-container {
+        width: min(100% - 1.5rem, 100%);
+    }
+
+    .nav-auth .btn-login,
+    .nav-auth .btn-register {
+        display: none;
+    }
+
+    .academy-course-grid,
+    .course-grid,
+    .features-grid,
+    .footer-container {
+        grid-template-columns: 1fr;
+    }
+
+    .hero,
+    .courses-hero {
+        padding-inline: 1rem;
+    }
+
+    .hero h1,
+    .courses-hero h1 {
+        font-size: clamp(2.1rem, 11vw, 3.2rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
