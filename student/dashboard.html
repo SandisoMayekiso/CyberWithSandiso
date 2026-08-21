@@ -45,6 +45,11 @@
         href="../css/style.css"
     >
 
+    <link
+        rel="stylesheet"
+        href="../css/design-system.css"
+    >
+
 
     <!-- =====================================================
          DASHBOARD CSS
@@ -261,8 +266,15 @@
         <div class="welcome-content">
 
             <span class="dashboard-label">
-                CWS ACADEMY • STUDENT PORTAL
+                CWS ACADEMY â€¢ STUDENT PORTAL
             </span>
+
+            <p
+                id="dashboardDate"
+                class="dashboard-date"
+            >
+                Your learning overview
+            </p>
 
 
             <h1>
@@ -318,14 +330,39 @@
         </div>
 
 
-        <div
-            class="welcome-icon"
-            aria-hidden="true"
+        <aside
+            class="dashboard-hero-snapshot"
+            aria-label="Overall learning progress"
         >
 
-            <i class="fa-solid fa-shield-halved"></i>
+            <div
+                id="dashboardOverallRing"
+                class="dashboard-progress-ring"
+                style="--dashboard-progress: 0;"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+            >
+                <div>
+                    <strong id="dashboardOverallPercent">0%</strong>
+                    <span>overall</span>
+                </div>
+            </div>
 
-        </div>
+            <div class="dashboard-snapshot-copy">
+                <span class="dashboard-label">LEARNING SNAPSHOT</span>
+                <h2 id="dashboardSnapshotTitle">Ready to begin</h2>
+                <p id="dashboardSnapshotMeta">
+                    Start a course to build your progress overview.
+                </p>
+                <a href="progress.html" class="text-link">
+                    View full progress
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+        </aside>
 
     </section>
 
@@ -415,6 +452,97 @@
 
 
     <!-- =====================================================
+         LEARNING ACTIVITY CENTER
+    ====================================================== -->
+
+    <section class="dashboard-section dashboard-activity-section">
+
+        <div class="section-heading">
+            <div>
+                <span class="dashboard-label">YOUR NEXT BEST ACTION</span>
+                <h2>Learning Activity Center</h2>
+                <p>
+                    A focused view of your latest progress,
+                    recommended next course and saved lesson work.
+                </p>
+            </div>
+        </div>
+
+        <div class="dashboard-insight-grid">
+
+            <article class="dashboard-insight-card dashboard-recent-card">
+                <div class="dashboard-card-heading">
+                    <span class="dashboard-card-icon">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </span>
+                    <div>
+                        <span class="dashboard-eyebrow">RECENT</span>
+                        <h3>Recent Activity</h3>
+                    </div>
+                </div>
+                <div
+                    id="dashboardRecentActivity"
+                    class="dashboard-recent-list"
+                    aria-live="polite"
+                >
+                    <div class="dashboard-inline-loader">
+                        <span class="cws-skeleton"></span>
+                        <span class="cws-skeleton"></span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="dashboard-insight-card dashboard-recommendation-card">
+                <div class="dashboard-card-heading">
+                    <span class="dashboard-card-icon">
+                        <i class="fa-solid fa-compass"></i>
+                    </span>
+                    <div>
+                        <span class="dashboard-eyebrow">RECOMMENDED</span>
+                        <h3>Next Course</h3>
+                    </div>
+                </div>
+                <div
+                    id="dashboardRecommendation"
+                    class="dashboard-recommendation-content"
+                    aria-live="polite"
+                >
+                    <div class="dashboard-inline-loader">
+                        <span class="cws-skeleton"></span>
+                        <span class="cws-skeleton"></span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="dashboard-insight-card dashboard-saved-card">
+                <div class="dashboard-card-heading">
+                    <span class="dashboard-card-icon">
+                        <i class="fa-solid fa-bookmark"></i>
+                    </span>
+                    <div>
+                        <span class="dashboard-eyebrow">ON THIS DEVICE</span>
+                        <h3>Saved Learning</h3>
+                    </div>
+                </div>
+                <div
+                    id="dashboardSavedLearning"
+                    class="dashboard-saved-content"
+                    aria-live="polite"
+                >
+                    <div class="dashboard-inline-loader">
+                        <span class="cws-skeleton"></span>
+                        <span class="cws-skeleton"></span>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
          COURSE CATALOG PREVIEW
     ====================================================== -->
 
@@ -469,15 +597,12 @@
         <div
             id="dashboardCoursesLoading"
             class="dashboard-courses-loading"
-            aria-live="polite"
+            aria-label="Loading dashboard courses"
         >
-
-            <i class="fa-solid fa-circle-notch fa-spin"></i>
-
-            <span>
-                Loading courses...
-            </span>
-
+            <div class="cws-skeleton"></div>
+            <div class="cws-skeleton"></div>
+            <div class="cws-skeleton"></div>
+            <span class="sr-only">Loading courses...</span>
         </div>
 
 
@@ -540,7 +665,7 @@
 
 
     <!-- =====================================================
-         PRACTICAL LABS
+         PRACTICE QUEUE
     ====================================================== -->
 
     <section class="dashboard-section labs-preview-section">
@@ -551,20 +676,20 @@
             <div>
 
                 <span class="dashboard-label">
-                    HANDS-ON SECURITY
+                    READY WHEN YOU ARE
                 </span>
 
 
                 <h2>
-                    Practical Labs
+                    Practice Queue
                 </h2>
 
 
                 <p>
 
-                    Turn knowledge into practical cybersecurity
-                    skills through controlled laboratory
-                    exercises.
+                    Continue real activities from your available
+                    courses. Completed activities are removed
+                    automatically.
 
                 </p>
 
@@ -585,197 +710,32 @@
         </div>
 
 
-        <div class="labs-grid">
-
-
-            <!-- =============================================
-                 RECONNAISSANCE
-            ============================================== -->
-
-            <article class="dashboard-lab-card">
-
-                <div class="lab-icon">
-
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-                </div>
-
-
-                <div>
-
-                    <span class="lab-category">
-                        RECONNAISSANCE
-                    </span>
-
-
-                    <h3>
-                        Reconnaissance Lab
-                    </h3>
-
-
-                    <p>
-
-                        Practice foundational reconnaissance
-                        and information-gathering concepts.
-
-                    </p>
-
-                </div>
-
-
-                <a href="labs.html">
-
-                    Explore Lab
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </a>
-
-            </article>
-
-
-
-            <!-- =============================================
-                 NETWORK SECURITY
-            ============================================== -->
-
-            <article class="dashboard-lab-card">
-
-                <div class="lab-icon">
-
-                    <i class="fa-solid fa-network-wired"></i>
-
-                </div>
-
-
-                <div>
-
-                    <span class="lab-category">
-                        NETWORK SECURITY
-                    </span>
-
-
-                    <h3>
-                        Network Enumeration Lab
-                    </h3>
-
-
-                    <p>
-
-                        Practice network discovery and
-                        enumeration in an authorized
-                        environment.
-
-                    </p>
-
-                </div>
-
-
-                <a href="labs.html">
-
-                    Explore Lab
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </a>
-
-            </article>
-
-
-
-            <!-- =============================================
-                 LINUX
-            ============================================== -->
-
-            <article class="dashboard-lab-card">
-
-                <div class="lab-icon">
-
-                    <i class="fa-solid fa-terminal"></i>
-
-                </div>
-
-
-                <div>
-
-                    <span class="lab-category">
-                        LINUX SECURITY
-                    </span>
-
-
-                    <h3>
-                        Linux Security Lab
-                    </h3>
-
-
-                    <p>
-
-                        Practice Linux security and system
-                        administration fundamentals.
-
-                    </p>
-
-                </div>
-
-
-                <a href="labs.html">
-
-                    Explore Lab
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </a>
-
-            </article>
-
-
-
-            <!-- =============================================
-                 WEB SECURITY
-            ============================================== -->
-
-            <article class="dashboard-lab-card">
-
-                <div class="lab-icon">
-
-                    <i class="fa-solid fa-globe"></i>
-
-                </div>
-
-
-                <div>
-
-                    <span class="lab-category">
-                        WEB SECURITY
-                    </span>
-
-
-                    <h3>
-                        Web Security Lab
-                    </h3>
-
-
-                    <p>
-
-                        Explore web security concepts in
-                        controlled educational environments.
-
-                    </p>
-
-                </div>
-
-
-                <a href="labs.html">
-
-                    Explore Lab
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </a>
-
-            </article>
-
-
+        <div
+            id="dashboardPracticeGrid"
+            class="labs-grid"
+            aria-live="polite"
+        >
+            <div class="dashboard-practice-skeleton cws-skeleton"></div>
+            <div class="dashboard-practice-skeleton cws-skeleton"></div>
+        </div>
+
+        <div
+            id="dashboardPracticeEmpty"
+            class="dashboard-practice-empty"
+            hidden
+        >
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+                <h3>Your queue is clear</h3>
+                <p>
+                    Start an available course or open the lab
+                    library to find another practical activity.
+                </p>
+            </div>
+            <a href="labs.html" class="text-link">
+                Browse all labs
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
         </div>
 
     </section>
@@ -933,6 +893,37 @@
             </div>
 
 
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ACHIEVEMENTS
+    ====================================================== -->
+
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+            <div>
+                <span class="dashboard-label">MILESTONES</span>
+                <h2>Achievements</h2>
+                <p>
+                    Milestones are unlocked from your actual
+                    course, lab and assessment progress.
+                </p>
+            </div>
+        </div>
+
+        <div
+            id="dashboardAchievementsGrid"
+            class="dashboard-achievements-grid"
+            aria-live="polite"
+        >
+            <div class="dashboard-achievement-skeleton cws-skeleton"></div>
+            <div class="dashboard-achievement-skeleton cws-skeleton"></div>
+            <div class="dashboard-achievement-skeleton cws-skeleton"></div>
         </div>
 
     </section>
@@ -1133,7 +1124,7 @@
 
     <p>
 
-        © 2026 CWS Academy.
+        Â© 2026 CWS Academy.
         Part of the CyberWithSandiso ecosystem.
 
     </p>
