@@ -42,6 +42,8 @@
         href="../css/style.css"
     >
 
+    <link rel="stylesheet" href="../css/design-system.css">
+
 
     <!-- =====================================================
          DASHBOARD CSS
@@ -174,7 +176,7 @@
         <div class="assessments-hero-content">
 
             <span class="assessments-eyebrow">
-                CWS ACADEMY • KNOWLEDGE CHECK
+                CWS ACADEMY â€¢ KNOWLEDGE CHECK
             </span>
 
 
@@ -432,6 +434,62 @@
                 Pro
             </button>
         </div>
+
+
+        <div class="assessment-discovery-bar">
+
+            <label class="assessment-search-field" for="assessmentSearchInput">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <span class="sr-only">Search assessments</span>
+                <input
+                    type="search"
+                    id="assessmentSearchInput"
+                    placeholder="Search by course or assessment..."
+                    autocomplete="off"
+                >
+            </label>
+
+            <label class="assessment-filter-field" for="assessmentTypeFilter">
+                <span>Type</span>
+                <select id="assessmentTypeFilter">
+                    <option value="all">All types</option>
+                    <option value="module">Module checks</option>
+                    <option value="final">Final assessments</option>
+                </select>
+            </label>
+
+            <label class="assessment-filter-field" for="assessmentStatusFilter">
+                <span>Status</span>
+                <select id="assessmentStatusFilter">
+                    <option value="all">All statuses</option>
+                    <option value="open">Open</option>
+                    <option value="completed">Completed</option>
+                    <option value="locked">Locked</option>
+                </select>
+            </label>
+
+            <button type="button" id="clearAssessmentFilters" class="assessment-clear-filters">
+                <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                Reset
+            </button>
+
+        </div>
+
+
+        <aside id="assessmentRecommendation" class="assessment-recommendation" hidden>
+            <div class="assessment-recommendation-icon">
+                <i class="fa-solid fa-bullseye" aria-hidden="true"></i>
+            </div>
+            <div>
+                <span>RECOMMENDED NEXT</span>
+                <strong id="assessmentRecommendationTitle">Your next assessment</strong>
+                <p id="assessmentRecommendationText">Continue with the next available knowledge check.</p>
+            </div>
+            <a id="assessmentRecommendationLink" href="#" class="assessment-primary-btn">
+                Open assessment
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </a>
+        </aside>
 
 
         <div
@@ -715,7 +773,7 @@
 <footer class="student-footer">
 
     <p>
-        © 2026 CWS Academy.
+        Â© 2026 CWS Academy.
         Part of the CyberWithSandiso ecosystem.
     </p>
 
