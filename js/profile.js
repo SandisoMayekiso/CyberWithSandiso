@@ -27,7 +27,9 @@ import {
 ========================================================= */
 
 import {
+    collection,
     doc,
+    getDocs,
     getDoc,
     setDoc,
     serverTimestamp
@@ -59,7 +61,7 @@ import {
 ========================================================= */
 
 const DEBUG =
-    true;
+    false;
 
 
 function log(
@@ -125,6 +127,12 @@ const profileContent =
 const studentName =
     document.getElementById(
         "studentName"
+    );
+
+
+const studentPlanBadge =
+    document.getElementById(
+        "studentPlanBadge"
     );
 
 
@@ -218,6 +226,78 @@ const saveProfileBtn =
     );
 
 
+const careerHeadlineInput =
+    document.getElementById(
+        "careerHeadlineInput"
+    );
+
+
+const locationInput =
+    document.getElementById(
+        "locationInput"
+    );
+
+
+const profileBioInput =
+    document.getElementById(
+        "profileBioInput"
+    );
+
+
+const profileBioCount =
+    document.getElementById(
+        "profileBioCount"
+    );
+
+
+const linkedInInput =
+    document.getElementById(
+        "linkedInInput"
+    );
+
+
+const githubInput =
+    document.getElementById(
+        "githubInput"
+    );
+
+
+const portfolioInput =
+    document.getElementById(
+        "portfolioInput"
+    );
+
+
+const copyUidBtn =
+    document.getElementById(
+        "copyUidBtn"
+    );
+
+
+const profileCompletionRing =
+    document.getElementById(
+        "profileCompletionRing"
+    );
+
+
+const profileCompletionPercent =
+    document.getElementById(
+        "profileCompletionPercent"
+    );
+
+
+const profileCompletionTitle =
+    document.getElementById(
+        "profileCompletionTitle"
+    );
+
+
+const profileCompletionText =
+    document.getElementById(
+        "profileCompletionText"
+    );
+
+
 /* =========================================================
    SUBSCRIPTION ELEMENTS
 ========================================================= */
@@ -292,6 +372,12 @@ const certificatesEarned =
     );
 
 
+const profileStatsStatus =
+    document.getElementById(
+        "profileStatsStatus"
+    );
+
+
 /* =========================================================
    LEARNING PREFERENCES
 ========================================================= */
@@ -360,6 +446,12 @@ const lastSignInAt =
     );
 
 
+const downloadProfileBtn =
+    document.getElementById(
+        "downloadProfileBtn"
+    );
+
+
 /* =========================================================
    STATE
 ========================================================= */
@@ -378,6 +470,16 @@ let currentUserDocument =
 
 let initialized =
     false;
+
+
+let currentLearningStats = {
+    coursesStarted: 0,
+    coursesCompleted: 0,
+    lessonsCompleted: 0,
+    labsCompleted: 0,
+    assessmentsCompleted: 0,
+    certificatesEarned: 0
+};
 
 
 /* =========================================================
@@ -738,7 +840,7 @@ function getMemberSince(
 
 
     return formatted ||
-        "—";
+        "â€”";
 
 }
 
@@ -866,7 +968,7 @@ function renderUser(
 
         uidDisplay.textContent =
             user?.uid ||
-            "—";
+            "â€”";
 
     }
 
@@ -911,7 +1013,7 @@ function renderUser(
                         true
                 }
             ) ||
-            "—";
+            "â€”";
 
     }
 
@@ -1112,6 +1214,30 @@ function renderEntitlement() {
     }
 
 
+    if (studentPlanBadge) {
+
+        studentPlanBadge.textContent =
+            isPro
+                ? "PRO"
+                : "FREE";
+
+
+        studentPlanBadge.className =
+            `student-plan-badge ${
+                isPro
+                    ? "pro"
+                    : "free"
+            }`;
+
+
+        studentPlanBadge.title =
+            isPro
+                ? "CWS Academy Pro"
+                : "CWS Academy Free";
+
+    }
+
+
     if (currentPlanName) {
 
         currentPlanName.textContent =
@@ -1182,27 +1308,25 @@ function renderEntitlement() {
     }
 
 
-    /*
-     * Pro upgrades are intentionally paused.
-     * Keep the profile control disabled regardless
-     * of the current entitlement.
-     */
-
     if (manageSubscriptionBtn) {
 
-        manageSubscriptionBtn.disabled =
-            true;
+        manageSubscriptionBtn.href =
+            "subscription.html?from=profile";
 
 
-        manageSubscriptionBtn.setAttribute(
-            "aria-disabled",
-            "true"
+        manageSubscriptionBtn.removeAttribute(
+            "aria-disabled"
+        );
+
+
+        manageSubscriptionBtn.classList.remove(
+            "profile-pro-disabled"
         );
 
 
         manageSubscriptionBtn.innerHTML = `
-            <i class="fa-solid fa-lock"></i>
-            Pro Coming Soon
+            <i class="fa-solid ${isPro ? "fa-sliders" : "fa-crown"}"></i>
+            ${isPro ? "Manage Plan" : "Upgrade to Pro"}
         `;
 
     }
@@ -1343,6 +1467,411 @@ async function loadUserDocument(
 
 
 /* =========================================================
+   CAREER PROFILE
+========================================================= */
+
+function getCareerProfile(
+    profileData = currentUserDocument
+) {
+
+    const saved =
+        profileData?.careerProfile;
+
+
+    if (
+        !saved ||
+        typeof saved !== "object"
+    ) {
+
+        return {
+            headline: "",
+            location: "",
+            bio: "",
+            links: {
+                linkedin: "",
+                github: "",
+                portfolio: ""
+            }
+        };
+
+    }
+
+
+    return {
+        headline:
+            String(saved.headline || ""),
+        location:
+            String(saved.location || ""),
+        bio:
+            String(saved.bio || ""),
+        links: {
+            linkedin:
+                String(saved.links?.linkedin || ""),
+            github:
+                String(saved.links?.github || ""),
+            portfolio:
+                String(saved.links?.portfolio || "")
+        }
+    };
+
+}
+
+
+function updateBioCounter() {
+
+    if (!profileBioCount) {
+        return;
+    }
+
+
+    profileBioCount.textContent =
+        String(
+            profileBioInput?.value.length ||
+            0
+        );
+
+}
+
+
+function renderCareerProfile(
+    profileData = currentUserDocument
+) {
+
+    const career =
+        getCareerProfile(profileData);
+
+
+    if (careerHeadlineInput) {
+        careerHeadlineInput.value =
+            career.headline;
+    }
+
+
+    if (locationInput) {
+        locationInput.value =
+            career.location;
+    }
+
+
+    if (profileBioInput) {
+        profileBioInput.value =
+            career.bio;
+    }
+
+
+    if (linkedInInput) {
+        linkedInInput.value =
+            career.links.linkedin;
+    }
+
+
+    if (githubInput) {
+        githubInput.value =
+            career.links.github;
+    }
+
+
+    if (portfolioInput) {
+        portfolioInput.value =
+            career.links.portfolio;
+    }
+
+
+    updateBioCounter();
+
+}
+
+
+function isValidOptionalUrl(value) {
+
+    const input =
+        String(value || "").trim();
+
+
+    if (!input) {
+        return true;
+    }
+
+
+    try {
+
+        const url =
+            new URL(input);
+
+
+        return [
+            "http:",
+            "https:"
+        ].includes(url.protocol);
+
+    }
+    catch (err) {
+
+        return false;
+
+    }
+
+}
+
+
+function getProfileCompletionData() {
+
+    const interests =
+        Array.from(
+            document.querySelectorAll(
+                'input[name="interests"]:checked'
+            )
+        );
+
+
+    const checks = [
+        Boolean(displayNameInput?.value.trim()),
+        Boolean(currentUser?.emailVerified),
+        Boolean(careerHeadlineInput?.value.trim()),
+        Boolean(locationInput?.value.trim()),
+        Boolean(profileBioInput?.value.trim()),
+        Boolean(
+            linkedInInput?.value.trim() ||
+            githubInput?.value.trim() ||
+            portfolioInput?.value.trim()
+        ),
+        Boolean(
+            learningGoalInput?.value
+        ),
+        Boolean(
+            experienceLevelInput?.value
+        ),
+        Boolean(
+            interests.length
+        )
+    ];
+
+
+    const completed =
+        checks.filter(Boolean).length;
+
+
+    return {
+        completed,
+        total:
+            checks.length,
+        percentage:
+            Math.round(
+                completed /
+                checks.length *
+                100
+            )
+    };
+
+}
+
+
+function renderProfileCompletion() {
+
+    const data =
+        getProfileCompletionData();
+
+
+    if (profileCompletionRing) {
+        profileCompletionRing.style.setProperty(
+            "--profile-completion",
+            String(data.percentage)
+        );
+        profileCompletionRing.setAttribute(
+            "aria-valuenow",
+            String(data.percentage)
+        );
+    }
+
+
+    if (profileCompletionPercent) {
+        profileCompletionPercent.textContent =
+            `${data.percentage}%`;
+    }
+
+
+    if (profileCompletionTitle) {
+        profileCompletionTitle.textContent =
+            data.percentage === 100
+                ? "Profile complete"
+                : data.percentage >= 70
+                    ? "Your profile is looking strong"
+                    : "Build your learner profile";
+    }
+
+
+    if (profileCompletionText) {
+        const remaining =
+            data.total -
+            data.completed;
+
+
+        profileCompletionText.textContent =
+            remaining === 0
+                ? "Your account, career details and learning preferences are complete."
+                : `${remaining} profile item${remaining === 1 ? "" : "s"} remaining.`;
+    }
+
+}
+
+
+/* =========================================================
+   CURRENT LEARNING PROGRESS
+========================================================= */
+
+async function loadLearningSummary(
+    user
+) {
+
+    const stats = {
+        coursesStarted: 0,
+        coursesCompleted: 0,
+        lessonsCompleted: 0,
+        labsCompleted: 0,
+        assessmentsCompleted: 0,
+        certificatesEarned: 0
+    };
+
+
+    if (
+        !db ||
+        !user?.uid
+    ) {
+
+        if (profileStatsStatus) {
+            profileStatsStatus.textContent =
+                "Live progress is temporarily unavailable.";
+        }
+
+
+        return stats;
+
+    }
+
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "users",
+                    user.uid,
+                    "courseProgress"
+                )
+            );
+
+
+        snapshot.forEach(item => {
+
+            const progress =
+                item.data() ||
+                {};
+
+
+            const lessons =
+                new Set(
+                    Array.isArray(progress.completedLessons)
+                        ? progress.completedLessons
+                        : []
+                );
+
+
+            const labs =
+                new Set(
+                    Array.isArray(progress.completedLabs)
+                        ? progress.completedLabs
+                        : []
+                );
+
+
+            const assessments =
+                new Set(
+                    Array.isArray(progress.completedAssessments)
+                        ? progress.completedAssessments
+                        : []
+                );
+
+
+            const started =
+                Boolean(
+                    progress.started ||
+                    progress.completed ||
+                    lessons.size ||
+                    labs.size ||
+                    assessments.size
+                );
+
+
+            if (started) {
+                stats.coursesStarted += 1;
+            }
+
+
+            if (progress.completed) {
+                stats.coursesCompleted += 1;
+            }
+
+
+            stats.lessonsCompleted +=
+                lessons.size;
+
+
+            stats.labsCompleted +=
+                labs.size;
+
+
+            stats.assessmentsCompleted +=
+                assessments.size;
+
+
+            if (
+                progress.completed ||
+                progress.certificateEligible
+            ) {
+                stats.certificatesEarned += 1;
+            }
+
+        });
+
+
+        if (profileStatsStatus) {
+            profileStatsStatus.textContent =
+                "Synced with your current course progress.";
+        }
+
+
+        return stats;
+
+    }
+    catch (err) {
+
+        error(
+            "Unable to load learning progress:",
+            err
+        );
+
+
+        if (profileStatsStatus) {
+            profileStatsStatus.textContent =
+                "Live progress is temporarily unavailable.";
+        }
+
+
+        return {
+            ...stats,
+            ...(
+                currentUserDocument?.learningStats ||
+                {}
+            )
+        };
+
+    }
+
+}
+
+
+/* =========================================================
    LEARNING SUMMARY
 ========================================================= */
 
@@ -1401,6 +1930,22 @@ function renderLearningSummary(
 
         ...stats
 
+    };
+
+
+    currentLearningStats = {
+        coursesStarted:
+            toSafeCount(data.coursesStarted),
+        coursesCompleted:
+            toSafeCount(data.coursesCompleted),
+        lessonsCompleted:
+            toSafeCount(data.lessonsCompleted),
+        labsCompleted:
+            toSafeCount(data.labsCompleted),
+        assessmentsCompleted:
+            toSafeCount(data.assessmentsCompleted),
+        certificatesEarned:
+            toSafeCount(data.certificatesEarned)
     };
 
 
@@ -1547,6 +2092,9 @@ function renderLearningPreferences(
             }
         );
 
+
+    renderProfileCompletion();
+
 }
 
 
@@ -1677,6 +2225,79 @@ async function saveProfile(
     }
 
 
+    const careerProfile = {
+        headline:
+            String(
+                careerHeadlineInput?.value ||
+                ""
+            ).trim(),
+        location:
+            String(
+                locationInput?.value ||
+                ""
+            ).trim(),
+        bio:
+            String(
+                profileBioInput?.value ||
+                ""
+            ).trim(),
+        links: {
+            linkedin:
+                String(
+                    linkedInInput?.value ||
+                    ""
+                ).trim(),
+            github:
+                String(
+                    githubInput?.value ||
+                    ""
+                ).trim(),
+            portfolio:
+                String(
+                    portfolioInput?.value ||
+                    ""
+                ).trim()
+        }
+    };
+
+
+    const invalidLink =
+        Object.entries(
+            careerProfile.links
+        )
+            .find(([, value]) =>
+                !isValidOptionalUrl(value)
+            );
+
+
+    if (invalidLink) {
+
+        showMessage(
+            `Please enter a complete http:// or https:// URL for ${invalidLink[0]}.`,
+            "error"
+        );
+
+
+        const fields = {
+            linkedin:
+                linkedInInput,
+            github:
+                githubInput,
+            portfolio:
+                portfolioInput
+        };
+
+
+        fields[
+            invalidLink[0]
+        ]?.focus();
+
+
+        return;
+
+    }
+
+
     try {
 
         setSaveLoading(
@@ -1710,6 +2331,7 @@ async function saveProfile(
                 ),
                 {
                     displayName,
+                    careerProfile,
                     email:
                         currentUser.email ||
                         null,
@@ -1725,16 +2347,28 @@ async function saveProfile(
         }
 
 
-        await currentUser.reload();
-
-
         currentUser =
             auth.currentUser;
+
+
+        currentUserDocument = {
+            ...currentUserDocument,
+            displayName,
+            careerProfile
+        };
 
 
         renderUser(
             currentUser
         );
+
+
+        renderCareerProfile(
+            currentUserDocument
+        );
+
+
+        renderProfileCompletion();
 
 
         showMessage(
@@ -1903,6 +2537,9 @@ async function saveLearningPreferences(
             "Your learning preferences have been saved.",
             "success"
         );
+
+
+        renderProfileCompletion();
 
 
         log(
@@ -2080,6 +2717,140 @@ async function resetPassword() {
 
 
 /* =========================================================
+   ACCOUNT UTILITIES
+========================================================= */
+
+async function copyAccountId() {
+
+    const uid =
+        currentUser?.uid ||
+        "";
+
+
+    if (!uid) {
+        return;
+    }
+
+
+    try {
+
+        await navigator.clipboard.writeText(
+            uid
+        );
+
+
+        copyUidBtn.innerHTML =
+            '<i class="fa-solid fa-check"></i>';
+
+
+        copyUidBtn.title =
+            "Account ID copied";
+
+
+        window.setTimeout(() => {
+            copyUidBtn.innerHTML =
+                '<i class="fa-regular fa-copy"></i>';
+            copyUidBtn.title =
+                "Copy account ID";
+        }, 1600);
+
+    }
+    catch (err) {
+
+        showMessage(
+            "Your browser could not copy the account ID automatically.",
+            "error"
+        );
+
+    }
+
+}
+
+
+function downloadProfileData() {
+
+    if (!currentUser) {
+        return;
+    }
+
+
+    const exportData = {
+        exportedAt:
+            new Date().toISOString(),
+        account: {
+            uid:
+                currentUser.uid,
+            displayName:
+                getUserName(currentUser),
+            email:
+                currentUser.email || null,
+            emailVerified:
+                Boolean(currentUser.emailVerified),
+            memberSince:
+                currentUser.metadata?.creationTime || null,
+            lastSignIn:
+                currentUser.metadata?.lastSignInTime || null,
+            signInMethod:
+                getSignInMethodLabel(currentUser)
+        },
+        plan:
+            normalizeEntitlement(
+                currentEntitlement
+            ),
+        careerProfile:
+            getCareerProfile(),
+        learningPreferences:
+            currentUserDocument
+                ?.learningPreferences ||
+            {},
+        learningStats:
+            currentLearningStats
+    };
+
+
+    const blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    exportData,
+                    null,
+                    2
+                )
+            ],
+            {
+                type:
+                    "application/json;charset=utf-8"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href = url;
+    link.download =
+        `cws-profile-${new Date().toISOString().slice(0, 10)}.json`;
+
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+
+    window.setTimeout(
+        () => URL.revokeObjectURL(url),
+        0
+    );
+
+}
+
+
+/* =========================================================
    LOGOUT
 ========================================================= */
 
@@ -2165,6 +2936,15 @@ if (profileForm) {
         saveProfile
     );
 
+
+    profileForm.addEventListener(
+        "input",
+        () => {
+            updateBioCounter();
+            renderProfileCompletion();
+        }
+    );
+
 }
 
 
@@ -2173,6 +2953,12 @@ if (learningPreferencesForm) {
     learningPreferencesForm.addEventListener(
         "submit",
         saveLearningPreferences
+    );
+
+
+    learningPreferencesForm.addEventListener(
+        "change",
+        renderProfileCompletion
     );
 
 }
@@ -2216,6 +3002,20 @@ if (profileLogoutBtn) {
     );
 
 }
+
+
+copyUidBtn
+    ?.addEventListener(
+        "click",
+        copyAccountId
+    );
+
+
+downloadProfileBtn
+    ?.addEventListener(
+        "click",
+        downloadProfileData
+    );
 
 
 /* =========================================================
@@ -2292,32 +3092,52 @@ else {
 
             try {
 
-                await Promise.all([
+                const [
+                    ,
+                    profileData,
+                    liveStats
+                ] = await Promise.all([
                     loadEntitlement(
                         user
                     ),
                     loadUserDocument(
                         user
+                    ),
+                    loadLearningSummary(
+                        user
                     )
                 ]);
 
 
-                renderLearningPreferences(
-                    currentUserDocument
+                renderCareerProfile(
+                    profileData
                 );
 
 
-                /*
-                 * Use stats from the user document if they
-                 * already exist. Otherwise display safe zeros
-                 * until the dedicated progress collections
-                 * are connected.
-                 */
+                renderLearningPreferences(
+                    profileData
+                );
+
+
+                liveStats.certificatesEarned =
+                    Math.max(
+                        toSafeCount(
+                            liveStats.certificatesEarned
+                        ),
+                        toSafeCount(
+                            profileData
+                                ?.learningStats
+                                ?.certificatesEarned
+                        )
+                    );
+
 
                 renderLearningSummary(
-                    currentUserDocument?.learningStats ||
-                    {}
+                    liveStats
                 );
+
+
+                renderProfileCompletion();
 
 
                 showContent();
@@ -2351,7 +3171,13 @@ else {
                 renderLearningPreferences();
 
 
+                renderCareerProfile();
+
+
                 renderLearningSummary();
+
+
+                renderProfileCompletion();
 
 
                 showContent();
