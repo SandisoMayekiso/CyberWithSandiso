@@ -32,6 +32,14 @@ initializeApp();
 
 const db = getFirestore();
 
+/*
+ * Protected course delivery, trusted assessment scoring and credential
+ * issuance live in a separate module so payment and learning concerns remain
+ * independently reviewable.
+ */
+const learningBackend = require("./learning-backend");
+Object.assign(exports, learningBackend);
+
 
 /* =========================================================
    CONFIGURATION
