@@ -1,12 +1,15 @@
 import { onAuthStateChanged, signOut }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-import { doc, getDoc, setDoc, serverTimestamp }
+import { doc, getDoc }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 import { auth, db } from "./firebase-config.js";
 import { getLearningPath } from "../data/learning-paths.js";
 import { getCourse } from "../data/courses.js";
+import {
+    issueCareerPathCertificate
+} from "./secure-learning-api.js";
 
 
 const query =
@@ -98,6 +101,15 @@ const verifyUrlText =
 
 const qrCanvas =
     $("careerCertificateQr");
+
+const linkedinShareBtn =
+    $("careerLinkedinShareBtn");
+
+const careerTrustRequirements =
+    $("careerTrustRequirements");
+
+const actionStatus =
+    $("careerCertificateActionStatus");
 
 
 let currentUser =
@@ -378,191 +390,6 @@ async function verifyPathCompletion() {
 
 
 /* =========================================================
-   PRIVATE CREDENTIAL
-========================================================= */
-
-async function getOrCreateCredential(
-    eligibility
-) {
-
-    const credentialRef =
-        doc(
-            db,
-            "users",
-            currentUser.uid,
-            "careerPathCertificates",
-            currentPath.id
-        );
-
-
-    const snapshot =
-        await getDoc(
-            credentialRef
-        );
-
-
-    if (
-        snapshot.exists()
-    ) {
-
-        return snapshot.data();
-
-    }
-
-
-    const issuedAt =
-        new Date()
-            .toISOString();
-
-
-    const credential = {
-
-        pathId:
-            currentPath.id,
-
-        pathTitle:
-            currentPath.title,
-
-        credentialTitle:
-            currentPath.credentialTitle ||
-            `CWS ${currentPath.title} Path Certificate`,
-
-        credentialId:
-            createCredentialId(
-                currentPath
-            ),
-
-        issuedAt,
-
-        capstoneScore:
-            Number(
-                eligibility
-                    .capstone
-                    ?.score ||
-                0
-            ),
-
-        status:
-            "verified"
-    };
-
-
-    await setDoc(
-        credentialRef,
-        {
-            ...credential,
-
-            createdAt:
-                serverTimestamp(),
-
-            updatedAt:
-                serverTimestamp()
-        },
-        {
-            merge:
-                true
-        }
-    );
-
-
-    return credential;
-
-}
-
-
-/* =========================================================
-   PUBLIC VERIFICATION RECORD
-========================================================= */
-
-async function publishPublicVerification(
-    credential
-) {
-
-    /*
-       Public verification contains ONLY fields deliberately
-       intended for recruiters/employers. No email, UID,
-       private courseProgress or capstone evidence is exposed.
-    */
-
-    const publicRecord = {
-
-        credentialId:
-            credential.credentialId,
-
-        credentialType:
-            "career-path",
-
-        tier:
-            "professional",
-
-        status:
-            "active",
-
-        studentName:
-            getUserName(
-                currentUser
-            ),
-
-        pathId:
-            currentPath.id,
-
-        pathTitle:
-            currentPath.title,
-
-        credentialTitle:
-            credential.credentialTitle,
-
-        description:
-            currentPath.description,
-
-        capstonePassed:
-            true,
-
-        capstoneScore:
-            Number(
-                credential.capstoneScore ||
-                0
-            ),
-
-        issuedAt:
-            credential.issuedAt,
-
-        issuer:
-            "CWS Academy",
-
-        ecosystem:
-            "CyberWithSandiso",
-
-        verificationVersion:
-            1
-    };
-
-
-    await setDoc(
-        doc(
-            db,
-            "certificateVerifications",
-            credential.credentialId
-        ),
-        {
-            ...publicRecord,
-
-            createdAt:
-                serverTimestamp(),
-
-            updatedAt:
-                serverTimestamp()
-        },
-        {
-            merge:
-                true
-        }
-    );
-
-}
-
-
-/* =========================================================
    QR
 ========================================================= */
 
@@ -731,6 +558,14 @@ async function renderCredential(
     }
 
 
+    if (careerTrustRequirements) {
+        careerTrustRequirements.textContent =
+            hasCapstone
+                ? "Courses + Capstone"
+                : `${requiredCourses.length} Required Courses`;
+    }
+
+
     if (certificateVerificationIntro) {
         certificateVerificationIntro.textContent =
             hasCapstone
@@ -758,6 +593,14 @@ async function renderCredential(
     if (openVerificationBtn) {
         openVerificationBtn.href =
             verificationUrl;
+    }
+
+
+    if (linkedinShareBtn) {
+        linkedinShareBtn.href =
+            `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                verificationUrl
+            )}`;
     }
 
 
@@ -802,6 +645,11 @@ copyBtn?.addEventListener(
                 currentCredential.credentialId
             );
 
+            if (actionStatus) {
+                actionStatus.textContent =
+                    "Credential ID copied.";
+            }
+
             copyBtn.innerHTML =
                 '<i class="fa-solid fa-circle-check"></i> Copied';
 
@@ -841,6 +689,11 @@ copyVerificationBtn?.addEventListener(
             await navigator.clipboard.writeText(
                 verificationUrl
             );
+
+            if (actionStatus) {
+                actionStatus.textContent =
+                    "Verification link copied.";
+            }
 
             copyVerificationBtn.innerHTML =
                 '<i class="fa-solid fa-circle-check"></i> Link Copied';
@@ -939,41 +792,14 @@ else {
 
             try {
 
-                const eligibility =
-                    await verifyPathCompletion();
-
-
-                if (
-                    !eligibility.allowed
-                ) {
-
-                    loading.hidden =
-                        true;
-
-                    locked.hidden =
-                        false;
-
-
-                    lockedText.textContent =
-                        eligibility.missing.length
-                            ? `Complete these required courses first: ${eligibility.missing.join(", ")}.`
-                            : "Pass the required career-path capstone before this certificate can be issued.";
-
-
-                    return;
-
-                }
-
-
-                const credential =
-                    await getOrCreateCredential(
-                        eligibility
+                const result =
+                    await issueCareerPathCertificate(
+                        currentPath.id
                     );
 
 
-                await publishPublicVerification(
-                    credential
-                );
+                const credential =
+                    result.credential;
 
 
                 await renderCredential(
@@ -996,6 +822,7 @@ else {
                     false;
 
                 lockedText.textContent =
+                    error.message ||
                     "The career-path credential could not be prepared for verification.";
 
             }
