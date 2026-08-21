@@ -84,6 +84,46 @@ const logoutBtn =
         "logoutBtn"
     );
 
+const assessmentSearchInput =
+    document.getElementById(
+        "assessmentSearchInput"
+    );
+
+const assessmentTypeFilter =
+    document.getElementById(
+        "assessmentTypeFilter"
+    );
+
+const assessmentStatusFilter =
+    document.getElementById(
+        "assessmentStatusFilter"
+    );
+
+const clearAssessmentFilters =
+    document.getElementById(
+        "clearAssessmentFilters"
+    );
+
+const assessmentRecommendation =
+    document.getElementById(
+        "assessmentRecommendation"
+    );
+
+const assessmentRecommendationTitle =
+    document.getElementById(
+        "assessmentRecommendationTitle"
+    );
+
+const assessmentRecommendationText =
+    document.getElementById(
+        "assessmentRecommendationText"
+    );
+
+const assessmentRecommendationLink =
+    document.getElementById(
+        "assessmentRecommendationLink"
+    );
+
 
 let currentUser = null;
 
@@ -98,6 +138,15 @@ let assessmentCatalog = [];
 
 let currentAccessFilter =
     "all";
+
+let currentTypeFilter =
+    "all";
+
+let currentStatusFilter =
+    "all";
+
+let currentSearchQuery =
+    "";
 
 
 /* =========================================================
@@ -189,6 +238,29 @@ function finalAssessmentUrl(item) {
     });
 
     return `final-assessment.html?${params.toString()}`;
+}
+
+function isAssessmentLocked(item) {
+    return (
+        item?.access === "pro" &&
+        !hasActivePro()
+    );
+}
+
+function getAssessmentState(item) {
+    if (isAssessmentLocked(item)) {
+        return "locked";
+    }
+
+    return isAssessmentCompleted(item)
+        ? "completed"
+        : "open";
+}
+
+function getAssessmentUrl(item) {
+    return item.type === "final"
+        ? finalAssessmentUrl(item)
+        : moduleAssessmentUrl(item);
 }
 
 function getModuleAssessmentRecord(
@@ -523,8 +595,7 @@ function createAssessmentCard(item) {
         item.access === "pro";
 
     const locked =
-        pro &&
-        !hasActivePro();
+        isAssessmentLocked(item);
 
     const card =
         document.createElement(
@@ -543,6 +614,12 @@ function createAssessmentCard(item) {
 
     card.dataset.stage =
         item.stage;
+
+    card.dataset.type =
+        item.type;
+
+    card.dataset.status =
+        getAssessmentState(item);
 
     const accessBadge =
         pro
@@ -565,9 +642,7 @@ function createAssessmentCard(item) {
             : "Available";
 
     const actionUrl =
-        item.type === "final"
-            ? finalAssessmentUrl(item)
-            : moduleAssessmentUrl(item);
+        getAssessmentUrl(item);
 
     const action =
         locked
@@ -641,6 +716,11 @@ function createAssessmentCard(item) {
 
             <span class="assessment-course-label">
                 ${item.courseTitle}
+            </span>
+
+            <span class="assessment-secure-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                Server verified
             </span>
 
             <h3>
@@ -722,11 +802,35 @@ function renderAssessments() {
     assessmentsGrid.innerHTML = "";
 
     const visible =
-        assessmentCatalog.filter(
-            item =>
+        assessmentCatalog.filter(item => {
+            const accessMatches =
                 currentAccessFilter === "all" ||
-                item.access === currentAccessFilter
-        );
+                item.access === currentAccessFilter;
+
+            const typeMatches =
+                currentTypeFilter === "all" ||
+                item.type === currentTypeFilter;
+
+            const statusMatches =
+                currentStatusFilter === "all" ||
+                getAssessmentState(item) === currentStatusFilter;
+
+            const searchable =
+                normalize(
+                    `${item.title} ${item.courseTitle} ${item.moduleTitle} ${item.description}`
+                );
+
+            const searchMatches =
+                !currentSearchQuery ||
+                searchable.includes(currentSearchQuery);
+
+            return (
+                accessMatches &&
+                typeMatches &&
+                statusMatches &&
+                searchMatches
+            );
+        });
 
     visible.forEach(item => {
         assessmentsGrid.appendChild(
@@ -736,13 +840,59 @@ function renderAssessments() {
 
     if (assessmentCount) {
         assessmentCount.textContent =
-            `${visible.length} Available`;
+            `${visible.length} ${visible.length === 1 ? "Result" : "Results"}`;
     }
 
     if (noAssessments) {
         noAssessments.hidden =
             visible.length !== 0;
     }
+}
+
+function renderRecommendation() {
+    if (
+        !assessmentRecommendation ||
+        !assessmentRecommendationTitle ||
+        !assessmentRecommendationText ||
+        !assessmentRecommendationLink
+    ) {
+        return;
+    }
+
+    const recommended =
+        assessmentCatalog.find(item =>
+            !isAssessmentLocked(item) &&
+            !isAssessmentCompleted(item)
+        ) ||
+        assessmentCatalog.find(item =>
+            !isAssessmentLocked(item)
+        );
+
+    assessmentRecommendation.hidden =
+        !recommended;
+
+    if (!recommended) {
+        return;
+    }
+
+    const completed =
+        isAssessmentCompleted(recommended);
+
+    assessmentRecommendationTitle.textContent =
+        recommended.title;
+
+    assessmentRecommendationText.textContent =
+        completed
+            ? `Review your ${recommended.courseTitle} result and strengthen any weak areas.`
+            : `${recommended.courseTitle} â€¢ ${recommended.questions} questions â€¢ ${recommended.passMark}% pass mark`;
+
+    assessmentRecommendationLink.href =
+        getAssessmentUrl(recommended);
+
+    assessmentRecommendationLink.firstChild.textContent =
+        completed
+            ? "Review assessment "
+            : "Start next assessment ";
 }
 
 
@@ -971,8 +1121,74 @@ logoutBtn?.addEventListener(
 
             window.location.replace(
                 "../pages/login.html"
-            );
+        );
+
+    assessmentSearchInput?.addEventListener(
+        "input",
+        event => {
+            currentSearchQuery =
+                normalize(event.target.value);
+
+            renderAssessments();
         }
+    );
+
+    assessmentTypeFilter?.addEventListener(
+        "change",
+        event => {
+            currentTypeFilter =
+                event.target.value || "all";
+
+            renderAssessments();
+        }
+    );
+
+    assessmentStatusFilter?.addEventListener(
+        "change",
+        event => {
+            currentStatusFilter =
+                event.target.value || "all";
+
+            renderAssessments();
+        }
+    );
+
+    clearAssessmentFilters?.addEventListener(
+        "click",
+        () => {
+            currentAccessFilter = "all";
+            currentTypeFilter = "all";
+            currentStatusFilter = "all";
+            currentSearchQuery = "";
+
+            if (assessmentSearchInput) {
+                assessmentSearchInput.value = "";
+            }
+
+            if (assessmentTypeFilter) {
+                assessmentTypeFilter.value = "all";
+            }
+
+            if (assessmentStatusFilter) {
+                assessmentStatusFilter.value = "all";
+            }
+
+            document
+                .querySelectorAll(
+                    ".assessment-access-filter"
+                )
+                .forEach(button => {
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.accessFilter === "all"
+                    );
+                });
+
+            renderAssessments();
+            assessmentSearchInput?.focus();
+        }
+    );
+}
         catch (err) {
             console.error(
                 "[CWS Assessments] Logout failed:",
@@ -1038,6 +1254,7 @@ else {
             renderAssessments();
             renderStatistics();
             renderResults();
+            renderRecommendation();
             bindAssessmentFilters();
 
             console.log(
