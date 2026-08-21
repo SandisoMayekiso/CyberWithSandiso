@@ -48,6 +48,21 @@ const studentName =
 const logoutBtn =
     document.getElementById("logoutBtn");
 
+const certificateSearchInput =
+    document.getElementById("certificateSearchInput");
+
+const certificateTypeFilter =
+    document.getElementById("certificateTypeFilter");
+
+const clearCertificateFilters =
+    document.getElementById("clearCertificateFilters");
+
+const certificateFilterSummary =
+    document.getElementById("certificateFilterSummary");
+
+const certificateFilterEmpty =
+    document.getElementById("certificateFilterEmpty");
+
 
 function escapeHTML(value) {
 
@@ -1197,6 +1212,13 @@ function createProfessionalCredentialCard(
     card.className =
         "professional-credential-card";
 
+    card.dataset.credentialKind =
+        "professional";
+
+    card.dataset.searchText =
+        `${credential.credentialTitle || ""} ${credential.pathTitle || ""} ${credential.description || ""}`
+            .toLowerCase();
+
 
     const issuedDate =
         formatCertificateDate(
@@ -1218,7 +1240,7 @@ function createProfessionalCredentialCard(
             <div class="professional-credential-preview-copy">
 
                 <span>
-                    CWS ACADEMY • PROFESSIONAL PATH
+                    CWS ACADEMY â€¢ PROFESSIONAL PATH
                 </span>
 
                 <strong>
@@ -1422,6 +1444,13 @@ function createCertificateCard(
     card.className =
         "certificate-card";
 
+    card.dataset.credentialKind =
+        "course";
+
+    card.dataset.searchText =
+        `${certificate.title || ""} ${certificate.description || ""}`
+            .toLowerCase();
+
     const date =
         formatCertificateDate(
             certificate.issuedDate
@@ -1580,6 +1609,13 @@ function createUpcomingCertificateCard(
     card.className =
         "upcoming-certificate-card";
 
+    card.dataset.credentialKind =
+        "upcoming";
+
+    card.dataset.searchText =
+        `${path.title || ""} ${path.description || ""} ${path.level || ""}`
+            .toLowerCase();
+
     const statusClass =
         path.earned
             ? "completed"
@@ -1718,6 +1754,99 @@ function renderUpcomingCertificates() {
         }
     );
 
+}
+
+
+/* =========================================================
+   CREDENTIAL DISCOVERY
+========================================================= */
+
+function applyCertificateFilters() {
+    const query =
+        String(certificateSearchInput?.value || "")
+            .trim()
+            .toLowerCase();
+
+    const type =
+        certificateTypeFilter?.value ||
+        "all";
+
+    const cards = [
+        ...document.querySelectorAll(
+            ".professional-credential-card, .certificate-card, .upcoming-certificate-card"
+        )
+    ];
+
+    let visible = 0;
+
+    cards.forEach(card => {
+        const kindMatches =
+            type === "all" ||
+            card.dataset.credentialKind === type;
+
+        const searchMatches =
+            !query ||
+            String(card.dataset.searchText || card.textContent)
+                .toLowerCase()
+                .includes(query);
+
+        const matches =
+            kindMatches &&
+            searchMatches;
+
+        card.classList.toggle(
+            "credential-filter-hidden",
+            !matches
+        );
+
+        if (matches) visible += 1;
+    });
+
+    const filtering =
+        Boolean(query) ||
+        type !== "all";
+
+    if (certificateFilterSummary) {
+        certificateFilterSummary.textContent =
+            filtering
+                ? `${visible} matching ${visible === 1 ? "credential" : "credentials"}`
+                : `Showing all ${cards.length} credentials and milestones`;
+    }
+
+    if (certificateFilterEmpty) {
+        certificateFilterEmpty.hidden =
+            !filtering ||
+            visible > 0;
+    }
+}
+
+
+function bindCertificateFilters() {
+    certificateSearchInput?.addEventListener(
+        "input",
+        applyCertificateFilters
+    );
+
+    certificateTypeFilter?.addEventListener(
+        "change",
+        applyCertificateFilters
+    );
+
+    clearCertificateFilters?.addEventListener(
+        "click",
+        () => {
+            if (certificateSearchInput) {
+                certificateSearchInput.value = "";
+            }
+
+            if (certificateTypeFilter) {
+                certificateTypeFilter.value = "all";
+            }
+
+            applyCertificateFilters();
+            certificateSearchInput?.focus();
+        }
+    );
 }
 
 
@@ -1933,6 +2062,10 @@ async function initialiseCertificatesPage() {
     renderEarnedCertificates();
 
     renderUpcomingCertificates();
+
+    bindCertificateFilters();
+
+    applyCertificateFilters();
 
     updateJourneySteps();
 
