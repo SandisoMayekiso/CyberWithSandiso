@@ -44,6 +44,8 @@
         href="../css/style.css"
     >
 
+    <link rel="stylesheet" href="../css/design-system.css">
+
 
     <!-- =====================================================
          DASHBOARD CSS
@@ -260,6 +262,35 @@
 
             </div>
 
+
+            <aside class="profile-completion-card">
+
+                <div
+                    id="profileCompletionRing"
+                    class="profile-completion-ring"
+                    style="--profile-completion:0;"
+                    role="progressbar"
+                    aria-label="Profile completion"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="0"
+                >
+                    <div>
+                        <strong id="profileCompletionPercent">0%</strong>
+                        <span>COMPLETE</span>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="dashboard-label">PROFILE STRENGTH</span>
+                    <h2 id="profileCompletionTitle">Build your learner profile</h2>
+                    <p id="profileCompletionText">
+                        Add your goals, experience and professional information.
+                    </p>
+                </div>
+
+            </aside>
+
         </section>
 
 
@@ -301,6 +332,8 @@
                     class="profile-form"
                 >
 
+                    <div class="profile-form-grid">
+
                     <div class="profile-form-group">
 
                         <label for="displayNameInput">
@@ -340,6 +373,109 @@
 
                     </div>
 
+                    </div>
+
+
+                    <div class="profile-form-grid">
+
+                        <div class="profile-form-group">
+
+                            <label for="careerHeadlineInput">
+                                Career Headline
+                            </label>
+
+                            <input
+                                type="text"
+                                id="careerHeadlineInput"
+                                maxlength="100"
+                                placeholder="e.g. Aspiring Penetration Tester"
+                            >
+
+                        </div>
+
+
+                        <div class="profile-form-group">
+
+                            <label for="locationInput">
+                                Location
+                            </label>
+
+                            <input
+                                type="text"
+                                id="locationInput"
+                                maxlength="80"
+                                autocomplete="address-level2"
+                                placeholder="e.g. Cape Town, South Africa"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileBioInput">
+                            Professional Summary
+                        </label>
+
+                        <textarea
+                            id="profileBioInput"
+                            rows="5"
+                            maxlength="500"
+                            placeholder="Briefly describe your cybersecurity goals, current skills and the work you want to pursue."
+                        ></textarea>
+
+                        <small>
+                            <span id="profileBioCount">0</span>/500 characters
+                        </small>
+
+                    </div>
+
+
+                    <div class="profile-form-section-heading">
+                        <div>
+                            <strong>Professional Links</strong>
+                            <span>Optional links for your learning and career profile.</span>
+                        </div>
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+
+
+                    <div class="profile-form-grid profile-links-grid">
+
+                        <div class="profile-form-group">
+                            <label for="linkedInInput">LinkedIn</label>
+                            <input
+                                type="url"
+                                id="linkedInInput"
+                                inputmode="url"
+                                placeholder="https://linkedin.com/in/..."
+                            >
+                        </div>
+
+                        <div class="profile-form-group">
+                            <label for="githubInput">GitHub</label>
+                            <input
+                                type="url"
+                                id="githubInput"
+                                inputmode="url"
+                                placeholder="https://github.com/..."
+                            >
+                        </div>
+
+                        <div class="profile-form-group">
+                            <label for="portfolioInput">Portfolio</label>
+                            <input
+                                type="url"
+                                id="portfolioInput"
+                                inputmode="url"
+                                placeholder="https://your-portfolio.example"
+                            >
+                        </div>
+
+                    </div>
+
 
                     <div class="profile-form-grid">
 
@@ -349,11 +485,22 @@
                                 Account ID
                             </label>
 
-                            <div
-                                id="uidDisplay"
-                                class="profile-readonly-value"
-                            >
-                                —
+                            <div class="profile-copy-value">
+                                <div
+                                    id="uidDisplay"
+                                    class="profile-readonly-value"
+                                >
+                                    â€”
+                                </div>
+                                <button
+                                    type="button"
+                                    id="copyUidBtn"
+                                    class="profile-copy-btn"
+                                    aria-label="Copy account ID"
+                                    title="Copy account ID"
+                                >
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
                             </div>
 
                         </div>
@@ -369,7 +516,7 @@
                                 id="memberSince"
                                 class="profile-readonly-value"
                             >
-                                —
+                                â€”
                             </div>
 
                         </div>
@@ -563,6 +710,36 @@
 
                     <div class="profile-stat">
 
+                        <i class="fa-solid fa-flask"></i>
+
+                        <strong id="labsCompleted">
+                            0
+                        </strong>
+
+                        <span>
+                            Labs Completed
+                        </span>
+
+                    </div>
+
+
+                    <div class="profile-stat">
+
+                        <i class="fa-solid fa-clipboard-check"></i>
+
+                        <strong id="assessmentsCompleted">
+                            0
+                        </strong>
+
+                        <span>
+                            Assessments Passed
+                        </span>
+
+                    </div>
+
+
+                    <div class="profile-stat">
+
                         <i class="fa-solid fa-certificate"></i>
 
                         <strong id="certificatesEarned">
@@ -576,6 +753,103 @@
                     </div>
 
                 </div>
+
+                <div class="profile-summary-actions">
+                    <a href="progress.html" class="profile-text-btn">
+                        View detailed progress
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <small id="profileStatsStatus">
+                        Synced with your current course progress.
+                    </small>
+                </div>
+
+            </article>
+
+
+            <!-- =============================================
+                 LEARNING PREFERENCES
+            ============================================== -->
+
+            <article class="profile-card profile-card-wide">
+
+                <div class="profile-card-header">
+
+                    <div>
+                        <span class="dashboard-label">PERSONALIZED LEARNING</span>
+                        <h2>Goals & Interests</h2>
+                    </div>
+
+                    <i class="fa-solid fa-compass"></i>
+
+                </div>
+
+
+                <form id="learningPreferencesForm" class="profile-form">
+
+                    <div class="profile-form-grid">
+
+                        <div class="profile-form-group">
+                            <label for="learningGoalInput">Primary Learning Goal</label>
+                            <select id="learningGoalInput">
+                                <option value="">Choose your main goal</option>
+                                <option value="career-transition">Move into cybersecurity</option>
+                                <option value="penetration-testing">Become a penetration tester</option>
+                                <option value="certification">Prepare for certification</option>
+                                <option value="current-role">Improve skills for my current role</option>
+                                <option value="portfolio">Build a practical portfolio</option>
+                            </select>
+                        </div>
+
+                        <div class="profile-form-group">
+                            <label for="experienceLevelInput">Current Experience</label>
+                            <select id="experienceLevelInput">
+                                <option value="">Choose your level</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+
+                    <fieldset class="profile-interest-fieldset">
+                        <legend>Topics you want to develop</legend>
+                        <div class="profile-interest-grid">
+                            <label><input type="checkbox" name="interests" value="networking"><span>Networking</span></label>
+                            <label><input type="checkbox" name="interests" value="linux"><span>Linux</span></label>
+                            <label><input type="checkbox" name="interests" value="windows"><span>Windows</span></label>
+                            <label><input type="checkbox" name="interests" value="ethical-hacking"><span>Ethical Hacking</span></label>
+                            <label><input type="checkbox" name="interests" value="web-security"><span>Web Security</span></label>
+                            <label><input type="checkbox" name="interests" value="python"><span>Python</span></label>
+                            <label><input type="checkbox" name="interests" value="active-directory"><span>Active Directory</span></label>
+                            <label><input type="checkbox" name="interests" value="privilege-escalation"><span>Privilege Escalation</span></label>
+                            <label><input type="checkbox" name="interests" value="penetration-testing"><span>Penetration Testing</span></label>
+                        </div>
+                    </fieldset>
+
+
+                    <div
+                        id="learningPreferencesMessage"
+                        class="profile-message"
+                        hidden
+                        aria-live="polite"
+                    ></div>
+
+
+                    <div class="profile-card-actions">
+                        <button
+                            type="submit"
+                            id="saveLearningPreferencesBtn"
+                            class="profile-primary-btn"
+                        >
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            Save Preferences
+                        </button>
+                    </div>
+
+                </form>
 
             </article>
 
@@ -631,6 +905,34 @@
                         >
                             Send Verification Email
                         </button>
+
+                    </div>
+
+
+                    <div class="profile-security-item">
+
+                        <div>
+                            <strong>Sign-in Method</strong>
+                            <span id="signInMethod">Checking...</span>
+                        </div>
+
+                        <span class="profile-security-static-icon">
+                            <i class="fa-solid fa-key"></i>
+                        </span>
+
+                    </div>
+
+
+                    <div class="profile-security-item">
+
+                        <div>
+                            <strong>Last Sign-in</strong>
+                            <span id="lastSignInAt">Checking...</span>
+                        </div>
+
+                        <span class="profile-security-static-icon">
+                            <i class="fa-regular fa-clock"></i>
+                        </span>
 
                     </div>
 
@@ -706,6 +1008,25 @@
                     </button>
 
 
+                    <button
+                        type="button"
+                        id="downloadProfileBtn"
+                        class="profile-secondary-btn"
+                    >
+                        <i class="fa-solid fa-download"></i>
+                        Download My Profile Data
+                    </button>
+
+
+                    <div class="profile-account-support">
+                        <span>Need help with your account?</span>
+                        <a href="../pages/contact.html" class="profile-text-btn">
+                            <i class="fa-regular fa-envelope"></i>
+                            Contact CWS Academy Support
+                        </a>
+                    </div>
+
+
                     <p>
                         Account deletion is not enabled yet. It should be implemented later with re-authentication and secure cleanup of associated account data.
                     </p>
@@ -730,7 +1051,7 @@
 <footer class="student-footer">
 
     <p>
-        © 2026 CWS Academy.
+        Â© 2026 CWS Academy.
         Part of the CyberWithSandiso ecosystem.
     </p>
 
@@ -748,11 +1069,6 @@
 ></script>
 
 
-
-<script
-    type="module"
-    src="../js/topbar-plan.js"
-></script>
 
 </body>
 </html>
