@@ -199,6 +199,15 @@
 
 }
 
+.final-session-panel {
+    border-color: rgba(246,196,83,.16);
+    background: linear-gradient(135deg, rgba(246,196,83,.045), rgba(255,255,255,.012));
+}
+
+.final-session-panel .assessment-session-progress span {
+    background: linear-gradient(90deg, #f6c453, #ffe39a);
+}
+
 
 @media (max-width: 650px) {
 
