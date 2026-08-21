@@ -24,6 +24,9 @@
     <!-- Main CWS Styles -->
     <link rel="stylesheet" href="../css/style.css">
 
+    <!-- Shared CWS component system -->
+    <link rel="stylesheet" href="../css/design-system.css">
+
     <!-- Lesson Styles -->
     <link rel="stylesheet" href="../css/lesson.css">
     <link rel="stylesheet" href="../css/video-lesson.css">
@@ -137,7 +140,7 @@
 
     <section
         id="lessonNotFound"
-        class="lesson-not-found"
+        class="lesson-not-found cws-state-card cws-card"
         hidden
     >
 
@@ -384,6 +387,104 @@
             <article class="lesson-content-card">
 
 
+                <!-- PREMIUM LESSON TOOLBAR -->
+
+                <section
+                    class="cws-lesson-toolbar cws-card"
+                    aria-label="Lesson tools"
+                >
+
+                    <div class="cws-lesson-search">
+                        <input
+                            id="lessonSearchInput"
+                            type="search"
+                            placeholder="Search within this lesson"
+                            aria-label="Search within this lesson"
+                        >
+                        <button
+                            id="lessonSearchBtn"
+                            type="button"
+                            class="cws-tool-button"
+                            aria-label="Search lesson"
+                        >
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>Search</span>
+                        </button>
+                        <button
+                            id="lessonSearchClearBtn"
+                            type="button"
+                            class="cws-tool-button cws-search-clear"
+                        >
+                            Clear
+                        </button>
+                        <span
+                            id="lessonSearchStatus"
+                            class="cws-search-status"
+                            role="status"
+                            aria-live="polite"
+                        ></span>
+                    </div>
+
+                    <div class="cws-lesson-toolbar-actions">
+                        <button
+                            id="lessonBookmarkBtn"
+                            type="button"
+                            class="cws-tool-button"
+                            aria-pressed="false"
+                        >
+                            <i class="fa-regular fa-bookmark"></i>
+                            <span>Bookmark</span>
+                        </button>
+                        <button
+                            id="lessonNotesToggle"
+                            type="button"
+                            class="cws-tool-button"
+                            aria-expanded="false"
+                            aria-controls="lessonNotesPanel"
+                        >
+                            <i class="fa-regular fa-note-sticky"></i>
+                            <span>Notes</span>
+                        </button>
+                        <button
+                            id="downloadLessonSummaryBtn"
+                            type="button"
+                            class="cws-tool-button"
+                        >
+                            <i class="fa-solid fa-download"></i>
+                            <span>Download</span>
+                        </button>
+                    </div>
+
+                </section>
+
+
+                <section
+                    id="lessonNotesPanel"
+                    class="cws-notes-panel cws-card"
+                    hidden
+                >
+                    <span class="dashboard-label">PRIVATE LESSON NOTES</span>
+                    <h2>Your notes</h2>
+                    <textarea
+                        id="lessonNotesInput"
+                        maxlength="12000"
+                        placeholder="Write reminders, questions and key takeaways..."
+                        aria-label="Private lesson notes"
+                    ></textarea>
+                    <div class="cws-notes-actions">
+                        <small>Saved only in this browser during the GitHub Pages development phase.</small>
+                        <button
+                            id="saveLessonNotesBtn"
+                            type="button"
+                            class="cws-btn cws-btn-primary"
+                        >
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            Save Notes
+                        </button>
+                    </div>
+                </section>
+
+
                 <!-- LESSON INTRO -->
 
                 <div
@@ -458,6 +559,83 @@
                         class="lesson-concept-grid"
                     ></div>
 
+                </section>
+
+
+                <!-- EXPANDABLE HINTS -->
+
+                <section class="cws-hints-section">
+                    <div class="lesson-section-heading">
+                        <span class="dashboard-label">GUIDED SUPPORT</span>
+                        <h2>Hints and explanations</h2>
+                    </div>
+                    <div
+                        id="lessonHintsMount"
+                        class="cws-hints-list"
+                    ></div>
+                </section>
+
+
+                <!-- DOWNLOADABLE RESOURCES -->
+
+                <section
+                    id="lessonResourcesSection"
+                    class="cws-resources-section"
+                    hidden
+                >
+                    <div class="lesson-section-heading">
+                        <span class="dashboard-label">LESSON RESOURCES</span>
+                        <h2>Downloads and supporting material</h2>
+                    </div>
+                    <div
+                        id="lessonResources"
+                        class="cws-resources-grid"
+                    ></div>
+                </section>
+
+
+                <!-- SAFE BROWSER TERMINAL -->
+
+                <section
+                    id="cwsTerminalSection"
+                    class="cws-terminal-section"
+                    hidden
+                >
+                    <div class="lesson-section-heading">
+                        <span class="dashboard-label">BROWSER LAB</span>
+                        <h2>Interactive terminal simulation</h2>
+                        <p>
+                            Practise safe commands in a simulated environment.
+                            Nothing is executed on your computer or against a real target.
+                        </p>
+                    </div>
+
+                    <div class="cws-terminal-card">
+                        <div class="cws-terminal-header">
+                            <span><i class="fa-solid fa-terminal"></i> CWS Browser Lab</span>
+                            <span class="cws-badge">SIMULATED</span>
+                        </div>
+                        <div
+                            id="cwsTerminalOutput"
+                            class="cws-terminal-output"
+                            role="log"
+                            aria-live="polite"
+                        ></div>
+                        <form id="cwsTerminalForm" class="cws-terminal-form">
+                            <span class="cws-terminal-prompt">$</span>
+                            <input
+                                id="cwsTerminalInput"
+                                type="text"
+                                autocomplete="off"
+                                spellcheck="false"
+                                aria-label="Simulated terminal command"
+                                placeholder="Type help"
+                            >
+                            <button type="submit" class="cws-btn cws-btn-primary">
+                                Run
+                            </button>
+                        </form>
+                    </div>
                 </section>
 
 
@@ -596,6 +774,50 @@
         </section>
 
     </main>
+
+
+    <!-- LESSON COMPLETION CONFIRMATION -->
+
+    <dialog
+        id="lessonCompletionDialog"
+        class="cws-completion-dialog"
+    >
+        <div class="cws-dialog-content">
+            <div class="cws-dialog-icon">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h2>Mark this lesson complete?</h2>
+            <p>
+                Confirm that you have reviewed the lesson and completed
+                its required knowledge check. Your course progress will update.
+            </p>
+            <div class="cws-dialog-actions">
+                <button
+                    id="cancelLessonCompletionBtn"
+                    type="button"
+                    class="cws-btn cws-btn-secondary"
+                >
+                    Continue Reviewing
+                </button>
+                <button
+                    id="confirmLessonCompletionBtn"
+                    type="button"
+                    class="cws-btn cws-btn-primary"
+                >
+                    <i class="fa-solid fa-circle-check"></i>
+                    Mark Complete
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <div
+        id="lessonToolToast"
+        class="cws-tool-toast"
+        role="status"
+        aria-live="polite"
+        hidden
+    ></div>
 
 
     <!-- =====================================================
