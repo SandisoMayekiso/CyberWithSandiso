@@ -79,6 +79,11 @@ import {
 } from "../data/courses.js";
 
 
+import {
+    getCourseExperience
+} from "../data/course-experience.js";
+
+
 /* =========================================================
    DEBUG
 ========================================================= */
@@ -1463,6 +1468,76 @@ function createCourseCard(
 
 
     /* =====================================================
+       16:9 COURSE COVER
+    ====================================================== */
+
+    const experience =
+        getCourseExperience(
+            course
+        );
+
+
+    const cover =
+        document.createElement(
+            "div"
+        );
+
+
+    cover.className =
+        "cws-course-card-cover";
+
+
+    const coverImage =
+        document.createElement(
+            "img"
+        );
+
+
+    coverImage.src =
+        experience?.cover?.src ||
+        "../assets/images/cybersecurity.png";
+
+
+    coverImage.alt =
+        experience?.cover?.alt ||
+        `${course.title} course cover`;
+
+
+    coverImage.loading =
+        "lazy";
+
+
+    coverImage.decoding =
+        "async";
+
+
+    coverImage.width =
+        1280;
+
+
+    coverImage.height =
+        720;
+
+
+    coverImage.onerror = () => {
+
+        coverImage.onerror =
+            null;
+
+
+        coverImage.src =
+            experience?.cover?.fallback ||
+            "../assets/images/cybersecurity.png";
+
+    };
+
+
+    cover.appendChild(
+        coverImage
+    );
+
+
+    /* =====================================================
        TOP
     ====================================================== */
 
@@ -1985,6 +2060,11 @@ function createCourseCard(
     ====================================================== */
 
     card.appendChild(
+        cover
+    );
+
+
+    card.appendChild(
         top
     );
 
@@ -2392,7 +2472,17 @@ function getFilteredCourses() {
             course.description,
             course.level,
             stage,
-            getCourseStageInfo(course.id)?.label
+            getCourseStageInfo(course.id)?.label,
+            ...(
+                getCourseExperience(course)
+                    ?.skills ||
+                []
+            ),
+            ...(
+                getCourseExperience(course)
+                    ?.tools ||
+                []
+            )
         ]
             .filter(Boolean)
             .join(" ")
