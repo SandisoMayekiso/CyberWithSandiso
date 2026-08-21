@@ -12,7 +12,7 @@
 
     <meta
         name="description"
-        content="CWS Academy practical cybersecurity laboratories."
+        content="Explore guided CWS Academy cybersecurity labs, resume practical work and track hands-on completion."
     >
 
     <meta
@@ -46,6 +46,8 @@
         rel="stylesheet"
         href="../css/style.css"
     >
+
+    <link rel="stylesheet" href="../css/design-system.css">
 
 
     <!-- =====================================================
@@ -179,7 +181,7 @@
         <div class="labs-hero-content">
 
             <span class="dashboard-label">
-                CWS ACADEMY • HANDS-ON SECURITY
+                CWS ACADEMY â€¢ HANDS-ON SECURITY
             </span>
 
 
@@ -214,12 +216,73 @@
         </div>
 
 
-        <div class="labs-hero-icon">
+        <aside
+            id="labsContinuePanel"
+            class="labs-continue-panel"
+            aria-live="polite"
+        >
+            <span class="labs-continue-icon">
+                <i class="fa-solid fa-flask-vial"></i>
+            </span>
+            <span class="dashboard-label">NEXT PRACTICAL STEP</span>
+            <h2 id="labsContinueTitle">Preparing your lab queue...</h2>
+            <p id="labsContinueMeta">
+                Your next available activity will appear here.
+            </p>
+            <a
+                id="labsContinueBtn"
+                href="#labsCatalog"
+                class="labs-continue-btn"
+            >
+                <span>Explore Labs</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </aside>
 
-            <i class="fa-solid fa-flask-vial"></i>
+    </section>
 
-        </div>
 
+    <!-- =====================================================
+         LAB SUMMARY
+    ====================================================== -->
+
+    <section class="labs-summary-grid" aria-label="Lab summary">
+        <article>
+            <span class="labs-summary-icon total">
+                <i class="fa-solid fa-flask"></i>
+            </span>
+            <div>
+                <strong id="totalLabsCount">â€”</strong>
+                <span>Total activities</span>
+            </div>
+        </article>
+        <article>
+            <span class="labs-summary-icon free">
+                <i class="fa-solid fa-unlock-keyhole"></i>
+            </span>
+            <div>
+                <strong id="freeLabsCount">â€”</strong>
+                <span>Free activities</span>
+            </div>
+        </article>
+        <article>
+            <span class="labs-summary-icon pro">
+                <i class="fa-solid fa-crown"></i>
+            </span>
+            <div>
+                <strong id="proLabsCount">â€”</strong>
+                <span>Pro activities</span>
+            </div>
+        </article>
+        <article>
+            <span class="labs-summary-icon complete">
+                <i class="fa-solid fa-circle-check"></i>
+            </span>
+            <div>
+                <strong id="completedLabsCount">â€”</strong>
+                <span>Completed</span>
+            </div>
+        </article>
     </section>
 
 
@@ -228,7 +291,7 @@
          LAB SECTION
     ====================================================== -->
 
-    <section class="labs-section">
+    <section id="labsCatalog" class="labs-section">
 
 
         <!-- SECTION HEADING -->
@@ -294,6 +357,7 @@
                     type="button"
                     class="lab-filter active"
                     data-filter="all"
+                    aria-pressed="true"
                 >
                     All
                 </button>
@@ -303,6 +367,7 @@
                     type="button"
                     class="lab-filter"
                     data-filter="beginner"
+                    aria-pressed="false"
                 >
                     Beginner
                 </button>
@@ -312,6 +377,7 @@
                     type="button"
                     class="lab-filter"
                     data-filter="intermediate"
+                    aria-pressed="false"
                 >
                     Intermediate
                 </button>
@@ -321,6 +387,7 @@
                     type="button"
                     class="lab-filter"
                     data-filter="advanced"
+                    aria-pressed="false"
                 >
                     Advanced
                 </button>
@@ -330,6 +397,7 @@
                     type="button"
                     class="lab-filter"
                     data-filter="free"
+                    aria-pressed="false"
                 >
                     <i class="fa-solid fa-unlock-keyhole"></i>
                     Free
@@ -339,9 +407,30 @@
                     type="button"
                     class="lab-filter pro-filter"
                     data-filter="pro"
+                    aria-pressed="false"
                 >
                     <i class="fa-solid fa-crown"></i>
                     Pro
+                </button>
+
+                <button
+                    type="button"
+                    class="lab-filter"
+                    data-filter="incomplete"
+                    aria-pressed="false"
+                >
+                    <i class="fa-regular fa-circle"></i>
+                    To Do
+                </button>
+
+                <button
+                    type="button"
+                    class="lab-filter"
+                    data-filter="completed"
+                    aria-pressed="false"
+                >
+                    <i class="fa-solid fa-circle-check"></i>
+                    Completed
                 </button>
 
             </div>
@@ -359,10 +448,9 @@
             class="labs-grid"
         >
 
-            <!--
-                Labs and practical activities are generated
-                dynamically by ../js/labs.js from data/courses.js
-            -->
+            <article class="lab-card lab-skeleton" aria-hidden="true"></article>
+            <article class="lab-card lab-skeleton" aria-hidden="true"></article>
+            <article class="lab-card lab-skeleton" aria-hidden="true"></article>
 
         </div>
 
@@ -387,6 +475,15 @@
             <p>
                 Try changing your search or filter.
             </p>
+
+            <button
+                type="button"
+                id="resetLabFilters"
+                class="labs-secondary-btn"
+            >
+                <i class="fa-solid fa-rotate-left"></i>
+                Reset Filters
+            </button>
 
         </div>
 
@@ -443,7 +540,7 @@
 <footer class="student-footer">
 
     <p>
-        © 2026 CWS Academy.
+        Â© 2026 CWS Academy.
         Part of the CyberWithSandiso ecosystem.
     </p>
 
@@ -491,6 +588,10 @@
             LAB INFORMATION
         </span>
 
+        <span id="labModalCourse" class="lab-modal-course">
+            CWS Academy Course
+        </span>
+
 
         <h2 id="labModalTitle">
             Laboratory
@@ -531,6 +632,16 @@
 
         </div>
 
+        <div id="labModalScenarioWrap" class="lab-modal-context" hidden>
+            <span>Scenario</span>
+            <p id="labModalScenario"></p>
+        </div>
+
+        <div id="labModalPrerequisitesWrap" class="lab-modal-context" hidden>
+            <span>Prerequisites</span>
+            <ul id="labModalPrerequisites"></ul>
+        </div>
+
 
         <div class="lab-modal-notice">
 
@@ -565,29 +676,12 @@
 
 
 <!-- =========================================================
-     FIREBASE AUTH GUARD
-========================================================= -->
-
-<script
-    type="module"
-    src="../js/auth-guard.js"
-></script>
-
-
-<!-- =========================================================
      LAB JAVASCRIPT
 ========================================================= -->
 
 <script
     type="module"
     src="../js/labs.js"
-></script>
-
-
-
-<script
-    type="module"
-    src="../js/topbar-plan.js"
 ></script>
 
 </body>
