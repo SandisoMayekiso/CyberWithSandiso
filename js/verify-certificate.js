@@ -66,6 +66,31 @@ const verifiedScore =
 const verifiedStatus =
     $("verifiedStatus");
 
+const verifiedIssuer =
+    $("verifiedIssuer");
+
+const verifiedType =
+    $("verifiedType");
+
+const verifyCredentialBtn =
+    $("verifyCredentialBtn");
+
+const tryAnotherCredentialBtn =
+    $("tryAnotherCredentialBtn");
+
+const copyVerifiedCredentialBtn =
+    $("copyVerifiedCredentialBtn");
+
+const copyVerificationPageBtn =
+    $("copyVerificationPageBtn");
+
+const verificationActionStatus =
+    $("verificationActionStatus");
+
+
+const CREDENTIAL_PATTERN =
+    /^CWS-[A-Z0-9][A-Z0-9-]{5,74}$/;
+
 
 function normalizeCredentialId(
     value
@@ -78,6 +103,27 @@ function normalizeCredentialId(
         .trim()
         .toUpperCase();
 
+}
+
+
+function isValidCredentialId(value) {
+    return CREDENTIAL_PATTERN.test(
+        normalizeCredentialId(value)
+    );
+}
+
+
+function setVerificationBusy(busy) {
+    if (!verifyCredentialBtn) return;
+
+    verifyCredentialBtn.disabled = busy;
+    verifyCredentialBtn.setAttribute(
+        "aria-busy",
+        String(busy)
+    );
+    verifyCredentialBtn.innerHTML = busy
+        ? '<i class="fa-solid fa-spinner fa-spin"></i> Checking...'
+        : '<i class="fa-solid fa-magnifying-glass"></i> Verify';
 }
 
 
@@ -135,7 +181,7 @@ function formatDate(
 
 
     if (!date) {
-        return "—";
+        return "â€”";
     }
 
 
@@ -184,6 +230,12 @@ function resetStates() {
             "";
     }
 
+
+    if (verificationActionStatus) {
+        verificationActionStatus.textContent =
+            "";
+    }
+
 }
 
 
@@ -196,6 +248,9 @@ function showLoading() {
         verificationLoading.hidden =
             false;
     }
+
+
+    setVerificationBusy(true);
 
 }
 
@@ -217,6 +272,9 @@ function showNotFound(
         verificationNotFound.hidden =
             false;
     }
+
+
+    setVerificationBusy(false);
 
 }
 
@@ -369,6 +427,23 @@ function renderVerifiedCredential(
     }
 
 
+    if (verifiedIssuer) {
+        verifiedIssuer.textContent =
+            data.issuer ||
+            "CWS Academy";
+    }
+
+
+    if (verifiedType) {
+        verifiedType.textContent =
+            professional
+                ? "Career Path Certificate"
+                : pro
+                    ? "CWS Pro Certificate"
+                    : "Course Certificate";
+    }
+
+
     if (verificationResult) {
 
         verificationResult.classList.toggle(
@@ -387,6 +462,9 @@ function renderVerifiedCredential(
             false;
 
     }
+
+
+    setVerificationBusy(false);
 
 }
 
@@ -416,6 +494,16 @@ async function verifyCredential(
 
         return;
 
+    }
+
+
+    if (!isValidCredentialId(credentialId)) {
+        resetStates();
+        showFormMessage(
+            "Enter a valid CWS credential ID beginning with CWS-."
+        );
+        credentialInput?.focus();
+        return;
     }
 
 
@@ -517,7 +605,7 @@ async function verifyCredential(
 
 
         showNotFound(
-            "Credential verification could not be completed. Check the browser console for the Firebase error."
+            "Credential verification is temporarily unavailable. Please check the ID and try again shortly."
         );
 
     }
@@ -538,6 +626,73 @@ verificationForm?.addEventListener(
         );
 
     }
+);
+
+
+credentialInput?.addEventListener(
+    "input",
+    () => {
+        const position =
+            credentialInput.selectionStart;
+
+        credentialInput.value =
+            normalizeCredentialId(
+                credentialInput.value
+            );
+
+        if (position !== null) {
+            credentialInput.setSelectionRange(
+                position,
+                position
+            );
+        }
+    }
+);
+
+
+tryAnotherCredentialBtn?.addEventListener(
+    "click",
+    () => {
+        resetStates();
+        setVerificationBusy(false);
+        credentialInput?.focus();
+        credentialInput?.select();
+    }
+);
+
+
+async function copyText(value, successMessage) {
+    if (!value) return;
+
+    try {
+        await navigator.clipboard.writeText(value);
+
+        if (verificationActionStatus) {
+            verificationActionStatus.textContent =
+                successMessage;
+        }
+    }
+    catch {
+        window.prompt("Copy:", value);
+    }
+}
+
+
+copyVerifiedCredentialBtn?.addEventListener(
+    "click",
+    () => copyText(
+        verifiedCredential?.textContent?.trim() || "",
+        "Credential ID copied."
+    )
+);
+
+
+copyVerificationPageBtn?.addEventListener(
+    "click",
+    () => copyText(
+        window.location.href,
+        "Verification link copied."
+    )
 );
 
 
