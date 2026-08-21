@@ -19,15 +19,15 @@
 
 <header class="student-header">
 <nav class="student-nav">
-<a href="dashboard.html" class="academy-logo"><span class="logo-cws">CWS</span><span class="logo-text">Academy</span></a>
+<a href="dashboard.html" class="academy-logo" aria-label="CWS Academy Dashboard"><span class="logo-cws">CWS</span><span class="logo-text">Academy</span></a>
 <div class="student-nav-links">
 <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
 <a href="student-courses.html"><i class="fa-solid fa-book-open"></i><span>Courses</span></a>
-<a href="learning-paths.html" class="active" aria-current="page"><i class="fa-solid fa-route"></i><span>Paths</span></a>
+<a href="learning-paths.html"><i class="fa-solid fa-route"></i><span>Paths</span></a>
 <a href="labs.html"><i class="fa-solid fa-flask"></i><span>Labs</span></a>
 <a href="assessments.html"><i class="fa-solid fa-clipboard-check"></i><span>Assessments</span></a>
 <a href="progress.html"><i class="fa-solid fa-chart-line"></i><span>Progress</span></a>
-<a href="certificates.html"><i class="fa-solid fa-certificate"></i><span>Certificates</span></a>
+<a href="certificates.html" class="active" aria-current="page"><i class="fa-solid fa-certificate"></i><span>Certificates</span></a>
 <a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
 </div>
 <div class="student-nav-account">
@@ -58,6 +58,7 @@
 <button type="button" id="printCertificateBtn" class="career-certificate-action primary"><i class="fa-solid fa-file-pdf"></i> Print / Save PDF</button>
 <button type="button" id="copyCredentialBtn" class="career-certificate-action secondary"><i class="fa-solid fa-copy"></i> Copy Credential ID</button>
 <button type="button" id="copyVerificationBtn" class="career-certificate-action secondary"><i class="fa-solid fa-link"></i> Copy Verification Link</button>
+<a id="careerLinkedinShareBtn" href="#" target="_blank" rel="noopener noreferrer" class="career-certificate-action secondary"><i class="fa-brands fa-linkedin"></i> Share</a>
 </div>
 </div>
 
@@ -126,11 +127,20 @@
     </a>
 </section>
 
+<section class="career-certificate-trust-panel" aria-label="Career credential trust information">
+    <div><i class="fa-solid fa-server"></i><span>ISSUANCE</span><strong>Server Verified</strong></div>
+    <div><i class="fa-solid fa-route"></i><span>CREDENTIAL</span><strong>Professional Path</strong></div>
+    <div><i class="fa-solid fa-user-check"></i><span>REQUIREMENTS</span><strong id="careerTrustRequirements">Verified Complete</strong></div>
+    <div><i class="fa-solid fa-circle-check"></i><span>STATUS</span><strong>Active</strong></div>
+</section>
+
+<p id="careerCertificateActionStatus" class="career-certificate-action-status" aria-live="polite"></p>
+
 </section>
 </main>
 
 <script src="https://unpkg.com/qrcode@1.5.4/build/qrcode.js"></script>
 <script type="module" src="../js/topbar-plan.js"></script>
-<script type="module" src="../js/career-path-certificate.js"></script>
+<script type="module" src="../js/career-path-certificate.js?v=20260821-credential-upgrade"></script>
 </body>
 </html>
