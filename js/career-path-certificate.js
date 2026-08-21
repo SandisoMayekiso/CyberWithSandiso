@@ -63,6 +63,24 @@ const certificateCredential =
 const certificatePathBadge =
     $("certificatePathBadge");
 
+const certificatePageEyebrow =
+    $("certificatePageEyebrow");
+
+const certificatePageIntro =
+    $("certificatePageIntro");
+
+const certificateKicker =
+    $("certificateKicker");
+
+const certificateScoreLabel =
+    $("certificateScoreLabel");
+
+const certificateRequirements =
+    $("certificateRequirements");
+
+const certificateVerificationIntro =
+    $("certificateVerificationIntro");
+
 const printBtn =
     $("printCertificateBtn");
 
@@ -631,10 +649,60 @@ async function renderCredential(
         currentPath.description;
 
 
+    const requiredCourses =
+        currentPath.stages.filter(
+            stage =>
+                stage.type === "course" &&
+                stage.required !== false
+        );
+
+
+    const hasCapstone =
+        currentPath.stages.some(
+            stage =>
+                stage.type === "capstone" &&
+                Boolean(stage.capstoneId)
+        );
+
+
+    if (certificatePageEyebrow) {
+        certificatePageEyebrow.textContent =
+            hasCapstone
+                ? "CWS ACADEMY â€¢ PROFESSIONAL PATH CREDENTIAL"
+                : "CWS ACADEMY â€¢ VERIFIED PATH CREDENTIAL";
+    }
+
+
+    if (certificatePageIntro) {
+        certificatePageIntro.textContent =
+            hasCapstone
+                ? "Verified completion of a complete CWS Academy career learning pathway and practical capstone."
+                : "Verified completion of every required course in a complete CWS Academy learning pathway.";
+    }
+
+
+    if (certificateKicker) {
+        certificateKicker.textContent =
+            hasCapstone
+                ? "CERTIFICATE OF PROFESSIONAL PATH COMPLETION"
+                : "CERTIFICATE OF CAREER PATH COMPLETION";
+    }
+
+
+    if (certificateScoreLabel) {
+        certificateScoreLabel.textContent =
+            hasCapstone
+                ? "CAPSTONE SCORE"
+                : "COURSES COMPLETED";
+    }
+
+
     certificateScore.textContent =
-        credential.capstoneScore
-            ? `${credential.capstoneScore}%`
-            : "Passed";
+        hasCapstone
+            ? credential.capstoneScore
+                ? `${credential.capstoneScore}%`
+                : "Passed"
+            : `${requiredCourses.length}/${requiredCourses.length}`;
 
 
     certificateDate.textContent =
@@ -653,6 +721,22 @@ async function renderCredential(
             currentPath.title
         )
             .toUpperCase();
+
+
+    if (certificateRequirements) {
+        certificateRequirements.textContent =
+            hasCapstone
+                ? "Courses + Capstone Completed"
+                : `${requiredCourses.length} Required Courses Completed`;
+    }
+
+
+    if (certificateVerificationIntro) {
+        certificateVerificationIntro.textContent =
+            hasCapstone
+                ? "Employers and recruiters can verify this professional CWS credential without signing in to CWS Academy."
+                : "Employers and recruiters can verify this CWS career-path credential without signing in to CWS Academy.";
+    }
 
 
     currentCredential =
