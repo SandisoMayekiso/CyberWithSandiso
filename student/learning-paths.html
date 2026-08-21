@@ -12,7 +12,7 @@
 
     <meta
         name="description"
-        content="CWS Academy career learning paths."
+        content="Follow structured CWS Academy cybersecurity career paths, track every required course and continue from your exact next learning step."
     >
 
     <title>
@@ -44,6 +44,8 @@
         rel="stylesheet"
         href="../css/style.css"
     >
+
+    <link rel="stylesheet" href="../css/design-system.css">
 
     <link
         rel="stylesheet"
@@ -180,7 +182,7 @@
         <div class="paths-hero-copy">
 
             <span class="paths-eyebrow">
-                CWS ACADEMY • CAREER PATHS
+                CWS ACADEMY â€¢ CAREER PATHS
             </span>
 
             <h1>
@@ -197,19 +199,36 @@
         </div>
 
 
-        <div class="paths-hero-icon">
-            <i class="fa-solid fa-route"></i>
-        </div>
+        <aside
+            class="paths-hero-overview"
+            aria-label="Recommended learning path"
+        >
+
+            <span class="paths-hero-overview-icon" aria-hidden="true">
+                <i class="fa-solid fa-route"></i>
+            </span>
+
+            <div>
+                <span class="paths-overview-label">RECOMMENDED FOR YOU</span>
+                <strong id="heroRecommendedPath">Finding your best pathâ€¦</strong>
+                <small id="heroRecommendedStep">
+                    Reading your current course progress.
+                </small>
+            </div>
+
+        </aside>
 
     </section>
 
 
     <section
         id="pathsLoading"
-        class="paths-message"
+        class="paths-loading"
+        aria-label="Loading learning paths"
     >
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        Reading your learning progress...
+        <div class="paths-loading-card cws-skeleton"></div>
+        <div class="paths-loading-card cws-skeleton"></div>
+        <span class="sr-only">Reading your learning progress...</span>
     </section>
 
 
@@ -217,6 +236,50 @@
         id="pathsContent"
         hidden
     >
+
+        <section
+            class="paths-summary-grid"
+            aria-label="Learning path overview"
+        >
+
+            <article class="paths-summary-card">
+                <span class="paths-summary-icon">
+                    <i class="fa-solid fa-route"></i>
+                </span>
+                <div>
+                    <strong id="availablePathsCount">0</strong>
+                    <span>Available Paths</span>
+                </div>
+            </article>
+
+            <article class="paths-summary-card">
+                <span class="paths-summary-icon">
+                    <i class="fa-solid fa-person-running"></i>
+                </span>
+                <div>
+                    <strong id="activePathsCount">0</strong>
+                    <span>In Progress</span>
+                </div>
+            </article>
+
+            <article class="paths-summary-card">
+                <span class="paths-summary-icon">
+                    <i class="fa-solid fa-award"></i>
+                </span>
+                <div>
+                    <strong id="completedPathsCount">0</strong>
+                    <span>Completed Paths</span>
+                </div>
+            </article>
+
+        </section>
+
+
+        <section
+            id="pathSpotlight"
+            class="path-spotlight"
+            aria-live="polite"
+        ></section>
 
         <div class="paths-section-heading">
 
@@ -233,6 +296,53 @@
                 </p>
             </div>
 
+            <div
+                class="paths-filter-group"
+                role="group"
+                aria-label="Filter learning paths"
+            >
+                <button
+                    type="button"
+                    class="paths-filter-btn active"
+                    data-path-filter="all"
+                    aria-pressed="true"
+                >
+                    All
+                </button>
+                <button
+                    type="button"
+                    class="paths-filter-btn"
+                    data-path-filter="available"
+                    aria-pressed="false"
+                >
+                    Available
+                </button>
+                <button
+                    type="button"
+                    class="paths-filter-btn"
+                    data-path-filter="in-progress"
+                    aria-pressed="false"
+                >
+                    In Progress
+                </button>
+                <button
+                    type="button"
+                    class="paths-filter-btn"
+                    data-path-filter="completed"
+                    aria-pressed="false"
+                >
+                    Completed
+                </button>
+                <button
+                    type="button"
+                    class="paths-filter-btn"
+                    data-path-filter="planned"
+                    aria-pressed="false"
+                >
+                    Planned
+                </button>
+            </div>
+
         </div>
 
 
@@ -241,6 +351,56 @@
             class="learning-paths-grid"
         ></div>
 
+        <div
+            id="pathsEmpty"
+            class="paths-empty"
+            hidden
+        >
+            <i class="fa-solid fa-filter-circle-xmark"></i>
+            <h3>No paths match this filter</h3>
+            <p>Choose another path category to continue exploring.</p>
+            <button type="button" id="resetPathsFilter" class="path-action">
+                Show all paths
+            </button>
+        </div>
+
+
+        <section class="paths-how-it-works">
+
+            <div class="paths-section-heading compact">
+                <div>
+                    <span>HOW IT WORKS</span>
+                    <h2>One roadmap, clear milestones</h2>
+                </div>
+            </div>
+
+            <div class="paths-how-grid">
+
+                <article>
+                    <span>01</span>
+                    <i class="fa-solid fa-book-open"></i>
+                    <h3>Complete courses</h3>
+                    <p>Follow required courses in a deliberate sequence.</p>
+                </article>
+
+                <article>
+                    <span>02</span>
+                    <i class="fa-solid fa-flask"></i>
+                    <h3>Prove practical skill</h3>
+                    <p>Complete required labs, assessments and capstones.</p>
+                </article>
+
+                <article>
+                    <span>03</span>
+                    <i class="fa-solid fa-certificate"></i>
+                    <h3>Earn the credential</h3>
+                    <p>Unlock a publicly verifiable career-path certificate.</p>
+                </article>
+
+            </div>
+
+        </section>
+
     </section>
 
 </main>
@@ -248,7 +408,7 @@
 
 <footer class="student-footer">
     <p>
-        © 2026 CWS Academy. Part of the CyberWithSandiso ecosystem.
+        Â© 2026 CWS Academy. Part of the CyberWithSandiso ecosystem.
     </p>
 </footer>
 
