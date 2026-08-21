@@ -11,14 +11,11 @@
     >
 
     <meta
-        id="pageDescription"
         name="description"
-        content="CWS Academy course details, modules, lessons, labs and assessments."
+        content="CWS Academy student courses and cybersecurity learning paths."
     >
 
-    <title>
-        Course | CWS Academy
-    </title>
+    <title>Courses | CWS Academy</title>
 
 
         <!-- CWS ACADEMY UI FONTS -->
@@ -48,6 +45,7 @@
 
     <!-- =====================================================
          DASHBOARD CSS
+         Keeps navigation/header visually consistent
     ====================================================== -->
 
     <link
@@ -57,15 +55,18 @@
 
 
     <!-- =====================================================
-         COURSE DETAILS CSS
+         LABS CSS
     ====================================================== -->
 
     <link
         rel="stylesheet"
-        href="../css/course-details.css"
+        href="../css/student-courses.css"
     >
 
-    <!-- CWS ASSISTANT -->
+    <!-- =====================================================
+         CWS ASSISTANT
+    ====================================================== -->
+
     <link
         rel="stylesheet"
         href="../css/cws-assistant.css"
@@ -74,11 +75,11 @@
 </head>
 
 
-<body class="student-dashboard course-details-page-body">
+<body class="student-dashboard student-courses-page-body">
 
 
 <!-- =========================================================
-     STUDENT NAVIGATION
+     NAVIGATION
 ========================================================= -->
 
 <header class="student-header">
@@ -169,626 +170,201 @@
      MAIN
 ========================================================= -->
 
-<main class="dashboard-main course-details-main">
+<main class="dashboard-main student-courses-main">
 
 
     <!-- =====================================================
-         LOADING STATE
+         PAGE HERO
     ====================================================== -->
 
-    <section
-        id="courseLoading"
-        class="course-loading"
-        aria-live="polite"
-    >
+    <section class="courses-page-hero">
 
-        <div class="loading-spinner">
+        <div class="courses-hero-content">
 
-            <i
-                class="fa-solid fa-circle-notch fa-spin"
-                aria-hidden="true"
-            ></i>
-
-        </div>
-
-
-        <p>
-            Loading course...
-        </p>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         COURSE NOT FOUND
-    ====================================================== -->
-
-    <section
-        id="courseNotFound"
-        class="course-not-found"
-        hidden
-    >
-
-        <div class="course-not-found-icon">
-
-            <i
-                class="fa-solid fa-triangle-exclamation"
-                aria-hidden="true"
-            ></i>
-
-        </div>
-
-
-        <span
-            id="courseStateLabel"
-            class="dashboard-label"
-        >
-            COURSE UNAVAILABLE
-        </span>
-
-
-        <h1 id="courseStateTitle">
-            Course Not Found
-        </h1>
-
-
-        <p id="courseNotFoundMessage">
-
-            The course you're looking for does not exist,
-            is unavailable, or has not yet been released.
-
-        </p>
-
-
-        <a
-            id="courseBackLink"
-            href="student-courses.html"
-            class="course-primary-btn"
-        >
-
-            <i class="fa-solid fa-arrow-left"></i>
-
-            Back to Courses
-
-        </a>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         COURSE CONTENT
-    ====================================================== -->
-
-    <div
-        id="courseContent"
-        hidden
-    >
-
-
-        <!-- =================================================
-             BREADCRUMB
-        ================================================== -->
-
-        <nav
-            class="course-breadcrumb"
-            aria-label="Breadcrumb"
-        >
-
-            <a href="student-courses.html">
-
-                <i class="fa-solid fa-book"></i>
-
-                Courses
-
-            </a>
-
-
-            <i
-                class="fa-solid fa-chevron-right"
-                aria-hidden="true"
-            ></i>
-
-
-            <span id="breadcrumbCourse">
-                Course
+            <span class="dashboard-label">
+                CWS ACADEMY â€¢ STUDENT LEARNING
             </span>
 
-        </nav>
+
+            <h1>
+                Explore Your Courses
+            </h1>
+
+
+            <p>
+                Choose a cybersecurity learning path and
+                continue developing your technical skills
+                through structured lessons, practical labs
+                and assessments.
+            </p>
+
+        </div>
+
+
+        <div class="courses-hero-icon">
+
+            <i class="fa-solid fa-book-open"></i>
+
+        </div>
+
+    </section>
 
 
 
-        <!-- =================================================
-             COURSE HERO
-        ================================================== -->
+    <!-- =====================================================
+         COURSE SECTION
+    ====================================================== -->
 
-        <section class="course-details-hero">
-
-
-            <div class="course-details-hero-content">
+    <section class="dashboard-section courses-section">
 
 
-                <!-- =========================================
-                     COURSE BADGES
-                ========================================== -->
+        <!-- SECTION HEADING -->
 
-                <div class="course-hero-badges">
+        <div class="section-heading courses-section-heading">
 
-
-                    <span
-                        id="courseStatus"
-                        class="course-status available"
-                    >
-                        AVAILABLE
-                    </span>
-
-
-                    <span
-                        id="courseLevel"
-                        class="course-level"
-                    >
-                        COURSE
-                    </span>
-
-
-                </div>
-
-
-                <!-- =========================================
-                     CATEGORY
-                ========================================== -->
-
-                <span
-                    id="courseCategory"
-                    class="dashboard-label"
-                >
-                    CWS ACADEMY
-                </span>
-
-
-                <!-- =========================================
-                     TITLE
-                ========================================== -->
-
-                <h1 id="courseTitle">
-                    Course
-                </h1>
-
-
-                <!-- =========================================
-                     DESCRIPTION
-                ========================================== -->
-
-                <p id="courseDescription">
-
-                    Course information will appear here.
-
-                </p>
-
-
-                <!-- =========================================
-                     HERO ACTIONS
-                ========================================== -->
-
-                <div class="course-hero-actions">
-
-
-                    <a
-                        href="#"
-                        id="startCourseBtn"
-                        class="course-primary-btn"
-                    >
-
-                        <i class="fa-solid fa-play"></i>
-
-                        Start Course
-
-                    </a>
-
-
-                    <a
-                        href="student-courses.html"
-                        class="course-secondary-btn"
-                    >
-
-                        <i class="fa-solid fa-arrow-left"></i>
-
-                        Back to Courses
-
-                    </a>
-
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =============================================
-                 HERO ICON
-            ============================================== -->
-
-            <div
-                id="courseHeroIcon"
-                class="course-details-hero-icon"
-                aria-hidden="true"
-            >
-
-                <i class="fa-solid fa-graduation-cap"></i>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             COURSE OVERVIEW
-        ================================================== -->
-
-        <section class="course-overview-section">
-
-
-            <!-- =============================================
-                 OVERVIEW CONTENT
-            ============================================== -->
-
-            <div class="course-overview-main">
-
+            <div>
 
                 <span class="dashboard-label">
-                    COURSE OVERVIEW
+                    LEARNING PATHS
                 </span>
 
 
-                <h2 id="courseOverviewTitle">
-                    Course Overview
+                <h2>
+                    Available Courses
                 </h2>
 
 
-                <p id="courseLongDescription">
-
-                    Course details will appear here.
-
+                <p>
+                    Start with foundational cybersecurity
+                    knowledge and progress toward advanced
+                    security skills.
                 </p>
 
-
-
-                <!-- =========================================
-                     LEARNING OBJECTIVES
-                ========================================== -->
-
-                <div class="course-objectives">
-
-                    <h3>
-                        What You'll Learn
-                    </h3>
-
-
-                    <ul id="courseObjectives">
-
-                        <!--
-                            Generated dynamically from
-                            data/courses.js
-                        -->
-
-                    </ul>
-
-                </div>
-
             </div>
 
-
-
-            <!-- =============================================
-                 COURSE INFORMATION
-            ============================================== -->
-
-            <aside class="course-overview-sidebar">
-
-                <div class="course-info-card">
-
-                    <h3>
-                        Course Information
-                    </h3>
-
-
-                    <!-- LEVEL -->
-
-                    <div class="course-info-item">
-
-                        <i class="fa-solid fa-layer-group"></i>
-
-                        <div>
-
-                            <span>
-                                Level
-                            </span>
-
-                            <strong id="courseInfoLevel">
-                                â€”
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- MODULES -->
-
-                    <div class="course-info-item">
-
-                        <i class="fa-solid fa-book"></i>
-
-                        <div>
-
-                            <span>
-                                Modules
-                            </span>
-
-                            <strong id="courseInfoModules">
-                                â€”
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- LESSONS -->
-
-                    <div class="course-info-item">
-
-                        <i class="fa-solid fa-graduation-cap"></i>
-
-                        <div>
-
-                            <span>
-                                Lessons
-                            </span>
-
-                            <strong id="courseInfoLessons">
-                                â€”
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- DURATION -->
-
-                    <div class="course-info-item">
-
-                        <i class="fa-solid fa-clock"></i>
-
-                        <div>
-
-                            <span>
-                                Estimated Time
-                            </span>
-
-                            <strong id="courseInfoDuration">
-                                â€”
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- LABS -->
-
-                    <div class="course-info-item">
-
-                        <i class="fa-solid fa-flask"></i>
-
-                        <div>
-
-                            <span>
-                                Practical Activities
-                            </span>
-
-                            <strong id="courseInfoLabs">
-                                â€”
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- ASSESSMENTS -->
-
-                    <div class="course-info-item">
-
-                        <i class="fa-solid fa-clipboard-check"></i>
-
-                        <div>
-
-                            <span>
-                                Assessments
-                            </span>
-
-                            <strong id="courseInfoAssessments">
-                                â€”
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </aside>
-
-        </section>
+        </div>
 
 
 
         <!-- =================================================
-             COURSE PROGRESS
+             FILTERS
         ================================================== -->
 
-        <section class="course-progress-section">
+        <div
+            class="course-controls"
+            aria-label="Course filters"
+        >
+
+            <div class="course-filter-buttons">
+
+                <button
+                    type="button"
+                    class="course-filter active"
+                    data-filter="all"
+                    aria-pressed="true"
+                >
+                    All Courses
+                </button>
+
+                <button type="button" class="course-filter" data-filter="foundation" aria-pressed="false">
+                    Foundations
+                </button>
+
+                <button type="button" class="course-filter" data-filter="pro" aria-pressed="false">
+                    Pro Specializations
+                </button>
+
+                <button type="button" class="course-filter" data-filter="professional" aria-pressed="false">
+                    Professional Capstone
+                </button>
 
 
-            <div class="course-progress-header">
-
-                <div>
-
-                    <span class="dashboard-label">
-                        YOUR PROGRESS
-                    </span>
-
-
-                    <h2>
-                        Course Progress
-                    </h2>
-
-                </div>
+                <button
+                    type="button"
+                    class="course-filter"
+                    data-filter="beginner"
+                    aria-pressed="false"
+                >
+                    Beginner
+                </button>
 
 
-                <strong id="courseProgressPercent">
-                    0%
-                </strong>
+                <button
+                    type="button"
+                    class="course-filter"
+                    data-filter="intermediate"
+                    aria-pressed="false"
+                >
+                    Intermediate
+                </button>
+
+
+                <button
+                    type="button"
+                    class="course-filter"
+                    data-filter="advanced"
+                    aria-pressed="false"
+                >
+                    Advanced
+                </button>
 
             </div>
 
-
-            <div
-                class="course-progress-bar"
-                role="progressbar"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                aria-valuenow="0"
-                aria-label="Course progress"
-            >
-
-                <div
-                    id="courseProgressFill"
-                    class="course-progress-fill"
-                    style="width: 0%;"
-                ></div>
-
-            </div>
-
-
-            <p id="courseProgressText">
-
-                Start your first lesson to begin making progress.
-
-            </p>
-
-        </section>
+        </div>
 
 
 
         <!-- =================================================
-             COURSE CURRICULUM
+             COURSE GRID
         ================================================== -->
 
-        <section class="course-curriculum-section">
+        <div
+            id="studentCourseGrid"
+            class="student-course-grid"
+        >
 
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span class="dashboard-label">
-                        COURSE CURRICULUM
-                    </span>
-
-
-                    <h2>
-                        Course Modules
-                    </h2>
-
-
-                    <p id="courseCurriculumDescription">
-
-                        Work through the modules in order.
-                        Complete lessons, practical labs
-                        and assessments as you progress.
-
-                    </p>
-
-                </div>
-
+            <div id="studentCoursesLoading" class="student-courses-loading">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <span>Loading your learning paths...</span>
             </div>
 
-
-            <!-- =============================================
-                 MODULES GENERATED BY JAVASCRIPT
-            ============================================== -->
-
-            <div
-                id="courseModules"
-                class="course-modules"
-            >
-
-                <!--
-                    course-details.js renders modules,
-                    lessons, labs and assessment links
-                    here using data/courses.js.
-                -->
-
-            </div>
-
-        </section>
+</div>
 
 
 
-        <!-- =================================================
-             COURSE COMPLETION
-        ================================================== -->
+        <div id="courseCatalogEmpty" class="no-courses-message" hidden>
+            <div class="no-courses-icon"><i class="fa-solid fa-book-open"></i></div>
+            <h3>Course catalogue unavailable</h3>
+            <p>Please refresh the page or try again shortly.</p>
+        </div>
 
-        <section
-            id="courseCompletionSection"
-            class="course-completion-section"
+        <!-- EMPTY FILTER STATE -->
+
+        <div
+            id="noCoursesMessage"
+            class="no-courses-message"
             hidden
         >
 
-            <div class="course-completion-icon">
+            <div class="no-courses-icon">
 
-                <i class="fa-solid fa-certificate"></i>
+                <i class="fa-solid fa-filter-circle-xmark"></i>
 
             </div>
 
 
-            <span class="dashboard-label">
-                COURSE COMPLETED
-            </span>
+            <h3>
+                No Courses Found
+            </h3>
 
 
-            <h2>
-                Congratulations!
-            </h2>
-
-
-            <p id="courseCompletionText">
-
-                You have completed this course.
-
+            <p id="noCoursesText">
+                No courses match the selected category.
             </p>
 
+        </div>
 
-            <a
-                href="certificates.html"
-                class="course-primary-btn"
-            >
-
-                <i class="fa-solid fa-certificate"></i>
-
-                View Certificates
-
-            </a>
-
-        </section>
-
-
-    </div>
+    </section>
 
 </main>
 
@@ -801,10 +377,8 @@
 <footer class="student-footer">
 
     <p>
-
         Â© 2026 CWS Academy.
         Part of the CyberWithSandiso ecosystem.
-
     </p>
 
 </footer>
@@ -817,9 +391,8 @@
 
 <script
     type="module"
-    src="../js/course-details.js"
+    src="../js/student-courses.js"
 ></script>
-
 
 <script
     type="module"
@@ -833,5 +406,4 @@
 ></script>
 
 </body>
-
 </html>
