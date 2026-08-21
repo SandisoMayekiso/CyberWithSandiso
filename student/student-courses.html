@@ -42,6 +42,11 @@
         href="../css/style.css"
     >
 
+    <link
+        rel="stylesheet"
+        href="../css/design-system.css"
+    >
+
 
     <!-- =====================================================
          DASHBOARD CSS
@@ -242,6 +247,18 @@
 
             </div>
 
+            <div
+                class="course-catalog-summary"
+                aria-label="Course catalogue summary"
+            >
+                <span id="availableCourseCount">
+                    0 Available
+                </span>
+                <span id="plannedCourseCount">
+                    0 Planned
+                </span>
+            </div>
+
         </div>
 
 
@@ -310,6 +327,17 @@
 
             </div>
 
+            <label class="course-search" for="courseSearchInput">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span class="sr-only">Search courses</span>
+                <input
+                    id="courseSearchInput"
+                    type="search"
+                    placeholder="Search courses, skills or levels"
+                    autocomplete="off"
+                >
+            </label>
+
         </div>
 
 
@@ -323,16 +351,22 @@
             class="student-course-grid"
         >
 
-            <div id="studentCoursesLoading" class="student-courses-loading">
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                <span>Loading your learning paths...</span>
+            <div
+                id="studentCoursesLoading"
+                class="student-courses-loading"
+                aria-label="Loading course catalogue"
+            >
+                <div class="cws-skeleton"></div>
+                <div class="cws-skeleton"></div>
+                <div class="cws-skeleton"></div>
+                <span class="sr-only">Loading your learning paths...</span>
             </div>
 
 </div>
 
 
 
-        <div id="courseCatalogEmpty" class="no-courses-message" hidden>
+        <div id="courseCatalogEmpty" class="no-courses-message cws-state-card cws-card" hidden>
             <div class="no-courses-icon"><i class="fa-solid fa-book-open"></i></div>
             <h3>Course catalogue unavailable</h3>
             <p>Please refresh the page or try again shortly.</p>
@@ -342,7 +376,7 @@
 
         <div
             id="noCoursesMessage"
-            class="no-courses-message"
+            class="no-courses-message cws-state-card cws-card"
             hidden
         >
 
