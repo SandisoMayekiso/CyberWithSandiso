@@ -10,6 +10,110 @@
     padding: 42px 0 80px;
 }
 
+.certificate-discovery {
+    display: grid;
+    grid-template-columns: minmax(240px,1fr) minmax(190px,240px) auto auto;
+    gap: 12px;
+    align-items: end;
+    margin: 4px 0 34px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 16px;
+    background: rgba(255,255,255,.022);
+}
+
+.certificate-search {
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 11px;
+    color: rgba(255,255,255,.4);
+    background: rgba(4,9,15,.74);
+}
+
+.certificate-search:focus-within {
+    border-color: rgba(0,255,170,.36);
+    box-shadow: 0 0 0 3px rgba(0,255,170,.055);
+}
+
+.certificate-search input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    color: #fff;
+    background: transparent;
+    font: 650 .75rem "Inter",sans-serif;
+}
+
+.certificate-filter {
+    display: grid;
+    gap: 6px;
+}
+
+.certificate-filter > span {
+    color: rgba(255,255,255,.4);
+    font: 800 .56rem "Inter",sans-serif;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.certificate-filter select,
+.certificate-filter-reset {
+    min-height: 46px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 11px;
+    color: #dfe7ee;
+    background: #071019;
+    font: 750 .68rem "Inter",sans-serif;
+}
+
+.certificate-filter select {
+    padding: 0 34px 0 12px;
+}
+
+.certificate-filter-reset {
+    padding: 0 14px;
+    cursor: pointer;
+}
+
+.certificate-filter-summary {
+    align-self: center;
+    color: #7f8d9c;
+    font: 700 .63rem "Inter",sans-serif;
+    white-space: nowrap;
+}
+
+.credential-filter-hidden {
+    display: none !important;
+}
+
+@media (max-width: 980px) {
+    .certificate-discovery {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .certificate-search {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 600px) {
+    .certificate-discovery {
+        grid-template-columns: 1fr;
+    }
+
+    .certificate-search {
+        grid-column: auto;
+    }
+
+    .certificate-filter-summary {
+        white-space: normal;
+    }
+}
+
 .certificates-hero {
     position: relative;
     overflow: hidden;
@@ -828,7 +932,7 @@
 
 
 /* =========================================================
-   CWS ACADEMY — DYNAMIC CREDENTIAL JOURNEY
+   CWS ACADEMY â€” DYNAMIC CREDENTIAL JOURNEY
 ========================================================= */
 
 .credential-journey-section {
