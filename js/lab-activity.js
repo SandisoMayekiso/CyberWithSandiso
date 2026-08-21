@@ -201,6 +201,126 @@ const continueBtn =
         "continueBtn"
     );
 
+const activitySafetyText =
+    document.getElementById(
+        "activitySafetyText"
+    );
+
+const activityScenarioSection =
+    document.getElementById(
+        "activityScenarioSection"
+    );
+
+const activityScenario =
+    document.getElementById(
+        "activityScenario"
+    );
+
+const activityPrerequisitesSection =
+    document.getElementById(
+        "activityPrerequisitesSection"
+    );
+
+const activityPrerequisites =
+    document.getElementById(
+        "activityPrerequisites"
+    );
+
+const activityChecklistRing =
+    document.getElementById(
+        "activityChecklistRing"
+    );
+
+const activityChecklistPercent =
+    document.getElementById(
+        "activityChecklistPercent"
+    );
+
+const activityChecklistTitle =
+    document.getElementById(
+        "activityChecklistTitle"
+    );
+
+const activityChecklistMeta =
+    document.getElementById(
+        "activityChecklistMeta"
+    );
+
+const downloadActivityBtn =
+    document.getElementById(
+        "downloadActivityBtn"
+    );
+
+const resetActivityWorkspaceBtn =
+    document.getElementById(
+        "resetActivityWorkspaceBtn"
+    );
+
+const evidenceSection =
+    document.getElementById(
+        "evidenceSection"
+    );
+
+const activityEvidenceList =
+    document.getElementById(
+        "activityEvidenceList"
+    );
+
+const activityEvidenceNotes =
+    document.getElementById(
+        "activityEvidenceNotes"
+    );
+
+const activityNotesStatus =
+    document.getElementById(
+        "activityNotesStatus"
+    );
+
+const saveActivityNotesBtn =
+    document.getElementById(
+        "saveActivityNotesBtn"
+    );
+
+const activityConsoleOutput =
+    document.getElementById(
+        "activityConsoleOutput"
+    );
+
+const activityConsoleForm =
+    document.getElementById(
+        "activityConsoleForm"
+    );
+
+const activityConsoleInput =
+    document.getElementById(
+        "activityConsoleInput"
+    );
+
+const activityCompletionDialog =
+    document.getElementById(
+        "activityCompletionDialog"
+    );
+
+const activityDialogText =
+    document.getElementById(
+        "activityDialogText"
+    );
+
+const activityAuthorizationCheck =
+    document.getElementById(
+        "activityAuthorizationCheck"
+    );
+
+const cancelActivityCompletionBtn =
+    document.getElementById(
+        "cancelActivityCompletionBtn"
+    );
+
+const confirmActivityCompletionBtn =
+    document.getElementById(
+        "confirmActivityCompletionBtn"
+    );
+
 
 /* =========================================================
    STATE
@@ -226,6 +346,17 @@ let currentEntitlement =
 
 let activityInitialized =
     false;
+
+let workspaceState = {
+    checkedSteps: [],
+    checkedPrerequisites: [],
+    reflectionAnswers: {},
+    evidenceNotes: ""
+};
+
+let workspaceStorageKey = "";
+
+let notesSaveTimer = null;
 
 
 /* =========================================================
@@ -600,6 +731,447 @@ function buildActivityKey(
 
 
 /* =========================================================
+   LOCAL LAB WORKSPACE
+
+   Checklists, reflection answers and evidence notes remain
+   private to this browser. Only final activity completion is
+   written to Firestore.
+========================================================= */
+
+function getDefaultWorkspaceState() {
+
+    return {
+        checkedSteps: [],
+        checkedPrerequisites: [],
+        reflectionAnswers: {},
+        evidenceNotes: ""
+    };
+
+}
+
+
+function initializeWorkspaceState() {
+
+    workspaceStorageKey = [
+        "cwsLabWorkspace:v1",
+        currentUser?.uid || "student",
+        currentCourse?.id || "course",
+        currentModule?.id || "module",
+        currentActivity?.id || "activity"
+    ].join(":");
+
+    workspaceState =
+        getDefaultWorkspaceState();
+
+    try {
+
+        const saved =
+            JSON.parse(
+                localStorage.getItem(
+                    workspaceStorageKey
+                ) || "{}"
+            );
+
+        workspaceState = {
+            ...workspaceState,
+            ...saved,
+            checkedSteps:
+                Array.isArray(saved.checkedSteps)
+                    ? saved.checkedSteps
+                    : [],
+            checkedPrerequisites:
+                Array.isArray(saved.checkedPrerequisites)
+                    ? saved.checkedPrerequisites
+                    : [],
+            reflectionAnswers:
+                saved.reflectionAnswers &&
+                typeof saved.reflectionAnswers === "object"
+                    ? saved.reflectionAnswers
+                    : {},
+            evidenceNotes:
+                typeof saved.evidenceNotes === "string"
+                    ? saved.evidenceNotes
+                    : ""
+        };
+
+    }
+    catch (err) {
+
+        console.warn(
+            "[CWS Activity] Local workspace unavailable:",
+            err
+        );
+
+    }
+
+}
+
+
+function saveWorkspaceState() {
+
+    if (!workspaceStorageKey) {
+        return;
+    }
+
+    try {
+
+        localStorage.setItem(
+            workspaceStorageKey,
+            JSON.stringify({
+                ...workspaceState,
+                updatedAt:
+                    new Date().toISOString()
+            })
+        );
+
+        if (activityNotesStatus) {
+            activityNotesStatus.textContent =
+                `Saved locally at ${new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                })}.`;
+        }
+
+    }
+    catch (err) {
+
+        console.warn(
+            "[CWS Activity] Unable to save local workspace:",
+            err
+        );
+
+        if (activityNotesStatus) {
+            activityNotesStatus.textContent =
+                "Local saving is unavailable in this browser.";
+        }
+
+    }
+
+}
+
+
+function getInstructionCount() {
+
+    return Array.isArray(
+        currentActivity?.instructions
+    )
+        ? currentActivity.instructions.length
+        : 0;
+
+}
+
+
+function getCheckedStepCount() {
+
+    const total =
+        getInstructionCount();
+
+    return workspaceState.checkedSteps
+        .filter(index =>
+            Number.isInteger(index) &&
+            index >= 0 &&
+            index < total
+        )
+        .length;
+
+}
+
+
+function allInstructionsChecked() {
+
+    const total =
+        getInstructionCount();
+
+    return (
+        total === 0 ||
+        getCheckedStepCount() === total
+    );
+
+}
+
+
+function updateWorkspaceProgress() {
+
+    const total =
+        getInstructionCount();
+
+    const checked =
+        getCheckedStepCount();
+
+    const percentage =
+        total
+            ? Math.round(
+                checked / total * 100
+            )
+            : 100;
+
+    if (activityChecklistRing) {
+        activityChecklistRing.style.setProperty(
+            "--activity-progress",
+            String(percentage)
+        );
+        activityChecklistRing.setAttribute(
+            "aria-valuenow",
+            String(percentage)
+        );
+    }
+
+    if (activityChecklistPercent) {
+        activityChecklistPercent.textContent =
+            `${percentage}%`;
+    }
+
+    if (activityChecklistTitle) {
+        activityChecklistTitle.textContent =
+            percentage === 100
+                ? "Checklist complete"
+                : checked
+                    ? "Lab work in progress"
+                    : "Ready to begin";
+    }
+
+    if (activityChecklistMeta) {
+        activityChecklistMeta.textContent =
+            `${checked} of ${total} instruction${total === 1 ? "" : "s"} checked.`;
+    }
+
+    if (activityDialogText) {
+        activityDialogText.textContent =
+            allInstructionsChecked()
+                ? "Your instruction checklist is complete. Confirm that your work was authorized before saving completion."
+                : `Complete the remaining ${total - checked} instruction${total - checked === 1 ? "" : "s"} before marking this activity complete.`;
+    }
+
+    updateCompletionConfirmationState();
+
+}
+
+
+function renderWorkspaceOverview() {
+
+    const scenario =
+        String(
+            currentActivity?.scenario || ""
+        ).trim();
+
+    if (activityScenarioSection) {
+        activityScenarioSection.hidden =
+            !scenario;
+    }
+
+    if (activityScenario) {
+        activityScenario.textContent =
+            scenario;
+    }
+
+    const prerequisites =
+        Array.isArray(
+            currentActivity?.prerequisites
+        )
+            ? currentActivity.prerequisites
+            : [];
+
+    if (activityPrerequisitesSection) {
+        activityPrerequisitesSection.hidden =
+            prerequisites.length === 0;
+    }
+
+    if (activityPrerequisites) {
+
+        activityPrerequisites.innerHTML = "";
+
+        prerequisites.forEach((item, index) => {
+
+            const label =
+                document.createElement("label");
+
+            label.className =
+                "activity-prerequisite-item";
+
+            label.innerHTML = `
+                <input
+                    type="checkbox"
+                    data-prerequisite-index="${index}"
+                    ${workspaceState.checkedPrerequisites.includes(index) ? "checked" : ""}
+                >
+                <span>${escapeHTML(item)}</span>
+            `;
+
+            activityPrerequisites.appendChild(
+                label
+            );
+
+        });
+
+    }
+
+    if (activitySafetyText) {
+        activitySafetyText.textContent =
+            currentActivity?.safety ||
+            "CWS Academy practical exercises are for learning, testing and authorized security practice. Do not test third-party systems without explicit permission.";
+    }
+
+}
+
+
+function renderEvidence() {
+
+    const evidence =
+        Array.isArray(
+            currentActivity?.evidence
+        )
+            ? currentActivity.evidence
+            : Array.isArray(
+                currentActivity?.deliverables
+            )
+                ? currentActivity.deliverables
+                : [];
+
+    if (evidenceSection) {
+        evidenceSection.hidden =
+            false;
+    }
+
+    if (activityEvidenceList) {
+
+        activityEvidenceList.innerHTML =
+            evidence.length
+                ? evidence.map(item => `
+                    <div class="activity-evidence-item">
+                        <i class="fa-solid fa-camera-retro"></i>
+                        <span>${escapeHTML(item)}</span>
+                    </div>
+                `)
+                    .join("")
+                : `
+                    <div class="activity-evidence-item">
+                        <i class="fa-solid fa-note-sticky"></i>
+                        <span>Record the key observations and results that demonstrate your work.</span>
+                    </div>
+                `;
+
+    }
+
+    if (activityEvidenceNotes) {
+        activityEvidenceNotes.value =
+            workspaceState.evidenceNotes;
+    }
+
+}
+
+
+function buildActivityDownload() {
+
+    const instructions =
+        Array.isArray(currentActivity?.instructions)
+            ? currentActivity.instructions
+            : [];
+
+    const reflections =
+        Array.isArray(currentActivity?.reflection)
+            ? currentActivity.reflection
+            : [];
+
+    const evidence =
+        Array.isArray(currentActivity?.evidence)
+            ? currentActivity.evidence
+            : Array.isArray(currentActivity?.deliverables)
+                ? currentActivity.deliverables
+                : [];
+
+    return [
+        "CWS ACADEMY PRACTICAL ACTIVITY",
+        "================================",
+        `Course: ${currentCourse?.title || ""}`,
+        `Module: ${currentModule?.title || ""}`,
+        `Activity: ${currentActivity?.title || ""}`,
+        `Objective: ${currentActivity?.objective || ""}`,
+        "",
+        "SCENARIO",
+        currentActivity?.scenario || "Not provided.",
+        "",
+        "INSTRUCTION CHECKLIST",
+        ...instructions.map((item, index) =>
+            `${workspaceState.checkedSteps.includes(index) ? "[x]" : "[ ]"} ${index + 1}. ${item}`
+        ),
+        "",
+        "EXPECTED EVIDENCE",
+        ...evidence.map(item => `- ${item}`),
+        "",
+        "REFLECTION ANSWERS",
+        ...reflections.flatMap((question, index) => [
+            `${index + 1}. ${question}`,
+            workspaceState.reflectionAnswers[index] || "No answer saved.",
+            ""
+        ]),
+        "EVIDENCE NOTES",
+        workspaceState.evidenceNotes || "No notes saved.",
+        "",
+        "Authorized educational use only."
+    ].join("\n");
+
+}
+
+
+function downloadActivityWorkspace() {
+
+    const blob =
+        new Blob(
+            [buildActivityDownload()],
+            {
+                type: "text/plain;charset=utf-8"
+            }
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    const filename =
+        String(currentActivity?.title || "cws-lab")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+
+    link.href = url;
+    link.download =
+        `${filename || "cws-lab"}-workspace.txt`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+
+}
+
+
+function resetActivityWorkspace() {
+
+    const confirmed =
+        window.confirm(
+            "Reset the local checklist, reflection answers and evidence notes for this activity? Your saved course completion will not be removed."
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    workspaceState =
+        getDefaultWorkspaceState();
+
+    saveWorkspaceState();
+    renderWorkspaceOverview();
+    renderInstructions();
+    renderReflection();
+    renderEvidence();
+    updateWorkspaceProgress();
+
+}
+
+
+/* =========================================================
    PROGRESS
 ========================================================= */
 
@@ -811,7 +1383,7 @@ async function saveProgress() {
         !currentProgress
     ) {
 
-        return;
+        return false;
 
     }
 
@@ -830,6 +1402,9 @@ async function saveProgress() {
             }
         );
 
+
+        return true;
+
     }
     catch (err) {
 
@@ -837,6 +1412,9 @@ async function saveProgress() {
             "[CWS Activity] Progress save failed:",
             err
         );
+
+
+        return false;
 
     }
 
@@ -1104,12 +1682,103 @@ async function completeActivity() {
         calculateCourseProgress();
 
 
-    await saveProgress();
+    const saved =
+        await saveProgress();
+
+
+    if (!saved) {
+
+        currentProgress.completedLabs =
+            currentProgress.completedLabs
+                .filter(item => item !== key);
+
+
+        currentProgress.progressPercent =
+            calculateCourseProgress();
+
+
+        activityCompletionText.textContent =
+            "We could not save completion. Check your connection and try again.";
+
+
+        return false;
+
+    }
+
+
+    closeActivityCompletionDialog();
 
 
     updateCompletionUI();
 
     renderNavigation();
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   COMPLETION CONFIRMATION
+========================================================= */
+
+function updateCompletionConfirmationState() {
+
+    if (!confirmActivityCompletionBtn) {
+        return;
+    }
+
+    confirmActivityCompletionBtn.disabled =
+        !allInstructionsChecked() ||
+        !activityAuthorizationCheck?.checked ||
+        isActivityCompleted();
+
+}
+
+
+function openActivityCompletionDialog() {
+
+    if (
+        !activityCompletionDialog ||
+        isActivityCompleted()
+    ) {
+        return;
+    }
+
+    activityAuthorizationCheck.checked =
+        false;
+
+    updateWorkspaceProgress();
+
+    activityCompletionDialog.hidden =
+        false;
+
+    document.body.classList.add(
+        "activity-dialog-open"
+    );
+
+    window.requestAnimationFrame(() => {
+        cancelActivityCompletionBtn?.focus();
+    });
+
+}
+
+
+function closeActivityCompletionDialog() {
+
+    if (!activityCompletionDialog) {
+        return;
+    }
+
+    activityCompletionDialog.hidden =
+        true;
+
+    document.body.classList.remove(
+        "activity-dialog-open"
+    );
+
+    completeActivityBtn?.focus();
 
 }
 
@@ -1321,9 +1990,16 @@ function renderActivity() {
     `;
 
 
+    renderWorkspaceOverview();
+
+
     renderInstructions();
 
     renderReflection();
+
+    renderEvidence();
+
+    updateWorkspaceProgress();
 
     updateCompletionUI();
 
@@ -1351,7 +2027,7 @@ function renderInstructions() {
 
 
     instructions.forEach(
-        instruction => {
+        (instruction, index) => {
 
             const li =
                 document.createElement(
@@ -1359,8 +2035,38 @@ function renderInstructions() {
                 );
 
 
-            li.textContent =
-                instruction;
+            const checked =
+                workspaceState.checkedSteps
+                    .includes(index);
+
+
+            li.classList.toggle(
+                "is-complete",
+                checked
+            );
+
+
+            li.innerHTML = `
+
+                <label class="activity-step-check">
+
+                    <input
+                        type="checkbox"
+                        data-step-index="${index}"
+                        ${checked ? "checked" : ""}
+                    >
+
+                    <span class="activity-step-control" aria-hidden="true">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+
+                    <span class="activity-step-text">
+                        ${escapeHTML(instruction)}
+                    </span>
+
+                </label>
+
+            `;
 
 
             activityInstructions
@@ -1438,19 +2144,52 @@ function renderReflection() {
                     );
 
 
-            const text =
+            const response =
                 document.createElement(
-                    "p"
+                    "div"
                 );
 
 
-            text.textContent =
-                question;
+            response.className =
+                "activity-reflection-response";
+
+
+            const text =
+                document.createElement("p");
+
+
+            text.textContent = question;
+
+
+            const textarea =
+                document.createElement("textarea");
+
+
+            textarea.rows = 4;
+
+
+            textarea.dataset.reflectionIndex =
+                String(index);
+
+
+            textarea.placeholder =
+                "Record your observation or conclusion...";
+
+
+            textarea.value =
+                workspaceState
+                    .reflectionAnswers[index] || "";
+
+
+            response.append(
+                text,
+                textarea
+            );
 
 
             item.append(
                 number,
-                text
+                response
             );
 
 
@@ -1885,6 +2624,9 @@ async function loadActivity() {
     await loadProgress();
 
 
+    initializeWorkspaceState();
+
+
     renderActivity();
 
 
@@ -1919,6 +2661,121 @@ async function logout() {
         );
 
     }
+
+}
+
+
+/* =========================================================
+   SAFE BROWSER CONSOLE
+
+   This is intentionally a simulation. It never executes an
+   operating-system command and never makes a network request.
+========================================================= */
+
+function appendConsoleLine(
+    value,
+    className = ""
+) {
+
+    if (!activityConsoleOutput) {
+        return;
+    }
+
+    const line =
+        document.createElement("div");
+
+    line.className =
+        `activity-console-line ${className}`.trim();
+
+    line.textContent = value;
+
+    activityConsoleOutput.appendChild(line);
+
+    activityConsoleOutput.scrollTop =
+        activityConsoleOutput.scrollHeight;
+
+}
+
+
+function runActivityConsoleCommand(rawCommand) {
+
+    const input =
+        String(rawCommand || "").trim();
+
+    if (!input) {
+        return;
+    }
+
+    appendConsoleLine(
+        `student@cws-lab:~$ ${input}`,
+        "command"
+    );
+
+    const [command, ...args] =
+        input.split(/\s+/);
+
+    const normalized =
+        command.toLowerCase();
+
+    const responses = {
+        help: [
+            "Safe commands: help, whoami, pwd, ls, dir, ip addr, ipconfig, date, echo <text>, clear.",
+            "This learning console is simulated and cannot reach your device or any external system."
+        ],
+        whoami: ["cws-student"],
+        pwd: ["/home/cws-student/lab"],
+        ls: ["evidence/  notes/  README.txt  scope.txt"],
+        dir: ["Directory of C:\\CWS-Lab", "evidence  notes  README.txt  scope.txt"],
+        date: [new Date().toString()],
+        ipconfig: [
+            "Ethernet adapter CWS-LAB:",
+            "  IPv4 Address . . . . . . . : 192.0.2.25",
+            "  Default Gateway . . . . . . : 192.0.2.1",
+            "Reserved documentation network â€” simulated output."
+        ]
+    };
+
+    let output = [];
+
+    if (normalized === "clear") {
+        activityConsoleOutput.textContent = "";
+        return;
+    }
+
+    if (
+        normalized === "ip" &&
+        normalizeConsoleArgument(args[0]) === "addr"
+    ) {
+        output = [
+            "2: cws0: <UP,LOWER_UP> mtu 1500",
+            "    inet 192.0.2.25/24 scope global cws0",
+            "Reserved documentation network â€” simulated output."
+        ];
+    }
+    else if (normalized === "echo") {
+        output = [args.join(" ")];
+    }
+    else if (responses[normalized]) {
+        output = responses[normalized];
+    }
+    else {
+        output = [
+            `Command '${command}' is not available in this safe simulation. Type 'help'.`
+        ];
+    }
+
+    output.forEach(line =>
+        appendConsoleLine(line)
+    );
+
+}
+
+
+function normalizeConsoleArgument(value) {
+
+    return String(value || "")
+        .trim()
+        .toLowerCase();
 
 }
 
@@ -1963,8 +2820,259 @@ function escapeHTML(value) {
 completeActivityBtn
     ?.addEventListener(
         "click",
-        completeActivity
+        openActivityCompletionDialog
     );
+
+
+activityInstructions
+    ?.addEventListener(
+        "change",
+        event => {
+
+            const checkbox =
+                event.target.closest(
+                    "[data-step-index]"
+                );
+
+            if (!checkbox) {
+                return;
+            }
+
+            const index =
+                Number(
+                    checkbox.dataset.stepIndex
+                );
+
+            const checked =
+                new Set(
+                    workspaceState.checkedSteps
+                );
+
+            if (checkbox.checked) {
+                checked.add(index);
+            }
+            else {
+                checked.delete(index);
+            }
+
+            workspaceState.checkedSteps =
+                [...checked]
+                    .filter(Number.isInteger)
+                    .sort((a, b) => a - b);
+
+            checkbox.closest("li")
+                ?.classList.toggle(
+                    "is-complete",
+                    checkbox.checked
+                );
+
+            saveWorkspaceState();
+            updateWorkspaceProgress();
+
+        }
+    );
+
+
+activityPrerequisites
+    ?.addEventListener(
+        "change",
+        event => {
+
+            const checkbox =
+                event.target.closest(
+                    "[data-prerequisite-index]"
+                );
+
+            if (!checkbox) {
+                return;
+            }
+
+            const index =
+                Number(
+                    checkbox.dataset.prerequisiteIndex
+                );
+
+            const checked =
+                new Set(
+                    workspaceState.checkedPrerequisites
+                );
+
+            checkbox.checked
+                ? checked.add(index)
+                : checked.delete(index);
+
+            workspaceState.checkedPrerequisites =
+                [...checked]
+                    .filter(Number.isInteger)
+                    .sort((a, b) => a - b);
+
+            saveWorkspaceState();
+
+        }
+    );
+
+
+reflectionQuestions
+    ?.addEventListener(
+        "input",
+        event => {
+
+            const textarea =
+                event.target.closest(
+                    "[data-reflection-index]"
+                );
+
+            if (!textarea) {
+                return;
+            }
+
+            workspaceState.reflectionAnswers[
+                textarea.dataset.reflectionIndex
+            ] = textarea.value;
+
+            window.clearTimeout(
+                notesSaveTimer
+            );
+
+            notesSaveTimer =
+                window.setTimeout(
+                    saveWorkspaceState,
+                    450
+                );
+
+        }
+    );
+
+
+activityEvidenceNotes
+    ?.addEventListener(
+        "input",
+        () => {
+
+            workspaceState.evidenceNotes =
+                activityEvidenceNotes.value;
+
+            if (activityNotesStatus) {
+                activityNotesStatus.textContent =
+                    "Saving locally...";
+            }
+
+            window.clearTimeout(
+                notesSaveTimer
+            );
+
+            notesSaveTimer =
+                window.setTimeout(
+                    saveWorkspaceState,
+                    450
+                );
+
+        }
+    );
+
+
+saveActivityNotesBtn
+    ?.addEventListener(
+        "click",
+        () => {
+            workspaceState.evidenceNotes =
+                activityEvidenceNotes?.value || "";
+            saveWorkspaceState();
+        }
+    );
+
+
+downloadActivityBtn
+    ?.addEventListener(
+        "click",
+        downloadActivityWorkspace
+    );
+
+
+resetActivityWorkspaceBtn
+    ?.addEventListener(
+        "click",
+        resetActivityWorkspace
+    );
+
+
+activityConsoleForm
+    ?.addEventListener(
+        "submit",
+        event => {
+            event.preventDefault();
+            runActivityConsoleCommand(
+                activityConsoleInput?.value
+            );
+            if (activityConsoleInput) {
+                activityConsoleInput.value = "";
+                activityConsoleInput.focus();
+            }
+        }
+    );
+
+
+activityAuthorizationCheck
+    ?.addEventListener(
+        "change",
+        updateCompletionConfirmationState
+    );
+
+
+cancelActivityCompletionBtn
+    ?.addEventListener(
+        "click",
+        closeActivityCompletionDialog
+    );
+
+
+confirmActivityCompletionBtn
+    ?.addEventListener(
+        "click",
+        async () => {
+            updateCompletionConfirmationState();
+            if (
+                confirmActivityCompletionBtn.disabled
+            ) {
+                return;
+            }
+            confirmActivityCompletionBtn.disabled = true;
+            confirmActivityCompletionBtn.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Saving...
+            `;
+            await completeActivity();
+            confirmActivityCompletionBtn.innerHTML = `
+                <i class="fa-solid fa-check"></i>
+                Confirm Completion
+            `;
+        }
+    );
+
+
+activityCompletionDialog
+    ?.addEventListener(
+        "click",
+        event => {
+            if (event.target === activityCompletionDialog) {
+                closeActivityCompletionDialog();
+            }
+        }
+    );
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+        if (
+            event.key === "Escape" &&
+            activityCompletionDialog &&
+            !activityCompletionDialog.hidden
+        ) {
+            closeActivityCompletionDialog();
+        }
+    }
+);
 
 
 logoutBtn
