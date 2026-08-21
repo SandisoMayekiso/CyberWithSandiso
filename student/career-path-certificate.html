@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="../css/design-system.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/career-path-certificate.css">
 </head>
@@ -41,16 +43,16 @@
 <section id="certificateLocked" class="career-certificate-locked" hidden>
 <i class="fa-solid fa-lock"></i>
 <h1>Career Path Certificate Locked</h1>
-<p id="certificateLockedText">Complete the full learning path and pass the required capstone.</p>
+<p id="certificateLockedText">Complete the full learning path and any required capstone.</p>
 <a href="learning-paths.html" class="career-certificate-action secondary"><i class="fa-solid fa-route"></i> Back to Learning Paths</a>
 </section>
 
 <section id="certificateContent" hidden>
 <div class="career-certificate-page-heading">
 <div>
-<span class="career-certificate-eyebrow">CWS ACADEMY • PROFESSIONAL PATH CREDENTIAL</span>
+<span id="certificatePageEyebrow" class="career-certificate-eyebrow">CWS ACADEMY â€¢ VERIFIED PATH CREDENTIAL</span>
 <h1>Career Path Certificate</h1>
-<p>Verified completion of a complete CWS Academy career learning pathway and practical capstone.</p>
+<p id="certificatePageIntro">Verified completion of a complete CWS Academy career learning pathway.</p>
 </div>
 <div class="career-certificate-actions">
 <button type="button" id="printCertificateBtn" class="career-certificate-action primary"><i class="fa-solid fa-file-pdf"></i> Print / Save PDF</button>
@@ -72,7 +74,7 @@
 </div>
 
 <div class="career-certificate-center">
-<span class="career-certificate-kicker">CERTIFICATE OF PROFESSIONAL PATH COMPLETION</span>
+<span id="certificateKicker" class="career-certificate-kicker">CERTIFICATE OF CAREER PATH COMPLETION</span>
 <p>This credential is proudly awarded to</p>
 <h2 id="certificateStudent">Student</h2>
 <div class="career-certificate-rule"></div>
@@ -82,9 +84,9 @@
 </div>
 
 <div class="career-certificate-details">
-<div><span>CAPSTONE SCORE</span><strong id="certificateScore">—</strong></div>
-<div><span>ISSUED</span><strong id="certificateDate">—</strong></div>
-<div><span>CREDENTIAL ID</span><strong id="certificateCredential">—</strong></div>
+<div><span id="certificateScoreLabel">PATH REQUIREMENTS</span><strong id="certificateScore">â€”</strong></div>
+<div><span>ISSUED</span><strong id="certificateDate">â€”</strong></div>
+<div><span>CREDENTIAL ID</span><strong id="certificateCredential">â€”</strong></div>
 </div>
 
 <div class="career-certificate-bottom">
@@ -93,7 +95,7 @@
 <canvas id="careerCertificateQr" width="116" height="116" aria-label="Career credential verification QR code"></canvas>
 <span>SCAN TO VERIFY</span>
 </div>
-<div class="career-certificate-path-badge"><i class="fa-solid fa-route"></i><strong id="certificatePathBadge">PROFESSIONAL PATH</strong><span>Courses + Capstone Completed</span></div>
+<div class="career-certificate-path-badge"><i class="fa-solid fa-route"></i><strong id="certificatePathBadge">CAREER PATH</strong><span id="certificateRequirements">Required Courses Completed</span></div>
 </div>
 </article>
 
@@ -101,8 +103,8 @@
     <div>
         <span class="career-certificate-eyebrow">PUBLIC VERIFICATION</span>
         <h2>Recruiter-ready credential verification</h2>
-        <p>
-            Employers and recruiters can verify this professional CWS credential
+        <p id="certificateVerificationIntro">
+            Employers and recruiters can verify this CWS career-path credential
             without signing in to CWS Academy.
         </p>
 
