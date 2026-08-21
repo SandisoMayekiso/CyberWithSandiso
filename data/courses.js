@@ -1241,15 +1241,32 @@ export function getCourseLabCount(courseId) {
     return course.modules.reduce(
         (total, module) => {
 
-            if (
+            const labActivities =
                 Array.isArray(
                     module?.labActivities
                 )
-            ) {
+                    ? module.labActivities.length
+                    : 0;
+
+
+            const practiceActivities =
+                Array.isArray(
+                    module?.practiceActivities
+                )
+                    ? module.practiceActivities.length
+                    : 0;
+
+
+            const activityCount =
+                labActivities +
+                practiceActivities;
+
+
+            if (activityCount > 0) {
 
                 return (
                     total +
-                    module.labActivities.length
+                    activityCount
                 );
 
             }
@@ -1294,28 +1311,35 @@ export function getCourseAssessmentCount(courseId) {
     }
 
 
-    return course.modules.reduce(
-        (total, module) => {
+    const moduleAssessments =
+        course.modules.reduce(
+            (total, module) => {
 
-            if (
-                module?.moduleAssessment
-            ) {
+                if (
+                    module?.moduleAssessment
+                ) {
 
-                return total + 1;
+                    return total + 1;
 
-            }
+                }
 
 
-            return (
-                total +
-                Number(
-                    module?.assessments ||
-                    0
-                )
-            );
+                return (
+                    total +
+                    Number(
+                        module?.assessments ||
+                        0
+                    )
+                );
 
-        },
-        0
+            },
+            0
+        );
+
+
+    return (
+        moduleAssessments +
+        (course.finalAssessment ? 1 : 0)
     );
 
 }
