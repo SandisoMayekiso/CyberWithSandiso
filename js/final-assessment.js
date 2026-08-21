@@ -23,9 +23,7 @@ import {
 
 import {
     doc,
-    getDoc,
-    setDoc,
-    serverTimestamp
+    getDoc
 } from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -59,6 +57,12 @@ import {
     getRequiredAccess,
     getUpgradeUrl
 } from "./access-control.js";
+
+
+import {
+    getProtectedAssessment,
+    submitSecureFinalAssessment
+} from "./secure-learning-api.js";
 
 
 /* =========================================================
@@ -223,6 +227,31 @@ const returnToCourseBtn =
 const finishBtn =
     document.getElementById(
         "finishBtn"
+    );
+
+const answeredQuestions =
+    document.getElementById(
+        "answeredQuestions"
+    );
+
+const totalQuestions =
+    document.getElementById(
+        "totalQuestions"
+    );
+
+const assessmentDraftStatus =
+    document.getElementById(
+        "assessmentDraftStatus"
+    );
+
+const assessmentProgressFill =
+    document.getElementById(
+        "assessmentProgressFill"
+    );
+
+const assessmentQuestionNav =
+    document.getElementById(
+        "assessmentQuestionNav"
     );
 
 
@@ -582,49 +611,6 @@ async function loadProgress() {
 
         console.error(
             "[CWS Final] Progress load failed:",
-            err
-        );
-
-    }
-
-}
-
-
-async function saveProgress() {
-
-    const ref =
-        getProgressRef();
-
-
-    if (
-        !ref ||
-        !currentProgress
-    ) {
-
-        return;
-
-    }
-
-
-    try {
-
-        await setDoc(
-            ref,
-            {
-                ...currentProgress,
-                updatedAt:
-                    serverTimestamp()
-            },
-            {
-                merge: true
-            }
-        );
-
-    }
-    catch (err) {
-
-        console.error(
-            "[CWS Final] Progress save failed:",
             err
         );
 
@@ -1054,7 +1040,7 @@ function renderFinalAssessment() {
 
     assessmentDurationMeta.textContent =
         currentAssessment.duration ||
-        "45–60 minutes";
+        "45â€“60 minutes";
 
 
     courseBreadcrumbLink.textContent =
@@ -1110,6 +1096,9 @@ function renderQuestions() {
 
             card.className =
                 "assessment-question-card";
+
+            card.id =
+                `final-question-card-${index}`;
 
 
             const number =
@@ -1259,6 +1248,227 @@ function renderQuestions() {
         }
     );
 
+
+    restoreDraftAnswers();
+    renderQuestionNavigation();
+    updateAttemptProgress();
+
+}
+
+
+/* =========================================================
+   ATTEMPT DRAFT + QUESTION NAVIGATION
+   Drafts contain only selected option indexes. The backend
+   remains the authority for scores, progress and completion.
+========================================================= */
+
+function getDraftKey() {
+    if (
+        !currentUser ||
+        !currentCourse
+    ) {
+        return "";
+    }
+
+    return [
+        "cws",
+        "final-assessment-draft",
+        currentUser.uid,
+        currentCourse.id
+    ].join(":");
+}
+
+function collectAnswers() {
+    const questions =
+        Array.isArray(currentAssessment?.questions)
+            ? currentAssessment.questions
+            : [];
+
+    return questions.map((question, index) => {
+        const selected =
+            document.querySelector(
+                `input[name="final-question-${index}"]:checked`
+            );
+
+        return selected
+            ? Number(selected.value)
+            : null;
+    });
+}
+
+function saveDraftAnswers() {
+    const key = getDraftKey();
+
+    if (!key) return;
+
+    try {
+        sessionStorage.setItem(
+            key,
+            JSON.stringify({
+                answers: collectAnswers(),
+                savedAt: Date.now()
+            })
+        );
+
+        if (assessmentDraftStatus) {
+            assessmentDraftStatus.textContent =
+                "Saved for this browser session.";
+        }
+    }
+    catch (storageError) {
+        warn("Unable to save final assessment draft", storageError);
+
+        if (assessmentDraftStatus) {
+            assessmentDraftStatus.textContent =
+                "Draft saving is unavailable; keep this page open.";
+        }
+    }
+}
+
+function restoreDraftAnswers() {
+    const key = getDraftKey();
+
+    if (!key) return;
+
+    try {
+        const draft =
+            JSON.parse(
+                sessionStorage.getItem(key) || "null"
+            );
+
+        if (!Array.isArray(draft?.answers)) {
+            return;
+        }
+
+        draft.answers.forEach((answer, index) => {
+            if (!Number.isInteger(answer)) return;
+
+            const input =
+                document.querySelector(
+                    `input[name="final-question-${index}"][value="${answer}"]`
+                );
+
+            if (input) input.checked = true;
+        });
+
+        if (assessmentDraftStatus) {
+            assessmentDraftStatus.textContent =
+                "Your in-session answers were restored.";
+        }
+    }
+    catch (storageError) {
+        warn("Unable to restore final assessment draft", storageError);
+    }
+}
+
+function clearDraftAnswers() {
+    const key = getDraftKey();
+
+    if (!key) return;
+
+    try {
+        sessionStorage.removeItem(key);
+    }
+    catch (storageError) {
+        warn("Unable to clear final assessment draft", storageError);
+    }
+}
+
+function renderQuestionNavigation() {
+    if (!assessmentQuestionNav) return;
+
+    assessmentQuestionNav.innerHTML = "";
+
+    const questions =
+        Array.isArray(currentAssessment?.questions)
+            ? currentAssessment.questions
+            : [];
+
+    questions.forEach((question, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = String(index + 1);
+        button.dataset.questionIndex = String(index);
+        button.setAttribute(
+            "aria-label",
+            `Go to question ${index + 1}`
+        );
+        button.addEventListener("click", () => {
+            document
+                .getElementById(
+                    `final-question-card-${index}`
+                )
+                ?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+        });
+        assessmentQuestionNav.appendChild(button);
+    });
+}
+
+function updateAttemptProgress() {
+    const answers = collectAnswers();
+    const answered =
+        answers.filter(answer => answer !== null).length;
+    const total = answers.length;
+    const percent =
+        total > 0
+            ? Math.round((answered / total) * 100)
+            : 0;
+
+    if (answeredQuestions) {
+        answeredQuestions.textContent = String(answered);
+    }
+
+    if (totalQuestions) {
+        totalQuestions.textContent = String(total);
+    }
+
+    if (assessmentProgressFill) {
+        assessmentProgressFill.style.width = `${percent}%`;
+    }
+
+    assessmentQuestions
+        ?.querySelectorAll(".assessment-question-card")
+        .forEach((card, index) => {
+            card.classList.toggle(
+                "answered",
+                answers[index] !== null
+            );
+        });
+
+    assessmentQuestionNav
+        ?.querySelectorAll("button")
+        .forEach((button, index) => {
+            button.classList.toggle(
+                "answered",
+                answers[index] !== null
+            );
+        });
+}
+
+function focusFirstUnanswered(answers) {
+    const index =
+        answers.findIndex(answer => answer === null);
+
+    if (index < 0) return;
+
+    const card =
+        document.getElementById(
+            `final-question-card-${index}`
+        );
+
+    card?.classList.add("needs-answer");
+    card?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    window.setTimeout(
+        () => card?.classList.remove("needs-answer"),
+        1800
+    );
 }
 
 
@@ -1295,7 +1505,7 @@ function updateUI() {
     bestScore.textContent =
         recordedScore > 0
             ? `${recordedScore}%`
-            : "—";
+            : "â€”";
 
 
     assessmentStatus.textContent =
@@ -1420,174 +1630,6 @@ function updateUI() {
 
 
 /* =========================================================
-   CERTIFICATE CREDENTIAL ID
-========================================================= */
-
-function generateCredentialId(
-    courseId,
-    uid
-) {
-
-    const coursePart =
-        String(courseId)
-            .replace(/[^a-z0-9]/gi, "")
-            .slice(0, 8)
-            .toUpperCase();
-
-
-    const userPart =
-        String(uid)
-            .replace(/[^a-z0-9]/gi, "")
-            .slice(0, 6)
-            .toUpperCase();
-
-
-    const randomPart =
-        crypto.getRandomValues(
-            new Uint32Array(1)
-        )[0]
-            .toString(16)
-            .slice(0, 6)
-            .toUpperCase();
-
-
-    return (
-        `CWS-${coursePart}-${userPart}-${randomPart}`
-    );
-
-}
-
-
-/* =========================================================
-   ISSUE CERTIFICATE RECORD
-========================================================= */
-
-async function issueCertificateRecord(
-    finalScore
-) {
-
-    if (
-        !db ||
-        !currentUser ||
-        !currentCourse
-    ) {
-
-        return;
-
-    }
-
-
-    if (
-        !currentProgress.completed ||
-        !currentProgress.certificateEligible
-    ) {
-
-        return;
-
-    }
-
-
-    let credentialId =
-        currentProgress
-            ?.certificate
-            ?.credentialId ||
-        "";
-
-
-    if (!credentialId) {
-
-        credentialId =
-            generateCredentialId(
-                currentCourse.id,
-                currentUser.uid
-            );
-
-    }
-
-
-    const issuedAt =
-        serverTimestamp();
-
-
-    currentProgress.certificate = {
-
-        credentialId,
-
-        issued:
-            true,
-
-        issuedAt
-
-    };
-
-
-    currentProgress.completedAt =
-        currentProgress.completedAt ||
-        issuedAt;
-
-
-    /*
-     * Save certificate metadata back into the user's
-     * private courseProgress document.
-     */
-
-    await saveProgress();
-
-
-    /*
-     * Public verification record.
-     *
-     * IMPORTANT:
-     * This client-side write works for the current GitHub Pages
-     * architecture, but production-grade credentials should be
-     * issued by a trusted Firebase Cloud Function/Admin SDK.
-     */
-
-    await setDoc(
-        doc(
-            db,
-            "certificateVerifications",
-            credentialId
-        ),
-        {
-            credentialId,
-
-            userId:
-                currentUser.uid,
-
-            studentName:
-                getUserName(
-                    currentUser
-                ),
-
-            courseId:
-                currentCourse.id,
-
-            courseTitle:
-                currentCourse.title,
-
-            finalScore:
-                Number(
-                    finalScore || 0
-                ),
-
-            issuedAt,
-
-            status:
-                "active"
-        },
-        {
-            merge: true
-        }
-    );
-
-
-    return credentialId;
-
-}
-
-
-/* =========================================================
    SUBMIT
 ========================================================= */
 
@@ -1649,144 +1691,111 @@ async function submitFinalAssessment(
             : [];
 
 
-    let score =
-        0;
+    const answers =
+        collectAnswers();
 
 
-    questions.forEach(
-        (
-            question,
-            index
-        ) => {
-
-            const selected =
-                document.querySelector(
-
-                    `input[name="final-question-${index}"]:checked`
-
-                );
-
-
-            if (
-                selected &&
-                Number(
-                    selected.value
-                ) ===
-                Number(
-                    question.answer
-                )
-            ) {
-
-                score++;
-
-            }
-
-        }
-    );
+    if (answers.some(answer => answer === null)) {
+        assessmentResult.hidden = false;
+        assessmentResult.className =
+            "assessment-result failed";
+        assessmentResult.innerHTML = `
+            <div class="assessment-result-icon">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <div>
+                <strong>Complete every question</strong>
+                <p>Answer the highlighted question before submitting your final assessment.</p>
+            </div>
+        `;
+        focusFirstUnanswered(answers);
+        return;
+    }
 
 
-    const percentage =
-        questions.length
-            ? Math.round(
-                score /
-                questions.length *
-                100
-            )
-            : 0;
+    let secureResult;
 
 
-    const passingScore =
+    submitAssessmentBtn.disabled = true;
+    submitAssessmentBtn.setAttribute("aria-busy", "true");
+    submitAssessmentBtn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Verifying final result...';
+
+
+    try {
+
+        secureResult =
+            await submitSecureFinalAssessment({
+                courseId:
+                    currentCourse.id,
+                answers
+            });
+
+    }
+    catch (secureError) {
+
+        assessmentResult.hidden =
+            false;
+
+
+        assessmentResult.className =
+            "assessment-result failed";
+
+
+        assessmentResult.textContent =
+            secureError.message;
+
+        submitAssessmentBtn.removeAttribute("aria-busy");
+        submitAssessmentBtn.innerHTML =
+            '<i class="fa-solid fa-paper-plane"></i> Submit Final Assessment';
+
+        updateUI();
+
+
+        return;
+
+    }
+
+
+    const score =
         Number(
-            currentAssessment.passingScore
-        ) || 75;
-
-
-    const passed =
-        percentage >=
-        passingScore;
-
-
-    const previousBest =
-        Number(
-            currentProgress
-                ?.finalAssessment
-                ?.bestScore ??
-            currentProgress
-                ?.finalAssessment
-                ?.score ??
+            secureResult.score ||
             0
         );
 
 
-    currentProgress.finalAssessment = {
-
-        bestScore:
-            Math.max(
-                previousBest,
-                percentage
-            ),
-
-        score:
-            percentage,
-
-        passed:
-            Boolean(
-                currentProgress
-                    ?.finalAssessment
-                    ?.passed ||
-                passed
-            )
-
-    };
-
-
-    currentProgress.completed =
-        currentProgress
-            .finalAssessment
-            .passed;
-
-
-    currentProgress
-        .certificateEligible =
-        Boolean(
-            currentCourse
-                .certificateEligible &&
-            currentProgress.completed
+    const percentage =
+        Number(
+            secureResult.percentage ||
+            0
         );
 
 
-    currentProgress.progressPercent =
-        calculateCourseProgress();
+    const passingScore =
+        Number(
+            secureResult.passingScore ||
+            currentAssessment.passingScore ||
+            75
+        );
 
 
-    await saveProgress();
+    const passed =
+        secureResult.passed ===
+            true;
 
 
-    if (
-        currentProgress
-            .finalAssessment
-            .passed
-    ) {
+    currentProgress =
+        normalizeProgress(
+            secureResult.progress ||
+            {}
+        );
 
-        try {
 
-            await issueCertificateRecord(
-                currentProgress
-                    .finalAssessment
-                    .bestScore
-            );
+    clearDraftAnswers();
 
-        }
-        catch (certificateError) {
-
-            console.error(
-                "[CWS Final] Certificate issuance failed:",
-                certificateError
-            );
-
-        }
-
-    }
+    submitAssessmentBtn.removeAttribute("aria-busy");
+    submitAssessmentBtn.innerHTML =
+        '<i class="fa-solid fa-paper-plane"></i> Submit Final Assessment';
 
 
     assessmentResult.hidden =
@@ -1913,11 +1922,7 @@ async function loadFinalAssessment() {
 
 
     if (
-        !currentAssessment ||
-        !Array.isArray(
-            currentAssessment.questions
-        ) ||
-        !currentAssessment.questions.length
+        !currentAssessment
     ) {
 
         showNotFound(
@@ -1934,6 +1939,50 @@ async function loadFinalAssessment() {
     ) {
 
         redirectToUpgrade();
+
+        return;
+
+    }
+
+
+    try {
+
+        const protectedResult =
+            await getProtectedAssessment(
+                currentCourse.id,
+                "final"
+            );
+
+
+        currentAssessment =
+            protectedResult.assessment ||
+            null;
+
+    }
+    catch (secureError) {
+
+        showNotFound(
+            secureError.message
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        !currentAssessment ||
+        !Array.isArray(
+            currentAssessment.questions
+        ) ||
+        !currentAssessment.questions.length
+    ) {
+
+        showNotFound(
+            "This course does not currently have a final assessment."
+        );
+
 
         return;
 
@@ -2022,6 +2071,19 @@ finalAssessmentForm
     ?.addEventListener(
         "submit",
         submitFinalAssessment
+    );
+
+assessmentQuestions
+    ?.addEventListener(
+        "change",
+        event => {
+            if (!event.target.matches('input[type="radio"]')) {
+                return;
+            }
+
+            saveDraftAnswers();
+            updateAttemptProgress();
+        }
     );
 
 
