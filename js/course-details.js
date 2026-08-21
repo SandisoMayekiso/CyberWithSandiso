@@ -62,9 +62,22 @@ import {
 
     getCourse,
 
-    getRequiredPrerequisites
+    getRequiredPrerequisites,
+
+    getRecommendedPrerequisites
 
 } from "../data/courses.js";
+
+
+/* =========================================================
+   PREMIUM COURSE EXPERIENCE
+========================================================= */
+
+import {
+
+    getCourseExperience
+
+} from "../data/course-experience.js";
 
 
 /* =========================================================
@@ -1482,6 +1495,438 @@ function renderObjectives(
 
 
 /* =========================================================
+   PREMIUM COURSE PROFILE
+========================================================= */
+
+function renderTagList(
+    element,
+    items,
+    {
+        emptyText = "Information coming soon",
+        prefix = ""
+    } = {}
+) {
+
+    if (!element) {
+
+        return;
+
+    }
+
+
+    element.innerHTML = "";
+
+
+    const values =
+        Array.isArray(items) && items.length
+            ? items
+            : [emptyText];
+
+
+    values.forEach(item => {
+
+        const tag =
+            document.createElement(
+                "span"
+            );
+
+
+        tag.className =
+            "course-tag";
+
+
+        tag.textContent =
+            `${prefix}${item}`;
+
+
+        element.appendChild(
+            tag
+        );
+
+    });
+
+}
+
+
+function renderCourseExperience(
+    course
+) {
+
+    if (!course) {
+
+        return;
+
+    }
+
+
+    const required =
+        getRequiredPrerequisites(
+            course.id
+        );
+
+
+    const recommended =
+        getRecommendedPrerequisites(
+            course.id
+        );
+
+
+    const experience =
+        getCourseExperience(
+            course,
+            {
+                required,
+                recommended,
+                resolveCourseName:
+                    getCourseDisplayName
+            }
+        );
+
+
+    if (!experience) {
+
+        return;
+
+    }
+
+
+    const coverImage =
+        document.getElementById(
+            "courseCoverImage"
+        );
+
+
+    if (coverImage) {
+
+        coverImage.src =
+            experience.cover.src;
+
+
+        coverImage.alt =
+            experience.cover.alt;
+
+
+        coverImage.onerror = () => {
+            coverImage.onerror = null;
+            coverImage.src =
+                experience.cover.fallback;
+
+        };
+
+    }
+
+
+    const ratingSummary =
+        document.getElementById(
+            "courseRatingSummary"
+        );
+
+
+    if (ratingSummary) {
+
+        ratingSummary.innerHTML = "";
+
+
+        const icon =
+            document.createElement(
+                "i"
+            );
+
+
+        icon.className =
+            experience.rating.count > 0
+                ? "fa-solid fa-star"
+                : "fa-regular fa-star";
+
+
+        const strong =
+            document.createElement(
+                "strong"
+            );
+
+
+        strong.textContent =
+            experience.rating.count > 0
+                ? experience.rating.average
+                    .toFixed(1)
+                : "New course";
+
+
+        const count =
+            document.createElement(
+                "small"
+            );
+
+
+        count.textContent =
+            experience.rating.count > 0
+                ? `${experience.rating.count} verified review${
+                    experience.rating.count === 1
+                        ? ""
+                        : "s"
+                }`
+                : "No student reviews yet";
+
+
+        ratingSummary.append(
+            icon,
+            strong,
+            count
+        );
+
+    }
+
+
+    const trailerMedia =
+        document.getElementById(
+            "courseTrailerMedia"
+        );
+
+
+    if (trailerMedia) {
+
+        trailerMedia.innerHTML = "";
+
+
+        if (
+            experience.trailer.videoUrl
+        ) {
+
+            const video =
+                document.createElement(
+                    "video"
+                );
+
+
+            video.controls = true;
+            video.preload = "metadata";
+            video.poster =
+                experience.trailer.poster;
+            video.src =
+                experience.trailer.videoUrl;
+            video.setAttribute(
+                "playsinline",
+                ""
+            );
+
+
+            trailerMedia.appendChild(
+                video
+            );
+
+        } else {
+
+            const poster =
+                document.createElement(
+                    "img"
+                );
+
+
+            poster.src =
+                experience.trailer.poster;
+            poster.alt = "";
+            poster.loading = "lazy";
+            poster.decoding = "async";
+
+
+            const placeholder =
+                document.createElement(
+                    "div"
+                );
+
+
+            placeholder.className =
+                "course-trailer-placeholder";
+
+
+            placeholder.innerHTML =
+                '<div><i class="fa-solid fa-circle-play"></i><strong>Course trailer coming soon</strong></div>';
+
+
+            trailerMedia.append(
+                poster,
+                placeholder
+            );
+
+        }
+
+    }
+
+
+    setText(
+        document.getElementById(
+            "courseTrailerTitle"
+        ),
+        experience.trailer.title
+    );
+
+
+    setText(
+        document.getElementById(
+            "courseTrailerDescription"
+        ),
+        experience.trailer.description
+    );
+
+
+    setText(
+        document.getElementById(
+            "courseTrailerDuration"
+        ),
+        experience.trailer.duration
+    );
+
+
+    const instructorInitials =
+        experience.instructor.name
+            .split(/\s+/)
+            .map(part => part[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+
+
+    setText(
+        document.getElementById(
+            "courseInstructorAvatar"
+        ),
+        instructorInitials
+    );
+
+
+    setText(
+        document.getElementById(
+            "courseInstructorName"
+        ),
+        experience.instructor.name
+    );
+
+
+    setText(
+        document.getElementById(
+            "courseInstructorRole"
+        ),
+        experience.instructor.role
+    );
+
+
+    setText(
+        document.getElementById(
+            "courseInstructorBio"
+        ),
+        experience.instructor.bio
+    );
+
+
+    renderTagList(
+        document.getElementById(
+            "courseInstructorCredentials"
+        ),
+        experience.instructor.credentials
+    );
+
+
+    setText(
+        document.getElementById(
+            "coursePrerequisiteExplanation"
+        ),
+        experience.prerequisites.explanation
+    );
+
+
+    const prerequisiteItems = [
+        ...experience.prerequisites.required
+            .map(value => `Required: ${value}`),
+        ...experience.prerequisites.recommended
+            .map(value => `Recommended: ${value}`)
+    ];
+
+
+    renderTagList(
+        document.getElementById(
+            "coursePrerequisiteList"
+        ),
+        prerequisiteItems,
+        {
+            emptyText:
+                "No required prerequisites"
+        }
+    );
+
+
+    renderTagList(
+        document.getElementById(
+            "courseSkillsList"
+        ),
+        experience.skills
+    );
+
+
+    renderTagList(
+        document.getElementById(
+            "courseToolsList"
+        ),
+        experience.tools
+    );
+
+
+    const sampleLink =
+        document.getElementById(
+            "courseSampleLessonLink"
+        );
+
+
+    if (
+        sampleLink &&
+        experience.sampleLesson
+    ) {
+
+        sampleLink.hidden = false;
+        sampleLink.href =
+            experience.sampleLesson.url;
+
+
+        setText(
+            document.getElementById(
+                "courseSampleLessonTitle"
+            ),
+            experience.sampleLesson.title
+        );
+
+
+        setText(
+            document.getElementById(
+                "courseSampleLessonMeta"
+            ),
+            `${experience.sampleLesson.duration} â€¢ First lesson preview`
+        );
+
+    } else if (sampleLink) {
+
+        sampleLink.hidden = true;
+
+    }
+
+
+    setText(
+        document.getElementById(
+            "courseCertificateTitle"
+        ),
+        experience.certificate.title
+    );
+
+
+    setText(
+        document.getElementById(
+            "courseCertificateExplanation"
+        ),
+        experience.certificate.explanation
+    );
+
+}
+
+
+/* =========================================================
    LESSON URL
 ========================================================= */
 
@@ -2695,6 +3140,15 @@ function renderCourse(course) {
     renderObjectives(
         course.objectives ||
         []
+    );
+
+
+    /* =============================================
+       PREMIUM COURSE PROFILE
+    ============================================== */
+
+    renderCourseExperience(
+        course
     );
 
 
