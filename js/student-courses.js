@@ -658,26 +658,35 @@ function getTotalLabs(course) {
 
 
     return course.modules.reduce(
-
         (
             total,
             module
         ) => {
 
-            return (
-
-                total +
-
-                Number(
-                    module.labs || 0
+            const labActivities =
+                Array.isArray(
+                    module?.labActivities
                 )
+                    ? module.labActivities.length
+                    : 0;
 
+
+            const practiceActivities =
+                Array.isArray(
+                    module?.practiceActivities
+                )
+                    ? module.practiceActivities.length
+                    : 0;
+
+
+            return (
+                total +
+                labActivities +
+                practiceActivities
             );
 
         },
-
         0
-
     );
 
 }
@@ -706,28 +715,20 @@ function getTotalAssessments(
     }
 
 
-    return course.modules.reduce(
+    const moduleAssessments =
+        course.modules.filter(
+            module =>
+                module?.moduleAssessment &&
+                Array.isArray(
+                    module.moduleAssessment.questions
+                ) &&
+                module.moduleAssessment.questions.length
+        ).length;
 
-        (
-            total,
-            module
-        ) => {
 
-            return (
-
-                total +
-
-                Number(
-                    module.assessments ||
-                    0
-                )
-
-            );
-
-        },
-
-        0
-
+    return (
+        moduleAssessments +
+        (course.finalAssessment ? 1 : 0)
     );
 
 }
@@ -1682,10 +1683,10 @@ function createCourseCard(
 
                     "fa-solid fa-flask",
 
-                    `${labs} Lab${
+                    `${labs} Activit${
                         labs === 1
-                            ? ""
-                            : "s"
+                            ? "y"
+                            : "ies"
                     }`
 
                 )
@@ -2855,16 +2856,6 @@ async function initializeCoursesPage(
 
 
     /*
-       Load the student's Free / Pro access before building
-       the catalogue so course locking and sorting are correct.
-    */
-
-    await loadStudentAccess(
-        user
-    );
-
-
-    /*
        Load course definitions.
     */
 
@@ -2890,16 +2881,25 @@ async function initializeCoursesPage(
     }
 
 
-    updateCourseCatalogSummary();
-
-
     /*
-       Load Firestore student progress.
+       Entitlement and progress are independent Firestore
+       reads, so load them together to reduce waiting time.
     */
 
-    await loadCourseProgress(
-        user
+    await Promise.all(
+        [
+            loadStudentAccess(
+                user
+            ),
+
+            loadCourseProgress(
+                user
+            )
+        ]
     );
+
+
+    updateCourseCatalogSummary();
 
 
     /*
