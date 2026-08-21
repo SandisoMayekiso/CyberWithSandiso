@@ -45,6 +45,12 @@
         href="../css/style.css"
     >
 
+    <!-- Shared CWS component system -->
+    <link
+        rel="stylesheet"
+        href="../css/design-system.css"
+    >
+
 
     <!-- =====================================================
          DASHBOARD CSS
@@ -206,7 +212,7 @@
 
     <section
         id="courseNotFound"
-        class="course-not-found"
+        class="course-not-found cws-state-card cws-card"
         hidden
     >
 
@@ -409,13 +415,188 @@
                  HERO ICON
             ============================================== -->
 
-            <div
-                id="courseHeroIcon"
-                class="course-details-hero-icon"
-                aria-hidden="true"
+            <div class="course-hero-media">
+
+                <div class="cws-course-cover">
+
+                    <img
+                        id="courseCoverImage"
+                        src="../assets/images/cybersecurity.png"
+                        alt="CWS Academy course cover"
+                        width="1280"
+                        height="720"
+                        decoding="async"
+                        fetchpriority="high"
+                    >
+
+                    <div
+                        id="courseHeroIcon"
+                        class="course-details-hero-icon"
+                        aria-hidden="true"
+                    >
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+
+                </div>
+
+                <div
+                    id="courseRatingSummary"
+                    class="course-rating-row"
+                    aria-label="Course rating"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PREMIUM COURSE EXPERIENCE
+        ================================================== -->
+
+        <section class="course-premium-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="dashboard-label">
+                        COURSE EXPERIENCE
+                    </span>
+                    <h2>
+                        What to expect
+                    </h2>
+                    <p>
+                        Review the course preview, instructor,
+                        prerequisites, tools and certificate requirements.
+                    </p>
+                </div>
+            </div>
+
+
+            <article
+                id="courseTrailerCard"
+                class="course-trailer-card cws-card"
             >
 
-                <i class="fa-solid fa-graduation-cap"></i>
+                <div
+                    id="courseTrailerMedia"
+                    class="course-trailer-media"
+                ></div>
+
+                <div class="course-trailer-copy">
+                    <span class="cws-badge">
+                        <i class="fa-solid fa-circle-play"></i>
+                        COURSE PREVIEW
+                    </span>
+                    <h3 id="courseTrailerTitle">
+                        Course Preview
+                    </h3>
+                    <p id="courseTrailerDescription">
+                        Preview information will appear here.
+                    </p>
+                    <span id="courseTrailerDuration" class="course-tag">
+                        Preview coming soon
+                    </span>
+                </div>
+
+            </article>
+
+
+            <div class="course-premium-grid">
+
+                <article class="course-premium-card cws-card">
+                    <span class="cws-badge">
+                        <i class="fa-solid fa-user-shield"></i>
+                        INSTRUCTOR
+                    </span>
+                    <div class="course-instructor">
+                        <div
+                            id="courseInstructorAvatar"
+                            class="course-instructor-avatar"
+                            aria-hidden="true"
+                        >SM</div>
+                        <div>
+                            <h3 id="courseInstructorName">Instructor</h3>
+                            <strong id="courseInstructorRole"></strong>
+                            <p id="courseInstructorBio"></p>
+                            <div
+                                id="courseInstructorCredentials"
+                                class="course-tag-list"
+                            ></div>
+                        </div>
+                    </div>
+                </article>
+
+
+                <article class="course-premium-card cws-card">
+                    <span class="cws-badge">
+                        <i class="fa-solid fa-route"></i>
+                        PREREQUISITES
+                    </span>
+                    <h3>Before you begin</h3>
+                    <p id="coursePrerequisiteExplanation"></p>
+                    <div
+                        id="coursePrerequisiteList"
+                        class="course-prerequisite-list"
+                    ></div>
+                </article>
+
+
+                <article class="course-premium-card cws-card">
+                    <span class="cws-badge">
+                        <i class="fa-solid fa-bolt"></i>
+                        SKILLS
+                    </span>
+                    <h3>Skills you will develop</h3>
+                    <div
+                        id="courseSkillsList"
+                        class="course-tag-list"
+                    ></div>
+                </article>
+
+
+                <article class="course-premium-card cws-card">
+                    <span class="cws-badge">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                        TOOLS
+                    </span>
+                    <h3>Tools and environments</h3>
+                    <div
+                        id="courseToolsList"
+                        class="course-tag-list"
+                    ></div>
+                </article>
+
+
+                <article class="course-premium-card cws-card">
+                    <span class="cws-badge">
+                        <i class="fa-solid fa-eye"></i>
+                        SAMPLE LESSON
+                    </span>
+                    <h3 id="courseSampleLessonTitle">
+                        Preview the first lesson
+                    </h3>
+                    <p id="courseSampleLessonMeta"></p>
+                    <a
+                        id="courseSampleLessonLink"
+                        href="#"
+                        class="cws-btn cws-btn-secondary"
+                    >
+                        <i class="fa-solid fa-play"></i>
+                        Open Sample Lesson
+                    </a>
+                </article>
+
+
+                <article class="course-premium-card cws-card">
+                    <span class="cws-badge">
+                        <i class="fa-solid fa-certificate"></i>
+                        CERTIFICATE
+                    </span>
+                    <h3 id="courseCertificateTitle">
+                        Certificate Information
+                    </h3>
+                    <p id="courseCertificateExplanation"></p>
+                </article>
 
             </div>
 
