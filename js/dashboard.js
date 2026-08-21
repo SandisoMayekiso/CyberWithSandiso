@@ -1402,10 +1402,10 @@ function createCourseCard(
             meta.appendChild(
                 createCourseMetaItem(
                     "fa-solid fa-flask",
-                    `${labs} Lab${
+                    `${labs} Activit${
                         labs === 1
-                            ? ""
-                            : "s"
+                            ? "y"
+                            : "ies"
                     }`
                 )
             );
@@ -2108,7 +2108,7 @@ function setupContinueLearning() {
                 }
                 ${
                     targetTitle
-                        ? ` • ${escapeHTML(targetTitle)}`
+                        ? ` â€¢ ${escapeHTML(targetTitle)}`
                         : ""
                 }
             </p>
