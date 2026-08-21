@@ -1,0 +1,153 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function owns(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function staff() {
+      return signedIn() &&
+        (request.auth.token.admin == true ||
+         request.auth.token.instructor == true);
+    }
+
+    function validProfileCreate(userId) {
+      return owns(userId) &&
+        request.resource.data.uid == userId &&
+        request.resource.data.role == 'student' &&
+        request.resource.data.keys().hasOnly([
+          'uid',
+          'displayName',
+          'name',
+          'email',
+          'emailVerified',
+          'authProvider',
+          'role',
+          'careerProfile',
+          'learningPreferences',
+          'createdAt',
+          'updatedAt'
+        ]);
+    }
+
+    function validProfileUpdate() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        'displayName',
+        'name',
+        'email',
+        'emailVerified',
+        'careerProfile',
+        'learningPreferences',
+        'updatedAt'
+      ]);
+    }
+
+    match /users/{userId} {
+      allow read: if owns(userId) || staff();
+      allow create: if validProfileCreate(userId);
+      allow update: if (owns(userId) && validProfileUpdate()) || staff();
+      allow delete: if false;
+
+      // High-trust records are readable by their owner but writable only by
+      // Firebase Admin SDK code in Cloud Functions.
+      match /courseProgress/{courseId} {
+        allow read: if owns(userId) || staff();
+        allow write: if false;
+      }
+
+      match /capstones/{capstoneId} {
+        allow read: if owns(userId) || staff();
+        allow write: if false;
+      }
+
+      match /careerPathCertificates/{pathId} {
+        allow read: if owns(userId) || staff();
+        allow write: if false;
+      }
+
+      // Video position is convenience state, not trusted completion evidence.
+      match /videoProgress/{videoId} {
+        allow read: if owns(userId);
+        allow create, update: if owns(userId) &&
+          request.resource.data.videoId == videoId &&
+          request.resource.data.keys().hasOnly([
+            'videoId',
+            'courseId',
+            'moduleId',
+            'lessonId',
+            'currentTime',
+            'duration',
+            'percentage',
+            'completed',
+            'completedAt',
+            'updatedAt'
+          ]);
+        allow delete: if owns(userId);
+      }
+
+      match /{document=**} {
+        allow read: if owns(userId) || staff();
+        allow write: if false;
+      }
+    }
+
+    match /entitlements/{userId} {
+      allow read: if owns(userId) || staff();
+      allow write: if false;
+    }
+
+    // Protected material and answer keys are Cloud-Functions-only. Firebase
+    // Admin SDK access bypasses these client rules.
+    match /protectedCourses/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /protectedLearningPaths/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /protectedCapstones/{document=**} {
+      allow read, write: if false;
+    }
+
+    // Recruiters may verify a minimal public credential record. Only trusted
+    // server code may create, change or revoke one. Public callers must know
+    // the exact high-entropy credential ID; bulk collection listing is denied.
+    match /certificateVerifications/{credentialId} {
+      allow get: if credentialId.matches('^CWS-[A-Z0-9][A-Z0-9-]{5,74}$');
+      allow list: if false;
+      allow write: if false;
+    }
+
+    // Paystack and anti-abuse records are backend-only.
+    match /paystackPayments/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /paystackCustomers/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /paystackSubscriptions/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /checkoutRateLimits/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /paystackWebhookEvents/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
