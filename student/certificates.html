@@ -16,6 +16,8 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="../css/design-system.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/certificates.css">
     <link rel="stylesheet" href="../css/cws-assistant.css">
@@ -109,7 +111,7 @@
 
     <section class="certificates-hero">
         <div class="certificates-hero-content">
-            <span class="certificates-eyebrow">CWS ACADEMY • ACHIEVEMENTS</span>
+            <span class="certificates-eyebrow">CWS ACADEMY â€¢ ACHIEVEMENTS</span>
             <h1>Your <span>Certificates</span></h1>
             <p>Track earned certificates and see which CWS Academy achievements are still ahead.</p>
 
@@ -162,6 +164,42 @@
             <div class="certificate-stat-icon"><i class="fa-solid fa-trophy"></i></div>
             <div><span>ACHIEVEMENTS</span><strong id="achievementCount">0</strong><small>Milestones</small></div>
         </article>
+    </section>
+
+    <section class="certificate-discovery" aria-label="Find credentials">
+        <label class="certificate-search" for="certificateSearchInput">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <span class="sr-only">Search credentials</span>
+            <input
+                type="search"
+                id="certificateSearchInput"
+                placeholder="Search certificates, courses or paths..."
+                autocomplete="off"
+            >
+        </label>
+
+        <label class="certificate-filter" for="certificateTypeFilter">
+            <span>Credential type</span>
+            <select id="certificateTypeFilter">
+                <option value="all">All credentials</option>
+                <option value="course">Course certificates</option>
+                <option value="professional">Career-path credentials</option>
+                <option value="upcoming">Certificates ahead</option>
+            </select>
+        </label>
+
+        <button type="button" id="clearCertificateFilters" class="certificate-filter-reset">
+            <i class="fa-solid fa-rotate-left"></i>
+            Reset
+        </button>
+
+        <strong id="certificateFilterSummary" class="certificate-filter-summary">Showing all credentials</strong>
+    </section>
+
+    <section id="certificateFilterEmpty" class="certificate-empty-state compact" hidden>
+        <div class="certificate-empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <h3>No matching credentials</h3>
+        <p>Try a different course, path or credential type.</p>
     </section>
 
     <section class="credential-journey-section">
@@ -230,7 +268,7 @@
                         Awarded only after completing the full required learning path
                         and passing its practical capstone.
                     </p>
-                    <strong class="highest-tier-label">★ HIGHEST CWS CREDENTIAL TIER</strong>
+                    <strong class="highest-tier-label">â˜… HIGHEST CWS CREDENTIAL TIER</strong>
                 </div>
                 <div class="credential-tier-status">
                     <i class="fa-solid fa-lock"></i>
@@ -405,10 +443,10 @@
 </main>
 
 <footer class="student-footer">
-    <p>© 2026 CWS Academy. Part of the CyberWithSandiso ecosystem.</p>
+    <p>Â© 2026 CWS Academy. Part of the CyberWithSandiso ecosystem.</p>
 </footer>
 
-<script type="module" src="../js/certificates.js?v=20260820-cert-view-fix-2"></script>
+<script type="module" src="../js/certificates.js?v=20260821-credential-upgrade"></script>
 
 <script
     type="module"
