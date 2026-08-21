@@ -1,5 +1,5 @@
 /* =========================================================
-   CWS ACADEMY — PUBLIC CREDENTIAL VERIFICATION
+   CWS ACADEMY â€” PUBLIC CREDENTIAL VERIFICATION
 ========================================================= */
 
 :root {
@@ -94,6 +94,125 @@ body.verification-page {
     margin: 0;
     color: #8493a4;
     line-height: 1.65;
+}
+
+.verification-form {
+    margin-top: 28px;
+    padding: 18px;
+    border: 1px solid var(--verify-border);
+    border-radius: 16px;
+    background: rgba(255,255,255,.022);
+    text-align: left;
+}
+
+.verification-form > label {
+    display: block;
+    margin-bottom: 8px;
+    color: #dce6ef;
+    font-size: .68rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.verification-input-row {
+    min-height: 52px;
+    display: grid;
+    grid-template-columns: auto minmax(0,1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding-left: 14px;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    background: #060b11;
+}
+
+.verification-input-row:focus-within {
+    border-color: rgba(0,255,170,.42);
+    box-shadow: 0 0 0 3px rgba(0,255,170,.065);
+}
+
+.verification-input-row > i {
+    color: #607184;
+}
+
+.verification-input-row input {
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    color: #fff;
+    background: transparent;
+    font: 700 .78rem "Inter",sans-serif;
+    letter-spacing: .025em;
+}
+
+.verification-input-row input::placeholder {
+    color: #526172;
+}
+
+.verification-input-row button,
+.verification-primary-action,
+.verification-secondary-action {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 14px;
+    border-radius: 9px;
+    font: 800 .68rem "Inter",sans-serif;
+    cursor: pointer;
+}
+
+.verification-input-row button,
+.verification-primary-action {
+    border: 1px solid var(--verify-green);
+    color: #03110b;
+    background: var(--verify-green);
+}
+
+.verification-input-row button {
+    min-height: 50px;
+    border-radius: 0 10px 10px 0;
+}
+
+.verification-input-row button:disabled {
+    cursor: wait;
+    opacity: .72;
+}
+
+.verification-secondary-action {
+    border: 1px solid rgba(255,255,255,.1);
+    color: #dce6ef;
+    background: rgba(255,255,255,.035);
+}
+
+.verification-help,
+.verification-form-message {
+    margin: 9px 2px 0 !important;
+    font-size: .65rem;
+}
+
+.verification-form-message {
+    color: #ff9b9b !important;
+}
+
+.verification-trust-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 13px;
+}
+
+.verification-trust-row span {
+    padding: 6px 9px;
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 999px;
+    color: #738396;
+    background: rgba(255,255,255,.016);
+    font-size: .58rem;
+    font-weight: 700;
 }
 
 .verification-state {
@@ -280,6 +399,25 @@ body.verification-page {
     line-height: 1.55;
 }
 
+.verification-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin: 0 28px 12px;
+}
+
+.verification-action-status {
+    min-height: 18px;
+    margin: 0 28px 24px;
+    color: var(--verify-green);
+    font-size: .64rem;
+    font-weight: 700;
+}
+
+[hidden] {
+    display: none !important;
+}
+
 .verification-about {
     margin-top: 20px;
     padding: 20px;
@@ -328,5 +466,29 @@ body.verification-page {
     .verification-professional-details,
     .verification-details {
         grid-template-columns: 1fr;
+    }
+
+    .verification-header-label {
+        display: none;
+    }
+
+    .verification-input-row {
+        grid-template-columns: auto minmax(0,1fr);
+        padding: 10px 12px;
+    }
+
+    .verification-input-row button {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-height: 44px;
+        border-radius: 9px;
+    }
+
+    .verification-actions {
+        flex-direction: column;
+    }
+
+    .verification-actions button {
+        width: 100%;
     }
 }
