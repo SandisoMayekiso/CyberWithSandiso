@@ -71,6 +71,15 @@ import {
 
 
 /* =========================================================
+   PREMIUM LESSON TOOLS
+========================================================= */
+
+import {
+    initializeLessonTools
+} from "./lesson-tools.js";
+
+
+/* =========================================================
    ACCESS CONTROL
 ========================================================= */
 
@@ -1027,6 +1036,23 @@ async function loadProgress() {
 
 
     updateCourseProgressUI();
+
+
+    initializeLessonTools({
+        userId:
+            currentUser?.uid ||
+            "guest",
+        course:
+            currentCourse,
+        module:
+            currentModule,
+        lesson:
+            currentLesson,
+        contentRoot:
+            lessonContent,
+        onConfirmComplete:
+            completeLesson
+    });
 
 }
 
@@ -4520,6 +4546,14 @@ async function loadLesson() {
        from loading.
     */
 
+    const locationChanged =
+        currentProgress.started !== true ||
+        currentProgress.currentModule !==
+            currentModule.id ||
+        currentProgress.currentLesson !==
+            currentLesson.id;
+
+
     currentProgress.started =
         true;
 
@@ -4532,17 +4566,21 @@ async function loadLesson() {
         currentLesson.id;
 
 
-    saveProgress()
-        .catch(
-            err => {
+    if (locationChanged) {
 
-                error(
-                    "Background progress save failed:",
-                    err
-                );
+        saveProgress()
+            .catch(
+                err => {
 
-            }
-        );
+                    error(
+                        "Background progress save failed:",
+                        err
+                    );
+
+                }
+            );
+
+    }
 
 
     log(
@@ -4680,21 +4718,6 @@ if (
         "submit",
 
         handleQuizSubmit
-
-    );
-
-}
-
-
-if (
-    completeLessonBtn
-) {
-
-    completeLessonBtn.addEventListener(
-
-        "click",
-
-        completeLesson
 
     );
 
