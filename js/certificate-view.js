@@ -24,9 +24,7 @@ import {
 
 import {
     doc,
-    getDoc,
-    setDoc,
-    serverTimestamp
+    getDoc
 } from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -56,6 +54,11 @@ import {
 
 import * as CourseRegistry
 from "../data/courses.js";
+
+
+import {
+    ensureCourseCertificate
+} from "./secure-learning-api.js";
 
 
 /* =========================================================
@@ -159,6 +162,31 @@ const linkedinShareBtn =
 const openVerificationBtn =
     document.getElementById(
         "openVerificationBtn"
+    );
+
+const copyCredentialBtn =
+    document.getElementById(
+        "copyCredentialBtn"
+    );
+
+const certificateIssuer =
+    document.getElementById(
+        "certificateIssuer"
+    );
+
+const certificateType =
+    document.getElementById(
+        "certificateType"
+    );
+
+const certificateTrustStatus =
+    document.getElementById(
+        "certificateTrustStatus"
+    );
+
+const certificateActionStatus =
+    document.getElementById(
+        "certificateActionStatus"
     );
 
 
@@ -924,182 +952,6 @@ function buildVerificationUrl(
 
 
 /* =========================================================
-   PUBLIC COURSE CERTIFICATE VERIFICATION
-========================================================= */
-
-async function publishCourseVerificationRecord() {
-
-    if (
-        !db ||
-        !currentUser ||
-        !currentCourse ||
-        !currentProgress ||
-        !currentCredentialId
-    ) {
-        return false;
-    }
-
-
-    const issueDate =
-        toDate(
-            getIssueDateValue()
-        ) ||
-        new Date();
-
-
-    const access =
-        String(
-            currentCourse.access ||
-            currentCourse.plan ||
-            "free"
-        )
-            .trim()
-            .toLowerCase();
-
-
-    const tier =
-        access === "pro"
-            ? "pro"
-            : "course";
-
-
-    const publicRecord = {
-
-        credentialId:
-            currentCredentialId,
-
-        credentialType:
-            "course",
-
-        tier,
-
-        status:
-            "active",
-
-        /*
-         * userId is included for compatibility with the current
-         * Firestore ownership rule during client-side issuance.
-         * The public verification page does not display it.
-         */
-        userId:
-            currentUser.uid,
-
-        studentName:
-            getUserName(
-                currentUser
-            ),
-
-        courseId:
-            currentCourse.id,
-
-        courseTitle:
-            currentCourse.title ||
-            "CWS Academy Course",
-
-        credentialTitle:
-            access === "pro"
-                ? `CWS Pro Certificate — ${currentCourse.title}`
-                : `CWS Course Certificate — ${currentCourse.title}`,
-
-        description:
-            currentCourse.description ||
-            "CWS Academy course completion credential.",
-
-        finalScore:
-            getFinalScore(),
-
-        issuedAt:
-            issueDate.toISOString(),
-
-        issuer:
-            "CWS Academy",
-
-        ecosystem:
-            "CyberWithSandiso",
-
-        verificationVersion:
-            1
-
-    };
-
-
-    try {
-
-        const verificationRef =
-            doc(
-                db,
-                "certificateVerifications",
-                currentCredentialId
-            );
-
-
-        const existing =
-            await getDoc(
-                verificationRef
-            );
-
-
-        /*
-         * Old deployed Firestore rules may allow create but deny
-         * update. If a verification document already exists, do
-         * not rewrite it from the browser.
-         */
-        if (
-            existing.exists()
-        ) {
-
-            console.log(
-                "[CWS Certificate] Public verification record already exists:",
-                currentCredentialId
-            );
-
-
-            return true;
-
-        }
-
-
-        await setDoc(
-            verificationRef,
-            {
-                ...publicRecord,
-
-                createdAt:
-                    serverTimestamp()
-            }
-        );
-
-
-        console.log(
-            "[CWS Certificate] Public verification record created:",
-            currentCredentialId
-        );
-
-
-        return true;
-
-    }
-    catch (error) {
-
-        /*
-         * Do not break certificate viewing if public verification
-         * cannot be published. Log the exact Firebase error so the
-         * Firestore rule can be corrected independently.
-         */
-        console.error(
-            "[CWS Certificate] Public verification record could not be created:",
-            error
-        );
-
-
-        return false;
-
-    }
-
-}
-
-
-/* =========================================================
    QR CODE
 ========================================================= */
 
@@ -1259,6 +1111,28 @@ async function renderCertificate() {
     }
 
 
+    if (certificateIssuer) {
+        certificateIssuer.textContent =
+            "CWS Academy";
+    }
+
+
+    if (certificateType) {
+        certificateType.textContent =
+            String(currentCourse.access || "")
+                .trim()
+                .toLowerCase() === "pro"
+                ? "CWS Pro Certificate"
+                : "Course Certificate";
+    }
+
+
+    if (certificateTrustStatus) {
+        certificateTrustStatus.textContent =
+            "Active";
+    }
+
+
     const score =
         getFinalScore();
 
@@ -1315,16 +1189,6 @@ async function renderCertificate() {
             )}`;
 
     }
-
-
-    /*
-     * Ensure an earned course certificate has a real public
-     * Firestore verification document before exposing its QR/link.
-     *
-     * Existing certificates are backfilled automatically the next
-     * time the student opens the certificate page.
-     */
-    await publishCourseVerificationRecord();
 
 
     await renderQrCode();
@@ -1437,6 +1301,16 @@ async function loadCertificatePage() {
 
 
     try {
+
+        const secureCertificate =
+            await ensureCourseCertificate(
+                currentCourse.id
+            );
+
+
+        currentProgress =
+            secureCertificate.progress ||
+            currentProgress;
 
         await renderCertificate();
 
@@ -1600,7 +1474,7 @@ async function downloadCertificatePdf() {
 
         const usePrint =
             window.confirm(
-                "The direct PDF generator is unavailable in this browser. Would you like to open the browser Print dialog so you can choose “Save as PDF” instead?"
+                "The direct PDF generator is unavailable in this browser. Would you like to open the browser Print dialog so you can choose â€œSave as PDFâ€ instead?"
             );
 
 
@@ -2548,6 +2422,12 @@ async function copyVerificationLink() {
             );
 
 
+        if (certificateActionStatus) {
+            certificateActionStatus.textContent =
+                "Verification link copied.";
+        }
+
+
         if (
             copyVerificationBtn
         ) {
@@ -2590,6 +2470,44 @@ async function copyVerificationLink() {
 
     }
 
+}
+
+
+async function copyCredentialId() {
+    if (!currentCredentialId) return;
+
+    try {
+        await navigator.clipboard.writeText(
+            currentCredentialId
+        );
+
+        if (certificateActionStatus) {
+            certificateActionStatus.textContent =
+                "Credential ID copied.";
+        }
+
+        if (copyCredentialBtn) {
+            const original =
+                copyCredentialBtn.innerHTML;
+
+            copyCredentialBtn.innerHTML =
+                '<i class="fa-solid fa-check"></i> Copied';
+
+            window.setTimeout(
+                () => {
+                    copyCredentialBtn.innerHTML =
+                        original;
+                },
+                1600
+            );
+        }
+    }
+    catch {
+        window.prompt(
+            "Copy this credential ID:",
+            currentCredentialId
+        );
+    }
 }
 
 
@@ -2661,6 +2579,13 @@ copyVerificationBtn
     ?.addEventListener(
         "click",
         copyVerificationLink
+    );
+
+
+copyCredentialBtn
+    ?.addEventListener(
+        "click",
+        copyCredentialId
     );
 
 
