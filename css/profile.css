@@ -1266,3 +1266,360 @@
 [hidden] {
     display: none !important;
 }
+
+
+/* =========================================================
+   PREMIUM PROFILE EXPERIENCE V2
+========================================================= */
+
+.profile-page-body {
+    background:
+        radial-gradient(circle at 88% 8%, rgba(0,255,170,.045), transparent 27%),
+        #050910;
+}
+
+.profile-main {
+    max-width: 1380px;
+}
+
+.profile-loading {
+    width: min(520px, 100%);
+    min-height: 240px;
+    margin: 70px auto;
+    border: 1px solid rgba(255,255,255,.065);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(255,255,255,.022), rgba(255,255,255,.008));
+}
+
+.profile-hero {
+    min-height: 245px;
+    background:
+        radial-gradient(circle at 88% 20%, rgba(0,255,170,.11), transparent 28%),
+        linear-gradient(145deg, rgba(12,27,34,.98), rgba(5,12,20,.99));
+    box-shadow: 0 25px 70px rgba(0,0,0,.22);
+}
+
+.profile-hero-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.profile-hero-content h1 {
+    font-family: "Orbitron", sans-serif;
+    font-size: clamp(1.7rem, 4vw, 2.7rem);
+}
+
+.profile-completion-card {
+    position: relative;
+    z-index: 1;
+    flex: 0 1 390px;
+    min-width: 320px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    border: 1px solid rgba(0,255,170,.15);
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(8,22,27,.88), rgba(4,11,17,.95));
+}
+
+.profile-completion-ring {
+    --profile-completion: 0;
+    position: relative;
+    flex: 0 0 96px;
+    width: 96px;
+    height: 96px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background:
+        conic-gradient(var(--accent, #00ffaa) calc(var(--profile-completion) * 1%), rgba(255,255,255,.065) 0);
+}
+
+.profile-completion-ring::after {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 1px solid rgba(255,255,255,.055);
+    border-radius: inherit;
+    background: #081118;
+}
+
+.profile-completion-ring > div {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.profile-completion-ring strong,
+.profile-completion-ring span {
+    display: block;
+}
+
+.profile-completion-ring strong {
+    color: #fff;
+    font: 800 1.05rem "Orbitron", sans-serif;
+}
+
+.profile-completion-ring span {
+    margin-top: 3px;
+    color: rgba(255,255,255,.4);
+    font: 800 .47rem "Inter", sans-serif;
+    letter-spacing: .08em;
+}
+
+.profile-completion-card h2 {
+    margin: 6px 0 7px;
+    color: #fff;
+    font: 750 .95rem "Inter", sans-serif;
+}
+
+.profile-completion-card p {
+    margin: 0;
+    color: rgba(255,255,255,.5);
+    font-size: .7rem;
+    line-height: 1.55;
+}
+
+.profile-grid {
+    gap: 18px;
+}
+
+.profile-card {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 100% 0, rgba(0,255,170,.025), transparent 25%),
+        linear-gradient(150deg, rgba(11,23,30,.97), rgba(5,11,18,.98));
+    box-shadow: 0 18px 48px rgba(0,0,0,.17);
+}
+
+.profile-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(120deg, rgba(255,255,255,.018), transparent 28%);
+}
+
+.profile-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-form-group input,
+.profile-form-group select,
+.profile-form-group textarea {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 10px;
+    outline: none;
+    color: #fff;
+    background: rgba(255,255,255,.035);
+    font: 500 .82rem/1.55 "Inter", sans-serif;
+    transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.profile-form-group textarea {
+    min-height: 125px;
+    resize: vertical;
+}
+
+.profile-form-group input:focus,
+.profile-form-group select:focus,
+.profile-form-group textarea:focus {
+    border-color: rgba(0,255,170,.4);
+    background: rgba(0,255,170,.027);
+    box-shadow: 0 0 0 3px rgba(0,255,170,.055);
+}
+
+.profile-links-grid {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+}
+
+.profile-form-section-heading {
+    padding-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.profile-form-section-heading strong,
+.profile-form-section-heading span {
+    display: block;
+}
+
+.profile-form-section-heading strong {
+    color: #fff;
+    font-size: .86rem;
+}
+
+.profile-form-section-heading span {
+    margin-top: 4px;
+    color: rgba(255,255,255,.43);
+    font-size: .7rem;
+}
+
+.profile-form-section-heading > i {
+    color: var(--accent, #00ffaa);
+}
+
+.profile-copy-value {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 46px;
+    gap: 8px;
+}
+
+.profile-copy-btn {
+    min-height: 48px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    color: var(--accent, #00ffaa);
+    background: rgba(0,255,170,.045);
+    cursor: pointer;
+    transition: border-color .2s ease, background .2s ease;
+}
+
+.profile-copy-btn:hover {
+    border-color: rgba(0,255,170,.3);
+    background: rgba(0,255,170,.08);
+}
+
+.profile-stats {
+    grid-template-columns: repeat(6, minmax(0,1fr));
+}
+
+.profile-stat {
+    min-height: 132px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,.055);
+    background: linear-gradient(145deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
+    transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.profile-stat:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0,255,170,.14);
+    background: rgba(0,255,170,.025);
+}
+
+.profile-summary-actions {
+    margin-top: 18px;
+    padding-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1px solid rgba(255,255,255,.055);
+}
+
+.profile-summary-actions .profile-text-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.profile-summary-actions small {
+    color: rgba(255,255,255,.36);
+    font-size: .65rem;
+}
+
+.profile-interest-grid label:has(input:checked) {
+    border-color: rgba(0,255,170,.28);
+    color: #dffff4;
+    background: rgba(0,255,170,.065);
+}
+
+.profile-security-item {
+    min-height: 66px;
+}
+
+.profile-account-actions .profile-secondary-btn {
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.profile-account-support {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid rgba(255,255,255,.055);
+    border-radius: 10px;
+    background: rgba(255,255,255,.018);
+}
+
+.profile-account-support > span {
+    color: rgba(255,255,255,.45);
+    font-size: .7rem;
+}
+
+.profile-primary-btn:focus-visible,
+.profile-secondary-btn:focus-visible,
+.profile-text-btn:focus-visible,
+.profile-copy-btn:focus-visible,
+.profile-interest-grid input:focus-visible {
+    outline: 3px solid rgba(0,255,170,.17);
+    outline-offset: 3px;
+}
+
+@media (max-width: 1200px) {
+    .profile-hero {
+        flex-wrap: wrap;
+    }
+
+    .profile-completion-card {
+        flex: 1 1 100%;
+    }
+
+    .profile-stats {
+        grid-template-columns: repeat(3, minmax(0,1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .profile-links-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-stats {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .profile-completion-card {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .profile-summary-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-completion-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .profile-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-stat {
+        min-height: 110px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .profile-stat,
+    .profile-copy-btn {
+        transition: none;
+    }
+}
