@@ -248,6 +248,9 @@ function lesson(
         title,
         duration,
 
+        access:
+            "free",
+
         type:
             data.type ||
             "Lesson",
@@ -310,6 +313,152 @@ function lesson(
 
 
 /* =========================================================
+   ASSESSMENT QUALITY HELPERS
+========================================================= */
+
+function balanceAnswerPositions(
+    questions = [],
+    offset = 0
+) {
+
+    return questions.map(
+        (item, index) => {
+
+            const options =
+                Array.isArray(item.options)
+                    ? [...item.options]
+                    : [];
+
+            if (!options.length) {
+                return item;
+            }
+
+            const answer =
+                Number.isInteger(item.answer)
+                    ? item.answer
+                    : 0;
+
+            const shift =
+                (index + offset) % options.length;
+
+            return {
+                ...item,
+                options: [
+                    ...options.slice(shift),
+                    ...options.slice(0, shift)
+                ],
+                answer:
+                    (answer - shift + options.length) % options.length
+            };
+
+        }
+    );
+
+}
+
+
+function linuxQuestion(prompt, correct, ...distractors) {
+
+    return {
+        question:
+            prompt,
+        options: [
+            correct,
+            ...distractors
+        ],
+        answer:
+            0
+    };
+
+}
+
+
+const linuxQuestionBanks = {
+
+    "module-01": [
+        linuxQuestion("What is the Linux kernel responsible for?", "Managing hardware, memory, processes, devices and core system resources", "Providing every graphical desktop", "Hosting public DNS", "Installing browser extensions"),
+        linuxQuestion("What is a Linux distribution?", "A packaged operating system combining the Linux kernel with tools, libraries and package management", "A kernel module only", "A terminal emulator", "A filesystem permission"),
+        linuxQuestion("What is the relationship between a terminal and a shell?", "The terminal provides an interface while the shell interprets commands", "They are always the same process", "The shell is a filesystem", "The terminal manages packages"),
+        linuxQuestion("Why should learners inspect whoami and pwd before a sensitive command?", "To confirm identity and working context before acting", "To gain root automatically", "To clear shell history", "To change the kernel"),
+        linuxQuestion("Where should a beginner practise administration commands?", "On an owned or explicitly authorized lab system with a recovery option", "On an unknown public server", "On production without approval", "On any host that answers ping")
+    ],
+
+    "module-02": [
+        linuxQuestion("What does the root directory / represent?", "The top of the Linux filesystem hierarchy", "The root user's home directory only", "A temporary filesystem", "A network route"),
+        linuxQuestion("Which directory normally contains system-wide configuration?", "/etc", "/tmp", "/proc", "/mnt"),
+        linuxQuestion("What is an absolute path?", "A path beginning at / and independent of the current directory", "A path using only one filename", "A hidden path", "A symbolic link"),
+        linuxQuestion("What should be checked before removing a directory tree?", "The resolved target, current context, contents, scope and recovery path", "Only whether sudo is available", "Only the directory colour", "Whether the command is short"),
+        linuxQuestion("Why does the Filesystem Hierarchy Standard matter?", "It promotes predictable file and directory placement across Unix-like systems", "It defines firewall ports", "It replaces permissions", "It creates user passwords")
+    ],
+
+    "module-03": [
+        linuxQuestion("What does cp normally do?", "Creates a copy of a file or directory at a specified destination", "Changes ownership", "Lists processes", "Starts a service"),
+        linuxQuestion("Why quote filenames in shell commands?", "To preserve spaces and special characters as part of one argument", "To make files executable", "To encrypt names", "To grant write access"),
+        linuxQuestion("What is the safest first step before a broad find command?", "Confirm the starting path and use narrow filters with read-only output", "Add -delete", "Run from / as root", "Ignore permission errors"),
+        linuxQuestion("What does a symbolic link store?", "A reference path to another filesystem object", "A complete independent copy", "A user password", "A process identifier"),
+        linuxQuestion("How should destructive file operations be tested?", "Use disposable sample data, explicit paths, dry-run logic where possible and a recovery plan", "Use production data first", "Use unquoted wildcards", "Disable backups")
+    ],
+
+    "module-04": [
+        linuxQuestion("What do the rwx permission bits control?", "Read, write and execute access for owner, group and others", "Network routing", "Package signatures", "Process priority"),
+        linuxQuestion("What is least privilege?", "Grant only the access required for the legitimate task", "Give every user sudo", "Remove all authentication", "Use shared root credentials"),
+        linuxQuestion("Why is chmod 777 usually a poor fix?", "It grants broad access without addressing the intended ownership and permission model", "It makes files immutable", "It disables execution", "It encrypts the file"),
+        linuxQuestion("What does chown change?", "File or directory ownership", "The file contents", "The active process", "The network address"),
+        linuxQuestion("What should be recorded for a permission change?", "Purpose, before state, exact target, change, verification and rollback", "Only the username", "Only the final mode", "No evidence for small changes")
+    ],
+
+    "module-05": [
+        linuxQuestion("What is a process?", "A running instance of a program with an identity and resources", "A package repository", "A filesystem mount", "A user group"),
+        linuxQuestion("What does systemctl status help verify?", "A systemd unit's state and recent diagnostic information", "File ownership", "DNS delegation", "Kernel compilation"),
+        linuxQuestion("What should be confirmed before using kill?", "The process identity, owner, purpose and expected impact", "Only the process name", "That root is logged in", "That logs are disabled"),
+        linuxQuestion("Why inspect service logs before restarting repeatedly?", "Logs can reveal the root cause while repeated restarts may hide or worsen the problem", "Logs change permissions", "Restarts always repair configuration", "Logs are only for attackers"),
+        linuxQuestion("What is the strongest service-verification evidence?", "Unit state, relevant logs, listening behavior and a functional check", "One green status line", "A successful login", "The service package name")
+    ],
+
+    "module-06": [
+        linuxQuestion("What does ip addr show?", "Configured network interfaces and addresses", "Open files", "User groups", "Installed packages"),
+        linuxQuestion("What does the routing table determine?", "Where packets are sent for different destination networks", "Which user owns a file", "Which service starts at boot", "Which package is trusted"),
+        linuxQuestion("What does ss help inspect?", "Listening sockets and network connections", "Filesystem labels", "Password hashes", "Scheduled jobs"),
+        linuxQuestion("A host can reach an IP but not a hostname. What should be checked first?", "Configured DNS resolution and the relevant name lookup", "File permissions", "Process priority", "Package signatures"),
+        linuxQuestion("Why is a listening port not automatically a vulnerability?", "Risk depends on service, binding, exposure, configuration, need and controls", "All ports are secure", "Port numbers prove compromise", "Only UDP ports matter")
+    ],
+
+    "module-07": [
+        linuxQuestion("What does a package manager provide?", "Controlled installation, dependency handling, updates and package records", "Automatic root access", "Network encryption", "User authentication"),
+        linuxQuestion("Why refresh package metadata before reviewing updates?", "To compare against current repository information", "To delete installed packages", "To disable signatures", "To change file ownership"),
+        linuxQuestion("What should be verified before adding a third-party repository?", "Publisher trust, signing method, scope, necessity and maintenance expectations", "Only its download speed", "Only the package name", "That it offers many tools"),
+        linuxQuestion("Why should updates be tested before broad deployment?", "Changes can affect dependencies, services and compatibility", "Updates never fix security issues", "Testing removes signatures", "Only kernels require testing"),
+        linuxQuestion("What makes a package change auditable?", "Approved purpose, repository source, exact packages, output and post-change verification", "A screenshot of the desktop", "Only the command history", "No record if it succeeded")
+    ],
+
+    "module-08": [
+        linuxQuestion("What does a shell pipeline do?", "Connects one command's standard output to another command's standard input", "Grants root privileges", "Creates a user", "Encrypts a filesystem"),
+        linuxQuestion("Why should variable expansions normally be quoted?", "To avoid unintended word splitting and pathname expansion", "To change every value to a number", "To disable errors", "To execute the value"),
+        linuxQuestion("What does a non-zero exit status normally indicate?", "A command reported failure or another non-success condition", "The command ran as root", "No output was produced", "The shell logged out"),
+        linuxQuestion("What should happen before a script uses external input?", "Validate its expected type, range, format and allowed use", "Pass it to eval", "Write it into /etc", "Trust it automatically"),
+        linuxQuestion("What makes a beginner script reliable?", "Clear scope, quoted inputs, useful errors, tested failure paths and documented behavior", "Many sudo commands", "Hidden output", "One successful run")
+    ],
+
+    "module-09": [
+        linuxQuestion("What is system hardening?", "Reducing unnecessary exposure and privilege while preserving required operation", "Installing every service", "Disabling all logs", "Changing the desktop theme"),
+        linuxQuestion("Why are logs security-relevant?", "They provide time-based evidence of activity, errors and control behavior", "They prevent every attack", "They replace authentication", "They contain only performance data"),
+        linuxQuestion("What is a safe SSH improvement?", "Restrict access, use strong key-based authentication where suitable and review logging", "Expose it to every network", "Share one root password", "Disable host verification"),
+        linuxQuestion("What should a firewall baseline begin with?", "Document required traffic, current listeners and management access before applying least-privilege rules", "Block everything without recovery", "Open every port", "Disable local logging"),
+        linuxQuestion("What is the purpose of patching?", "Correct known defects and vulnerabilities through a managed lifecycle", "Eliminate all risk permanently", "Replace backups", "Remove the need for monitoring")
+    ],
+
+    "module-10": [
+        linuxQuestion("What should a Linux review begin with?", "Defined scope, identity, host context and a read-only baseline", "Deleting temporary files", "Running every command as root", "Changing firewall rules"),
+        linuxQuestion("What makes a troubleshooting conclusion defensible?", "Expected behavior, observed evidence, tested hypothesis and verified result", "A guess from one symptom", "A reboot without notes", "A successful unrelated command"),
+        linuxQuestion("Which evidence belongs in a Linux administration portfolio?", "Sanitized commands, outputs, interpretations, change records and verification", "Reusable credentials", "Only screenshots", "Only copied tutorials"),
+        linuxQuestion("Why document limitations?", "They show what was not tested or proven and prevent overstated conclusions", "They weaken every report", "They replace evidence", "They are only for failed work"),
+        linuxQuestion("What is the strongest course-capstone result?", "A repeatable system baseline and security review with evidence, priorities and safe remediation guidance", "One successful sudo command", "A list of tools", "An unverified hardening claim")
+    ]
+
+};
+
+
+/* =========================================================
    COURSE
 ========================================================= */
 
@@ -351,8 +500,110 @@ export const linuxFundamentals = {
     duration:
         "45–60 Hours",
 
+    estimatedLessons:
+        47,
+
+    certificateEligible:
+        true,
+
     learningStandard:
         "Deep Explanation • Examples • Security Context • Troubleshooting • Practice",
+
+    learningEnvironment:
+        "Use a Linux virtual machine or other system you own or are explicitly authorized to administer. Create a snapshot or equivalent recovery point before exercises that change configuration.",
+
+    prerequisites: [
+        "No previous Linux experience is required",
+        "Basic computer and file-management confidence",
+        "Access to an owned or explicitly authorized Linux lab"
+    ],
+
+    recommendedPrerequisites: [
+        "Cybersecurity Fundamentals",
+        "Basic networking concepts"
+    ],
+
+    skills: [
+        "Linux terminal and shell navigation",
+        "Filesystem and path management",
+        "Safe file operations",
+        "Users, groups and permissions",
+        "Processes and systemd services",
+        "Linux network troubleshooting",
+        "Package lifecycle management",
+        "Bash scripting foundations",
+        "Log review and host hardening",
+        "Evidence-based administration"
+    ],
+
+    tools: [
+        "GNU core utilities",
+        "find",
+        "grep",
+        "systemctl",
+        "journalctl",
+        "ip",
+        "ss",
+        "dig",
+        "apt or the distribution package manager",
+        "Bash"
+    ],
+
+    completionRules: {
+        minimumLessonCompletion:
+            100,
+        minimumModuleAssessmentScore:
+            75,
+        finalAssessmentPassingScore:
+            80,
+        requireAllModuleAssessments:
+            true,
+        requireRequiredLabs:
+            true,
+        requireFinalAssessment:
+            true,
+        requireCapstone:
+            true
+    },
+
+    progression: {
+        unlockMode:
+            "sequential",
+        allowLessonReview:
+            true,
+        allowAssessmentRetry:
+            true,
+        trackLessonCompletion:
+            true,
+        trackAssessmentScores:
+            true,
+        trackLabCompletion:
+            true,
+        resumeLastLesson:
+            true
+    },
+
+    assessmentStandard:
+        "Module and final assessments use applied Linux scenarios with balanced answer positions. Practical work requires predicted results, reproducible evidence, least privilege, verification and safe cleanup.",
+
+    standardReferences: [
+        {
+            title:
+                "Filesystem Hierarchy Standard 3.0",
+            organization:
+                "Linux Foundation",
+            url:
+                "https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html"
+        },
+        {
+            title:
+                "GNU Coreutils Manual",
+            organization:
+                "GNU Project",
+            url:
+                "https://www.gnu.org/software/coreutils/manual/"
+        }
+    ],
 
     lessonMethod: [
         "What the concept is",
@@ -6445,3 +6696,406 @@ Scripting:
     ]
 
 };
+
+
+/* =========================================================
+   CWS COURSE STANDARDIZATION
+========================================================= */
+
+function applyLinuxFundamentalsStandard(course) {
+
+    const labBlueprints = {
+        "module-01": {
+            title:
+                "Linux Orientation and Evidence Baseline",
+            objective:
+                "Identify the distribution, kernel, shell, current identity and lab context without changing the system.",
+            instructions: [
+                "Confirm the VM or lab target and record its purpose.",
+                "Use read-only commands to identify the distribution, kernel, hostname, shell and current identity.",
+                "Record the current directory and explain the shell prompt components.",
+                "Open the manual or help output for one command and identify its synopsis and options.",
+                "Create a short system-context table and explain why each field matters before administration work."
+            ]
+        },
+        "module-02": {
+            title:
+                "Filesystem Hierarchy Mapping",
+            objective:
+                "Map important Linux directories, paths, mounts and file types using safe inspection commands.",
+            instructions: [
+                "Draw a small hierarchy beginning at / and include /etc, /home, /var, /tmp, /usr and /proc.",
+                "Use pwd, ls and file to inspect representative paths.",
+                "Compare an absolute path with a relative path that resolves to the same object.",
+                "Inspect mounted filesystems without changing them.",
+                "Explain which reviewed directories normally contain configuration, variable data, user data and process information."
+            ]
+        },
+        "module-03": {
+            title:
+                "Safe File Operations Workspace",
+            objective:
+                "Create, copy, move, search, link and remove disposable files while preserving a verifiable operation record.",
+            instructions: [
+                "Create a dedicated disposable working directory and sample files, including a filename containing spaces.",
+                "Use quoted paths to copy, move and rename the samples.",
+                "Create and inspect a symbolic link.",
+                "Use find and grep with a narrow starting path and explain the output.",
+                "Verify the target before deleting only the disposable samples and confirm cleanup."
+            ]
+        },
+        "module-04": {
+            title:
+                "Users, Groups and Least-Privilege Review",
+            objective:
+                "Inspect Linux identities and implement a controlled permission model on disposable lab data.",
+            instructions: [
+                "Record the current user, groups and relevant numeric identifiers.",
+                "Create or use approved training identities and a shared lab group where permitted.",
+                "Record ownership and mode before changing a disposable directory.",
+                "Apply the narrowest owner and group permissions required for the scenario.",
+                "Verify allowed and denied behavior, then restore or remove the training objects."
+            ]
+        },
+        "module-05": {
+            title:
+                "Process and Service Troubleshooting",
+            objective:
+                "Diagnose a controlled process or service condition using state, logs and functional verification.",
+            instructions: [
+                "Select a non-critical lab service or instructor-provided scenario.",
+                "Capture its process identity, owner and current systemd state.",
+                "Review relevant journal entries and distinguish symptoms from likely cause.",
+                "Perform only the approved corrective action and record its exit status.",
+                "Verify unit state, logs and expected service behavior after the action."
+            ]
+        },
+        "module-06": {
+            title:
+                "Linux Network and Socket Baseline",
+            objective:
+                "Document interfaces, addresses, routes, name resolution and listening services on the authorized lab host.",
+            instructions: [
+                "Record interfaces and addresses with an approved read-only command.",
+                "Identify the default route and explain the selected gateway.",
+                "Test one reachable lab address and one DNS lookup and interpret the difference.",
+                "List listening sockets with process context where permitted.",
+                "Create a table that separates required services, unexpected observations and items needing validation."
+            ]
+        },
+        "module-07": {
+            title:
+                "Secure Package Lifecycle Review",
+            objective:
+                "Inspect package sources and perform a controlled package change with verification and rollback notes.",
+            instructions: [
+                "Identify the distribution package manager and configured trusted sources.",
+                "Refresh package metadata and preserve relevant output.",
+                "Review available updates and choose one low-risk lab package for the exercise.",
+                "Record the package state before and after the approved change.",
+                "Verify the installed version and document rollback or removal steps."
+            ]
+        },
+        "module-08": {
+            title:
+                "Bash Evidence-Collection Script",
+            objective:
+                "Build a small read-only Bash script that validates its environment and reports selected Linux facts.",
+            instructions: [
+                "Define the script scope, expected inputs and output format.",
+                "Collect current identity, host, storage and network-socket facts using read-only commands.",
+                "Quote expansions and add dependency and output-directory checks.",
+                "Test a successful run and at least one missing-input or dependency failure.",
+                "Save the source, output, exit statuses and a short interpretation."
+            ]
+        },
+        "module-09": {
+            title:
+                "Linux Host Security Baseline",
+            objective:
+                "Review accounts, privilege, services, exposure, updates, logs and SSH configuration without making unapproved changes.",
+            instructions: [
+                "Confirm scope and capture a read-only system baseline.",
+                "Review privileged identities and relevant sudo configuration.",
+                "Compare listening services with the documented purpose of the lab host.",
+                "Review update status, authentication logs and selected SSH controls.",
+                "Prioritize three improvements and define how each would be verified after approval."
+            ]
+        },
+        "module-10": {
+            title:
+                "Linux Administration and Security Portfolio Review",
+            objective:
+                "Produce a repeatable Linux baseline, troubleshooting record and prioritized defensive improvement plan.",
+            instructions: [
+                "Define the host, purpose, owner, scope and permitted actions.",
+                "Collect identity, filesystem, permission, process, service, network and package evidence.",
+                "Investigate one controlled issue using a hypothesis-driven troubleshooting record.",
+                "Document current security posture, limitations and three prioritized recommendations.",
+                "Create an exact verification and rollback checklist for one proposed improvement."
+            ]
+        }
+    };
+
+
+    course.modules.forEach(
+        module => {
+
+            const blueprint =
+                labBlueprints[module.id];
+
+            module.learningOutcomes = [
+                `Explain the essential ${module.title} concepts and Linux dependencies.`,
+                "Use the relevant commands safely in an owned or explicitly authorized Linux lab.",
+                "Predict expected behavior, collect evidence and distinguish facts from assumptions.",
+                "Troubleshoot one realistic failure and document a verified resolution or next step."
+            ];
+
+            module.labActivities = [
+                {
+                    id:
+                        "activity-01",
+                    title:
+                        blueprint.title,
+                    type:
+                        module.id === "module-10"
+                            ? "Portfolio Capstone Milestone"
+                            : "Guided Linux Lab",
+                    access:
+                        "free",
+                    required:
+                        true,
+                    duration:
+                        module.id === "module-10"
+                            ? "120–180 minutes"
+                            : "60–90 minutes",
+                    objective:
+                        blueprint.objective,
+                    scenario:
+                        "You are supporting the fictional CWS Academy Linux environment. Complete the assigned task on the authorized lab host with least privilege and a recoverable, evidence-based workflow.",
+                    prerequisites: [
+                        "Completed lessons in this module",
+                        "Owned or explicitly authorized Linux lab",
+                        "Snapshot or recovery option before configuration changes",
+                        "Dedicated folder for sanitized evidence"
+                    ],
+                    instructions:
+                        blueprint.instructions,
+                    evidence: [
+                        "Host, identity, scope and timestamp",
+                        "Expected state before testing",
+                        "Exact commands and relevant output",
+                        "Observed result and learner interpretation",
+                        "Verification using a separate read-only check",
+                        "Failure or edge-case evidence where applicable",
+                        "Cleanup or rollback confirmation"
+                    ],
+                    successCriteria:
+                        "The task is completed safely, the result is independently verified and the evidence explains both what was proven and what remains uncertain.",
+                    reflection: [
+                        "Which Linux dependency or permission most affected the result?",
+                        "What was the safest command or verification choice and why?",
+                        "What would require additional approval before use on a production system?"
+                    ],
+                    cleanup: [
+                        "Remove disposable files, identities or configuration created only for the lab.",
+                        "Restore the intended baseline or snapshot when required.",
+                        "Retain only sanitized evidence with no credentials, tokens or unnecessary personal data."
+                    ],
+                    safety:
+                        "Use only owned or explicitly authorized Linux systems. Confirm identity and target paths, prefer read-only inspection, use least privilege and never run destructive examples without disposable data and a tested recovery path.",
+                    rubric: {
+                        technicalAccuracy:
+                            25,
+                        safeMethod:
+                            20,
+                        verificationEvidence:
+                            25,
+                        troubleshootingReasoning:
+                            20,
+                        documentation:
+                            10
+                    }
+                }
+            ];
+
+            module.practiceActivities = [];
+            module.labs =
+                1;
+            module.assessments =
+                1;
+
+            module.moduleAssessment = {
+                title:
+                    `${module.title} — Verified Module Assessment`,
+                type:
+                    "Module Assessment",
+                passingScore:
+                    75,
+                allowRetry:
+                    true,
+                showResults:
+                    true,
+                required:
+                    true,
+                questionCount:
+                    linuxQuestionBanks[module.id].length,
+                questions:
+                    balanceAnswerPositions(
+                        linuxQuestionBanks[module.id],
+                        module.number - 1
+                    )
+            };
+
+            module.lessons.forEach(
+                (item, lessonIndex) => {
+
+                    item.performanceObjectives = [
+                        `Explain ${item.title} accurately in the learner's own words.`,
+                        "Predict the result of the relevant command or workflow before execution.",
+                        "Apply the concept using an appropriately scoped Linux lab example.",
+                        "Verify the result and explain one security or troubleshooting implication."
+                    ];
+
+                    item.evidenceStandard = [
+                        "Record the current identity, host, target and timestamp.",
+                        "Preserve the exact command and relevant options.",
+                        "Capture expected and observed behavior plus exit status where applicable.",
+                        "Verify the conclusion using an independent read-only check.",
+                        "Mask secrets, tokens, personal information and unnecessary host identifiers."
+                    ];
+
+                    item.completionCriteria = [
+                        "The learner can explain the topic without copying the lesson text.",
+                        "The learner can recognize an unsafe or incorrectly scoped example.",
+                        "The knowledge check is passed.",
+                        "Associated practical evidence meets the stated standard."
+                    ];
+
+                    const supplements = [
+                        linuxQuestion(
+                            `Which result best demonstrates understanding of ${item.title}?`,
+                            "A predicted outcome confirmed by a correctly scoped command and interpreted evidence",
+                            "A copied command with no explanation",
+                            "An unnecessary root session",
+                            "A screenshot with no target or timestamp"
+                        ),
+                        linuxQuestion(
+                            `A command involving ${item.title} produces an unexpected result. What should happen first?`,
+                            "Preserve the error, confirm identity and scope, check help or documentation and isolate the smallest failing step",
+                            "Run a destructive alternative",
+                            "Change several settings at once",
+                            "Report the expected result instead"
+                        )
+                    ];
+
+                    item.quiz =
+                        balanceAnswerPositions(
+                            [
+                                ...item.quiz,
+                                ...supplements.slice(
+                                    0,
+                                    Math.max(0, 3 - item.quiz.length)
+                                )
+                            ],
+                            module.number + lessonIndex
+                        );
+
+                }
+            );
+
+        }
+    );
+
+
+    const integrativeScenarios = [
+        linuxQuestion("A learner intends to remove /tmp/cws-lab but the variable containing the path is empty. What should a safe script do?", "Reject the empty or broad target and exit without deleting anything", "Run rm against the current directory", "Substitute / automatically", "Add sudo and continue"),
+        linuxQuestion("A service is active but the application is unreachable. What evidence should be checked next?", "Relevant logs, listening sockets, binding address, firewall path and a functional request", "Only the unit name", "File ownership in /home", "The desktop session"),
+        linuxQuestion("A user can modify a group-owned file but should not change unrelated files. What is the best design?", "Use a dedicated group and narrowly scoped ownership and permissions", "Grant sudo access", "Use chmod 777", "Share the root password"),
+        linuxQuestion("A hostname lookup fails while direct IP communication works. Which dependency is most likely involved?", "DNS resolver configuration or the relevant DNS record", "File compression", "Process priority", "Package signing"),
+        linuxQuestion("An update requires restarting a production-like lab service. What should precede the change?", "Impact review, approval, recovery plan, baseline and post-change verification", "Deleting logs", "Disabling backups", "Removing the package database"),
+        linuxQuestion("A process repeatedly returns after being killed. What should be investigated?", "Its supervising service, scheduler, parent process or orchestration mechanism", "The filesystem root", "DNS caching only", "The terminal font"),
+        linuxQuestion("A script works with simple filenames but fails with spaces. What should be reviewed first?", "Quoting, arrays and unintended word splitting", "Kernel version", "Firewall rules", "Package signatures"),
+        linuxQuestion("A hardening checklist recommends disabling a service that the host requires. What is the correct response?", "Validate business purpose and exposure, then choose a proportionate control instead of applying the checklist blindly", "Disable it immediately", "Ignore all hardening", "Remove monitoring"),
+        linuxQuestion("Two commands provide conflicting evidence about system state. What is the strongest response?", "Check scope and timing, understand each data source and gather a third relevant observation", "Choose the preferred output", "Change configuration", "Delete both results"),
+        linuxQuestion("What makes the final Linux capstone recruiter-ready?", "Repeatable administration evidence, safe methods, accurate interpretation, prioritized security improvements and honest limitations", "A list of memorized commands", "Reusable credentials", "Only terminal screenshots")
+    ];
+
+    const finalQuestions = [
+        ...Object.values(linuxQuestionBanks)
+            .flatMap(
+                bank =>
+                    bank.slice(0, 2)
+            ),
+        ...integrativeScenarios
+    ];
+
+    course.finalAssessment = {
+        id:
+            "final-assessment",
+        title:
+            "Linux Fundamentals Final Assessment",
+        description:
+            "A scenario-based assessment covering Linux architecture, filesystem navigation, safe file operations, identities, permissions, processes, services, networking, packages, Bash and host security.",
+        type:
+            "Final Assessment",
+        duration:
+            "60–75 minutes",
+        passingScore:
+            80,
+        allowRetry:
+            true,
+        required:
+            true,
+        questionCount:
+            finalQuestions.length,
+        questions:
+            balanceAnswerPositions(finalQuestions)
+    };
+
+    course.capstone = {
+        title:
+            "Linux Administration and Security Baseline Portfolio",
+        required:
+            true,
+        estimatedTime:
+            "6–8 hours",
+        scenario:
+            "Document and review an authorized Linux lab host, troubleshoot one controlled issue and produce a prioritized, verifiable improvement plan without making unapproved changes.",
+        deliverables: [
+            "Host purpose, scope, owner and recovery notes",
+            "Distribution, kernel, filesystem and mount baseline",
+            "User, group, ownership and permission review",
+            "Process, service and journal evidence",
+            "Interface, route, DNS and listening-socket baseline",
+            "Package source and update-status review",
+            "Read-only Bash evidence-collection script",
+            "Hypothesis-driven troubleshooting record",
+            "Three prioritized security improvements with verification and rollback steps",
+            "Sanitized portfolio report with limitations"
+        ],
+        rubric: {
+            linuxAccuracy:
+                25,
+            safeAdministration:
+                20,
+            evidenceAndVerification:
+                25,
+            troubleshootingMethod:
+                15,
+            securityReasoning:
+                10,
+            documentation:
+                5
+        }
+    };
+
+    course.qualityVersion =
+        "CWS-COURSE-STANDARD-2026.2";
+
+}
+
+
+applyLinuxFundamentalsStandard(
+    linuxFundamentals
+);
