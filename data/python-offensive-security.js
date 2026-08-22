@@ -385,6 +385,141 @@ function buildAssessment(
 
 
 /* =========================================================
+   PRO ASSESSMENT QUALITY HELPERS
+========================================================= */
+
+function balanceAnswerPositions(questions = [], offset = 0) {
+
+    return questions.map((item, index) => {
+
+        const options = Array.isArray(item.options)
+            ? [...item.options]
+            : [];
+
+        if (!options.length) {
+            return item;
+        }
+
+        const answer = Number.isInteger(item.answer)
+            ? item.answer
+            : 0;
+        const shift = (index + offset) % options.length;
+
+        return {
+            ...item,
+            options: [
+                ...options.slice(shift),
+                ...options.slice(0, shift)
+            ],
+            answer: (answer - shift + options.length) % options.length
+        };
+
+    });
+
+}
+
+
+function proQuestion(prompt, correct, ...distractors) {
+
+    return {
+        question: prompt,
+        options: [correct, ...distractors],
+        answer: 0
+    };
+
+}
+
+
+const offensiveAutomationBlueprints = {
+    "module-01": {
+        focus: "a small command-line security utility with explicit inputs, outputs and trust boundaries",
+        control: "parse typed arguments, load an allowlisted scope file and reject missing, malformed or unauthorized values before any action",
+        evidence: "versioned source, help output, validated configuration, test fixtures, exit codes and structured run records",
+        failure: "fail closed with a clear non-secret error and a non-zero exit status before touching a target",
+        improvement: "separate configuration, validation, business logic and output so each responsibility can be tested independently"
+    },
+    "module-02": {
+        focus: "a resource-safe socket client for one approved endpoint",
+        control: "validate host and port, set connect and read timeouts, bound data size and guarantee socket closure",
+        evidence: "approved endpoint, protocol expectation, timestamps, connection state, bounded response bytes and exception category",
+        failure: "distinguish refused, timed out, name-resolution and protocol errors without treating any one result as a vulnerability",
+        improvement: "use context management, explicit protocol parsing and deterministic tests against a local mock service"
+    },
+    "module-03": {
+        focus: "a scoped network-enumeration helper that cannot silently expand its target set",
+        control: "normalize every address, require membership in an approved CIDR allowlist, cap concurrency and rate and prohibit implicit ranges",
+        evidence: "scope source, normalized target list, rate settings, per-target state, errors, coverage gaps and completion summary",
+        failure: "stop or quarantine an out-of-scope or ambiguous target and require human approval before continuing",
+        improvement: "add dry-run output, target-count confirmation, bounded workers, cancellation and resumable per-target results"
+    },
+    "module-04": {
+        focus: "an authorized HTTP client that preserves request context and validates responses",
+        control: "allowlist schemes and hosts, set connect/read timeouts, verify TLS, limit redirects and protect authentication material",
+        evidence: "method, sanitized URL, relevant headers, status, timing, redirect chain, safe body excerpt and exception details",
+        failure: "handle HTTP, timeout, TLS, redirect and schema failures separately without exposing tokens or retrying forever",
+        improvement: "use a configured session, bounded retries for safe operations and request/response redaction at the logging boundary"
+    },
+    "module-05": {
+        focus: "schema-aware processing of JSON and approved security APIs",
+        control: "validate content type, response size, required fields, types, ranges and enumeration values before use",
+        evidence: "sanitized fixture, schema result, rejected fields, normalization decisions and deterministic output",
+        failure: "reject malformed or unexpected data through a controlled error path instead of inventing missing security facts",
+        improvement: "version the expected schema, preserve raw input hashes and separate retrieval from validation and enrichment"
+    },
+    "module-06": {
+        focus: "reliable parsing of Nmap-style XML and other security-tool output",
+        control: "prefer structured formats, verify tool and schema versions, bound file size and treat parsed values as untrusted",
+        evidence: "source hash, tool version, parser version, parsed records, warnings, rejected entries and coverage summary",
+        failure: "preserve the source and report partial or incompatible parsing without claiming complete coverage",
+        improvement: "use representative fixtures, golden expected outputs, malformed cases and compatibility tests across supported versions"
+    },
+    "module-07": {
+        focus: "evidence and reporting automation that preserves provenance and prevents secret leakage",
+        control: "use unique run identifiers, immutable source evidence, redaction rules, integrity hashes and append-only timelines",
+        evidence: "provenance, source hash, transformation version, redaction record, finding fields and generated artifact checksum",
+        failure: "stop report publication when required fields, provenance or redaction checks fail",
+        improvement: "generate human-reviewable drafts and require approval before severity, impact or final wording is published"
+    },
+    "module-08": {
+        focus: "defensive enrichment that adds context without overstating threat conclusions",
+        control: "validate indicators, respect provider terms and rate limits, cache safely and distinguish unknown from malicious",
+        evidence: "indicator type, source, query time, provider response, confidence, age, limitation and correlation context",
+        failure: "record unavailable, stale or conflicting enrichment and leave the conclusion unresolved for analyst review",
+        improvement: "combine multiple approved sources, attach confidence and expiry and keep provider credentials out of code and logs"
+    },
+    "module-09": {
+        focus: "production-quality security automation with predictable failure and recovery behavior",
+        control: "use least privilege, configuration validation, bounded concurrency, timeouts, idempotency and explicit cancellation",
+        evidence: "configuration snapshot, dependency versions, per-step status, metrics, exceptions, retries, rollback and final exit code",
+        failure: "degrade safely, preserve completed evidence and communicate exactly which targets or stages remain incomplete",
+        improvement: "add unit, integration and failure-injection tests plus dependency pinning, packaging and structured observability"
+    },
+    "module-10": {
+        focus: "an auditable offensive-security automation toolkit assembled from small controlled utilities",
+        control: "centralize scope validation, require dry-run and confirmation for active modules and keep destructive actions out of the toolkit",
+        evidence: "architecture, threat model, source, tests, fixtures, run manifests, sample outputs, limitations and cleanup status",
+        failure: "stop the affected module safely, preserve state and evidence and allow a reviewed resume without duplicating active work",
+        improvement: "package the toolkit reproducibly, document extension points and conduct independent code, safety and evidence reviews"
+    }
+};
+
+
+function buildOffensiveAutomationQuestionBank(moduleId, moduleTitle) {
+
+    const item = offensiveAutomationBlueprints[moduleId];
+
+    return [
+        proQuestion(`What is the professional objective for ${moduleTitle}?`, item.focus, "Maximum automation regardless of impact", "Running the most external tools", "Replacing analyst review"),
+        proQuestion(`Which control is essential in ${moduleTitle}?`, item.control, "Hard-coded targets and credentials", "Unlimited concurrency", "Silent error handling"),
+        proQuestion(`Which evidence best supports ${moduleTitle}?`, item.evidence, "An unlabeled screenshot", "A success message without inputs", "Only the final count"),
+        proQuestion(`What is the correct failure behavior for ${moduleTitle}?`, item.failure, "Assume success", "Retry indefinitely", "Expand scope to find another target"),
+        proQuestion(`Which improvement most raises ${moduleTitle} to professional quality?`, item.improvement, "Add more privileges", "Remove input validation", "Suppress warnings and exceptions")
+    ];
+
+}
+
+
+/* =========================================================
    COURSE
 ========================================================= */
 
@@ -424,7 +559,7 @@ export const pythonOffensiveSecurity = {
         "Python for Offensive Security is a CWS Pro automation course for students who already understand Python fundamentals and ethical hacking. The course focuses on building small, auditable tools that support reconnaissance, HTTP analysis, socket programming, scan-result parsing, evidence handling and workflow automation. The emphasis is on scope safety, input validation, error handling and reproducible results rather than uncontrolled exploitation.",
 
     duration:
-        "55–70 Hours",
+        "70–90 Hours",
 
     estimatedLessons:
         30,
@@ -433,7 +568,7 @@ export const pythonOffensiveSecurity = {
         true,
 
     learningStandard:
-        "Python Automation • Networking • HTTP • Parsing • Evidence • Safe Assessment Utilities",
+        "Auditable Python Tooling • Scope Enforcement • Network and HTTP Safety • Structured Evidence • Reliability Engineering",
 
     prerequisites: [
         "Python Fundamentals for Cybersecurity",
@@ -447,16 +582,71 @@ export const pythonOffensiveSecurity = {
         "Web Application Security"
     ],
 
+    skills: [
+        "Secure command-line utility design",
+        "Scope and target validation",
+        "Resource-safe socket clients",
+        "Bounded network-enumeration helpers",
+        "Reliable HTTP automation",
+        "Schema-aware JSON and API processing",
+        "Security-tool output parsing",
+        "Evidence provenance and reporting automation",
+        "Defensive indicator enrichment",
+        "Testing, packaging and failure-safe operation"
+    ],
+
+    tools: [
+        "Python 3",
+        "argparse",
+        "ipaddress",
+        "socket",
+        "Requests",
+        "pathlib",
+        "json and XML parsers",
+        "logging",
+        "unittest or pytest-compatible tests",
+        "Local mock HTTP and TCP services"
+    ],
+
+    assessmentStandard:
+        "Pro assessments require code-level scope enforcement, safe defaults, deterministic tests, structured evidence, explicit failure behavior and human control over active or high-impact actions.",
+
+    standardReferences: [
+        {
+            title: "The Python Standard Library",
+            organization: "Python Software Foundation",
+            url: "https://docs.python.org/3/library/"
+        },
+        {
+            title: "Requests Quickstart",
+            organization: "Python Requests",
+            url: "https://requests.readthedocs.io/en/latest/user/quickstart/"
+        },
+        {
+            title: "Input Validation Cheat Sheet",
+            organization: "OWASP",
+            url: "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html"
+        },
+        {
+            title: "Technical Guide to Information Security Testing and Assessment",
+            organization: "NIST",
+            url: "https://csrc.nist.gov/pubs/sp/800/115/final"
+        }
+    ],
+
     completionRules: {
 
         minimumLessonCompletion:
             100,
 
         minimumModuleAssessmentScore:
-            75,
+            85,
 
         finalAssessmentPassingScore:
-            80,
+            85,
+
+        capstonePassingScore:
+            85,
 
         requireAllModuleAssessments:
             true,
@@ -465,6 +655,9 @@ export const pythonOffensiveSecurity = {
             true,
 
         requireFinalAssessment:
+            true,
+
+        requireCapstone:
             true
 
     },
@@ -487,6 +680,9 @@ export const pythonOffensiveSecurity = {
             true,
 
         trackLabCompletion:
+            true,
+
+        resumeLastLesson:
             true
 
     },
@@ -1681,3 +1877,190 @@ export const pythonOffensiveSecurity = {
     }
 
 };
+
+
+/* =========================================================
+   CWS PRO COURSE STANDARDIZATION
+========================================================= */
+
+function applyPythonOffensiveSecurityProStandard(course) {
+
+    course.modules.forEach(module => {
+
+        module.learningOutcomes = [
+            `Design and explain a safe ${module.title} component with explicit trust boundaries.`,
+            "Enforce authorized scope before any file, network or API action.",
+            "Test success, boundary, timeout, malformed-input and partial-failure behavior.",
+            "Produce structured, sanitized evidence that a second reviewer can reproduce."
+        ];
+
+        module.labActivities = (module.labActivities || []).map(activity => ({
+            ...activity,
+            access: "pro",
+            required: true,
+            prerequisites: [
+                "Completed lessons in this module",
+                "Python 3 virtual environment with pinned dependencies",
+                "Written lab scope and approved local targets or fixtures",
+                "Disposable workspace and version-control branch",
+                "Local mock services where network interaction is required"
+            ],
+            evidence: [
+                ...(activity.evidence || []),
+                "Threat model and authorized input boundary",
+                "Source code and dependency versions",
+                "Validated configuration or scope manifest",
+                "Success, boundary and failure fixtures",
+                "Exact execution commands and exit statuses",
+                "Structured output with timestamps and provenance",
+                "Known limitations and cleanup confirmation"
+            ],
+            successCriteria:
+                "The utility enforces scope before acting, behaves predictably under documented failures, protects sensitive data and produces reproducible evidence without uncontrolled active behavior.",
+            reflection: [
+                ...(activity.reflection || []),
+                "Which trust boundary or input could cause the greatest harm if validation failed?",
+                "Which decision must remain under human control?",
+                "How would another reviewer reproduce and audit the result?"
+            ],
+            cleanup: [
+                "Stop mock servers, listeners and temporary processes.",
+                "Remove temporary outputs, caches and disposable fixtures that are not part of the submission.",
+                "Invalidate temporary secrets and verify none are stored in source or logs.",
+                "Retain only sanitized code, tests, manifests and evidence."
+            ],
+            safety:
+                "Run only against local mocks, intentionally vulnerable CWS Academy targets or systems explicitly included in written authorization. Enforce target allowlists, rate limits, timeouts and data minimization in code.",
+            rubric: {
+                designAndScopeEnforcement: 20,
+                implementationCorrectness: 25,
+                reliabilityAndFailureTests: 20,
+                evidenceAndAuditability: 15,
+                securityAndDataHandling: 10,
+                documentationAndMaintainability: 10
+            }
+        }));
+
+        module.labs = module.labActivities.length;
+        module.assessments = 1;
+
+        const moduleQuestions = buildOffensiveAutomationQuestionBank(
+            module.id,
+            module.title
+        );
+
+        module.moduleAssessment = {
+            title: `${module.title} — Pro Verified Assessment`,
+            type: "Module Assessment",
+            passingScore: 85,
+            allowRetry: true,
+            showResults: true,
+            required: true,
+            questionCount: moduleQuestions.length,
+            questions: balanceAnswerPositions(moduleQuestions, module.number - 1)
+        };
+
+        module.lessons.forEach((item, lessonIndex) => {
+
+            item.performanceObjectives = [
+                `Explain the inputs, outputs and trust boundaries of ${item.title}.`,
+                "Predict safe behavior for valid, malformed, unauthorized and unavailable inputs.",
+                "Implement the smallest auditable component that solves the authorized task.",
+                "Verify the result with deterministic tests and structured evidence."
+            ];
+
+            item.evidenceStandard = [
+                "Authorized scope or fixture manifest",
+                "Source and dependency versions",
+                "Exact command and sanitized configuration",
+                "Expected and observed results for success and failure",
+                "Structured errors and exit status",
+                "Limitations, cleanup and reviewer reproduction steps"
+            ];
+
+            item.completionCriteria = [
+                "The learner explains why the design cannot silently expand scope.",
+                "The learner demonstrates predictable error and timeout behavior.",
+                "The three-question lesson assessment is passed.",
+                "Associated code and evidence meet the Pro rubric."
+            ];
+
+            item.quiz = balanceAnswerPositions([
+                proQuestion(`What makes ${item.title} safe for authorized use?`, "Validated scope, least-impact behavior, bounded resources and explicit failure handling", "Hard-coded targets", "Unlimited retries", "Administrator execution"),
+                proQuestion(`What evidence proves ${item.title} works reliably?`, "Versioned source plus deterministic success, boundary and failure tests with structured output", "One successful screenshot", "A package name", "Only console color"),
+                proQuestion(`What should happen when ${item.title} receives an ambiguous or unauthorized value?`, "Reject it before acting and return a clear non-secret failure record", "Guess the intended value", "Expand the target set", "Retry indefinitely")
+            ], module.number + lessonIndex);
+
+        });
+
+    });
+
+
+    const integrativeScenarios = [
+        proQuestion("A target file contains a hostname that resolves outside the approved CIDR. What must the toolkit do?", "Reject the resolved address and require explicit scope clarification", "Trust the hostname", "Test only port 443", "Add the address to scope"),
+        proQuestion("A socket helper receives a 10 MB response when the protocol expects a short banner. What is the safe behavior?", "Enforce the response-size limit, close the socket and record truncation or protocol mismatch", "Read until memory is exhausted", "Save it as trusted evidence", "Disable timeouts"),
+        proQuestion("An HTTP client follows a redirect from an approved host to an unapproved domain. What should happen?", "Stop before following it and record the redirect target for review", "Follow it automatically", "Send the authorization header", "Disable TLS verification"),
+        proQuestion("An API returns HTTP 200 with an unexpected JSON type. What is the correct conclusion?", "Transport succeeded but schema validation failed, so the data must not be trusted", "The enrichment is verified", "The API is compromised", "The result is malicious"),
+        proQuestion("A parser imports 97 of 100 records and rejects three malformed entries. What should the output state?", "Partial coverage, the rejected records and reasons, and limits on any aggregate conclusion", "Complete success", "Zero results", "A critical finding"),
+        proQuestion("A report generator detects an unredacted token. What should happen?", "Block publication, redact or invalidate the token and record the review action", "Publish for authenticity", "Move it to the executive summary", "Use it for enrichment"),
+        proQuestion("Two enrichment sources disagree about an indicator. What should the tool report?", "Both source results, freshness, confidence and unresolved conflict without inventing certainty", "Choose the more severe label", "Mark it malicious", "Delete the older result"),
+        proQuestion("A concurrent scan helper is interrupted. What makes resume safe?", "Per-target idempotent state, immutable run manifest and review before unfinished targets resume", "Start every target again", "Ignore previous output", "Increase concurrency"),
+        proQuestion("Which code-review finding is highest priority?", "A validation path that allows an out-of-scope target to reach an active network function", "Inconsistent comment punctuation", "A long variable name", "Missing terminal colors"),
+        proQuestion("What makes the capstone toolkit commercially credible?", "Central scope enforcement, safe defaults, tests, structured evidence, reproducible packaging, human approval and clear limitations", "Maximum automation", "Obfuscated source", "Live credentials")
+    ];
+
+    const finalQuestions = [
+        ...course.finalAssessment.questions,
+        ...integrativeScenarios
+    ];
+
+    course.finalAssessment = {
+        ...course.finalAssessment,
+        description:
+            "A professional scenario-based assessment covering safe Python tooling, scope enforcement, sockets, HTTP, structured parsing, evidence, enrichment and reliability engineering.",
+        duration: "75–90 minutes",
+        passingScore: 85,
+        allowRetry: true,
+        required: true,
+        questionCount: finalQuestions.length,
+        questions: balanceAnswerPositions(finalQuestions)
+    };
+
+    course.capstone = {
+        title: "Auditable Offensive-Security Automation Toolkit",
+        required: true,
+        estimatedTime: "14–18 hours",
+        scenario:
+            "Build a modular Python toolkit for an isolated CWS Academy assessment. The toolkit may perform approved low-impact discovery, HTTP inspection, structured parsing, enrichment and report drafting, but it must prevent scope expansion and keep active decisions under human control.",
+        deliverables: [
+            "Architecture and trust-boundary diagram",
+            "Threat model and explicit non-goals",
+            "Central scope and target-validation module",
+            "Dry-run manifest and human confirmation workflow",
+            "Resource-safe socket or approved endpoint checker",
+            "HTTP client with TLS verification, redirect policy, timeouts and redaction",
+            "Structured security-tool parser with provenance and partial-failure reporting",
+            "Optional approved enrichment adapter with caching and confidence handling",
+            "Structured evidence and report-draft generator",
+            "Unit, integration, malformed-input, timeout and interruption tests",
+            "Pinned dependencies and reproducible setup",
+            "Sanitized demonstration evidence and cleanup record",
+            "README, operator guide, limitations and extension guidance"
+        ],
+        rubric: {
+            architectureAndScopeSafety: 20,
+            implementationQuality: 20,
+            reliabilityAndTesting: 20,
+            evidenceAndAuditability: 15,
+            securityAndDataProtection: 10,
+            packagingAndDocumentation: 10,
+            professionalJudgment: 5
+        }
+    };
+
+    course.qualityVersion = "CWS-PRO-STANDARD-2026.2";
+
+}
+
+
+applyPythonOffensiveSecurityProStandard(pythonOffensiveSecurity);
