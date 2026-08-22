@@ -40,6 +40,11 @@
 
     <link
         rel="stylesheet"
+        href="../css/design-system.css"
+    >
+
+    <link
+        rel="stylesheet"
         href="../css/dashboard.css"
     >
 
@@ -55,7 +60,7 @@
     >
 </head>
 
-<body class="student-page">
+<body class="student-page progress-page">
 
 <!-- =========================================================
      HEADER
@@ -172,6 +177,18 @@
                 monitor completed work and continue building
                 your technical skills.
             </p>
+
+            <div class="progress-trust-row" aria-label="Progress verification status">
+                <span>
+                    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                    Server-verified progress
+                </span>
+
+                <span id="progressSyncStatus" role="status" aria-live="polite">
+                    <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+                    Syncing learning record
+                </span>
+            </div>
 
             <div class="progress-hero-actions">
 
@@ -312,6 +329,27 @@
 
         </article>
 
+
+        <article class="progress-stat-card">
+
+            <div class="progress-stat-icon">
+                <i class="fa-solid fa-certificate"></i>
+            </div>
+
+            <div>
+                <span>CERTIFICATES</span>
+
+                <strong id="certificatesEarned">
+                    0
+                </strong>
+
+                <small>
+                    Earned
+                </small>
+            </div>
+
+        </article>
+
     </section>
 
 
@@ -377,6 +415,77 @@
 
 
     <!-- =====================================================
+         PERFORMANCE + RECOMMENDED NEXT STEP
+    ====================================================== -->
+
+    <section class="progress-insight-grid" aria-label="Learning insights">
+
+        <article class="progress-insight-card assessment-insight-card">
+            <div class="progress-insight-heading">
+                <span>ASSESSMENT PERFORMANCE</span>
+                <i class="fa-solid fa-chart-column" aria-hidden="true"></i>
+            </div>
+
+            <h2>Verified assessment results</h2>
+            <p id="assessmentInsightText">
+                Complete an assessment to build your performance profile.
+            </p>
+
+            <div class="assessment-insight-values">
+                <div>
+                    <span>AVERAGE</span>
+                    <strong id="assessmentAverage">—</strong>
+                </div>
+                <div>
+                    <span>BEST SCORE</span>
+                    <strong id="assessmentBest">—</strong>
+                </div>
+                <div>
+                    <span>PASSED</span>
+                    <strong id="assessmentsPassed">0</strong>
+                </div>
+            </div>
+
+            <div class="assessment-score-track" aria-hidden="true">
+                <span id="assessmentScoreBar" style="width:0%"></span>
+            </div>
+
+            <a href="assessments.html" class="progress-inline-link">
+                View Assessments
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </article>
+
+        <article class="progress-insight-card recommended-insight-card">
+            <div class="progress-insight-heading">
+                <span>RECOMMENDED NEXT STEP</span>
+                <i class="fa-solid fa-compass" aria-hidden="true"></i>
+            </div>
+
+            <h2 id="recommendedNextTitle">Choose your first course</h2>
+            <p id="recommendedNextText">
+                Start a structured CWS Academy course and your next step will appear here.
+            </p>
+
+            <div class="recommended-context">
+                <i class="fa-solid fa-bullseye" aria-hidden="true"></i>
+                <span id="recommendedNextMeta">Personalised from your verified progress</span>
+            </div>
+
+            <a
+                id="recommendedNextLink"
+                href="student-courses.html"
+                class="progress-primary-btn"
+            >
+                Explore Courses
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </article>
+
+    </section>
+
+
+    <!-- =====================================================
          COURSE PROGRESS
     ====================================================== -->
 
@@ -411,13 +520,74 @@
         </div>
 
 
+        <div class="progress-toolbar" aria-label="Course progress controls">
+            <label class="progress-search-field" for="progressSearchInput">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input
+                    id="progressSearchInput"
+                    type="search"
+                    placeholder="Search active courses"
+                    autocomplete="off"
+                >
+            </label>
+
+            <label>
+                <span class="sr-only">Filter course progress</span>
+                <select id="progressStatusFilter">
+                    <option value="all">All statuses</option>
+                    <option value="in-progress">In progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </label>
+
+            <label>
+                <span class="sr-only">Sort course progress</span>
+                <select id="progressSortSelect">
+                    <option value="recent">Recently updated</option>
+                    <option value="progress-desc">Highest progress</option>
+                    <option value="progress-asc">Lowest progress</option>
+                    <option value="title">Course name</option>
+                </select>
+            </label>
+
+            <span id="courseProgressSummary" class="progress-toolbar-summary">
+                Loading progress…
+            </span>
+        </div>
+
+
+        <div id="progressLoading" class="progress-skeleton-grid" aria-live="polite">
+            <span class="sr-only">Loading course progress</span>
+            <div class="progress-skeleton-card"></div>
+            <div class="progress-skeleton-card"></div>
+            <div class="progress-skeleton-card"></div>
+        </div>
+
+
         <div
             id="courseProgressList"
             class="course-progress-grid"
+            aria-live="polite"
         >
 
             <!-- Course cards populated by JavaScript -->
 
+        </div>
+
+
+        <div
+            id="noCourseMatches"
+            class="progress-empty-state compact"
+            hidden
+        >
+            <div class="empty-icon">
+                <i class="fa-solid fa-filter-circle-xmark"></i>
+            </div>
+            <h3>No matching courses</h3>
+            <p>Change your search or status filter to view another course.</p>
+            <button type="button" id="clearProgressFilters" class="progress-secondary-btn">
+                Clear Filters
+            </button>
         </div>
 
 
@@ -543,7 +713,7 @@
 
         <div class="milestone-grid">
 
-            <article class="milestone-card">
+            <article class="milestone-card" data-milestone="started">
 
                 <div class="milestone-number">
                     01
@@ -569,7 +739,7 @@
             </article>
 
 
-            <article class="milestone-card">
+            <article class="milestone-card" data-milestone="lab">
 
                 <div class="milestone-number">
                     02
@@ -595,7 +765,7 @@
             </article>
 
 
-            <article class="milestone-card">
+            <article class="milestone-card" data-milestone="assessment">
 
                 <div class="milestone-number">
                     03
@@ -621,7 +791,7 @@
             </article>
 
 
-            <article class="milestone-card">
+            <article class="milestone-card" data-milestone="certificate">
 
                 <div class="milestone-number">
                     04
@@ -668,10 +838,10 @@
             </span>
 
             <h2>
-                Ready for your next challenge?
+                <span id="nextStepTitle">Ready for your next challenge?</span>
             </h2>
 
-            <p>
+            <p id="nextStepText">
                 Continue your course, practise your skills
                 in the labs and work toward your next
                 cybersecurity milestone.
@@ -682,6 +852,7 @@
         <div class="next-step-actions">
 
             <a
+                id="nextStepPrimaryLink"
                 href="student-courses.html"
                 class="progress-primary-btn"
             >
@@ -700,6 +871,18 @@
         </div>
 
     </section>
+
+
+    <div id="progressError" class="progress-error-banner" role="alert" hidden>
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+        <div>
+            <strong>Progress could not be refreshed</strong>
+            <span id="progressErrorText">Please check your connection and try again.</span>
+        </div>
+        <button type="button" id="retryProgressBtn" class="progress-secondary-btn">
+            Retry
+        </button>
+    </div>
 
 </main>
 
@@ -725,7 +908,7 @@
 
 <script
     type="module"
-    src="../js/progress.js"
+    src="../js/progress.js?v=20260822-premium-progress"
 ></script>
 
 <!-- CWS ASSISTANT -->
