@@ -137,6 +137,31 @@ export const pythonCybersecurityFundamentals = {
     access:
         "free",
 
+    certificateEligible:
+        true,
+
+    completionRules: {
+
+        minimumLessonCompletion:
+            100,
+
+        minimumModuleAssessmentScore:
+            70,
+
+        finalAssessmentPassingScore:
+            70,
+
+        requireAllModuleAssessments:
+            false,
+
+        requireRequiredLabs:
+            false,
+
+        requireFinalAssessment:
+            false
+
+    },
+
     icon:
         "fa-brands fa-python",
 
