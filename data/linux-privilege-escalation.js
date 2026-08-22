@@ -48,11 +48,11 @@ function lesson(id, title, what, why, how) {
             {title: "Trusted Execution", description: "A command, service, task or binary that executes with elevated rights."},
             {title: "Privilege Path", description: "A sequence of permissions or configuration weaknesses leading to higher privilege."}
         ],
-        quiz: [
+        quiz: balanceAnswerPositions([
             {question:`What should drive analysis of ${title}?`,options:["Current identity, permissions and evidence","Random exploit choice","Maximum impact","Guessing"],answer:0},
             {question:"What is the safest escalation workflow?",options:["Enumerate first, understand the path, then validate minimally","Run kernel exploits first","Modify system files immediately","Ignore current privileges"],answer:0},
             {question:"What makes an escalation finding useful?",options:["Clear evidence of the privilege path and remediation","Only a root shell screenshot","Only a tool name","Only a CVE"],answer:0}
-        ]
+        ])
     };
 }
 
@@ -97,6 +97,104 @@ function assessment(title) {
     };
 }
 
+
+function balanceAnswerPositions(questions = [], offset = 0) {
+    return questions.map((item, index) => {
+        const options = Array.isArray(item.options) ? [...item.options] : [];
+        if (!options.length) return item;
+        const answer = Number.isInteger(item.answer) ? item.answer : 0;
+        const shift = (index + offset) % options.length;
+        return {
+            ...item,
+            options: [...options.slice(shift), ...options.slice(0, shift)],
+            answer: (answer - shift + options.length) % options.length
+        };
+    });
+}
+
+
+function proQuestion(prompt, correct, ...distractors) {
+    return {
+        question: prompt,
+        options: [correct, ...distractors],
+        answer: 0
+    };
+}
+
+
+const linuxPrivilegeQuestionBanks = {
+    "module-01": [
+        proQuestion("What establishes the starting privilege context?", "Current UID, GID, supplementary groups, effective capabilities and session context", "Kernel version only", "Open ports only", "The hostname only"),
+        proQuestion("Why should local enumeration start read-only?", "It builds evidence and reduces unnecessary impact before validating a privilege path", "It guarantees root access", "It disables security controls", "It replaces scope"),
+        proQuestion("A process runs as root. What must be established before calling it exploitable?", "A lower-privilege identity can influence a trusted input, file, configuration or execution path", "The process has a PID", "The service listens locally", "The binary is old"),
+        proQuestion("Which system information is necessary for vulnerability research?", "Distribution, exact package or kernel build, architecture and relevant configuration", "Only uname output", "Only the desktop version", "Only available disk space"),
+        proQuestion("What makes an enumeration record reproducible?", "Timestamped commands, target context, raw output, interpretation and next hypothesis", "A root-shell screenshot", "A tool name", "A list copied from a checklist")
+    ],
+    "module-02": [
+        proQuestion("What does sudo -l reveal?", "Permitted commands, target users, tags and authentication conditions for the current identity", "Every SUID binary", "Kernel vulnerabilities", "Container mounts"),
+        proQuestion("Why is an allowed editor or interpreter high risk under sudo?", "It may provide indirect command execution or privileged file modification", "It changes DNS", "It cannot open files", "It removes environment variables"),
+        proQuestion("What is the safest sudo rule design?", "Use absolute paths, narrow arguments, least privilege and controlled environment behavior", "Allow all commands with NOPASSWD", "Trust the user's PATH", "Permit arbitrary wildcards"),
+        proQuestion("How can PATH affect privileged execution?", "An unqualified command may resolve to an attacker-controlled executable earlier in PATH", "PATH changes file ownership", "PATH disables sudo logging", "PATH affects DNS only"),
+        proQuestion("What should a sudo finding prove?", "The exact rule, controlled input and resulting privilege transition with minimum impact", "Only that sudo is installed", "Only a GTFOBins entry", "Only that the user knows a password")
+    ],
+    "module-03": [
+        proQuestion("What does SUID change during execution?", "The effective user identity of the process to the file owner", "The file contents", "The network route", "The current shell history"),
+        proQuestion("Why are custom SUID binaries reviewed carefully?", "Their code and trusted inputs may expose unintended privileged behavior", "All custom binaries are malware", "They cannot execute", "They only affect groups"),
+        proQuestion("What do Linux file capabilities provide?", "Selected kernel privileges without requiring full root identity", "Filesystem encryption", "DNS delegation", "Package signatures"),
+        proQuestion("A binary has cap_setuid. What must be validated?", "Whether an unprivileged user can cause it to change identity in an unintended way", "Only the filename", "Only the file size", "Whether it uses TCP"),
+        proQuestion("What is the strongest remediation for unnecessary special privilege?", "Remove the unneeded bit or capability and correct the program's design, ownership and access", "Hide the file", "Disable logging", "Add more users to its group")
+    ],
+    "module-04": [
+        proQuestion("When is a writable file a privilege-escalation path?", "A privileged process later trusts or executes attacker-controlled content from it", "Whenever any user can read it", "Whenever it is under /tmp", "Whenever it contains text"),
+        proQuestion("Why does directory writability matter?", "It may allow replacement, renaming or creation of trusted path entries even when a file itself is not writable", "It changes the kernel", "It always grants root", "It disables permissions"),
+        proQuestion("What should be checked for a systemd unit path?", "Unit ownership, drop-ins, referenced executables, environment files and writable parent paths", "Only the service name", "Only the PID", "Only the network port"),
+        proQuestion("What is a safe validation approach for a root-run writable script in a lab?", "Use an approved benign marker, capture the transition and restore the original state", "Delete the script", "Create persistence", "Modify unrelated services"),
+        proQuestion("What remediation addresses writable trusted execution?", "Correct ownership and permissions and eliminate unnecessary privileged trust in writable paths", "Rename the script", "Turn off auditing", "Add sudo access")
+    ],
+    "module-05": [
+        proQuestion("Why are root cron jobs security-sensitive?", "They execute scheduled commands with elevated privilege and may trust writable inputs", "Cron affects DNS only", "Cron never runs scripts", "Cron removes permissions"),
+        proQuestion("What should be reviewed in a scheduled command?", "Executable, arguments, PATH, working directory, wildcards, referenced files and ownership", "Only the schedule", "Only the username", "Only standard output"),
+        proQuestion("Why can wildcard expansion be dangerous in privileged tasks?", "Attacker-controlled filenames may be interpreted as options or arguments", "Wildcards encrypt files", "Wildcards disable cron", "Wildcards change DNS"),
+        proQuestion("What evidence proves a systemd timer relationship?", "Timer definition, triggered service, execution identity, referenced paths and observed controlled run", "Only systemctl list-timers", "Only the unit name", "Only a timestamp"),
+        proQuestion("What is the strongest scheduled-task remediation?", "Use absolute commands and safe arguments with protected ownership, environment and working paths", "Run more often", "Hide the schedule", "Disable journal logging")
+    ],
+    "module-06": [
+        proQuestion("What should guide handling of discovered credentials?", "Minimum necessary evidence, scope, secure storage, redaction and agreed notification", "Copy all secrets", "Reuse them broadly", "Publish them in the report"),
+        proQuestion("Why are configuration files a common secret source?", "Applications may store credentials, tokens or connection strings for automated access", "Configuration files are always world-writable", "Linux requires plaintext root passwords", "Config files bypass permissions"),
+        proQuestion("What is the safe way to demonstrate a readable secret?", "Prove exposure with redacted context and avoid authentication unless separately authorized", "Log into every related service", "Copy the complete file", "Commit the secret to notes"),
+        proQuestion("Why review environment and shell history cautiously?", "They can expose sensitive values but also contain unrelated private data", "They always grant root", "They are public by design", "They replace filesystem permissions"),
+        proQuestion("What remediation is strongest for an exposed reusable secret?", "Remove exposure, rotate the secret, reduce privilege and use an approved secret mechanism", "Rename the variable", "Delete all logs", "Reuse it in fewer scripts")
+    ],
+    "module-07": [
+        proQuestion("What makes a privileged service locally exploitable?", "A lower-privilege user can control trusted configuration, code, search paths, IPC or inputs", "The service has a network port", "The package is installed", "The process uses memory"),
+        proQuestion("Why is version matching alone insufficient for a package vulnerability?", "Backports, build options, configuration and reachable code paths affect applicability", "Versions are never useful", "Every CVE grants root", "Only kernels receive patches"),
+        proQuestion("What should be reviewed for custom local software?", "Ownership, permissions, update process, dependencies, execution identity and trusted inputs", "Only its name", "Only its source language", "Only its install date"),
+        proQuestion("A service executable is protected but its config directory is writable. What is the concern?", "The service may consume attacker-controlled configuration with elevated privilege", "The executable becomes encrypted", "The service loses its PID", "DNS stops working"),
+        proQuestion("What makes a service finding defensible?", "Trace the controllable input to privileged behavior and demonstrate only the approved minimum effect", "A process list", "A package age claim", "A scanner severity")
+    ],
+    "module-08": [
+        proQuestion("Why can Docker-group membership be equivalent to high host privilege?", "Control of the daemon may permit privileged containers or host filesystem access", "Docker changes DNS", "Containers cannot mount paths", "The group only reads logs"),
+        proQuestion("What weakens a container isolation boundary?", "Excess capabilities, privileged mode, dangerous sockets or sensitive host mounts", "A small image", "Read-only application files", "A non-root process"),
+        proQuestion("What should be verified before testing a container-to-host path?", "Authorization, runtime configuration, mount and capability scope, expected impact and recovery", "Only the container name", "Only the image tag", "Only network reachability"),
+        proQuestion("Why are mounted secrets security-sensitive?", "Container processes may read credentials that provide access beyond the intended workload", "Mounts are always encrypted", "Secrets cannot leave containers", "They affect performance only"),
+        proQuestion("What is a strong container remediation principle?", "Remove unnecessary daemon access, privilege, capabilities and host mounts and use least-privilege identities", "Add every user to docker", "Use privileged mode", "Mount the host root read-write")
+    ],
+    "module-09": [
+        proQuestion("Why should kernel exploitation be a last-resort validation method?", "It can be unstable and higher impact than configuration-based proof", "Kernel flaws never exist", "It cannot elevate privilege", "It only affects networks"),
+        proQuestion("What must be established before kernel exploit research is applicable?", "Exact kernel build, architecture, patch state, configuration, prerequisites and allowed risk", "Only uname -r", "Only the CVE score", "Only the exploit title"),
+        proQuestion("What is the safest alternative when kernel proof is too risky?", "Use authoritative applicability evidence and document the unvalidated impact and mitigation", "Run it anyway", "Report successful root access", "Disable monitoring"),
+        proQuestion("Which control reduces common local privilege paths most broadly?", "Least privilege with secure ownership, patched software and protected trusted execution", "Shared root access", "World-writable scripts", "Disabled logs"),
+        proQuestion("What belongs in a kernel-risk finding?", "Applicable build evidence, prerequisites, exposure, risk, non-destructive validation limits and remediation", "Only exploit code", "Only a crash screenshot", "Only the operating-system name")
+    ],
+    "module-10": [
+        proQuestion("What is the correct privilege-assessment sequence?", "Scope, identity baseline, systematic enumeration, path prioritization, minimal validation, cleanup, reporting and retest plan", "Kernel exploit first", "Collect secrets and then define scope", "Run scripts without interpretation"),
+        proQuestion("How should candidate privilege paths be prioritized?", "Evidence strength, required access, reliability, impact, safety and assessment objective", "Tool order", "Exploit popularity", "Maximum disruption"),
+        proQuestion("What must the capstone prove beyond obtaining root?", "The complete privilege transition, why it works, its realistic impact and how to remove and retest it", "Only the final UID", "Only a tool name", "Only a CVE"),
+        proQuestion("What belongs in the capstone artifact register?", "Every created or changed file, process, account, task or configuration item and its cleanup status", "Only screenshots", "Only shell history", "Only the report"),
+        proQuestion("What makes the capstone recruiter-ready?", "Systematic reasoning, sanitized evidence, minimal impact, prioritized remediation, verified cleanup and exact retest steps", "The largest enumeration output", "Multiple kernel exploits", "Unredacted secrets")
+    ]
+};
+
 export const linuxPrivilegeEscalation = {
     id: "linux-privilege-escalation",
     title: "Linux Privilege Escalation",
@@ -109,19 +207,65 @@ export const linuxPrivilegeEscalation = {
     icon: "fa-solid fa-terminal",
     description: "Learn Linux privilege escalation through systematic enumeration, sudo, SUID/SGID, capabilities, services, scheduled tasks, writable paths, credentials, containers, kernel risk and evidence-based remediation.",
     longDescription: "Linux Privilege Escalation is a CWS Pro specialization for students who already understand Linux fundamentals and ethical hacking. Students learn how privilege boundaries fail through misconfiguration, excessive permissions, unsafe trusted execution, exposed credentials, privileged services, containers and outdated kernels.",
-    duration: "55–70 Hours",
+    duration: "75–95 Hours",
     estimatedLessons: 30,
     certificateEligible: true,
-    learningStandard: "Deep Linux Enumeration • Privilege Paths • Hands-On Labs • Evidence • Remediation",
+    learningStandard: "Systematic Enumeration • Privilege-Path Validation • Hands-On Labs • Evidence • Cleanup • Remediation",
     prerequisites: ["Linux Fundamentals","Ethical Hacking"],
     recommendedPrerequisites: ["Bash & Linux Automation","Practical Penetration Testing"],
+    skills: [
+        "Linux local enumeration",
+        "Effective-privilege analysis",
+        "Sudo policy review",
+        "SUID, SGID and capability analysis",
+        "Trusted-path and writable-input analysis",
+        "Cron and systemd timer review",
+        "Secure credential-exposure validation",
+        "Privileged-service analysis",
+        "Container and Docker boundary review",
+        "Kernel-risk assessment",
+        "Privilege-path reporting and retesting"
+    ],
+    tools: [
+        "id and groups",
+        "sudo",
+        "find",
+        "getcap",
+        "ps",
+        "ss",
+        "systemctl",
+        "journalctl",
+        "Docker inspection commands",
+        "CWS privilege-path evidence workbook"
+    ],
+    assessmentStandard: "Every Pro assessment requires a traceable starting identity, controllable condition, trusted execution step, resulting privilege, minimal-impact proof, defensive root-cause fix, cleanup confirmation and retest method.",
+    standardReferences: [
+        {
+            title: "MITRE ATT&CK — Privilege Escalation",
+            organization: "MITRE",
+            url: "https://attack.mitre.org/tactics/TA0004/"
+        },
+        {
+            title: "MITRE ATT&CK — Enterprise Linux Matrix",
+            organization: "MITRE",
+            url: "https://attack.mitre.org/matrices/enterprise/linux/"
+        },
+        {
+            title: "NIST SP 800-115 — Technical Guide to Information Security Testing and Assessment",
+            organization: "National Institute of Standards and Technology",
+            url: "https://csrc.nist.gov/pubs/sp/800/115/final"
+        }
+    ],
     completionRules: {
         minimumLessonCompletion: 100,
-        minimumModuleAssessmentScore: 75,
-        finalAssessmentPassingScore: 80,
+        minimumModuleAssessmentScore: 80,
+        minimumRequiredLabScore: 80,
+        finalAssessmentPassingScore: 85,
+        capstonePassingScore: 85,
         requireAllModuleAssessments: true,
         requireRequiredLabs: true,
-        requireFinalAssessment: true
+        requireFinalAssessment: true,
+        requireCapstone: true
     },
     progression: {
         unlockMode: "sequential",
@@ -129,7 +273,9 @@ export const linuxPrivilegeEscalation = {
         allowAssessmentRetry: true,
         trackLessonCompletion: true,
         trackAssessmentScores: true,
-        trackLabCompletion: true
+        trackLabCompletion: true,
+        resumeLastLesson: true,
+        requireSequentialLabEvidence: true
     },
     objectives: [
         "Perform systematic Linux local enumeration.",
@@ -336,3 +482,179 @@ export const linuxPrivilegeEscalation = {
         ]
     }
 };
+
+
+/* =========================================================
+   CWS PRO COURSE STANDARDIZATION
+========================================================= */
+
+function applyLinuxPrivilegeProStandard(course) {
+    course.modules.forEach(module => {
+        module.learningOutcomes = [
+            `Analyze ${module.title} from a known low-privilege identity and authorized scope.`,
+            "Trace controllable input through trusted execution to the resulting privilege boundary.",
+            "Validate only the minimum effect required and preserve sanitized evidence.",
+            "Recommend a root-cause defensive fix and an exact retest procedure."
+        ];
+
+        module.professionalCompetencies = [
+            "Linux privilege-boundary reasoning",
+            "Evidence-driven local enumeration",
+            "Controlled validation and artifact management",
+            "Defensive remediation and retesting"
+        ];
+
+        module.moduleAssessment = {
+            title: `${module.title} — Pro Verified Assessment`,
+            type: "Module Assessment",
+            access: "pro",
+            passingScore: 80,
+            allowRetry: true,
+            showResults: true,
+            required: true,
+            questionCount: linuxPrivilegeQuestionBanks[module.id].length,
+            questions: balanceAnswerPositions(
+                linuxPrivilegeQuestionBanks[module.id],
+                module.number - 1
+            )
+        };
+
+        module.labActivities = (module.labActivities || []).map(activity => ({
+            ...activity,
+            access: "pro",
+            required: true,
+            minimumScore: 80,
+            prerequisites: [
+                "Completed lessons in this module",
+                "Isolated intentionally vulnerable Linux VM",
+                "Non-root training account",
+                "Verified snapshot or recovery point",
+                "Written fictional rules of engagement and artifact log"
+            ],
+            instructions: [
+                "Confirm the exact lab target, current identity, permitted techniques and stop conditions.",
+                `Apply the ${module.title} enumeration workflow using read-only checks first.`,
+                "Record each candidate condition separately and distinguish controllable input from assumptions.",
+                "Prioritize one intentionally vulnerable privilege path using evidence, safety and reliability.",
+                "Validate only the minimum benign effect required to prove the privilege transition.",
+                "Preserve sanitized raw evidence and write the complete privilege-path explanation.",
+                "Recommend root-cause remediation and an exact verification method.",
+                "Remove test artifacts, verify cleanup and restore the intended lab baseline."
+            ],
+            evidence: [
+                "Target, scope, current UID/GID/groups and timestamp",
+                "Read-only enumeration commands and raw output",
+                "Candidate-path comparison and prioritization reasoning",
+                "Starting identity, controllable condition and trusted execution step",
+                "Minimum benign proof of resulting privilege",
+                "Finding with impact, root cause, remediation and retest steps",
+                "Artifact register and verified cleanup evidence"
+            ],
+            successCriteria: "The learner proves one intentionally vulnerable privilege path from starting identity to elevated effect, remains within scope, avoids unrelated sensitive data, explains the root cause and verifies cleanup.",
+            cleanup: [
+                "Remove every marker, payload, temporary file, shell, task or configuration artifact created during validation.",
+                "Restore original files and permissions or revert to the verified snapshot.",
+                "Confirm that no test process or listener remains.",
+                "Retain only sanitized evidence with no reusable credentials or secrets."
+            ],
+            safety: "Use only an isolated purpose-built privilege-escalation lab or an environment covered by explicit written authorization. Never test production, retain discovered secrets, create persistence or use unstable kernel proof without specific approval and recovery controls.",
+            rubric: {
+                enumerationAndPrioritization: 20,
+                privilegePathAccuracy: 25,
+                minimalValidationAndEvidence: 25,
+                remediationAndRetest: 15,
+                safetyAndCleanup: 10,
+                documentation: 5
+            }
+        }));
+
+        module.lessons.forEach((item, lessonIndex) => {
+            item.performanceObjectives = [
+                `Explain ${item.title} and its Linux trust boundary accurately.`,
+                "Identify the starting privilege and evidence needed before validation.",
+                "Trace a lab condition from controllable input to elevated execution.",
+                "Define a minimal proof, cleanup method, defensive fix and retest."
+            ];
+            item.evidenceStandard = [
+                "Record current identity, host, scope and timestamp.",
+                "Preserve exact read-only commands and raw output.",
+                "Separate the vulnerable condition from the privilege-impact conclusion.",
+                "Capture only the minimum benign validation proof.",
+                "Redact credentials, tokens, personal information and unnecessary host details."
+            ];
+            item.completionCriteria = [
+                "The learner explains the path without relying on automated-tool labels.",
+                "The learner identifies at least one false-positive or non-exploitable condition.",
+                "The knowledge check is passed.",
+                "Associated evidence meets the Pro standard."
+            ];
+            item.quiz = balanceAnswerPositions(item.quiz, module.number + lessonIndex);
+        });
+    });
+
+    const integrativeScenarios = [
+        proQuestion("A root-owned script is not writable, but its parent directory is writable by the current user. What is the key risk?", "The file may be replaced or renamed so privileged execution uses attacker-controlled content", "The script becomes encrypted", "The kernel changes ownership", "The directory cannot affect execution"),
+        proQuestion("sudo permits one command with a fixed absolute path but unrestricted user-controlled arguments. What should be analyzed?", "Whether arguments expose file writes, command execution, environment control or other unintended privileged behavior", "Only the binary version", "Only the sudo password", "Only the command name"),
+        proQuestion("An automated script flags a SUID binary that is expected and not controllable by the user. What is the correct conclusion?", "It is an observation requiring behavior and input validation, not a confirmed escalation path", "Root access is confirmed", "Delete the binary", "Report critical immediately"),
+        proQuestion("A secret is discovered in a readable config file but authenticating with it is outside scope. What should happen?", "Capture minimal redacted exposure evidence, protect it and report the unvalidated potential impact", "Use it anyway", "Copy the full file", "Publish the secret"),
+        proQuestion("A privileged cron job executes a script by relative name. Which evidence is essential?", "Execution identity, PATH and working directory, attacker-controlled path entry and a safe observed run", "Only the cron schedule", "Only the script extension", "Only the hostname"),
+        proQuestion("Docker-group membership is found on a host. What should be proven before reporting host-level privilege?", "The current user can actually control the relevant daemon and the permitted lab validation shows the host boundary can be crossed", "Only that Docker is installed", "Only that containers are running", "Only the group name"),
+        proQuestion("A kernel CVE appears applicable, but the lab snapshot cannot be restored. What is the best professional choice?", "Do not run unstable proof; document applicability evidence, validation limits and remediation", "Run it repeatedly", "Report a successful exploit", "Disable logging"),
+        proQuestion("Two privilege paths exist: a safe writable-task proof and an unstable kernel exploit. Which should be prioritized?", "The lower-impact reliable path that meets the assessment objective", "The kernel exploit because it is advanced", "Both simultaneously", "Neither should be documented"),
+        proQuestion("A lab validation created a temporary root-owned marker. What closes the activity correctly?", "Remove it through the approved process, verify absence and record cleanup in the artifact register", "Leave it for the instructor", "Hide it", "Delete the artifact log"),
+        proQuestion("What is the strongest final Pro-course submission?", "A complete privilege-path narrative with systematic enumeration, sanitized proof, root-cause remediation, verified cleanup and exact retest steps", "A root-shell screenshot", "Raw automated enumeration output", "A list of CVEs")
+    ];
+
+    const finalQuestions = [
+        ...Object.values(linuxPrivilegeQuestionBanks).flatMap(bank => bank.slice(0, 2)),
+        ...integrativeScenarios
+    ];
+
+    course.finalAssessment = {
+        id: "final-assessment",
+        title: "CWS Linux Privilege Escalation Pro Final Assessment",
+        description: "A server-verified, scenario-based assessment covering Linux privilege context, sudo, special permissions, capabilities, trusted paths, scheduled execution, secrets, services, containers, kernel risk, hardening and professional evidence.",
+        type: "Final Assessment",
+        access: "pro",
+        duration: "75–90 minutes",
+        passingScore: 85,
+        allowRetry: true,
+        required: true,
+        questionCount: finalQuestions.length,
+        questions: balanceAnswerPositions(finalQuestions)
+    };
+
+    course.capstone = {
+        title: "Linux Privilege Boundary Assessment",
+        access: "pro",
+        required: true,
+        minimumScore: 85,
+        estimatedTime: "12–16 hours",
+        scenario: "Assess a purpose-built Linux host containing multiple intentional local misconfigurations. Identify, compare and safely validate privilege paths from a non-root starting identity.",
+        deliverables: [
+            "Written fictional scope, stop conditions and starting identity",
+            "Systematic local-enumeration workbook",
+            "Privilege-path map covering sudo, permissions, tasks, secrets, services and container boundaries",
+            "Candidate-path prioritization matrix",
+            "Minimum-impact validation of two distinct approved paths",
+            "Sanitized evidence pack and complete testing timeline",
+            "Two professional findings with root cause and impact",
+            "Layered hardening recommendations and exact retest steps",
+            "Artifact register and verified cleanup report",
+            "Executive summary with limitations and residual risk"
+        ],
+        rubric: {
+            methodologyAndEnumeration: 20,
+            privilegePathAccuracy: 25,
+            validationAndEvidence: 20,
+            remediationAndRetesting: 15,
+            safetyAndCleanup: 10,
+            professionalReporting: 10
+        }
+    };
+
+    course.qualityVersion = "CWS-PRO-STANDARD-2026.2";
+}
+
+
+applyLinuxPrivilegeProStandard(linuxPrivilegeEscalation);
