@@ -1,15 +1,3 @@
-/*
- * One-time CWS Academy protected-content importer.
- *
- * Dry-run (default): npm run migrate:protected:dry-run
- * Apply:             npm run migrate:protected
- *
- * Authentication uses Firebase Application Default Credentials. This script
- * must run before the full course files are removed from the public repository.
- */
-
-/* eslint-disable max-len */
-
 import {createRequire} from "node:module";
 
 import {coursePath} from "../../data/courses.js";
