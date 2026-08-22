@@ -102,11 +102,189 @@ function lesson(
 
         quiz:
             extra.quiz ||
-            []
+            balanceAnswerPositions([
+                {
+                    question:
+                        `Which statement best demonstrates understanding of ${title}?`,
+                    options: [
+                        `Explain its purpose, dependencies and expected evidence in an Active Directory environment`,
+                        "Memorize the feature name without testing it",
+                        "Change production settings before collecting a baseline",
+                        "Assume one successful command proves the entire domain is healthy"
+                    ],
+                    answer:
+                        0
+                },
+                {
+                    question:
+                        `What is the safest way to practise ${title}?`,
+                    options: [
+                        "Use an isolated lab, predict the result, collect evidence and document any change",
+                        "Make unapproved changes in a workplace domain",
+                        "Disable logging before testing",
+                        "Use shared privileged accounts"
+                    ],
+                    answer:
+                        0
+                },
+                {
+                    question:
+                        `What should a learner record after working with ${title}?`,
+                    options: [
+                        "The intended state, observed result, supporting evidence and security implication",
+                        "Only the name of the tool",
+                        "Only whether the command ran",
+                        "No evidence if the result looked correct"
+                    ],
+                    answer:
+                        0
+                }
+            ])
 
     };
 
 }
+
+
+/* =========================================================
+   ASSESSMENT QUALITY HELPERS
+========================================================= */
+
+function balanceAnswerPositions(
+    questions = [],
+    offset = 0
+) {
+
+    return questions.map(
+        (question, index) => {
+
+            const options =
+                Array.isArray(question.options)
+                    ? [...question.options]
+                    : [];
+
+            if (!options.length) {
+                return question;
+            }
+
+            const originalAnswer =
+                Number(question.answer) || 0;
+
+            const shift =
+                (
+                    index +
+                    offset
+                ) % options.length;
+
+            const rotated = [
+                ...options.slice(shift),
+                ...options.slice(0, shift)
+            ];
+
+            return {
+                ...question,
+                options:
+                    rotated,
+                answer:
+                    (
+                        originalAnswer -
+                        shift +
+                        options.length
+                    ) % options.length
+            };
+
+        }
+    );
+
+}
+
+
+function question(question, correct, ...distractors) {
+
+    return {
+        question,
+        options: [correct, ...distractors],
+        answer: 0
+    };
+
+}
+
+
+const fundamentalsQuestionBanks = {
+
+    "module-01": [
+        question("What is the primary role of AD DS?", "Provide centralized directory, identity and domain authentication services", "Replace every endpoint security control", "Provide public DNS hosting only", "Eliminate the need for authorization"),
+        question("What is the forest in AD DS?", "The top-level security and directory boundary containing one or more domains", "A collection of local Windows accounts", "A DNS cache on one client", "A single Organizational Unit"),
+        question("Why are domain controllers high-value systems?", "They store directory data and participate in domain authentication and authorization", "They only hold printer queues", "They cannot affect other computers", "They contain no identity information"),
+        question("What evidence best confirms the current domain context?", "Corroborated domain, forest and domain-controller information from approved tools", "A guessed domain name", "One old screenshot", "The client wallpaper"),
+        question("What should precede an AD administrative change?", "A defined purpose, authorization, baseline and recovery plan", "Disabling audit logs", "Sharing a Domain Admin account", "Changing several controls simultaneously")
+    ],
+
+    "module-02": [
+        question("Why must AD clients normally use the domain DNS service?", "They use DNS service records to locate domain controllers and AD services", "DNS creates group memberships", "DNS replaces Kerberos", "DNS stores NTFS permissions"),
+        question("What do AD-related SRV records advertise?", "The location of services such as LDAP and Kerberos", "User passwords", "File contents", "Local firewall rules"),
+        question("A client cannot locate a domain controller. What should be checked first?", "IP configuration, configured DNS server and AD DNS resolution", "Desktop theme", "Printer toner", "Browser bookmarks"),
+        question("What is weak troubleshooting practice?", "Changing DNS, firewall and identity settings at the same time", "Recording the failing lookup", "Comparing expected and observed records", "Testing resolution before domain join"),
+        question("Which result is the strongest DNS evidence?", "The client resolves the domain and required service records through the intended DNS server", "A public website loads", "The host has any IP address", "The user remembers the domain name")
+    ],
+
+    "module-03": [
+        question("Why use security groups?", "Assign permissions to roles or collections of principals instead of managing each identity separately", "Store DNS zones", "Replace user authentication", "Install operating systems"),
+        question("Why must nested membership be reviewed?", "It can create indirect effective access", "It only changes display names", "It cannot affect permissions", "It disables replication"),
+        question("What is a computer object?", "A domain security principal representing a joined computer", "A DNS forwarder", "A Group Policy report", "A local text file"),
+        question("What supports least privilege?", "Role-based groups with reviewed membership and narrowly scoped permissions", "Adding every user to Domain Admins", "Shared administrator accounts", "Permanent broad access"),
+        question("What evidence should accompany a group change?", "Approved purpose, before-and-after membership and verification of effective access", "Only the operator name", "No record for small changes", "A password list")
+    ],
+
+    "module-04": [
+        question("What is an OU primarily used for?", "Organizing objects and scoping administration or policy", "Creating a separate forest", "Replacing DNS", "Storing Kerberos tickets"),
+        question("What is delegation?", "Granting defined administrative rights over a controlled scope", "Giving everyone Domain Admin", "Disabling access control", "Copying a user password"),
+        question("What is a safe delegation design?", "Grant the minimum task-specific rights to a role group at the narrowest practical scope", "Delegate directly to many personal accounts", "Use inherited full control everywhere", "Avoid documenting delegated rights"),
+        question("Why review inheritance?", "Inherited permissions can extend rights beyond the intended object", "Inheritance only affects DNS", "Inheritance never changes access", "It is cosmetic"),
+        question("How should delegated access be verified?", "Test the authorized task and confirm unrelated privileged actions remain denied", "Assume the wizard is correct", "Test with Domain Admin only", "Disable auditing")
+    ],
+
+    "module-05": [
+        question("What is a GPO?", "A collection of policy settings linked to AD scopes and processed by applicable users or computers", "A password database", "A DNS record", "A local group"),
+        question("Which factors influence effective Group Policy?", "Scope, link order, inheritance, security filtering and processing context", "Screen resolution only", "Browser history", "File extension"),
+        question("Which tool can show applied policy for a user or computer?", "gpresult", "ping", "format", "whois"),
+        question("Why test a GPO in a controlled OU first?", "To limit unintended impact and verify the result before wider deployment", "To bypass change approval", "To disable replication", "To hide policy changes"),
+        question("What makes GPO evidence complete?", "The intended setting, scope, effective result and affected identity or computer", "Only the GPO name", "Only a screenshot of the editor", "Only the domain name")
+    ],
+
+    "module-06": [
+        question("What does LDAP provide in AD DS?", "A protocol for querying and working with directory objects and attributes", "File encryption", "Packet routing", "Disk formatting"),
+        question("What is a distinguished name?", "A path-like identifier describing an object's location in the directory hierarchy", "A password hash", "A Kerberos ticket", "An IP route"),
+        question("Why should LDAP queries be scoped?", "To retrieve only the required attributes and objects while reducing noise and exposure", "To delete unrelated objects faster", "To bypass permissions", "To disable auditing"),
+        question("What is RootDSE useful for?", "Discovering directory naming contexts and server capabilities", "Storing user files", "Issuing DHCP leases", "Managing local printers"),
+        question("What is a safe initial LDAP exercise?", "Perform an authorized read-only query and validate returned attributes", "Modify production attributes immediately", "Query an unrelated organization", "Export confidential data without approval")
+    ],
+
+    "module-07": [
+        question("What is Kerberos used for in modern AD domains?", "Ticket-based authentication", "DNS zone transfer", "File compression", "Patch deployment"),
+        question("What does a TGT allow a client to request?", "Service tickets from the ticket-granting service", "A new forest automatically", "NTFS ownership", "A DNS forwarder"),
+        question("Why is time synchronization important to Kerberos?", "Large clock differences can cause ticket validation to fail", "It creates group memberships", "It replaces passwords", "It controls DHCP scopes"),
+        question("Why does NTLM still matter?", "Legacy systems and fallback conditions may still use it and increase authentication risk", "It is the only AD protocol", "It provides DNS", "It cannot be monitored"),
+        question("Which evidence helps troubleshoot authentication?", "Identity context, ticket state, relevant event logs, DNS and time status", "Only the user's wallpaper", "Only a reboot", "Only the password length")
+    ],
+
+    "module-08": [
+        question("What is the core principle for privileged AD accounts?", "Use separate, tightly controlled accounts only where required", "Use privileged accounts for email and web browsing", "Share one administrator account", "Disable auditing"),
+        question("Why protect service accounts?", "They may hold long-lived credentials and meaningful access", "They never authenticate", "They only store DNS", "They cannot receive permissions"),
+        question("What reduces local administrator password reuse risk?", "Windows LAPS or an equivalent managed unique-password process", "One shared local password", "Writing passwords in AD descriptions", "Disabling rotation"),
+        question("What is a useful security baseline?", "A documented expected state against which configuration and privilege can be reviewed", "An undocumented one-time scan", "A list of usernames only", "A disabled log source"),
+        question("What should a basic AD security review prioritize?", "Privileged groups, delegation, service accounts, domain controllers, legacy authentication and audit coverage", "Desktop backgrounds", "Public website colours", "Printer models only")
+    ],
+
+    "module-09": [
+        question("What is the safest network design for the course lab?", "An isolated host-only or otherwise controlled network with no unintended external reachability", "Bridging deliberately vulnerable systems to a workplace LAN", "Using unknown public targets", "Disabling host protections without a plan"),
+        question("What should be configured before promoting a domain controller?", "Stable network settings, correct hostname, intended DNS design and recovery preparation", "A shared administrator password", "Unrestricted Internet exposure", "Disabled logging"),
+        question("What confirms a successful domain join?", "The client resolves the domain, joins successfully and supports an authorized domain-user sign-in", "The client can open a text editor", "The desktop changes colour", "A local user logs in"),
+        question("What belongs in the capstone evidence pack?", "Topology, configuration, identity structure, policy results, authentication evidence and security observations", "Only one screenshot", "Only passwords", "Only a tool list"),
+        question("What makes the lab professionally useful?", "Repeatable build notes, validation evidence, safe cleanup and an honest limitations section", "Unrecorded changes", "Maximum privileges for all users", "No success criteria")
+    ]
+
+};
 
 
 /* =========================================================
@@ -150,6 +328,125 @@ export const activeDirectoryFundamentals = {
 
     duration:
         "40–50 Hours",
+
+    estimatedLessons:
+        28,
+
+    certificateEligible:
+        true,
+
+    prerequisites: [
+        "Windows Fundamentals",
+        "Networking Fundamentals"
+    ],
+
+    recommendedPrerequisites: [
+        "Cybersecurity Fundamentals",
+        "Linux Fundamentals"
+    ],
+
+    skills: [
+        "AD DS architecture",
+        "Domain DNS",
+        "Identity administration",
+        "Group design",
+        "OU and delegation planning",
+        "Group Policy validation",
+        "LDAP fundamentals",
+        "Kerberos and NTLM foundations",
+        "AD security baselining",
+        "Technical evidence and documentation"
+    ],
+
+    tools: [
+        "Windows Server 2025 or 2022",
+        "Windows 11",
+        "Server Manager",
+        "Active Directory Users and Computers",
+        "Group Policy Management Console",
+        "DNS Manager",
+        "PowerShell ActiveDirectory module",
+        "Event Viewer",
+        "gpresult",
+        "klist"
+    ],
+
+    trailer: {
+        videoUrl:
+            "",
+        poster:
+            "../assets/images/covers/active-directory-fundamentals.webp",
+        duration:
+            "2–3 minute preview"
+    },
+
+    completionRules: {
+        minimumLessonCompletion:
+            100,
+        minimumModuleAssessmentScore:
+            75,
+        finalAssessmentPassingScore:
+            80,
+        requireAllModuleAssessments:
+            true,
+        requireRequiredLabs:
+            true,
+        requireFinalAssessment:
+            true
+    },
+
+    progression: {
+        unlockMode:
+            "sequential",
+        allowLessonReview:
+            true,
+        allowAssessmentRetry:
+            true,
+        trackLessonCompletion:
+            true,
+        trackAssessmentScores:
+            true,
+        trackLabCompletion:
+            true
+    },
+
+    assessmentStandard: {
+        modulePassingScore:
+            75,
+        finalPassingScore:
+            80,
+        evidenceRequired:
+            true,
+        retryGuidance:
+            "Review the relevant lesson, correct the lab evidence and then retry."
+    },
+
+    standardReferences: [
+        {
+            title:
+                "Microsoft — Active Directory Domain Services overview",
+            url:
+                "https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview"
+        },
+        {
+            title:
+                "Microsoft — ActiveDirectory PowerShell module",
+            url:
+                "https://learn.microsoft.com/powershell/module/activedirectory/"
+        },
+        {
+            title:
+                "Microsoft — Kerberos authentication overview",
+            url:
+                "https://learn.microsoft.com/windows-server/security/kerberos/kerberos-authentication-overview"
+        },
+        {
+            title:
+                "Microsoft — Best practices for securing Active Directory",
+            url:
+                "https://learn.microsoft.com/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory"
+        }
+    ],
 
     learningStandard:
         "Deep Explanation • Enterprise Examples • Security Context • Troubleshooting • Practice",
@@ -1963,3 +2260,253 @@ DNS:
     ]
 
 };
+
+
+/* =========================================================
+   CWS COURSE STANDARDIZATION
+   Converts embedded lesson labs into tracked activities and
+   adds server-verifiable assessments without duplicating the
+   lesson content.
+========================================================= */
+
+function applyFundamentalsStandard(course) {
+
+    course.modules.forEach(
+        module => {
+
+            const lessonLabs =
+                module.lessons
+                    .filter(
+                        item =>
+                            item.lab
+                    )
+                    .map(
+                        (item, index) => ({
+                            id:
+                                `activity-${String(index + 1).padStart(2, "0")}`,
+                            title:
+                                item.lab.title,
+                            type:
+                                "Guided Administration Lab",
+                            access:
+                                "free",
+                            duration:
+                                item.lab.duration ||
+                                "60–90 minutes",
+                            objective:
+                                item.lab.objective ||
+                                `Apply ${module.title} safely in an isolated domain lab.`,
+                            scenario:
+                                "You are the junior identity administrator for the fictional CWS Academy domain. Validate the requested configuration without affecting systems outside the approved lab.",
+                            prerequisites: [
+                                "Completed lessons in this module",
+                                "Isolated Windows Server and Windows client lab",
+                                "A snapshot or other recovery point",
+                                "Approved non-production training accounts"
+                            ],
+                            instructions:
+                                Array.isArray(item.lab.steps)
+                                    ? item.lab.steps
+                                    : [],
+                            evidence: [
+                                "Before-state or baseline",
+                                "Relevant command or administrative-console result",
+                                "Expected-versus-observed comparison",
+                                "Verification after the change",
+                                "Short security and troubleshooting note"
+                            ],
+                            successCriteria:
+                                item.lab.successCriteria ||
+                                "The intended result is verified and supported by repeatable evidence.",
+                            reflection: [
+                                "Which AD dependency was essential to the result?",
+                                "What could fail if the change were applied at the wrong scope?",
+                                "Which evidence would help another administrator reproduce or troubleshoot the result?"
+                            ],
+                            cleanup: [
+                                "Remove any temporary training objects that are no longer needed.",
+                                "Restore the snapshot if the exercise changed the intended baseline.",
+                                "Retain only sanitized evidence with no reusable credentials."
+                            ],
+                            safety:
+                                "Perform this activity only in an isolated lab or an environment where you have explicit administrative authorization."
+                        })
+                    );
+
+
+            module.labActivities =
+                lessonLabs;
+
+            module.practiceActivities =
+                Array.isArray(module.practiceActivities)
+                    ? module.practiceActivities
+                    : [];
+
+            module.labs =
+                lessonLabs.length;
+
+            module.assessments =
+                1;
+
+            module.moduleAssessment = {
+                title:
+                    `${module.title} — Verified Module Assessment`,
+                type:
+                    "Module Assessment",
+                passingScore:
+                    75,
+                allowRetry:
+                    true,
+                showResults:
+                    true,
+                questionCount:
+                    fundamentalsQuestionBanks[module.id].length,
+                questions:
+                    balanceAnswerPositions(
+                        fundamentalsQuestionBanks[module.id],
+                        module.number - 1
+                    )
+            };
+
+
+            module.lessons.forEach(
+                item => {
+
+                    item.performanceObjectives = [
+                        `Explain ${item.title} accurately without relying on memorized wording.`,
+                        "Apply the concept in the isolated CWS domain lab.",
+                        "Collect evidence that distinguishes intended behavior from a configuration problem.",
+                        "Describe one security implication and one corrective control."
+                    ];
+
+                    item.evidenceStandard = [
+                        "State the expected result before testing.",
+                        "Capture the identity, system and scope being examined.",
+                        "Record the observed result and relevant timestamp.",
+                        "Explain whether the evidence supports the conclusion.",
+                        "Remove or mask credentials and sensitive values."
+                    ];
+
+                    item.completionCriteria = [
+                        "Lesson objectives can be explained in the learner's own words.",
+                        "The knowledge check is passed.",
+                        "Any associated lab evidence meets the stated success criteria."
+                    ];
+
+                    const supplementalQuestions = [
+                        question(
+                            `Which result best proves practical understanding of ${item.title}?`,
+                            "A predicted outcome that is confirmed with repeatable, correctly scoped evidence",
+                            "A command copied without interpretation",
+                            "An undocumented configuration change",
+                            "A successful sign-in using a shared administrator account"
+                        ),
+                        question(
+                            `What should happen when evidence for ${item.title} conflicts?`,
+                            "Recheck scope and dependencies, collect another evidence source and document the uncertainty",
+                            "Ignore the conflicting result",
+                            "Change several settings at once",
+                            "Present the preferred result as fact"
+                        )
+                    ];
+
+                    const requiredSupplement =
+                        Math.max(
+                            0,
+                            3 - item.quiz.length
+                        );
+
+                    item.quiz =
+                        balanceAnswerPositions(
+                            [
+                                ...item.quiz,
+                                ...supplementalQuestions.slice(
+                                    0,
+                                    requiredSupplement
+                                )
+                            ],
+                            module.number
+                        );
+
+                }
+            );
+
+        }
+    );
+
+
+    const scenarioQuestions = [
+        question("A client can reach the domain controller by IP but cannot join the domain by name. What is the best first hypothesis?", "The client DNS configuration or AD service-record resolution is incorrect", "The forest has too many OUs", "The user needs Domain Admin", "The client requires a public DNS server"),
+        question("A help-desk role must reset passwords only for users in one OU. What is the best design?", "Delegate only the required reset rights to a help-desk group at that OU", "Add every help-desk user to Domain Admins", "Share the built-in Administrator account", "Grant Full Control at the domain root"),
+        question("A new GPO appears linked but a client does not receive it. What evidence should be collected first?", "The client and user scope, gpresult output, link location, filtering and replication state", "Only a screenshot of the GPO editor", "Only the user's password", "Only the client IP address")
+    ];
+
+    const finalQuestions = [
+        ...Object.values(fundamentalsQuestionBanks)
+            .flatMap(
+                bank =>
+                    bank.slice(0, 3)
+            ),
+        ...scenarioQuestions
+    ];
+
+    course.finalAssessment = {
+        title:
+            "CWS Active Directory Fundamentals Final Assessment",
+        description:
+            "Validate understanding of AD DS architecture, DNS, identity objects, delegation, Group Policy, LDAP, authentication, security controls and evidence-based administration.",
+        type:
+            "Final Assessment",
+        passingScore:
+            80,
+        allowRetry:
+            true,
+        required:
+            true,
+        questionCount:
+            finalQuestions.length,
+        questions:
+            balanceAnswerPositions(
+                finalQuestions
+            )
+    };
+
+    course.capstone = {
+        title:
+            "Build, Validate and Review an Isolated AD Domain",
+        required:
+            true,
+        estimatedTime:
+            "5–7 hours",
+        deliverables: [
+            "Network and directory architecture diagram",
+            "Domain build and recovery notes",
+            "OU, group and delegation design",
+            "GPO purpose and effective-policy evidence",
+            "DNS and Kerberos validation evidence",
+            "Security baseline with prioritized improvements",
+            "Retest checklist"
+        ],
+        rubric: {
+            technicalAccuracy:
+                30,
+            verificationEvidence:
+                25,
+            securityReasoning:
+                20,
+            troubleshootingMethod:
+                15,
+            documentationQuality:
+                10
+        }
+    };
+
+    course.qualityVersion =
+        "CWS-COURSE-STANDARD-2026.2";
+
+}
+
+
+applyFundamentalsStandard(
+    activeDirectoryFundamentals
+);
