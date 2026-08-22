@@ -962,14 +962,69 @@ async function renderQrCode() {
     }
 
 
+    let qrCodeLibrary =
+        window.QRCode;
+
+
+    /*
+     * The qrcode npm package does not publish the old
+     * /build/qrcode.js browser file. Load its browser API from
+     * jsDelivr's ESM endpoint when no compatible global is present.
+     */
+
+    if (
+        !qrCodeLibrary ||
+        typeof qrCodeLibrary
+            .toCanvas !==
+        "function"
+    ) {
+
+        try {
+
+            const qrCodeModule =
+                await import(
+                    "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm"
+                );
+
+
+            qrCodeLibrary =
+                qrCodeModule.default ||
+                qrCodeModule;
+
+
+            if (
+                qrCodeLibrary &&
+                typeof qrCodeLibrary
+                    .toCanvas ===
+                "function"
+            ) {
+
+                window.QRCode =
+                    qrCodeLibrary;
+
+            }
+
+        }
+        catch (error) {
+
+            console.warn(
+                "[CWS Certificate] QR library loading failed:",
+                error
+            );
+
+        }
+
+    }
+
+
     /*
      * qrcode may not load if the CDN is blocked.
      * Do not allow that to break the certificate page.
      */
 
     if (
-        !window.QRCode ||
-        typeof window.QRCode
+        !qrCodeLibrary ||
+        typeof qrCodeLibrary
             .toCanvas !==
         "function"
     ) {
@@ -1027,7 +1082,7 @@ async function renderQrCode() {
 
     try {
 
-        await window.QRCode.toCanvas(
+        await qrCodeLibrary.toCanvas(
             certificateQr,
             currentVerificationUrl,
             {
@@ -1474,7 +1529,7 @@ async function downloadCertificatePdf() {
 
         const usePrint =
             window.confirm(
-                "The direct PDF generator is unavailable in this browser. Would you like to open the browser Print dialog so you can choose â€œSave as PDFâ€ instead?"
+                "The direct PDF generator is unavailable in this browser. Would you like to open the browser Print dialog so you can choose “Save as PDF” instead?"
             );
 
 
