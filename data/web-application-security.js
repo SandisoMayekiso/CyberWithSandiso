@@ -401,6 +401,131 @@ function buildAssessment(
 
 
 /* =========================================================
+   PRO ASSESSMENT QUALITY HELPERS
+========================================================= */
+
+function balanceAnswerPositions(questions = [], offset = 0) {
+
+    return questions.map((item, index) => {
+        const options = Array.isArray(item.options)
+            ? [...item.options]
+            : [];
+        if (!options.length) {
+            return item;
+        }
+        const answer = Number.isInteger(item.answer)
+            ? item.answer
+            : 0;
+        const shift = (index + offset) % options.length;
+        return {
+            ...item,
+            options: [
+                ...options.slice(shift),
+                ...options.slice(0, shift)
+            ],
+            answer: (answer - shift + options.length) % options.length
+        };
+    });
+
+}
+
+
+function proQuestion(prompt, correct, ...distractors) {
+    return {
+        question: prompt,
+        options: [correct, ...distractors],
+        answer: 0
+    };
+}
+
+
+const webSecurityBlueprints = {
+    "module-01": {
+        focus: "trace the complete HTTP request, response, state and trust-boundary flow before security testing",
+        control: "establish canonical routing, TLS, header, cookie and server-side input expectations",
+        evidence: "method, scheme, host, path, parameters, relevant headers, body, status, timing and session context",
+        failure: "separate network, TLS, HTTP, application and authorization failures before drawing a conclusion",
+        remediation: "make security decisions server-side and define explicit trust boundaries and safe defaults"
+    },
+    "module-02": {
+        focus: "use an intercepting proxy to reproduce normal traffic and change one controlled variable at a time",
+        control: "scope the proxy, protect test credentials, disable unsafe automation and preserve unmodified baselines",
+        evidence: "paired baseline and modified requests with account context, timestamps, responses and analyst notes",
+        failure: "restore the original request, reduce variables and verify proxy, session and application state",
+        remediation: "translate observed behavior into the missing server-side control rather than a proxy-specific fix"
+    },
+    "module-03": {
+        focus: "verify authentication and session lifecycle controls using approved test identities",
+        control: "enforce secure credential handling, MFA or equivalent assurance, session rotation, timeout, revocation and cookie protection",
+        evidence: "controlled account states, login and logout flows, session identifiers redacted, timestamps and post-revocation behavior",
+        failure: "stop tests that risk lockout or real accounts and coordinate rate, recovery and monitoring behavior",
+        remediation: "fix identity verification and session lifecycle at the server, then invalidate affected sessions and credentials"
+    },
+    "module-04": {
+        focus: "test object, function and workflow authorization across controlled identities and roles",
+        control: "perform server-side authorization on every request using the authenticated subject and requested action or object",
+        evidence: "two-account or two-role baseline, modified identifier or action, response, affected object and access outcome",
+        failure: "treat UI restrictions or a 200 status as inconclusive until the protected result and identity context are verified",
+        remediation: "centralize deny-by-default authorization and test horizontal, vertical and contextual boundaries"
+    },
+    "module-05": {
+        focus: "verify how server-side components validate, interpret and safely use untrusted input",
+        control: "use allowlist validation, parameterized queries, safe APIs, output encoding and least-privilege service identities",
+        evidence: "normal request, one controlled mutation, server behavior, error or timing evidence, context and minimum-impact proof",
+        failure: "stop when behavior is ambiguous or unstable and distinguish parser, validation, database, command and business-logic effects",
+        remediation: "remove unsafe interpreter boundaries and apply the correct contextual defense at the point of use"
+    },
+    "module-06": {
+        focus: "determine whether attacker-controlled data reaches an executable browser context",
+        control: "apply context-aware output encoding, safe DOM APIs, sanitization where appropriate and a defense-in-depth CSP",
+        evidence: "source, sink, exact HTML or DOM context, encoded response, safe marker execution result and affected origin",
+        failure: "do not label reflection as XSS until browser interpretation and executable context are verified",
+        remediation: "fix the unsafe source-to-sink flow and add regression tests for each rendering context"
+    },
+    "module-07": {
+        focus: "verify cross-origin and cross-site trust decisions for state-changing requests and data access",
+        control: "use anti-CSRF tokens or same-site defenses, origin validation and narrow CORS allowlists with correct credential policy",
+        evidence: "request origin, cookies, preflight where relevant, response headers, state change and controlled cross-origin result",
+        failure: "distinguish browser-enforced read restrictions from whether a request or state change was actually sent",
+        remediation: "bind sensitive actions to authenticated intent and configure origin sharing only for required trusted consumers"
+    },
+    "module-08": {
+        focus: "test uploads, downloads and server-side path handling without exposing or altering real data",
+        control: "generate server-side filenames, store outside executable paths, validate content and enforce canonical path containment",
+        evidence: "controlled file, metadata, storage or retrieval behavior, path normalization result and minimum approved proof",
+        failure: "stop on unexpected execution, overwrite or sensitive-file access and preserve the exact request without expanding impact",
+        remediation: "separate user content from executable code, enforce storage and path boundaries and scan or transform content safely"
+    },
+    "module-09": {
+        focus: "assess API authentication, authorization, schema, object exposure, rate and business-flow controls",
+        control: "validate tokens, authorize every object and operation, constrain schemas, limit abuse and minimize response data",
+        evidence: "endpoint, method, identity, object, request schema, response fields, rate context and reproducible comparison",
+        failure: "treat undocumented behavior as a hypothesis and avoid bulk enumeration or real data collection",
+        remediation: "apply deny-by-default object and function authorization plus strict input and output schemas"
+    },
+    "module-10": {
+        focus: "execute a complete web assessment from mapping and threat hypotheses to verified findings and retesting",
+        control: "maintain scope, test accounts, data-minimization rules, evidence provenance, stop conditions and artifact cleanup",
+        evidence: "application map, role matrix, request library, test log, confirmed findings, false positives, report and retest plan",
+        failure: "pause on scope, availability, account or sensitive-data risk and record incomplete coverage honestly",
+        remediation: "prioritize root causes, assign ownership and define exact technical and business-logic retest criteria"
+    }
+};
+
+
+function buildWebSecurityQuestionBank(moduleId, moduleTitle) {
+    const item = webSecurityBlueprints[moduleId];
+    return [
+        proQuestion(`What is the professional objective for ${moduleTitle}?`, item.focus, "Run every scanner check", "Maximize request variation", "Obtain sensitive data"),
+        proQuestion(`Which control best addresses ${moduleTitle}?`, item.control, "Client-side validation only", "A generic warning banner", "Security through hidden URLs"),
+        proQuestion(`Which evidence best supports ${moduleTitle}?`, item.evidence, "A scanner label", "A screenshot without request context", "Only an HTTP status"),
+        proQuestion(`What is the correct response to uncertainty in ${moduleTitle}?`, item.failure, "Report the most severe interpretation", "Change many variables together", "Collect more sensitive data"),
+        proQuestion(`Which remediation is strongest for ${moduleTitle}?`, item.remediation, "Block the tester IP", "Hide the affected feature", "Add a client-side check only")
+    ];
+}
+
+
+/* =========================================================
    COURSE
 ========================================================= */
 
@@ -440,7 +565,7 @@ export const webApplicationSecurity = {
         "Web Application Security is a CWS Pro practical course focused on how modern web applications process identity, trust, input and data. Students learn HTTP deeply, use intercepting proxies, test authentication and authorization, analyze common server-side and browser-side vulnerability classes, inspect APIs and produce professional findings. All testing is performed in deliberately vulnerable applications or environments where explicit authorization exists.",
 
     duration:
-        "60–75 Hours",
+        "80–100 Hours",
 
     estimatedLessons:
         30,
@@ -449,7 +574,7 @@ export const webApplicationSecurity = {
         true,
 
     learningStandard:
-        "Deep Explanation • HTTP Analysis • Burp Workflows • Hands-On Labs • Evidence • Reporting",
+        "OWASP-Aligned Testing • HTTP Evidence • Identity and Authorization • Server and Browser Trust • API Security • Retesting",
 
     prerequisites: [
         "Cybersecurity Fundamentals",
@@ -462,16 +587,70 @@ export const webApplicationSecurity = {
         "Python Fundamentals for Cybersecurity"
     ],
 
+    skills: [
+        "HTTP and application-state mapping",
+        "Intercepting-proxy workflows",
+        "Authentication and session lifecycle testing",
+        "Object and function authorization testing",
+        "Server-side input and interpreter-boundary analysis",
+        "XSS source, sink and browser-context reasoning",
+        "CSRF, CORS and cross-origin trust analysis",
+        "Upload, download and path-security testing",
+        "API object, function, schema and business-flow security",
+        "Web findings, remediation and retesting"
+    ],
+
+    tools: [
+        "Browser developer tools",
+        "Burp Suite Community or equivalent intercepting proxy",
+        "curl",
+        "Deliberately vulnerable local web applications",
+        "Two or more controlled test identities",
+        "JSON formatter and diff tools",
+        "CWS HTTP evidence worksheet",
+        "OWASP WSTG stable references",
+        "OWASP ASVS requirements"
+    ],
+
+    assessmentStandard:
+        "Pro assessments require paired baseline and modified requests, exact identity and session context, minimum-impact proof, control-focused remediation, sensitive-data minimization and reproducible retest steps.",
+
+    standardReferences: [
+        {
+            title: "Web Security Testing Guide — Stable",
+            organization: "OWASP",
+            url: "https://owasp.org/www-project-web-security-testing-guide/stable/"
+        },
+        {
+            title: "Application Security Verification Standard",
+            organization: "OWASP",
+            url: "https://owasp.org/www-project-application-security-verification-standard/"
+        },
+        {
+            title: "OWASP API Security Top 10",
+            organization: "OWASP",
+            url: "https://owasp.org/API-Security/"
+        },
+        {
+            title: "HTTP Semantics — RFC 9110",
+            organization: "IETF",
+            url: "https://www.rfc-editor.org/rfc/rfc9110.html"
+        }
+    ],
+
     completionRules: {
 
         minimumLessonCompletion:
             100,
 
         minimumModuleAssessmentScore:
-            75,
+            85,
 
         finalAssessmentPassingScore:
-            80,
+            85,
+
+        capstonePassingScore:
+            85,
 
         requireAllModuleAssessments:
             true,
@@ -480,6 +659,9 @@ export const webApplicationSecurity = {
             true,
 
         requireFinalAssessment:
+            true,
+
+        requireCapstone:
             true
 
     },
@@ -502,6 +684,9 @@ export const webApplicationSecurity = {
             true,
 
         trackLabCompletion:
+            true,
+
+        resumeLastLesson:
             true
 
     },
@@ -1747,3 +1932,192 @@ export const webApplicationSecurity = {
     }
 
 };
+
+
+/* =========================================================
+   CWS PRO COURSE STANDARDIZATION
+========================================================= */
+
+function applyWebApplicationSecurityProStandard(course) {
+
+    course.modules.forEach(module => {
+
+        module.learningOutcomes = [
+            `Map the normal application and trust flow relevant to ${module.title}.`,
+            "Form a testable hypothesis and change one controlled request element at a time.",
+            "Distinguish browser behavior, server validation, authentication and authorization controls.",
+            "Write a reproducible finding with root-cause remediation and exact retest criteria."
+        ];
+
+        module.labActivities = (module.labActivities || []).map(activity => ({
+            ...activity,
+            access: "pro",
+            required: true,
+            prerequisites: [
+                "Completed lessons in this module",
+                "Written lab scope and deliberately vulnerable application",
+                "Approved test accounts and role matrix",
+                "Intercepting proxy configured only for the lab",
+                "Disposable browser profile and evidence workspace"
+            ],
+            evidence: [
+                ...(activity.evidence || []),
+                "Exact application, account, role and session context",
+                "Normal baseline request and response",
+                "Single controlled request variation and response",
+                "Trust boundary and expected server-side control",
+                "Minimum-impact validation and affected object or action",
+                "Alternative explanation and limitation",
+                "Root-cause remediation and reproducible retest"
+            ],
+            successCriteria:
+                "The learner demonstrates the relevant server or browser trust behavior using paired, reproducible evidence, minimizes sensitive data and proposes control-focused remediation.",
+            reflection: [
+                ...(activity.reflection || []),
+                "Which identity, object or trust boundary made the result security-relevant?",
+                "What did the response prove, and what did it not prove?",
+                "Which regression test should remain after remediation?"
+            ],
+            cleanup: [
+                "Remove test uploads, sample records and temporary accounts where required.",
+                "Invalidate lab sessions and temporary tokens.",
+                "Clear proxy history that contains unnecessary secrets or personal data.",
+                "Retain only redacted requests, responses and report artifacts."
+            ],
+            safety:
+                "Test only deliberately vulnerable local applications or systems covered by explicit written authorization. Use controlled accounts and sample data, minimize impact and stop on availability or unexpected sensitive-data risk.",
+            rubric: {
+                applicationAndTrustMapping: 15,
+                testDesignAndControl: 20,
+                technicalValidation: 25,
+                evidenceAndReproducibility: 20,
+                remediationAndRetest: 15,
+                dataHandlingAndProfessionalism: 5
+            }
+        }));
+
+        module.labs = module.labActivities.length;
+        module.assessments = 1;
+
+        const moduleQuestions = buildWebSecurityQuestionBank(
+            module.id,
+            module.title
+        );
+
+        module.moduleAssessment = {
+            title: `${module.title} — Pro Verified Assessment`,
+            type: "Module Assessment",
+            passingScore: 85,
+            allowRetry: true,
+            showResults: true,
+            required: true,
+            questionCount: moduleQuestions.length,
+            questions: balanceAnswerPositions(moduleQuestions, module.number - 1)
+        };
+
+        module.lessons.forEach((item, lessonIndex) => {
+
+            item.performanceObjectives = [
+                `Explain ${item.title} in the application's normal HTTP, identity and data flow.`,
+                "Identify the security assumption and the server or browser control that should enforce it.",
+                "Design a one-variable, minimum-impact test using a controlled account and sample data.",
+                "Interpret the paired responses and define remediation plus regression testing."
+            ];
+
+            item.evidenceStandard = [
+                "Authorized application and controlled identity",
+                "Baseline request and response",
+                "One controlled variation and response",
+                "Session, role, object and origin context where relevant",
+                "Observed fact separated from inference",
+                "Sensitive-field redaction and exact retest step"
+            ];
+
+            item.completionCriteria = [
+                "The learner explains the trust boundary without relying on a scanner label.",
+                "The learner distinguishes client-side behavior from server-side enforcement.",
+                "The three-question lesson assessment is passed.",
+                "Associated lab evidence meets the Pro rubric."
+            ];
+
+            item.quiz = balanceAnswerPositions([
+                proQuestion(`What should begin a ${item.title} test?`, "Map normal behavior, identity, state, data flow and the expected security control", "Run an automated exploit", "Change every parameter", "Collect production data"),
+                proQuestion(`What evidence best validates ${item.title}?`, "Paired baseline and single-variable requests with account context, responses and analyst interpretation", "Only a status code", "A scanner name", "A screenshot without the request"),
+                proQuestion(`What makes ${item.title} remediation professionally useful?`, "It fixes the root control and defines a reproducible regression or retest case", "It blocks the tester IP", "It hides the route", "It adds a client-side warning")
+            ], module.number + lessonIndex);
+
+        });
+
+    });
+
+
+    const integrativeScenarios = [
+        proQuestion("A request succeeds only when the original browser cookies are present. What should the tester document?", "The exact authenticated session context and whether the behavior crosses an authorization boundary", "Only the URL", "A network vulnerability", "That cookies are insecure"),
+        proQuestion("A hidden form field contains a price, but the server recalculates the total. What is the correct conclusion?", "The client value is untrusted but the tested server-side integrity control prevented manipulation", "Confirmed price tampering", "SQL injection", "Broken authentication"),
+        proQuestion("A second user changes an object identifier and receives the first user's record. What proves the issue?", "Controlled identities, ownership baseline, modified request, returned object and server authorization failure", "The identifier changed", "A 200 response only", "The object format"),
+        proQuestion("Input is reflected inside a quoted JavaScript string with escaping. What must happen before reporting XSS?", "Analyze the exact JavaScript context and verify whether safe marker execution is possible", "Report reflection as XSS", "Use a destructive payload", "Disable the browser"),
+        proQuestion("A cross-site form triggers an action even though the response cannot be read. Which property matters?", "Whether the authenticated state-changing request was accepted without verifying user intent", "Whether CORS allowed reading", "The page color", "The URL length"),
+        proQuestion("CORS reflects any Origin and allows credentials. What evidence is needed for impact?", "A controlled origin that can make a credentialed request and read a sensitive authorized response", "Only the response header", "A failed preflight", "An unauthenticated public response"),
+        proQuestion("An uploaded file is renamed and stored outside the web root but can still be downloaded. What should be assessed?", "Authorization, content handling, metadata, scanning, response headers and storage isolation", "Only the extension", "Only whether PHP executes", "Only the filename"),
+        proQuestion("An API returns extra internal fields to every authorized user. What is the strongest finding focus?", "Excessive data exposure and output-schema minimization for the relevant role", "Broken TLS", "Missing CSRF only", "DNS misconfiguration"),
+        proQuestion("A remediation blocks the original request but an alternate HTTP method still performs the action. What is the retest result?", "The server-side control remains incomplete and the bypass must be documented", "Remediation passed", "A separate informational note only", "The browser is vulnerable"),
+        proQuestion("What makes the web capstone recruiter-ready?", "Application mapping, role-aware tests, reproducible HTTP evidence, minimum-impact findings, root-cause remediation and verified retests", "The most scanner findings", "Unredacted tokens", "Only screenshots")
+    ];
+
+    const finalQuestions = [
+        ...course.finalAssessment.questions,
+        ...integrativeScenarios
+    ];
+
+    course.finalAssessment = {
+        ...course.finalAssessment,
+        description:
+            "A professional scenario-based assessment covering HTTP, proxy workflows, authentication, sessions, authorization, server and browser trust, file handling, APIs, reporting and retesting.",
+        duration: "75–90 minutes",
+        passingScore: 85,
+        allowRetry: true,
+        required: true,
+        questionCount: finalQuestions.length,
+        questions: balanceAnswerPositions(finalQuestions)
+    };
+
+    course.capstone = {
+        title: "OWASP-Aligned Web Application Security Assessment",
+        required: true,
+        estimatedTime: "14–18 hours",
+        scenario:
+            "Assess a deliberately vulnerable CWS Academy web application with multiple roles, browser flows and JSON APIs. The goal is defensible control verification, not maximum exploitation or data collection.",
+        deliverables: [
+            "Scope, test accounts, data-handling rules and stop conditions",
+            "Application, endpoint, role and trust-boundary map",
+            "Authentication and session lifecycle test record",
+            "Horizontal and vertical authorization matrix",
+            "Server-side input and interpreter-boundary tests",
+            "Browser source, sink and context analysis",
+            "CSRF, CORS and origin-trust review",
+            "Upload, download and canonical-path review",
+            "API object, function, schema, rate and business-flow tests",
+            "Request library with paired baseline and modified evidence",
+            "False-positive and coverage-limit register",
+            "Professional findings mapped to stable OWASP WSTG sections and relevant ASVS controls",
+            "Executive summary and prioritized remediation roadmap",
+            "Verified cleanup and session invalidation record",
+            "Exact retest cases and sanitized portfolio report"
+        ],
+        rubric: {
+            applicationAndThreatMapping: 15,
+            methodologyAndCoverage: 20,
+            technicalValidation: 25,
+            evidenceAndReproducibility: 15,
+            remediationAndRetesting: 15,
+            reportingAndRiskCommunication: 5,
+            dataHandlingAndProfessionalConduct: 5
+        }
+    };
+
+    course.qualityVersion = "CWS-PRO-STANDARD-2026.2";
+
+}
+
+
+applyWebApplicationSecurityProStandard(webApplicationSecurity);
