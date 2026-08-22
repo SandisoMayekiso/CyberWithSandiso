@@ -3,8 +3,6 @@
    SECURE PAYSTACK SUBSCRIPTION BACKEND
 ========================================================= */
 
-/* global fetch */
-
 const crypto = require("crypto");
 
 const {
@@ -250,7 +248,7 @@ async function paystackRequest(path, options = {}) {
   const response = await fetch(`https://api.paystack.co${path}`, {
     ...options,
     headers: {
-      Authorization: `Bearer ${getSecretKey()}`,
+      "Authorization": `Bearer ${getSecretKey()}`,
       "Content-Type": "application/json",
       ...(options.headers || {}),
     },
