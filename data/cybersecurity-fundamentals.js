@@ -122,20 +122,22 @@ function buildLesson({
     ];
 
     const resolvedQuiz =
-        [
-            ...quiz,
-            ...supplementalQuiz
-        ]
-            .slice(
-                0,
-                Math.max(
-                    3,
-                    Math.min(
-                        5,
-                        quiz.length + 3
+        balanceAnswerPositions(
+            [
+                ...quiz,
+                ...supplementalQuiz
+            ]
+                .slice(
+                    0,
+                    Math.max(
+                        3,
+                        Math.min(
+                            5,
+                            quiz.length + 3
+                        )
                     )
                 )
-            );
+        );
 
 
     const questionHeading =
@@ -362,12 +364,73 @@ function buildLesson({
 
 
 /* =========================================================
+   ASSESSMENT QUALITY HELPERS
+========================================================= */
+
+function balanceAnswerPositions(
+    questions = [],
+    offset = 0
+) {
+
+    return questions.map(
+        (item, index) => {
+
+            const options =
+                Array.isArray(item.options)
+                    ? [...item.options]
+                    : [];
+
+            if (!options.length) {
+                return item;
+            }
+
+            const answer =
+                Number.isInteger(item.answer)
+                    ? item.answer
+                    : 0;
+
+            const shift =
+                (index + offset) % options.length;
+
+            return {
+                ...item,
+                options: [
+                    ...options.slice(shift),
+                    ...options.slice(0, shift)
+                ],
+                answer:
+                    (answer - shift + options.length) % options.length
+            };
+
+        }
+    );
+
+}
+
+
+function standardQuestion(prompt, correct, ...distractors) {
+
+    return {
+        question:
+            prompt,
+        options: [
+            correct,
+            ...distractors
+        ],
+        answer:
+            0
+    };
+
+}
+
+
+/* =========================================================
    MODULE ASSESSMENT BUILDER
 ========================================================= */
 
 function buildModuleAssessment({
     title,
-    passingScore = 70,
+    passingScore = 75,
     questions = []
 }) {
     return {
@@ -409,7 +472,7 @@ export const cybersecurityFundamentals = {
     id: "cybersecurity-fundamentals",
     title: "Cybersecurity Fundamentals",
     overviewTitle: "Build Your Cybersecurity Foundation",
-    category: "CWS ACADEMY â€¢ CYBERSECURITY",
+    category: "CWS ACADEMY • CYBERSECURITY",
     level: "Beginner",
     levelKey: "beginner",
     status: "available",
@@ -417,9 +480,9 @@ export const cybersecurityFundamentals = {
     icon: "fa-solid fa-shield-halved",
     description: "Build a deep practical foundation in cybersecurity concepts, threats, vulnerabilities, risk, controls, identity, network and endpoint security, ethics and defensive decision-making.",
     longDescription: "Cybersecurity Fundamentals teaches the core concepts students need before progressing into networking, Linux, defensive security, ethical hacking and penetration testing. Every lesson follows a what, why, how, example, verification and practice model so students learn to reason about assets, threats, vulnerabilities, risk, controls and evidence rather than memorizing definitions. The course connects technical concepts to realistic defensive decisions, business impact, professional ethics and incident-response thinking.",
-    duration: "40â€“50 Hours",
-    estimatedLessons: 45,
-    learningStandard: "Deep Explanation â€¢ Scenario Analysis â€¢ Security Context â€¢ Verification â€¢ Practice",
+    duration: "40–50 Hours",
+    estimatedLessons: 44,
+    learningStandard: "Deep Explanation • Scenario Analysis • Security Context • Verification • Practice",
     lessonMethod: [
         "What the concept is",
         "Why the concept exists",
@@ -433,13 +496,56 @@ export const cybersecurityFundamentals = {
         "Knowledge check"
     ],
     learningEnvironment: "Use fictional scenarios, sample data and systems you own or are explicitly authorized to assess.",
+    prerequisites: [
+        "No prior cybersecurity experience is required",
+        "Basic computer and web-browsing confidence",
+        "Willingness to work only with fictional, owned or explicitly authorized systems and data"
+    ],
+    recommendedPrerequisites: [
+        "Comfort creating folders, saving files and using a web browser",
+        "A notebook or digital document for evidence and reflection"
+    ],
+    skills: [
+        "Asset and risk identification",
+        "CIA triad reasoning",
+        "Threat and vulnerability analysis",
+        "Security-control selection",
+        "Identity and access-control fundamentals",
+        "Network and endpoint security concepts",
+        "Evidence-based verification",
+        "Ethical security practice",
+        "Clear security reporting"
+    ],
+    tools: [
+        "Asset inventory worksheet",
+        "Risk register template",
+        "Control-mapping worksheet",
+        "Authentication and access-review checklist",
+        "Network and endpoint review checklist",
+        "Incident scenario worksheet"
+    ],
+    assessmentStandard: "Assessments prioritize scenario interpretation, control selection, evidence and ethical decisions. Answer positions are balanced and completion requires both knowledge and documented practical work.",
+    standardReferences: [
+        {
+            title: "NIST Cybersecurity Framework 2.0",
+            organization: "National Institute of Standards and Technology",
+            url: "https://www.nist.gov/cyberframework"
+        },
+        {
+            title: "NICE Workforce Framework for Cybersecurity",
+            organization: "National Institute of Standards and Technology",
+            url: "https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-resource-center"
+        }
+    ],
     certificateEligible: true,
     completionRules: {
         minimumLessonCompletion: 100,
-        minimumModuleAssessmentScore: 70,
-        finalAssessmentPassingScore: 75,
+        minimumModuleAssessmentScore: 75,
+        finalAssessmentPassingScore: 80,
         requireAllModuleAssessments: true,
-        requireRequiredLabs: true
+        requireRequiredLabs: true,
+        requireFinalAssessment: true,
+        requireCapstone: true
     },
     progression: {
         unlockMode: "sequential",
@@ -485,7 +591,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 1 Assessment â€” Introduction to Cybersecurity",
+                title: "Module 1 Assessment — Introduction to Cybersecurity",
                 questions: [
                     {
                         question: "Which statement best describes cybersecurity?",
@@ -597,7 +703,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 2 Assessment â€” The CIA Triad",
+                title: "Module 2 Assessment — The CIA Triad",
                 questions: [
                     {
                         question: "Which security objective is primarily concerned with preventing unauthorized disclosure?",
@@ -689,7 +795,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 3 Assessment â€” Threats and Attack Types",
+                title: "Module 3 Assessment — Threats and Attack Types",
                 questions: [
                     {
                         question: "What is the main difference between a threat and a vulnerability?",
@@ -804,7 +910,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 4 Assessment â€” Vulnerabilities and Risk",
+                title: "Module 4 Assessment — Vulnerabilities and Risk",
                 questions: [
                     {
                         question: "What is a vulnerability?",
@@ -906,7 +1012,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 5 Assessment â€” Security Controls",
+                title: "Module 5 Assessment — Security Controls",
                 questions: [
                     {
                         question: "Which is a technical security control?",
@@ -998,7 +1104,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 6 Assessment â€” Authentication and Access Control",
+                title: "Module 6 Assessment — Authentication and Access Control",
                 questions: [
                     {
                         question: "Authentication answers which question?",
@@ -1099,7 +1205,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 7 Assessment â€” Network Security Fundamentals",
+                title: "Module 7 Assessment — Network Security Fundamentals",
                 questions: [
                     {
                         question: "What is the primary purpose of a firewall?",
@@ -1209,7 +1315,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 8 Assessment â€” Endpoint and System Security",
+                title: "Module 8 Assessment — Endpoint and System Security",
                 questions: [
                     {
                         question: "What is the goal of system hardening?",
@@ -1296,7 +1402,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 9 Assessment â€” Security Policies and Ethics",
+                title: "Module 9 Assessment — Security Policies and Ethics",
                 questions: [
                     {
                         question: "What is the purpose of a security policy?",
@@ -1394,7 +1500,7 @@ export const cybersecurityFundamentals = {
                 })
             ],
             moduleAssessment: buildModuleAssessment({
-                title: "Module 10 Assessment â€” Cybersecurity Foundations Review",
+                title: "Module 10 Assessment — Cybersecurity Foundations Review",
                 passingScore: 75,
                 questions: [
                     {
@@ -1478,8 +1584,8 @@ export const cybersecurityFundamentals = {
         id: "final-assessment",
         title: "Cybersecurity Fundamentals Final Assessment",
         type: "Final Assessment",
-        duration: "45â€“60 minutes",
-        passingScore: 75,
+        duration: "60–75 minutes",
+        passingScore: 80,
         allowRetry: true,
         description: "A scenario-focused assessment covering the major concepts taught across all ten modules.",
         questions: [
@@ -1607,3 +1713,286 @@ export const cybersecurityFundamentals = {
     }
 
 };
+
+
+/* =========================================================
+   CWS COURSE STANDARDIZATION
+========================================================= */
+
+function applyCybersecurityFoundationsStandard(course) {
+
+    const frameworkMappings = {
+        "module-01": [
+            "NIST CSF 2.0: Govern",
+            "NIST CSF 2.0: Identify"
+        ],
+        "module-02": [
+            "NIST CSF 2.0: Protect",
+            "NIST CSF 2.0: Detect",
+            "NIST CSF 2.0: Recover"
+        ],
+        "module-03": [
+            "NIST CSF 2.0: Identify",
+            "NIST CSF 2.0: Detect"
+        ],
+        "module-04": [
+            "NIST CSF 2.0: Identify",
+            "NIST CSF 2.0: Govern"
+        ],
+        "module-05": [
+            "NIST CSF 2.0: Protect",
+            "NIST CSF 2.0: Detect",
+            "NIST CSF 2.0: Respond",
+            "NIST CSF 2.0: Recover"
+        ],
+        "module-06": [
+            "NIST CSF 2.0: Protect"
+        ],
+        "module-07": [
+            "NIST CSF 2.0: Protect",
+            "NIST CSF 2.0: Detect"
+        ],
+        "module-08": [
+            "NIST CSF 2.0: Protect",
+            "NIST CSF 2.0: Detect",
+            "NIST CSF 2.0: Respond"
+        ],
+        "module-09": [
+            "NIST CSF 2.0: Govern"
+        ],
+        "module-10": [
+            "NIST CSF 2.0: Govern",
+            "NIST CSF 2.0: Identify",
+            "NIST CSF 2.0: Protect",
+            "NIST CSF 2.0: Detect",
+            "NIST CSF 2.0: Respond",
+            "NIST CSF 2.0: Recover"
+        ]
+    };
+
+    course.modules.forEach(
+        module => {
+
+            module.learningOutcomes = [
+                `Explain the essential ${module.title} concepts in plain language.`,
+                "Apply the concepts to a new organizational scenario rather than repeating definitions.",
+                "Distinguish assets, threats, vulnerabilities, impact, controls and evidence.",
+                "Recommend a proportionate next action that respects scope, ethics and business context."
+            ];
+
+            module.frameworkMappings =
+                frameworkMappings[module.id];
+
+            const existingActivities = [
+                ...(Array.isArray(module.labActivities)
+                    ? module.labActivities
+                    : []),
+                ...(Array.isArray(module.practiceActivities)
+                    ? module.practiceActivities
+                    : [])
+            ];
+
+            module.labActivities =
+                existingActivities.map(
+                    (activity, index) => ({
+                        ...activity,
+                        id:
+                            activity.id ||
+                            `activity-${String(index + 1).padStart(2, "0")}`,
+                        access:
+                            "free",
+                        required:
+                            true,
+                        type:
+                            activity.type ||
+                            "Guided Security Analysis",
+                        duration:
+                            activity.duration ||
+                            "35–50 minutes",
+                        scenario:
+                            activity.scenario ||
+                            "You are supporting the fictional CWS Academy security team. Review the supplied scenario, separate facts from assumptions and provide a defensible recommendation.",
+                        prerequisites: [
+                            "Completed lessons in this module",
+                            "Fictional or sanitized scenario data",
+                            "The CWS evidence and reflection worksheet"
+                        ],
+                        evidence: [
+                            "A clearly defined asset, system, identity or process in scope",
+                            "The relevant threat, weakness or failure condition",
+                            "Expected secure behavior and observed evidence",
+                            "At least one preventive and one detective or responsive control",
+                            "A prioritized recommendation with assumptions and limitations"
+                        ],
+                        successCriteria:
+                            activity.successCriteria ||
+                            "The submission connects evidence to a reasonable security conclusion and proposes proportionate controls without overstating certainty.",
+                        reflection:
+                            Array.isArray(activity.reflection) &&
+                            activity.reflection.length
+                                ? activity.reflection
+                                : [
+                                    "Which fact most influenced the risk decision?",
+                                    "Which assumption would need validation before action?",
+                                    "How would the recommendation change if the asset were more critical?"
+                                ],
+                        cleanup: [
+                            "Remove temporary fictional working files that are no longer needed.",
+                            "Retain only sanitized evidence and the final worksheet.",
+                            "Do not retain credentials, personal information or data from systems outside the exercise."
+                        ],
+                        safety:
+                            "Use only fictional, owned or explicitly authorized systems and data. This foundation activity is for analysis and defensive validation, not unauthorized testing.",
+                        rubric: {
+                            conceptAccuracy:
+                                25,
+                            evidenceAndReasoning:
+                                30,
+                            controlSelection:
+                                20,
+                            ethicsAndScope:
+                                15,
+                            communication:
+                                10
+                        }
+                    })
+                );
+
+            module.practiceActivities = [];
+            module.labs =
+                module.labActivities.length;
+            module.assessments =
+                1;
+
+            module.moduleAssessment = {
+                ...module.moduleAssessment,
+                passingScore:
+                    75,
+                required:
+                    true,
+                questionCount:
+                    module.moduleAssessment.questions.length,
+                questions:
+                    balanceAnswerPositions(
+                        module.moduleAssessment.questions,
+                        module.number - 1
+                    )
+            };
+
+            module.lessons.forEach(
+                (item, lessonIndex) => {
+
+                    item.performanceObjectives = [
+                        `Explain ${item.title} accurately without relying on memorized wording.`,
+                        "Apply the topic to a new asset, user, system or business-process scenario.",
+                        "Identify relevant evidence and distinguish confirmed facts from assumptions.",
+                        "Recommend an ethical and proportionate control or next action."
+                    ];
+
+                    item.evidenceStandard = [
+                        "Define the asset and scope.",
+                        "State expected secure behavior before evaluating the scenario.",
+                        "Record the observation or source supporting the conclusion.",
+                        "Explain limitations, uncertainty and required follow-up.",
+                        "Use no credentials, personal data or unauthorized system information."
+                    ];
+
+                    item.completionCriteria = [
+                        "The learner can explain the topic in their own words.",
+                        "The learner can apply the topic to an unfamiliar scenario.",
+                        "The knowledge check is passed.",
+                        "Any associated practical work meets its evidence standard."
+                    ];
+
+                    item.quiz =
+                        balanceAnswerPositions(
+                            item.quiz,
+                            module.number + lessonIndex
+                        );
+
+                }
+            );
+
+        }
+    );
+
+
+    const advancedFoundationScenarios = [
+        standardQuestion("A team lists servers but not the business services they support. What is the most important improvement?", "Connect technical assets to owners, data, dependencies and business impact", "Replace the inventory with vulnerability scores", "Remove low-value devices without review", "Treat every asset as equally critical"),
+        standardQuestion("A control is marked implemented, but no evidence shows that it works. What should happen next?", "Define the expected outcome and test or observe suitable evidence", "Assume the control is effective", "Buy a second control immediately", "Delete the control record"),
+        standardQuestion("A phishing-resistant MFA method protects administrators, while standard users have passwords only. What principle best guides the next decision?", "Prioritize stronger authentication according to identity risk and expand coverage deliberately", "Remove MFA from administrators", "Share an administrator account", "Disable sign-in logging"),
+        standardQuestion("A critical vulnerability affects an isolated test server with no sensitive data. What is the best initial response?", "Validate the finding and prioritize it using exposure, asset value, exploitability and compensating controls", "Declare a major breach", "Ignore it permanently", "Publish the server details"),
+        standardQuestion("An alert shows a new administrator sign-in from an unfamiliar location. What is the strongest first action?", "Preserve the alert and corroborate identity, device, time, authentication and change evidence", "Delete the account immediately without review", "Assume compromise based on location alone", "Turn off sign-in monitoring"),
+        standardQuestion("A backup exists, but restoration has never been tested. Which conclusion is defensible?", "Recovery capability is not verified until a controlled restore test succeeds", "The backup guarantees availability", "Encryption is unnecessary", "The backup replaces incident response"),
+        standardQuestion("A firewall blocks inbound traffic but allows unrestricted outbound connections. What should the reviewer do?", "Assess required business flows, egress risk, monitoring and least-privilege network policy", "Conclude the network is fully secure", "Disable all logging", "Open every inbound port for symmetry"),
+        standardQuestion("A shared service account has broad permissions and no named owner. What is the priority?", "Establish ownership, document dependencies, reduce privilege and create a controlled credential lifecycle", "Rename the account only", "Add more permissions", "Publish the password for availability"),
+        standardQuestion("A policy says incidents must be reported, but staff do not know how. What is missing?", "A usable process supported by roles, training, communication and testing", "A longer policy title", "More antivirus products", "A public list of employee passwords"),
+        standardQuestion("A scanner finding conflicts with system-owner evidence. What is the best professional response?", "Document the conflict, validate scope and configuration, gather another source and state the remaining uncertainty", "Choose the more severe answer automatically", "Hide the conflicting evidence", "Close the finding without notes"),
+        standardQuestion("An organization wants to eliminate all cyber risk. What should the analyst explain?", "Risk can be reduced and managed, but decisions require tolerance, trade-offs and continuous review", "Risk reaches zero after one audit", "Only insurance is needed", "Security controls remove business trade-offs"),
+        standardQuestion("A security test could interrupt a production service. What must happen before testing?", "Confirm authorization, scope, timing, safeguards, communications and recovery arrangements", "Run it silently at peak time", "Disable monitoring", "Assume public access means permission"),
+        standardQuestion("A report states that malware was present but provides no source or timestamp. What is the core problem?", "The conclusion is not supported by traceable, contextual evidence", "The report is too short", "The report lacks coloured charts", "The report should omit limitations"),
+        standardQuestion("Which response best demonstrates defense in depth after credential phishing?", "Reset the credential, investigate sessions, enforce stronger authentication, review privilege, monitor related activity and improve user controls", "Change the password only", "Disable all user accounts", "Ignore the event if MFA exists"),
+        standardQuestion("What makes a beginner cybersecurity capstone professionally credible?", "Clear scope, accurate reasoning, sanitized evidence, prioritized controls, ethical boundaries and an honest limitations section", "The largest number of tools", "Claims of zero risk", "Testing outside the approved scenario")
+    ];
+
+    const finalQuestions = [
+        ...course.finalAssessment.questions,
+        ...advancedFoundationScenarios
+    ];
+
+    course.finalAssessment = {
+        ...course.finalAssessment,
+        passingScore:
+            80,
+        required:
+            true,
+        questionCount:
+            finalQuestions.length,
+        questions:
+            balanceAnswerPositions(finalQuestions)
+    };
+
+    course.capstone = {
+        title:
+            "Cybersecurity Foundations Risk and Controls Review",
+        required:
+            true,
+        estimatedTime:
+            "5–7 hours",
+        scenario:
+            "Review the fictional CWS Retail organization, identify its most important assets and risks, and present a defensible, prioritized improvement plan for a non-technical owner.",
+        deliverables: [
+            "Asset and business-impact inventory",
+            "Five scenario-based risk statements",
+            "Risk register with likelihood, impact, evidence and assumptions",
+            "Preventive, detective, response and recovery control map",
+            "Identity, network and endpoint review checklist",
+            "One-page incident scenario and response outline",
+            "Executive summary with three prioritized improvements",
+            "Ethics, authorization and limitations statement"
+        ],
+        rubric: {
+            conceptAccuracy:
+                25,
+            riskReasoning:
+                25,
+            evidenceQuality:
+                20,
+            controlSelection:
+                15,
+            ethicsAndScope:
+                10,
+            communication:
+                5
+        }
+    };
+
+    course.qualityVersion =
+        "CWS-COURSE-STANDARD-2026.2";
+
+}
+
+
+applyCybersecurityFoundationsStandard(
+    cybersecurityFundamentals
+);
