@@ -200,6 +200,132 @@ function buildAssessment(title) {
     };
 }
 
+/* =========================================================
+   ASSESSMENT QUALITY HELPERS
+========================================================= */
+
+function balanceAnswerPositions(questions = [], offset = 0) {
+    return questions.map((item, index) => {
+        const options = Array.isArray(item.options)
+            ? [...item.options]
+            : [];
+        if (!options.length) {
+            return item;
+        }
+        const answer = Number.isInteger(item.answer)
+            ? item.answer
+            : 0;
+        const shift = (index + offset) % options.length;
+        return {
+            ...item,
+            options: [
+                ...options.slice(shift),
+                ...options.slice(0, shift)
+            ],
+            answer: (answer - shift + options.length) % options.length
+        };
+    });
+}
+
+function windowsQuestion(prompt, correct, ...distractors) {
+    return {
+        question: prompt,
+        options: [correct, ...distractors],
+        answer: 0
+    };
+}
+
+const windowsModuleBlueprints = {
+    "module-01": {
+        focus: "identify Windows edition, build, architecture, hostname, current identity and security context before administration",
+        command: "Use read-only System Information, Settings, whoami and PowerShell system queries",
+        evidence: "edition, version, build, architecture, device identity, current user and timestamp",
+        risk: "confusing edition, architecture or identity can produce incorrect commands, controls and conclusions",
+        control: "record a system context baseline before making changes"
+    },
+    "module-02": {
+        focus: "reason about Windows paths, NTFS ownership, explicit permissions, inheritance and effective access",
+        command: "Use Explorer security properties, icacls and controlled test files in a disposable directory",
+        evidence: "path, owner, ACL entries, inheritance source, before-and-after effective access and cleanup",
+        risk: "broad inherited or explicit permissions can expose or allow modification of sensitive data",
+        control: "apply least privilege to a controlled folder and verify both allowed and denied behavior"
+    },
+    "module-03": {
+        focus: "distinguish local and domain identities, group membership, tokens, elevation and User Account Control",
+        command: "Use Computer Management, net user, net localgroup, whoami and controlled UAC observations",
+        evidence: "identity source, SID where appropriate, groups, integrity or elevation context and permitted action",
+        risk: "administrator membership does not mean every process is elevated, and shared privilege weakens accountability",
+        control: "use standard accounts for routine work and elevate only an approved administrative task"
+    },
+    "module-04": {
+        focus: "map processes, parent relationships, services, startup context and scheduled tasks",
+        command: "Use Task Manager, Get-Process, Get-Service, sc.exe and Task Scheduler read-only views",
+        evidence: "name, PID, parent or service, account, path, start mode, state, trigger and timestamp",
+        risk: "unexpected execution paths, privileged service accounts or weak task configuration can expand attack surface",
+        control: "compare observed execution with documented host purpose before changing or stopping anything"
+    },
+    "module-05": {
+        focus: "understand Registry hives, keys, values, views and configuration provenance",
+        command: "Use Registry Editor or Get-ItemProperty in read-only mode and export only approved sample keys",
+        evidence: "hive, full key path, value name, type, data, source context and timestamp",
+        risk: "incorrect Registry edits can impair startup, security controls or application behavior",
+        control: "record and export the original controlled key, change only with approval and verify rollback"
+    },
+    "module-06": {
+        focus: "use PowerShell objects and pipelines for transparent, read-only Windows inspection",
+        command: "Use Get-Help, Get-Command, Get-Member, Select-Object, Where-Object and Export-Csv on approved data",
+        evidence: "PowerShell version, exact command, object properties, output, errors and export path",
+        risk: "string-based assumptions, unsafe downloads or unvalidated input can turn administration into code-execution risk",
+        control: "prefer native cmdlets, validate input, avoid secrets and review scripts before execution"
+    },
+    "module-07": {
+        focus: "document interfaces, addresses, routes, DNS, listeners, SMB shares and Windows Firewall profiles",
+        command: "Use ipconfig, Get-NetIPConfiguration, Get-NetTCPConnection, Get-SmbShare and Get-NetFirewallProfile",
+        evidence: "interface, address, route, resolver, listener, owning process, share permissions and firewall profile",
+        risk: "unnecessary listeners, broad SMB access or incorrect firewall profiles increase exposure",
+        control: "permit only required services on the correct profile and validate access from an approved test point"
+    },
+    "module-08": {
+        focus: "understand Microsoft Defender Antivirus, Windows Security, updates and modern platform protections",
+        command: "Use Windows Security, Get-MpComputerStatus and Windows Update history without disabling controls",
+        evidence: "protection state, engine and signature status, scan state, exclusions, update status and timestamp",
+        risk: "disabled, outdated or broadly excluded protection reduces prevention and detection coverage",
+        control: "maintain supported updates and security controls, then investigate rather than bypass warnings"
+    },
+    "module-09": {
+        focus: "build a basic Windows investigation timeline from relevant channels and event fields",
+        command: "Use Event Viewer and Get-WinEvent with narrow log, ID and time filters",
+        evidence: "channel, provider, event ID, record ID, time, computer, account or process context and message",
+        risk: "a single event without surrounding context can be misinterpreted and logs may contain sensitive data",
+        control: "correlate multiple events and host observations while preserving timestamps and provenance"
+    },
+    "module-10": {
+        focus: "compare a workstation with a documented secure baseline and prioritize proportionate improvements",
+        command: "Use Microsoft baseline guidance, local policy views and read-only configuration evidence",
+        evidence: "host purpose, current setting, baseline recommendation, deviation, impact, owner and verification plan",
+        risk: "blind hardening can break required business functions while weak defaults can leave unnecessary exposure",
+        control: "test approved baseline changes with backup, rollback and post-change functional verification"
+    },
+    "module-11": {
+        focus: "perform and communicate a complete Windows workstation security review",
+        command: "Use a repeatable read-only checklist spanning identity, NTFS, execution, Registry, network, Defender, updates and logs",
+        evidence: "scope, system baseline, commands, findings, limitations, prioritized improvements and cleanup status",
+        risk: "unsupported conclusions or untracked changes make an assessment unreliable and unsafe",
+        control: "separate observation from risk, verify recommendations and produce a reproducible report"
+    }
+};
+
+function buildWindowsQuestionBank(moduleId, moduleTitle) {
+    const item = windowsModuleBlueprints[moduleId];
+    return [
+        windowsQuestion(`What is the main objective for ${moduleTitle}?`, item.focus, "Memorize one command", "Disable security features", "Use administrator access for every task"),
+        windowsQuestion(`Which method is appropriate for ${moduleTitle}?`, item.command, "Change settings before inspection", "Use an untrusted script", "Delete the original evidence"),
+        windowsQuestion(`Which evidence best supports ${moduleTitle}?`, item.evidence, "An unlabeled screenshot", "Only a command name", "A conclusion without timestamp or context"),
+        windowsQuestion(`Which risk matters most in ${moduleTitle}?`, item.risk, "The desktop wallpaper", "The terminal font", "The filename length"),
+        windowsQuestion(`Which control best strengthens ${moduleTitle}?`, item.control, "Disable logging", "Share administrator credentials", "Apply every setting without testing")
+    ];
+}
+
 export const windowsFundamentals = {
     id: "windows-fundamentals",
     title: "Windows Fundamentals for Cybersecurity",
@@ -212,19 +338,68 @@ export const windowsFundamentals = {
     icon: "fa-brands fa-windows",
     description: "Build practical Windows cybersecurity foundations through users, groups, NTFS, processes, services, Registry, PowerShell, networking, Defender, firewall and event logs.",
     longDescription: "Windows Fundamentals for Cybersecurity teaches the operating-system knowledge students need before Active Directory and advanced security testing. Every major topic follows the CWS learning standard: what it is, why it exists, how it works, cybersecurity relevance, practical examples, hands-on inspection and assessment.",
-    duration: "45–60 Hours",
-    estimatedLessons: 30,
+    duration: "55–70 Hours",
+    estimatedLessons: 33,
     certificateEligible: true,
     learningStandard: "What • Why • How • Examples • Security Context • Labs • Assessment",
     prerequisites: ["Cybersecurity Fundamentals"],
     recommendedPrerequisites: ["Networking Fundamentals"],
+    skills: [
+        "Windows system and security context",
+        "NTFS ownership, permissions and inheritance",
+        "Local and domain identity concepts",
+        "UAC, tokens and least privilege",
+        "Processes, services and scheduled tasks",
+        "Registry inspection and change safety",
+        "PowerShell objects and pipelines",
+        "Windows networking, SMB and firewall profiles",
+        "Microsoft Defender and update posture",
+        "Event Viewer and investigation timelines",
+        "Windows baseline review and hardening"
+    ],
+    tools: [
+        "Windows 10 or Windows 11 training VM",
+        "System Information",
+        "Task Manager and Computer Management",
+        "icacls",
+        "whoami",
+        "PowerShell",
+        "Get-NetIPConfiguration and Get-NetTCPConnection",
+        "Windows Defender cmdlets",
+        "Event Viewer and Get-WinEvent",
+        "Microsoft Windows security baseline guidance"
+    ],
+    assessmentStandard: "Assessments require accurate Windows reasoning, read-only baselines, before-and-after evidence for approved changes, independent verification and safe rollback or cleanup.",
+    standardReferences: [
+        {
+            title: "Windows security documentation",
+            organization: "Microsoft",
+            url: "https://learn.microsoft.com/en-us/windows/security/"
+        },
+        {
+            title: "Windows security baselines guide",
+            organization: "Microsoft",
+            url: "https://learn.microsoft.com/en-us/windows/security/operating-system-security/device-management/windows-security-configuration-framework/windows-security-baselines"
+        },
+        {
+            title: "PowerShell security features",
+            organization: "Microsoft",
+            url: "https://learn.microsoft.com/en-us/powershell/scripting/security/security-features"
+        },
+        {
+            title: "MITRE ATT&CK Enterprise — Windows",
+            organization: "MITRE",
+            url: "https://attack.mitre.org/matrices/enterprise/windows/"
+        }
+    ],
     completionRules: {
         minimumLessonCompletion: 100,
-        minimumModuleAssessmentScore: 70,
-        finalAssessmentPassingScore: 75,
+        minimumModuleAssessmentScore: 75,
+        finalAssessmentPassingScore: 80,
         requireAllModuleAssessments: true,
         requireRequiredLabs: true,
-        requireFinalAssessment: true
+        requireFinalAssessment: true,
+        requireCapstone: true
     },
     progression: {
         unlockMode: "sequential",
@@ -232,7 +407,8 @@ export const windowsFundamentals = {
         allowAssessmentRetry: true,
         trackLessonCompletion: true,
         trackAssessmentScores: true,
-        trackLabCompletion: true
+        trackLabCompletion: true,
+        resumeLastLesson: true
     },
     objectives: [
         "Explain core Windows architecture and system information.",
@@ -455,3 +631,183 @@ export const windowsFundamentals = {
         ]
     }
 };
+
+/* =========================================================
+   CWS COURSE STANDARDIZATION
+========================================================= */
+
+function applyWindowsFundamentalsStandard(course) {
+
+    course.modules.forEach(module => {
+
+        module.learningOutcomes = [
+            `Explain the essential ${module.title} concepts and dependencies.`,
+            "Inspect the relevant Windows state with built-in, read-only tools.",
+            "Interpret identity, permission, configuration or event evidence accurately.",
+            "Recommend a proportionate improvement with verification and rollback guidance."
+        ];
+
+        module.labActivities = (module.labActivities || []).map(activity => ({
+            ...activity,
+            access: "free",
+            required: true,
+            prerequisites: [
+                "Completed lessons in this module",
+                "Owned or explicitly authorized Windows training VM",
+                "VM snapshot or tested recovery option",
+                "Standard user account and approved elevation method",
+                "Dedicated folder for sanitized evidence"
+            ],
+            evidence: [
+                ...(activity.evidence || []),
+                "Windows edition, build, hostname, current identity and timestamp",
+                "Expected state before inspection",
+                "Exact built-in tool, command or interface path",
+                "Relevant output or configuration with learner interpretation",
+                "Independent verification of the conclusion",
+                "Approved change, rollback and cleanup status where applicable"
+            ],
+            successCriteria:
+                "The learner identifies the correct Windows state, explains what the evidence proves, avoids unapproved changes and provides a verifiable next step or improvement.",
+            reflection: [
+                "Which Windows identity, permission or service context affected the result?",
+                "What evidence distinguishes the observation from an assumption?",
+                "What should be tested before applying the recommendation beyond the lab?"
+            ],
+            cleanup: [
+                "Remove disposable users, groups, files, shares, tasks or settings created only for the lab.",
+                "Restore the documented baseline or VM snapshot when required.",
+                "Confirm temporary PowerShell sessions, exports and test processes are closed.",
+                "Retain only sanitized evidence without credentials, tokens or unnecessary personal data."
+            ],
+            safety:
+                "Use only an owned or explicitly authorized Windows training VM. Record the original state, prefer read-only inspection, use least privilege and never disable protections or edit critical Registry, service or boot settings without a recovery-tested exercise.",
+            rubric: {
+                windowsAccuracy: 25,
+                safeMethodAndLeastPrivilege: 20,
+                evidenceAndVerification: 25,
+                securityInterpretation: 15,
+                recoveryAndCleanup: 10,
+                documentation: 5
+            }
+        }));
+
+        module.labs = module.labActivities.length;
+        module.assessments = 1;
+
+        const moduleQuestions = buildWindowsQuestionBank(
+            module.id,
+            module.title
+        );
+
+        module.moduleAssessment = {
+            title: `${module.title} — Verified Module Assessment`,
+            type: "Module Assessment",
+            passingScore: 75,
+            allowRetry: true,
+            showResults: true,
+            required: true,
+            questionCount: moduleQuestions.length,
+            questions: balanceAnswerPositions(moduleQuestions, module.number - 1)
+        };
+
+        module.lessons.forEach((item, lessonIndex) => {
+
+            item.performanceObjectives = [
+                `Explain ${item.title} accurately in Windows security context.`,
+                "Predict which built-in view or command should expose the relevant state.",
+                "Inspect the authorized VM without unnecessary elevation or configuration change.",
+                "Verify the conclusion and identify one proportionate defensive next step."
+            ];
+
+            item.evidenceStandard = [
+                "Windows edition, build, hostname, identity and timestamp",
+                "Exact interface path or built-in command",
+                "Relevant output, event or configuration field",
+                "Learner interpretation and independent verification",
+                "Before-and-after plus rollback status for any approved change",
+                "Redaction of credentials, personal data and unnecessary identifiers"
+            ];
+
+            item.completionCriteria = [
+                "The learner explains the Windows concept instead of only memorizing a command.",
+                "The learner recognizes when elevation or configuration change is unnecessary.",
+                "The three-question lesson assessment is passed.",
+                "Associated lab evidence meets the success criteria."
+            ];
+
+            item.quiz = balanceAnswerPositions([
+                windowsQuestion(`What best demonstrates understanding of ${item.title}?`, "A correct explanation supported by scoped Windows evidence and independent verification", "A copied command without context", "An administrator session for every task", "A screenshot without system identity"),
+                windowsQuestion(`An observation involving ${item.title} is unexpected. What should happen first?`, "Preserve the evidence, confirm identity and system context, then use a second read-only check", "Change multiple settings", "Disable Microsoft Defender", "Delete the event log"),
+                windowsQuestion(`Which safety rule applies while practising ${item.title}?`, "Use an authorized VM, record the original state, prefer least privilege and maintain a recovery path", "Test a work computer without permission", "Remove the snapshot", "Suppress all errors")
+            ], module.number + lessonIndex);
+
+        });
+
+    });
+
+    const integrativeScenarios = [
+        windowsQuestion("A command prompt shows an administrator group membership, but an administrative action is denied. What should be checked?", "The current token, integrity level and whether UAC elevation was approved", "The desktop background", "DNS cache only", "The filename extension"),
+        windowsQuestion("A user inherits Modify permission from a parent folder but should have read-only access. What is the strongest investigation step?", "Trace effective access, inheritance source and group membership before changing the ACL", "Add a deny entry immediately", "Take ownership as administrator", "Disable inheritance everywhere"),
+        windowsQuestion("A service is running from an unexpected writable directory. What should the learner do?", "Record path, account, permissions and service configuration, assess risk and avoid changing a critical service without approval", "Replace the binary", "Stop every service", "Delete the directory"),
+        windowsQuestion("A Registry value appears suspicious. What makes the conclusion credible?", "Full path, value type and data, related process or feature, timestamp and corroborating evidence", "The key name alone", "A web search only", "Changing the value"),
+        windowsQuestion("A PowerShell pipeline displays truncated properties. What should happen?", "Inspect the underlying objects and select the required properties explicitly", "Assume the hidden values", "Convert everything to plain text", "Run as SYSTEM"),
+        windowsQuestion("A workstation is on the Public firewall profile but file sharing is reachable. What should be reviewed?", "Active profile, enabled rules, scope, listener, share permissions and authorized network path", "Only the share name", "Only the IP address", "The Registry editor theme"),
+        windowsQuestion("Microsoft Defender reports current signatures but real-time protection is disabled. What is the correct assessment?", "Signature currency does not replace active protection; document the disabled control and approved remediation path", "The host is fully protected", "Delete the alert", "Disable updates"),
+        windowsQuestion("One failed-logon event appears in the Security log. What is the strongest response?", "Correlate surrounding events, account, source, logon type, time and normal activity before concluding", "Report compromise", "Delete the event", "Disable auditing"),
+        windowsQuestion("A baseline recommends disabling a service required by the lab's business function. What should happen?", "Document the dependency and choose a tested compensating or scoped control rather than applying the baseline blindly", "Disable it immediately", "Ignore all baselines", "Remove logging"),
+        windowsQuestion("What makes the Windows capstone portfolio credible?", "Repeatable read-only evidence, accurate interpretation, prioritized improvements, rollback guidance and honest limitations", "The most screenshots", "Administrator access", "Disabled security controls")
+    ];
+
+    const finalQuestions = [
+        ...course.finalAssessment.questions,
+        ...integrativeScenarios
+    ];
+
+    course.finalAssessment = {
+        ...course.finalAssessment,
+        description:
+            "A scenario-based assessment covering Windows architecture, NTFS, identities, UAC, execution, Registry, PowerShell, networking, Defender, event logs, baselines and safe administration.",
+        duration: "65–80 minutes",
+        passingScore: 80,
+        allowRetry: true,
+        required: true,
+        questionCount: finalQuestions.length,
+        questions: balanceAnswerPositions(finalQuestions)
+    };
+
+    course.capstone = {
+        title: "Windows Workstation Security Baseline Portfolio",
+        required: true,
+        estimatedTime: "8–10 hours",
+        scenario:
+            "Review an authorized Windows training workstation, document its normal administrative and security state and produce a prioritized improvement plan without disabling security controls or making unapproved changes.",
+        deliverables: [
+            "System purpose, edition, build, architecture, identity and recovery notes",
+            "Filesystem, ownership, NTFS and inheritance review",
+            "Local users, groups, UAC and privilege-context review",
+            "Process, service and scheduled-task baseline",
+            "Selected read-only Registry configuration evidence",
+            "PowerShell evidence-collection script using native cmdlets",
+            "Interface, route, DNS, listener, SMB and firewall-profile baseline",
+            "Microsoft Defender, update and Windows Security posture",
+            "Event Viewer investigation timeline for a controlled scenario",
+            "Comparison with relevant Microsoft security baseline guidance",
+            "Five prioritized improvements with impact, owner, verification and rollback",
+            "Sanitized report, limitations and cleanup confirmation"
+        ],
+        rubric: {
+            windowsAndIdentityAccuracy: 20,
+            permissionsAndExecutionReview: 15,
+            networkAndSecurityControls: 15,
+            loggingAndInvestigation: 15,
+            evidenceAndVerification: 15,
+            hardeningAndRecoveryPlan: 15,
+            documentationAndSafety: 5
+        }
+    };
+
+    course.qualityVersion = "CWS-COURSE-STANDARD-2026.2";
+}
+
+applyWindowsFundamentalsStandard(windowsFundamentals);
