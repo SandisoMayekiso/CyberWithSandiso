@@ -73,38 +73,29 @@ function buildLesson(id, title, data = {}) {
             { title: "Scope", description: "The systems and activities explicitly authorized for testing." }
         ],
         commands: data.commands || [],
-        quiz: data.quiz || [
-            {
-                question: `What is the strongest reason to use ${title} during an ethical-hacking assessment?`,
-                options: [
-                    "To support a defined assessment objective with evidence",
-                    "To run as many tools as possible",
-                    "To expand scope automatically",
-                    "To avoid documentation"
-                ],
-                answer: 0
-            },
-            {
-                question: "What should happen before any active testing?",
-                options: [
-                    "Confirm authorization and scope",
-                    "Disable monitoring",
-                    "Attempt exploitation",
-                    "Collect credentials"
-                ],
-                answer: 0
-            },
-            {
-                question: "What should a tester do with an uncertain result?",
-                options: [
-                    "Record the uncertainty and gather appropriate additional evidence",
-                    "Report it as confirmed",
-                    "Delete it",
-                    "Assume the highest severity"
-                ],
-                answer: 0
-            }
-        ]
+        quiz: balanceAnswerPositions(data.quiz || [
+            proQuestion(
+                `What is the strongest reason to use ${title} during an ethical-hacking assessment?`,
+                "Support a defined assessment objective with proportionate evidence",
+                "Run as many tools as possible",
+                "Expand scope automatically",
+                "Avoid documentation"
+            ),
+            proQuestion(
+                "What should happen before any active testing?",
+                "Confirm authorization, scope, permitted techniques and stop conditions",
+                "Disable monitoring",
+                "Attempt exploitation",
+                "Collect credentials"
+            ),
+            proQuestion(
+                "What should a tester do with an uncertain result?",
+                "Record the uncertainty and gather appropriate additional evidence",
+                "Report it as confirmed",
+                "Delete it",
+                "Assume the highest severity"
+            )
+        ])
     };
 }
 
@@ -184,6 +175,263 @@ function buildAssessment(title) {
     };
 }
 
+
+function balanceAnswerPositions(questions = [], offset = 0) {
+    return questions.map((item, index) => {
+        const options = Array.isArray(item.options) ? [...item.options] : [];
+        if (!options.length) return item;
+
+        const answer = Number.isInteger(item.answer) ? item.answer : 0;
+        const shift = (index + offset) % options.length;
+
+        return {
+            ...item,
+            options: [...options.slice(shift), ...options.slice(0, shift)],
+            answer: (answer - shift + options.length) % options.length
+        };
+    });
+}
+
+
+function proQuestion(prompt, correct, ...distractors) {
+    return {
+        question: prompt,
+        options: [correct, ...distractors],
+        answer: 0
+    };
+}
+
+
+const ethicalHackingQuestionBanks = {
+    "module-01": [
+        proQuestion("What gives an ethical-hacking engagement its authority?", "Written authorization tied to an agreed scope and rules of engagement", "Public Internet exposure", "The tester's certification", "A vulnerability scanner result"),
+        proQuestion("Which rules-of-engagement item is essential before testing?", "Permitted techniques, prohibited actions, contacts, timing and stop conditions", "A list of every available exploit", "A promise that no finding will be high risk", "Permission to test related third parties"),
+        proQuestion("What is the strongest assessment-note entry?", "Timestamp, target, action, result, interpretation, evidence reference and next step", "Tool name and target only", "A screenshot without context", "A conclusion written from memory"),
+        proQuestion("An apparently related cloud host is outside scope. What should the tester do?", "Stop testing it, preserve the observation and request a formal scope decision", "Test it quietly", "Attempt authentication only", "Add it to scope in the notes"),
+        proQuestion("Why define emergency contacts and stop conditions?", "To control safety and escalation when testing creates unexpected risk", "To bypass change control", "To conceal testing from defenders", "To guarantee exploitation success")
+    ],
+    "module-02": [
+        proQuestion("What distinguishes active reconnaissance from passive reconnaissance?", "Active reconnaissance sends traffic or requests to the authorized target", "Active reconnaissance uses only public sources", "Passive reconnaissance always requires credentials", "Passive reconnaissance changes target configuration"),
+        proQuestion("What should a target profile separate?", "Confirmed observations, sources, hypotheses and confidence levels", "Open ports from hostnames", "Technical facts from timestamps", "Assets from owners"),
+        proQuestion("A DNS record names a service. What does that prove?", "The record exists; the service and its exposure still require validation", "The host is vulnerable", "The service is currently reachable", "The target permits exploitation"),
+        proQuestion("What is the professional use of passive findings?", "Develop scoped hypotheses that guide proportionate active validation", "Report every mention as a vulnerability", "Collect personal data unrelated to scope", "Expand the target list automatically"),
+        proQuestion("Which reconnaissance evidence is strongest?", "A timestamped source, exact query, returned data and a stated confidence level", "A copied claim with no source", "An old screenshot", "An unverified technology guess")
+    ],
+    "module-03": [
+        proQuestion("What does an open TCP port establish?", "A service endpoint accepted the tested connection at that time", "The service is exploitable", "The host is fully enumerated", "Authentication can be bypassed"),
+        proQuestion("Why record scan timing and options?", "They materially affect coverage, impact and reproducibility", "They reveal passwords", "They replace scope", "They guarantee identical networks"),
+        proQuestion("A host does not answer discovery probes but is expected in scope. What is the best next step?", "Use an approved alternative discovery or direct host scan and document the limitation", "Declare it offline", "Scan neighboring public networks", "Disable the target firewall"),
+        proQuestion("Why must version-detection output be validated?", "Banners may be hidden, altered or affected by backporting", "Nmap never detects services", "All version strings prove a CVE", "Validation is only required for UDP"),
+        proQuestion("How should an authorized subnet scan be controlled?", "Use the approved range, rate and technique and monitor for unexpected impact", "Maximize speed without limits", "Include adjacent networks", "Ignore fragile systems")
+    ],
+    "module-04": [
+        proQuestion("What is the goal of service enumeration?", "Answer service-specific questions about configuration, features, identities and exposure", "Run every available script", "Prove exploitation", "Replace manual validation"),
+        proQuestion("What should guide the next enumeration action?", "Observed service evidence and the assessment objective", "The newest tool release", "A generic checklist alone", "The desire for maximum output"),
+        proQuestion("Which web-enumeration starting point is proportionate?", "Review normal application behavior, headers, routes and authentication flows", "Start with destructive payloads", "Download all data", "Ignore response differences"),
+        proQuestion("What is unsafe SMB enumeration practice?", "Uncontrolled credential guessing without explicit authorization and rate limits", "Recording protocol versions", "Reviewing authorized shares", "Documenting access requirements"),
+        proQuestion("What makes enumeration evidence reproducible?", "Exact target, request or command, time, output and analyst interpretation", "A service name only", "A cropped screenshot", "A finding title without steps")
+    ],
+    "module-05": [
+        proQuestion("What turns a scanner alert into a defensible vulnerability finding?", "Manual validation of the affected condition, prerequisites, exposure and impact", "A critical severity label", "A large output file", "A matching product name"),
+        proQuestion("How should CVSS be used?", "As technical severity input alongside asset, exposure, exploitability and business context", "As the complete business-risk decision", "As proof of compromise", "As authorization to exploit"),
+        proQuestion("A package version appears old, but the vendor backported a fix. What is required?", "Validate the vendor advisory, build information and actual vulnerable behavior", "Report it as exploitable", "Ignore vendor evidence", "Increase the CVSS score"),
+        proQuestion("What is a false positive?", "A reported condition that does not exist or is not applicable as claimed", "A low-severity confirmed weakness", "An out-of-scope host", "A finding without remediation"),
+        proQuestion("What should vulnerability research preserve?", "Authoritative references, affected conditions, publication context and applicability notes", "Only exploit code", "Only a CVE identifier", "Unverified forum comments")
+    ],
+    "module-06": [
+        proQuestion("When is controlled exploitation justified?", "When authorized and necessary to validate a defined risk with minimum impact", "Whenever exploit code is public", "Before enumeration", "Against any Internet-facing service"),
+        proQuestion("What must be reviewed before executing exploit code?", "Source, behavior, prerequisites, target match, payload, side effects and recovery plan", "Only the exploit name", "Only the CVSS score", "Only antivirus status"),
+        proQuestion("What is the safest proof after obtaining an authorized lab shell?", "A minimum command such as identity and hostname that proves the scoped outcome", "Deleting a system file", "Dumping unrelated customer data", "Disabling security services"),
+        proQuestion("An exploit may crash a fragile service. What should happen?", "Pause and obtain an explicit risk decision with safeguards or choose a safer validation method", "Run it repeatedly", "Conceal the risk", "Change the target"),
+        proQuestion("What should a Metasploit session record include?", "Module, options, target, payload, validation result, evidence and cleanup", "Only the session number", "Only the exploit rank", "Only a screenshot")
+    ],
+    "module-07": [
+        proQuestion("What is privilege escalation analysis trying to determine?", "Whether the current identity can cross an unintended privilege boundary", "Whether the host has open ports", "Whether DNS resolves", "Whether a report exists"),
+        proQuestion("Why begin with read-only enumeration?", "It builds a scoped evidence baseline before any higher-impact validation", "It guarantees administrator access", "It disables logging", "It replaces authorization"),
+        proQuestion("What does sudo -l help establish?", "Commands the current Linux identity may run through sudo", "Every SUID file", "Kernel exploitability", "Network segmentation"),
+        proQuestion("A writable service path may be exploitable. What is the next professional step?", "Validate ownership, service context, prerequisites and permitted proof before modification", "Replace the file immediately", "Restart production services", "Copy credentials"),
+        proQuestion("How should privilege-escalation impact be reported?", "State the starting identity, crossed boundary, resulting capability, evidence and remediation", "State only that root was obtained", "List automated-tool output", "Omit prerequisites")
+    ],
+    "module-08": [
+        proQuestion("What should govern post-exploitation actions?", "The approved objective and minimum evidence needed to demonstrate impact", "Maximum accessible data", "Curiosity", "The session timeout"),
+        proQuestion("How should sensitive evidence be handled?", "Minimize collection, encrypt storage, restrict access, redact reporting and follow retention rules", "Place it in public notes", "Copy everything for completeness", "Remove timestamps"),
+        proQuestion("Why maintain an artifact register?", "To record created or changed items so cleanup and verification are reliable", "To hide activity", "To expand scope", "To replace evidence"),
+        proQuestion("What makes a retest credible?", "Repeat the original validation method against the remediated condition and document the result", "Run a different unrelated scanner", "Accept a verbal assurance", "Delete the original finding"),
+        proQuestion("A cleanup step fails. What should the tester do?", "Stop, preserve evidence, notify the agreed contact and track the residual artifact", "Ignore it", "Delete additional files", "Close the engagement silently")
+    ],
+    "module-09": [
+        proQuestion("What makes a finding reproducible?", "Clear prerequisites, affected asset, steps, evidence and expected-versus-observed behavior", "A high severity label", "A tool screenshot", "An exploit name"),
+        proQuestion("What should remediation address?", "The root cause plus practical compensating controls and verification steps", "Only the scanner signature", "Only user awareness", "Only the symptom"),
+        proQuestion("How should business impact be written?", "Connect demonstrated technical capability to realistic consequences for the affected process or data", "Repeat the CVSS score", "Assume total compromise", "Use unsupported financial figures"),
+        proQuestion("What belongs in an executive summary?", "Scope, overall risk, major themes, key limitations and prioritized actions", "Every command", "Raw packet captures", "Every low-level banner"),
+        proQuestion("How should uncertainty appear in a report?", "Explicitly state the evidence, confidence, limitations and required follow-up", "Hide it", "Increase severity", "Remove the finding")
+    ],
+    "module-10": [
+        proQuestion("What is the correct capstone sequence?", "Scope, reconnaissance, discovery, enumeration, validation, minimum-impact proof, cleanup, reporting and retest plan", "Exploit first and define scope later", "Scan, delete evidence and summarize", "Collect credentials without analysis"),
+        proQuestion("What proves capstone methodology rather than tool familiarity?", "Each action follows evidence, scope and a documented objective", "The largest tool list", "One successful exploit", "Maximum scan speed"),
+        proQuestion("What belongs in the capstone evidence pack?", "Timeline, target map, commands, outputs, validated findings, artifact register and sanitized proof", "Passwords", "Only screenshots", "Only the final report"),
+        proQuestion("What is the strongest remediation plan?", "Prioritized root-cause fixes, owners, interim controls and specific retest criteria", "Patch everything immediately", "Buy a new scanner", "Accept every risk"),
+        proQuestion("What makes the final submission professionally defensible?", "Reproducible evidence, proportionate conclusions, honest limitations, cleanup confirmation and actionable reporting", "Claims of complete security", "Unverified automated output", "Testing beyond scope")
+    ]
+};
+
+
+/* =========================================================
+   CWS PRO COURSE STANDARDIZATION
+========================================================= */
+
+function applyEthicalHackingProStandard(course) {
+    course.modules.forEach(module => {
+        module.learningOutcomes = [
+            `Apply ${module.title} within a written authorization and defined assessment objective.`,
+            "Choose a proportionate technique based on evidence rather than tool availability.",
+            "Separate observations, hypotheses, validated facts and business-impact conclusions.",
+            "Produce sanitized, reproducible evidence and an actionable defensive recommendation."
+        ];
+
+        module.professionalCompetencies = [
+            "Scope and authorization control",
+            "Evidence-driven technical analysis",
+            "Risk-aware decision making",
+            "Professional documentation and communication"
+        ];
+
+        module.moduleAssessment = {
+            title: `${module.title} — Pro Verified Assessment`,
+            type: "Module Assessment",
+            access: "pro",
+            passingScore: 80,
+            allowRetry: true,
+            showResults: true,
+            required: true,
+            questionCount: ethicalHackingQuestionBanks[module.id].length,
+            questions: balanceAnswerPositions(
+                ethicalHackingQuestionBanks[module.id],
+                module.number - 1
+            )
+        };
+
+        module.labActivities = (module.labActivities || []).map(activity => ({
+            ...activity,
+            access: "pro",
+            required: true,
+            minimumScore: 80,
+            successCriteria: "The learner remains within scope, follows the taught methodology, validates the conclusion with minimum-impact evidence, records artifacts and provides practical remediation.",
+            evidence: [
+                "Signed or fictional rules-of-engagement reference and exact target scope",
+                "Timestamped testing timeline with commands or actions",
+                "Raw output plus the learner's interpretation",
+                "Expected-versus-observed behavior",
+                "Minimum proof supporting each conclusion",
+                "Finding with impact, evidence, remediation and retest method",
+                "Artifact register and cleanup confirmation"
+            ],
+            cleanup: [
+                "Remove every approved account, payload, file, listener or configuration artifact created during testing.",
+                "Stop test services and sessions and restore the intended lab state.",
+                "Verify cleanup against the artifact register.",
+                "Retain only encrypted or sanitized evidence required for the submission."
+            ],
+            safety: "Use only purpose-built lab systems or targets covered by explicit written authorization. Respect prohibited techniques, rate limits, maintenance windows, data-handling rules and stop conditions.",
+            rubric: {
+                methodologyAndScope: 20,
+                technicalAccuracy: 20,
+                validationAndEvidence: 25,
+                riskAndRemediation: 15,
+                safetyAndCleanup: 10,
+                reportingQuality: 10
+            }
+        }));
+
+        module.lessons.forEach((item, lessonIndex) => {
+            item.performanceObjectives = [
+                `Explain ${item.title} accurately and identify where it belongs in the assessment lifecycle.`,
+                "Select a justified, authorized technique and predict its expected evidence.",
+                "Perform or analyze the minimum-impact workflow in the isolated CWS lab.",
+                "Convert the result into a defensible conclusion, limitation and remediation action."
+            ];
+            item.evidenceStandard = [
+                "Link every action to the authorized target and assessment objective.",
+                "Record exact commands, options, timestamps and relevant environment details.",
+                "Preserve raw output separately from analyst interpretation.",
+                "State confidence, alternative explanations and required follow-up.",
+                "Redact secrets, tokens, personal information and unnecessary sensitive data."
+            ];
+            item.completionCriteria = [
+                "The concept and safety boundary can be explained without notes.",
+                "The knowledge check is passed.",
+                "The learner can justify the chosen technique over a higher-impact alternative.",
+                "Associated evidence meets the Pro evidence standard."
+            ];
+            item.quiz = balanceAnswerPositions(item.quiz, module.number + lessonIndex);
+        });
+    });
+
+    const integrativeScenarios = [
+        proQuestion("During reconnaissance, a third-party SaaS hostname appears related to the client but is not listed in scope. What is the correct action?", "Record the observation, do not test it and request a formal scope decision", "Scan it because DNS is public", "Attempt one login", "Add it silently to the target list"),
+        proQuestion("A scan reports a critical service version, but vendor evidence indicates a backported fix. What should the finding say?", "Document the conflicting evidence and validate the affected condition before deciding applicability", "Report critical because the banner matches", "Remove the evidence", "Exploit immediately"),
+        proQuestion("A permitted exploit may interrupt a business-critical lab simulation. What is the best decision?", "Use the agreed risk process, safeguards and recovery plan or select a safer validation method", "Run it at maximum speed", "Disable monitoring", "Avoid telling the engagement contact"),
+        proQuestion("A shell is obtained on an authorized target. What is the strongest next action?", "Capture minimum identity and host proof, reassess the objective and avoid unrelated data access", "Search every user directory", "Create persistence", "Disable defensive tools"),
+        proQuestion("Two tools disagree about a service. How should the tester proceed?", "Preserve both results, compare methods and manually validate the actual protocol behavior", "Choose the more severe result", "Run uncontrolled exploitation", "Report both as confirmed"),
+        proQuestion("A privilege path depends on changing a service file. What must precede validation?", "Confirm permission, service impact, recovery, minimum proof and cleanup steps", "Modify the file immediately", "Restart all services", "Delete logs"),
+        proQuestion("Sensitive data appears unexpectedly during testing. What should happen?", "Stop unnecessary access, preserve minimal evidence and follow the agreed notification and handling process", "Copy the full dataset", "Include it unredacted in the report", "Ignore the event"),
+        proQuestion("A remediation closes the exposed port but leaves the vulnerable service reachable internally. What should the retest conclude?", "The original exposure changed, but residual risk and internal reachability must be documented against the agreed remediation objective", "Fully remediated", "Not testable", "Critical compromise"),
+        proQuestion("A technical finding has high CVSS but affects an isolated disposable training asset. How should priority be handled?", "Present technical severity separately from contextual business risk and explain both", "Always rate business risk critical", "Remove the finding", "Ignore technical severity"),
+        proQuestion("What is the strongest final Pro-course submission?", "A scoped, reproducible assessment with sanitized evidence, defensible findings, prioritized remediation, cleanup confirmation and a retest plan", "A folder of raw tool output", "One exploit screenshot", "A list of discovered passwords")
+    ];
+
+    const finalQuestions = [
+        ...Object.values(ethicalHackingQuestionBanks).flatMap(bank => bank.slice(0, 2)),
+        ...integrativeScenarios
+    ];
+
+    course.finalAssessment = {
+        id: "final-assessment",
+        title: "CWS Ethical Hacking Pro Final Assessment",
+        description: "A server-verified, scenario-based assessment of authorization, methodology, reconnaissance, discovery, enumeration, validation, controlled exploitation, privilege analysis, evidence handling, reporting and retesting.",
+        type: "Final Assessment",
+        access: "pro",
+        duration: "75–90 minutes",
+        passingScore: 85,
+        allowRetry: true,
+        required: true,
+        questionCount: finalQuestions.length,
+        questions: balanceAnswerPositions(finalQuestions)
+    };
+
+    course.capstone = {
+        title: "End-to-End Authorized Penetration Test",
+        access: "pro",
+        required: true,
+        minimumScore: 85,
+        estimatedTime: "12–16 hours",
+        scenario: "Conduct a complete assessment of a purpose-built CWS organization across an isolated network, two hosts and a web service under formal fictional rules of engagement.",
+        deliverables: [
+            "Signed fictional scope and rules of engagement",
+            "Target profile and attack-surface map",
+            "Timestamped testing timeline and sanitized evidence index",
+            "Discovery and service-enumeration results",
+            "Manual validation of at least three candidate weaknesses",
+            "Minimum-impact proof for one explicitly permitted exploit path",
+            "Privilege-boundary analysis without unnecessary data access",
+            "Artifact register and verified cleanup checklist",
+            "Professional report with executive summary and technical findings",
+            "Prioritized remediation roadmap and exact retest plan"
+        ],
+        rubric: {
+            authorizationAndMethodology: 15,
+            technicalDepthAndAccuracy: 25,
+            validationAndEvidence: 20,
+            riskAndRemediation: 15,
+            safetyAndCleanup: 10,
+            professionalReporting: 15
+        }
+    };
+
+    course.qualityVersion = "CWS-PRO-STANDARD-2026.2";
+}
+
+
 export const ethicalHacking = {
     id: "ethical-hacking",
     title: "Ethical Hacking",
@@ -196,19 +444,58 @@ export const ethicalHacking = {
     icon: "fa-solid fa-user-secret",
     description: "Learn ethical hacking through structured methodology, authorized reconnaissance, discovery, enumeration, vulnerability validation, controlled exploitation concepts, privilege-escalation analysis and professional reporting.",
     longDescription: "Ethical Hacking is the first CWS Pro offensive-security course. Students learn how an authorized assessment is planned, executed, evidenced and reported. The course emphasizes scope, repeatable methodology, safe tool usage, manual validation, evidence collection, remediation and professional reporting.",
-    duration: "55–70 Hours",
+    duration: "70–90 Hours",
     estimatedLessons: 30,
     certificateEligible: true,
-    learningStandard: "Deep Explanation • Tool Usage • Hands-On Labs • Evidence • Reporting • Verified Assessment",
+    learningStandard: "Professional Methodology • Controlled Validation • Hands-On Labs • Evidence • Reporting • Server-Verified Assessment",
     prerequisites: ["Cybersecurity Fundamentals","Networking Fundamentals","Linux Fundamentals"],
     recommendedPrerequisites: ["Python Fundamentals for Cybersecurity","Bash & Linux Automation"],
+    skills: [
+        "Rules of engagement and scope control",
+        "Passive and active reconnaissance",
+        "Host discovery and port scanning",
+        "Service-specific enumeration",
+        "Vulnerability validation",
+        "Controlled exploitation",
+        "Linux and Windows privilege-boundary analysis",
+        "Evidence and artifact handling",
+        "Risk-based findings",
+        "Professional technical and executive reporting"
+    ],
+    tools: [
+        "Nmap",
+        "dig",
+        "nslookup",
+        "curl",
+        "Metasploit Framework",
+        "Linux identity and process tools",
+        "Windows identity and system tools",
+        "CWS evidence workbook",
+        "CWS penetration-test report template"
+    ],
+    assessmentStandard: "Pro assessments require scenario judgment, defensible scope decisions, manual validation, minimal-impact proof, sanitized evidence, cleanup confirmation and actionable reporting. Generic repeated question banks do not qualify.",
+    standardReferences: [
+        {
+            title: "NIST SP 800-115 — Technical Guide to Information Security Testing and Assessment",
+            organization: "National Institute of Standards and Technology",
+            url: "https://csrc.nist.gov/pubs/sp/800/115/final"
+        },
+        {
+            title: "NICE Workforce Framework for Cybersecurity",
+            organization: "National Institute of Standards and Technology",
+            url: "https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-resource-center"
+        }
+    ],
     completionRules: {
         minimumLessonCompletion: 100,
-        minimumModuleAssessmentScore: 75,
-        finalAssessmentPassingScore: 80,
+        minimumModuleAssessmentScore: 80,
+        minimumRequiredLabScore: 80,
+        finalAssessmentPassingScore: 85,
+        capstonePassingScore: 85,
         requireAllModuleAssessments: true,
         requireRequiredLabs: true,
-        requireFinalAssessment: true
+        requireFinalAssessment: true,
+        requireCapstone: true
     },
     progression: {
         unlockMode: "sequential",
@@ -216,7 +503,9 @@ export const ethicalHacking = {
         allowAssessmentRetry: true,
         trackLessonCompletion: true,
         trackAssessmentScores: true,
-        trackLabCompletion: true
+        trackLabCompletion: true,
+        resumeLastLesson: true,
+        requireSequentialLabEvidence: true
     },
     objectives: [
         "Plan authorized penetration tests using scope and rules of engagement.",
@@ -383,3 +672,6 @@ export const ethicalHacking = {
         ]
     }
 };
+
+
+applyEthicalHackingProStandard(ethicalHacking);
