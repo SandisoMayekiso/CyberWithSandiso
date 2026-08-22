@@ -26,6 +26,9 @@ function lesson(
         title,
         duration,
 
+        access:
+            "free",
+
         type:
             extra.type ||
             "Lesson",
@@ -59,6 +62,67 @@ function lesson(
 
 
 /* =========================================================
+   ASSESSMENT QUALITY HELPERS
+========================================================= */
+
+function balanceAnswerPositions(
+    questions = [],
+    offset = 0
+) {
+
+    return questions.map(
+        (item, index) => {
+
+            const options =
+                Array.isArray(item.options)
+                    ? [...item.options]
+                    : [];
+
+            if (!options.length) {
+                return item;
+            }
+
+            const answer =
+                Number.isInteger(item.answer)
+                    ? item.answer
+                    : 0;
+
+            const shift =
+                (index + offset) % options.length;
+
+            return {
+                ...item,
+                options: [
+                    ...options.slice(shift),
+                    ...options.slice(0, shift)
+                ],
+                answer:
+                    (answer - shift + options.length) % options.length
+            };
+
+        }
+    );
+
+}
+
+
+function networkQuestion(prompt, correct, ...distractors) {
+
+    return {
+        question:
+            prompt,
+        options: [
+            correct,
+            ...distractors
+        ],
+        answer:
+            0
+    };
+
+}
+
+
+/* =========================================================
    COURSE
 ========================================================= */
 
@@ -85,6 +149,9 @@ export const networkingFundamentals = {
     status:
         "available",
 
+    access:
+        "free",
+
     icon:
         "fa-solid fa-network-wired",
 
@@ -96,6 +163,93 @@ export const networkingFundamentals = {
 
     duration:
         "50–65 Hours",
+
+    estimatedLessons:
+        45,
+
+    certificateEligible:
+        true,
+
+    learningStandard:
+        "Protocol Reasoning • Addressing • Packet Flow • Troubleshooting • Defensive Analysis • Verified Practice",
+
+    learningEnvironment:
+        "Use documentation address ranges, packet captures, local commands and systems or networks that you own or are explicitly authorized to inspect.",
+
+    prerequisites: [
+        "No previous networking experience is required",
+        "Basic computer and web-browsing confidence",
+        "Access to an owned or explicitly authorized computer or lab VM"
+    ],
+
+    recommendedPrerequisites: [
+        "Cybersecurity Fundamentals"
+    ],
+
+    skills: [
+        "Network and device roles",
+        "OSI and TCP/IP reasoning",
+        "IPv4 addressing and CIDR",
+        "Subnet calculation",
+        "Ethernet, MAC and ARP analysis",
+        "TCP, UDP and socket interpretation",
+        "ICMP and layered troubleshooting",
+        "Routing and gateway decisions",
+        "DNS and DHCP analysis",
+        "HTTP, HTTPS and TLS traffic reasoning",
+        "Segmentation and network-control design"
+    ],
+
+    tools: [
+        "ipconfig",
+        "ip",
+        "ping",
+        "traceroute or tracert",
+        "ss or netstat",
+        "nslookup",
+        "dig",
+        "curl",
+        "Wireshark or approved packet captures",
+        "CWS subnet and packet-flow worksheets"
+    ],
+
+    assessmentStandard:
+        "Assessments require protocol interpretation, address calculation, layered troubleshooting and evidence-based defensive decisions. Practical work uses documentation ranges or explicitly authorized systems only.",
+
+    standardReferences: [
+        {
+            title:
+                "RFC 9293 — Transmission Control Protocol",
+            organization:
+                "RFC Editor",
+            url:
+                "https://www.rfc-editor.org/rfc/rfc9293.html"
+        },
+        {
+            title:
+                "RFC 8200 — Internet Protocol, Version 6",
+            organization:
+                "RFC Editor",
+            url:
+                "https://www.rfc-editor.org/rfc/rfc8200.html"
+        },
+        {
+            title:
+                "RFC 1034 — Domain Names: Concepts and Facilities",
+            organization:
+                "RFC Editor",
+            url:
+                "https://www.rfc-editor.org/rfc/rfc1034.html"
+        },
+        {
+            title:
+                "RFC 8446 — The Transport Layer Security Protocol Version 1.3",
+            organization:
+                "RFC Editor",
+            url:
+                "https://www.rfc-editor.org/rfc/rfc8446.html"
+        }
+    ],
 
     objectives: [
 
@@ -114,10 +268,23 @@ export const networkingFundamentals = {
     ],
 
     completionRules: {
-        requireAllLessons: true,
+        minimumLessonCompletion: 100,
+        minimumModuleAssessmentScore: 75,
+        finalAssessmentPassingScore: 80,
         requireRequiredLabs: true,
         requireAllModuleAssessments: true,
-        requireFinalAssessment: true
+        requireFinalAssessment: true,
+        requireCapstone: true
+    },
+
+    progression: {
+        unlockMode: "sequential",
+        allowLessonReview: true,
+        allowAssessmentRetry: true,
+        trackLessonCompletion: true,
+        trackAssessmentScores: true,
+        trackLabCompletion: true,
+        resumeLastLesson: true
     },
 
     finalAssessment: {
@@ -10750,3 +10917,262 @@ HTTP -> web request/response</pre>
     ]
 
 };
+
+
+/* =========================================================
+   CWS COURSE STANDARDIZATION
+========================================================= */
+
+function applyNetworkingFundamentalsStandard(course) {
+
+    const foundationsActivity = {
+        id:
+            "lab-01",
+        title:
+            "Trace an End-to-End Network Connection",
+        type:
+            "Guided Practical Activity",
+        level:
+            "Beginner",
+        duration:
+            "45–60 minutes",
+        description:
+            "Trace the dependencies involved when an authorized client opens a website by hostname.",
+        objective:
+            "Create a layered packet-flow model covering local configuration, DNS, ARP, switching, routing, transport, TLS and HTTP.",
+        instructions: [
+            "Use a fictional scenario, approved packet capture or an owned lab computer only.",
+            "Record the client address, prefix, default gateway and DNS resolver.",
+            "Describe how the client decides whether the destination is local or remote.",
+            "Explain which MAC address is needed for the first Ethernet hop.",
+            "Trace DNS resolution, routed IP delivery, transport setup, TLS protection and the HTTP exchange.",
+            "For each stage, identify one useful evidence source and one realistic failure condition.",
+            "Create a final diagram or table showing the end-to-end flow in the correct order."
+        ],
+        reflection: [
+            "Which stages occur before the first HTTP request can be sent?",
+            "Which addresses remain end-to-end and which normally change hop by hop?",
+            "Where could a firewall, DNS failure or certificate problem interrupt the flow?",
+            "Which evidence would help distinguish a network failure from an application failure?"
+        ]
+    };
+
+
+    course.modules.forEach(
+        module => {
+
+            module.learningOutcomes = [
+                `Explain the essential ${module.title} concepts and their place in end-to-end communication.`,
+                "Interpret addressing, protocol state or packet evidence rather than relying on memorized definitions.",
+                "Troubleshoot from the first failing layer or dependency using safe, scoped tests.",
+                "Connect normal network behavior to defensive visibility, attack surface and least-connectivity controls."
+            ];
+
+            const existingActivities =
+                Array.isArray(module.labActivities) &&
+                module.labActivities.length
+                    ? module.labActivities
+                    : module.id === "module-01"
+                        ? [foundationsActivity]
+                        : [];
+
+            module.labActivities =
+                existingActivities.map(
+                    activity => ({
+                        ...activity,
+                        access:
+                            "free",
+                        required:
+                            true,
+                        scenario:
+                            activity.scenario ||
+                            "You are supporting the fictional CWS Academy network. Use documentation ranges, supplied packet data or systems you own or are explicitly authorized to inspect.",
+                        prerequisites: [
+                            "Completed lessons in this module",
+                            "Documentation ranges, supplied captures or an authorized lab system",
+                            "CWS network evidence worksheet"
+                        ],
+                        evidence: [
+                            "Exact system, interface, address range or packet capture in scope",
+                            "Expected protocol behavior before testing",
+                            "Commands, calculations, filters or diagram used",
+                            "Observed output or packet fields",
+                            "Layered interpretation and first failing dependency",
+                            "Security implication, limitation and recommended next step"
+                        ],
+                        successCriteria:
+                            activity.successCriteria ||
+                            "The submission accurately explains the relevant packet or protocol flow, supports its conclusion with reproducible evidence and remains within the authorized scope.",
+                        reflection:
+                            Array.isArray(activity.reflection)
+                                ? activity.reflection
+                                : [
+                                    "Which field or observation most strongly supported the conclusion?",
+                                    "Which alternative explanation remains possible?",
+                                    "Which defensive control or log source would improve visibility?"
+                                ],
+                        cleanup: [
+                            "Stop temporary captures or diagnostic processes.",
+                            "Remove disposable files created only for the activity.",
+                            "Retain only sanitized evidence without credentials, session tokens or unrelated traffic."
+                        ],
+                        safety:
+                            "Use only documentation ranges, supplied captures or networks and systems you own or are explicitly authorized to inspect. Do not scan unrelated public addresses or capture other people's traffic.",
+                        rubric: {
+                            protocolAccuracy:
+                                25,
+                            calculationOrPacketEvidence:
+                                25,
+                            troubleshootingReasoning:
+                                20,
+                            securityInterpretation:
+                                15,
+                            scopeAndSafety:
+                                10,
+                            documentation:
+                                5
+                        }
+                    })
+                );
+
+            module.practiceActivities = [];
+            module.labs =
+                module.labActivities.length;
+            module.assessments =
+                1;
+
+            module.moduleAssessment = {
+                ...module.moduleAssessment,
+                passingScore:
+                    75,
+                allowRetry:
+                    true,
+                showResults:
+                    true,
+                required:
+                    true,
+                questionCount:
+                    module.moduleAssessment.questions.length,
+                questions:
+                    balanceAnswerPositions(
+                        module.moduleAssessment.questions,
+                        module.number - 1
+                    )
+            };
+
+            module.lessons.forEach(
+                (item, lessonIndex) => {
+
+                    item.performanceObjectives = [
+                        `Explain ${item.title} accurately and place it in the relevant network layer or workflow.`,
+                        "Predict the expected address, state, packet field or communication result.",
+                        "Interpret a realistic troubleshooting or security scenario using evidence.",
+                        "Identify one limitation and one proportionate defensive next step."
+                    ];
+
+                    item.evidenceStandard = [
+                        "Record the authorized interface, host, range, flow or packet capture.",
+                        "Preserve exact commands, calculations or display filters.",
+                        "Capture the relevant address, header, flag, state, response or route evidence.",
+                        "Explain what the evidence proves and what it does not prove.",
+                        "Remove credentials, tokens, personal data and unrelated packet contents."
+                    ];
+
+                    item.completionCriteria = [
+                        "The learner explains the protocol or concept without memorized wording.",
+                        "The learner traces or calculates the expected behavior accurately.",
+                        "The five-question knowledge check is passed.",
+                        "Associated practical evidence meets the stated success criteria."
+                    ];
+
+                    item.quiz =
+                        balanceAnswerPositions(
+                            item.quiz,
+                            module.number + lessonIndex
+                        );
+
+                }
+            );
+
+        }
+    );
+
+
+    const integrativeScenarios = [
+        networkQuestion("A client can reach its gateway but cannot resolve names. What should be tested next?", "The configured resolver, DNS query result and path to the DNS service", "The Ethernet source MAC only", "The browser theme", "The system clock only"),
+        networkQuestion("A /27 IPv4 subnet contains how many total addresses?", "32", "16", "27", "64"),
+        networkQuestion("A switch receives a frame for an unknown destination MAC. What normally happens within that VLAN?", "It floods the frame out eligible ports except the ingress port", "It sends the frame to DNS", "It changes the destination IP", "It discards every unknown frame"),
+        networkQuestion("A TCP SYN receives no response. What is the most accurate conclusion?", "The result is inconclusive and may involve filtering, loss, routing or an unavailable host or service", "The service is definitely closed", "The host is compromised", "DNS is working"),
+        networkQuestion("Traceroute stops at one hop but the application still works. What should the analyst infer?", "Intermediate devices may suppress diagnostic responses, so application reachability must be evaluated separately", "Routing is definitely broken", "The final host has no IP address", "TLS has failed"),
+        networkQuestion("A host sends traffic to a remote subnet. Which Layer 2 destination is normally used on the local LAN?", "The default gateway's MAC address", "The remote server's MAC address", "The DNS resolver's MAC address", "The broadcast address for every packet"),
+        networkQuestion("DNS returns the expected address, TCP 443 connects, but the browser reports a certificate-name mismatch. Which layer or control is now the focus?", "TLS identity validation", "ARP address resolution", "DHCP lease assignment", "IPv4 subnet calculation"),
+        networkQuestion("A workstation makes repeated outbound connections to an unfamiliar address. What is the strongest investigation step?", "Correlate flow or packet evidence with DNS, endpoint process, user, time and destination context", "Block every external address immediately", "Assume malware from the port alone", "Delete the network logs"),
+        networkQuestion("A firewall rule allows an entire internal network when only one application server needs access. What principle should improve the rule?", "Least connectivity using the required source, destination, service and direction", "Allow all return traffic without state", "Remove logging", "Use MAC addresses across routed networks"),
+        networkQuestion("What makes a networking capstone professionally credible?", "Accurate topology, addressing, packet flow, layered evidence, troubleshooting logic, defensive controls and honest limitations", "Only a successful ping", "Only a packet-capture screenshot", "A list of port numbers")
+    ];
+
+    const finalQuestions = [
+        ...course.finalAssessment.questions,
+        ...integrativeScenarios
+    ];
+
+    course.finalAssessment = {
+        ...course.finalAssessment,
+        duration:
+            "60–75 minutes",
+        passingScore:
+            80,
+        allowRetry:
+            true,
+        required:
+            true,
+        questionCount:
+            finalQuestions.length,
+        questions:
+            balanceAnswerPositions(finalQuestions)
+    };
+
+    course.capstone = {
+        title:
+            "Design, Trace and Defend a Small Network",
+        required:
+            true,
+        estimatedTime:
+            "7–9 hours",
+        scenario:
+            "Design and analyze a fictional small-business network containing user, server, guest, management and public-service segments, then troubleshoot and defend representative communication flows.",
+        deliverables: [
+            "Logical topology and trust-boundary diagram",
+            "IPv4 addressing and CIDR plan using documentation ranges",
+            "Subnet calculations and routing decisions",
+            "End-to-end DNS, ARP, IP, TCP/TLS and HTTP packet-flow narrative",
+            "Annotated approved packet capture or supplied evidence set",
+            "Layered troubleshooting record for two failure scenarios",
+            "Required-services and firewall-policy matrix",
+            "DNS, DHCP and network-telemetry plan",
+            "Three prioritized security improvements",
+            "Sanitized report with assumptions and limitations"
+        ],
+        rubric: {
+            topologyAndAddressing:
+                20,
+            protocolAndPacketAccuracy:
+                25,
+            troubleshootingMethod:
+                20,
+            securityArchitecture:
+                20,
+            evidenceAndDocumentation:
+                15
+        }
+    };
+
+    course.qualityVersion =
+        "CWS-COURSE-STANDARD-2026.2";
+
+}
+
+
+applyNetworkingFundamentalsStandard(
+    networkingFundamentals
+);
