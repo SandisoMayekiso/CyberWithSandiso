@@ -104,12 +104,167 @@ function lesson(
             },
 
         quiz:
-            extra.quiz ||
-            []
+            balanceAnswerPositions(
+                extra.quiz?.length
+                    ? extra.quiz
+                    : [
+                        question(
+                            `Which result best demonstrates practical understanding of ${title}?`,
+                            "A small, correctly scoped script whose expected result is verified and explained",
+                            "A copied command that was not reviewed",
+                            "A script run with unnecessary privileges",
+                            "An undocumented result from an unknown system"
+                        ),
+                        question(
+                            `What is the safest way to practise ${title}?`,
+                            "Use owned or explicitly authorized lab data, begin read-only and test expected failure conditions",
+                            "Run the first example as root against a workplace server",
+                            "Disable validation so the script finishes faster",
+                            "Store reusable credentials in the script"
+                        ),
+                        question(
+                            `What evidence should accompany work involving ${title}?`,
+                            "The inputs, expected behavior, observed result, exit status and a short interpretation",
+                            "Only the script filename",
+                            "Only a screenshot with no context",
+                            "No evidence if the command returned output"
+                        )
+                    ]
+            )
 
     };
 
 }
+
+
+/* =========================================================
+   ASSESSMENT QUALITY HELPERS
+========================================================= */
+
+function balanceAnswerPositions(
+    questions = [],
+    offset = 0
+) {
+
+    return questions.map(
+        (item, index) => {
+
+            const options =
+                Array.isArray(item.options)
+                    ? [...item.options]
+                    : [];
+
+            if (!options.length) {
+                return item;
+            }
+
+            const answer =
+                Number.isInteger(item.answer)
+                    ? item.answer
+                    : 0;
+
+            const shift =
+                (index + offset) % options.length;
+
+            return {
+                ...item,
+                options: [
+                    ...options.slice(shift),
+                    ...options.slice(0, shift)
+                ],
+                answer:
+                    (answer - shift + options.length) % options.length
+            };
+
+        }
+    );
+
+}
+
+
+function question(prompt, correct, ...distractors) {
+
+    return {
+        question:
+            prompt,
+        options: [
+            correct,
+            ...distractors
+        ],
+        answer:
+            0
+    };
+
+}
+
+
+const bashQuestionBanks = {
+
+    "module-01": [
+        question("What is Bash?", "A command shell and scripting language that interprets commands and automates workflows", "A Linux filesystem", "A network protocol", "A package repository"),
+        question("What does an exit status of zero normally mean?", "The command completed successfully", "The shell stopped permanently", "The command ran as root", "The command produced no output"),
+        question("Why should a script begin with a suitable shebang?", "It identifies the interpreter intended to execute the file", "It grants administrator privileges", "It encrypts the script", "It validates all user input"),
+        question("What does the && operator do between commands?", "Runs the next command only if the previous command succeeded", "Runs both commands simultaneously", "Ignores every error", "Redirects standard error"),
+        question("What is the strongest first debugging step?", "Reproduce the smallest failing command and inspect its inputs, output and exit status", "Add sudo everywhere", "Delete all error handling", "Run the script repeatedly without changing anything")
+    ],
+
+    "module-02": [
+        question("Why should variable expansions usually be quoted?", "To prevent unintended word splitting and pathname expansion", "To make every value numeric", "To execute the variable as root", "To disable input validation"),
+        question("What does $1 represent inside a Bash script?", "The first positional argument", "The previous command exit status", "The script process ID", "The current username"),
+        question("What should happen before using external input in a command?", "Validate its type, format, allowed range and intended use", "Trust it because the user is signed in", "Remove all quotes", "Write it to a system file"),
+        question("Which construct safely collects interactive input?", "read with an appropriate prompt and validation", "eval on arbitrary text", "A world-writable configuration file", "A hard-coded password"),
+        question("How should secrets normally be handled?", "Keep them out of source code and logs and use an approved secret mechanism", "Embed them in comments", "Print them during debugging", "Commit them to the repository")
+    ],
+
+    "module-03": [
+        question("What is the purpose of an if statement?", "Choose a branch based on a command or test result", "Repeat forever", "Create a network socket", "Change file ownership automatically"),
+        question("Which operator tests whether a regular file exists?", "-f", "-d", "-z", "-n"),
+        question("When is a case statement useful?", "When one value must be matched against several explicit patterns", "When every command must run as root", "When binary data must be encrypted", "When a process must be killed"),
+        question("Why should failure branches be explicit?", "They make unsafe assumptions visible and allow useful errors and exit codes", "They hide error messages", "They eliminate testing", "They turn strings into numbers"),
+        question("What is a safe default for an unknown action argument?", "Reject it, show valid usage and return a non-zero status", "Execute the closest matching command", "Run every action", "Ignore the argument and report success")
+    ],
+
+    "module-04": [
+        question("When is a for loop appropriate?", "When processing a known list or set of expanded items", "When handling only one value", "When bypassing permissions", "When replacing validation"),
+        question("What protects a while loop from running forever?", "A condition that changes predictably plus an intentional stop or timeout", "Running it as root", "Removing the condition", "Redirecting output"),
+        question("What is the safest way to process filenames?", "Use quoting and null-delimited input where names may contain spaces or newlines", "Split every filename on spaces", "Use eval", "Assume names contain only letters"),
+        question("Why should a batch script report per-item failures?", "One failed item should be traceable without hiding the status of the remaining work", "Every item always succeeds", "Logs are unnecessary", "It prevents loops from ending"),
+        question("What makes repetitive automation idempotent?", "Repeated runs preserve the intended state without harmful duplicate effects", "It always appends duplicate data", "It deletes its logs", "It requires manual editing on every run")
+    ],
+
+    "module-05": [
+        question("What is grep primarily used for?", "Selecting lines that match a pattern", "Changing file ownership", "Starting services", "Creating user accounts"),
+        question("What is sed commonly used for?", "Stream-oriented text selection and transformation", "Network routing", "Password hashing", "Process scheduling"),
+        question("What is awk especially useful for?", "Field-based text processing and reporting", "Disk encryption", "User authentication", "Firewall state tracking"),
+        question("Why should a pipeline be validated stage by stage?", "A later command may hide empty or malformed output from an earlier stage", "Every pipeline always succeeds", "Pipelines cannot process text", "Exit statuses are irrelevant"),
+        question("What is the safest approach before rewriting a file?", "Validate the input, write to a controlled temporary file, verify it and replace deliberately", "Edit the only copy in place without a backup", "Disable permission checks", "Use an unquoted wildcard")
+    ],
+
+    "module-06": [
+        question("What does ps provide?", "A snapshot of process information", "A permanent firewall rule", "A DNS zone", "A package signature"),
+        question("What should be confirmed before terminating a process?", "Identity, ownership, purpose, scope and expected operational impact", "Only its name", "That sudo is available", "That no logs exist"),
+        question("What does ss help inspect?", "Network sockets, listening services and connections", "Password policy", "File checksums", "Cron syntax only"),
+        question("Why is a listening port not automatically a vulnerability?", "Risk depends on service, binding, exposure, configuration, authorization and compensating controls", "All ports are harmless", "Port numbers prove exploitation", "Only public IP addresses need review"),
+        question("What makes a process or network report useful?", "Timestamped, scoped observations with commands, filters and an interpretation", "Unlabelled command output", "Only a count", "A claim without evidence")
+    ],
+
+    "module-07": [
+        question("What is the safest default for defensive automation?", "Read-only collection with explicit scope and least privilege", "Automatic remediation on every discovered host", "Unbounded Internet scanning", "Logging reusable secrets"),
+        question("What should a log-review script preserve?", "Source, time range, filter logic, relevant evidence and limitations", "Only matching usernames", "No timestamps", "Only the final count"),
+        question("Why should indicators be treated as leads rather than proof?", "Benign activity can match a pattern, so context and corroboration are required", "Every match proves compromise", "Indicators never change", "Logs are always complete"),
+        question("What must precede network automation?", "Explicit authorization, target scope, rate limits and a defined purpose", "A list of random public IPs", "Disabled monitoring", "Maximum concurrency"),
+        question("What is responsible failure behavior?", "Stop safely, return a useful non-zero status and avoid partial destructive changes", "Report success regardless of result", "Delete the evidence", "Retry forever")
+    ],
+
+    "module-08": [
+        question("What should the final automation project do first?", "Validate its environment, dependencies, permissions, inputs and output location", "Modify firewall rules", "Install unknown software", "Delete previous logs"),
+        question("What belongs in a professional script report?", "Timestamp, host and scope, collection method, findings, limitations and next steps", "Only coloured terminal output", "Only the script source", "Reusable credentials"),
+        question("What does ShellCheck contribute?", "Static analysis that identifies many common shell-script defects and portability concerns", "Runtime authorization", "Automatic incident containment", "Secret storage"),
+        question("Why test failure and edge cases?", "Reliable automation must respond predictably to missing data, permissions and command failures", "Only successful paths matter", "Failure tests weaken scripts", "They replace documentation"),
+        question("What makes the capstone defensible?", "Repeatable read-only collection, sanitized evidence, accurate interpretation and documented limitations", "Running as root with no reason", "One screenshot", "Unverified claims")
+    ]
+
+};
 
 
 /* =========================================================
@@ -175,6 +330,104 @@ export const bashLinuxAutomation = {
 
     curriculumNote:
         "Students should understand every command and script component before automating it. Free-course automation remains focused on foundations, administration and defensive read-only workflows; deeper assessment automation belongs in later Pro training.",
+
+    estimatedLessons:
+        24,
+
+    certificateEligible:
+        true,
+
+    prerequisites: [
+        "Linux Fundamentals or equivalent command-line confidence",
+        "Access to a Linux virtual machine or other isolated lab system",
+        "Permission to inspect every system and dataset used in the exercises"
+    ],
+
+    recommendedPrerequisites: [
+        "Cybersecurity Fundamentals",
+        "Networking Fundamentals"
+    ],
+
+    skills: [
+        "Bash scripting",
+        "Input validation",
+        "Control flow",
+        "Text processing",
+        "Linux process inspection",
+        "Network-socket inspection",
+        "Defensive automation",
+        "Evidence-based troubleshooting",
+        "Technical documentation"
+    ],
+
+    tools: [
+        "Bash",
+        "GNU coreutils",
+        "grep",
+        "sed",
+        "awk",
+        "find",
+        "ps",
+        "ss",
+        "journalctl",
+        "ShellCheck"
+    ],
+
+    completionRules: {
+        minimumLessonCompletion:
+            100,
+        minimumModuleAssessmentScore:
+            75,
+        finalAssessmentPassingScore:
+            80,
+        requireAllModuleAssessments:
+            true,
+        requireRequiredLabs:
+            true,
+        requireFinalAssessment:
+            true,
+        requireCapstone:
+            true
+    },
+
+    progression: {
+        unlockMode:
+            "sequential",
+        allowLessonReview:
+            true,
+        allowAssessmentRetry:
+            true,
+        trackLessonCompletion:
+            true,
+        trackAssessmentScores:
+            true,
+        trackLabCompletion:
+            true,
+        resumeLastLesson:
+            true
+    },
+
+    assessmentStandard:
+        "Module and final assessments use scenario-based questions with balanced answer positions. Practical work requires reproducible evidence, safe scope, meaningful exit behavior and written interpretation.",
+
+    standardReferences: [
+        {
+            title:
+                "GNU Bash Reference Manual",
+            organization:
+                "GNU Project",
+            url:
+                "https://www.gnu.org/software/bash/manual/"
+        },
+        {
+            title:
+                "ShellCheck Wiki",
+            organization:
+                "ShellCheck",
+            url:
+                "https://github.com/koalaman/shellcheck/wiki"
+        }
+    ],
 
     objectives: [
 
@@ -2077,3 +2330,283 @@ echo "Report written to: $report"</code></pre>
     ]
 
 };
+
+
+/* =========================================================
+   CWS COURSE STANDARDIZATION
+========================================================= */
+
+function applyBashAutomationStandard(course) {
+
+    course.modules.forEach(
+        module => {
+
+            module.learningOutcomes = [
+                `Explain the essential ${module.title} concepts and their operational implications.`,
+                "Implement a small, correctly scoped Bash solution without relying on unexplained copied code.",
+                "Test successful, failure and edge-case behavior and interpret the resulting evidence.",
+                "Apply quoting, validation, least privilege and safe failure behavior consistently."
+            ];
+
+            const lessonLabs =
+                module.lessons
+                    .filter(
+                        item =>
+                            item.lab
+                    )
+                    .map(
+                        (item, index) => ({
+                            id:
+                                `activity-${String(index + 1).padStart(2, "0")}`,
+                            title:
+                                item.lab.title,
+                            type:
+                                module.id === "module-08"
+                                    ? "Portfolio Capstone Milestone"
+                                    : "Guided Automation Lab",
+                            access:
+                                "free",
+                            required:
+                                true,
+                            duration:
+                                item.lab.duration ||
+                                "60–90 minutes",
+                            objective:
+                                item.lab.objective ||
+                                `Apply ${module.title} in a controlled Linux lab.`,
+                            scenario:
+                                "You are supporting the fictional CWS Academy security team. Build a narrowly scoped, non-destructive automation that another analyst can review and repeat.",
+                            prerequisites: [
+                                "Completed lessons in this module",
+                                "Linux lab system that you own or are explicitly authorized to inspect",
+                                "A dedicated working directory containing non-sensitive sample data",
+                                "A recovery point before any exercise that can alter files"
+                            ],
+                            instructions:
+                                Array.isArray(item.lab.steps)
+                                    ? item.lab.steps
+                                    : [],
+                            evidence: [
+                                "Script source with readable functions, comments and quoted expansions",
+                                "The exact test inputs and expected output",
+                                "Successful-run output and exit status",
+                                "At least one failure or edge-case result",
+                                "ShellCheck result or documented review of any accepted finding",
+                                "A short explanation of security scope, limitations and next action"
+                            ],
+                            successCriteria:
+                                item.lab.successCriteria ||
+                                "The automation produces the intended result, fails safely and is supported by reproducible evidence.",
+                            reflection: [
+                                "Which input or environmental assumption posed the greatest reliability risk?",
+                                "How did quoting, validation and exit-status handling change the result?",
+                                "What would need additional approval or safeguards before production use?"
+                            ],
+                            cleanup: [
+                                "Remove temporary files created only for the exercise.",
+                                "Restore changed sample data or the lab snapshot when applicable.",
+                                "Retain only sanitized scripts and evidence with no credentials, tokens or sensitive host data."
+                            ],
+                            safety:
+                                "Use only owned or explicitly authorized systems. Begin read-only, avoid unbounded targets, do not embed secrets and never automate a destructive action without a tested recovery path.",
+                            rubric: {
+                                technicalAccuracy:
+                                    30,
+                                safeImplementation:
+                                    25,
+                                testingAndEvidence:
+                                    25,
+                                interpretation:
+                                    10,
+                                documentation:
+                                    10
+                            }
+                        })
+                    );
+
+            module.labActivities =
+                lessonLabs;
+
+            module.practiceActivities =
+                Array.isArray(module.practiceActivities)
+                    ? module.practiceActivities
+                    : [];
+
+            module.labs =
+                lessonLabs.length;
+
+            module.assessments =
+                1;
+
+            module.moduleAssessment = {
+                title:
+                    `${module.title} — Verified Module Assessment`,
+                type:
+                    "Module Assessment",
+                passingScore:
+                    75,
+                allowRetry:
+                    true,
+                showResults:
+                    true,
+                required:
+                    true,
+                questionCount:
+                    bashQuestionBanks[module.id].length,
+                questions:
+                    balanceAnswerPositions(
+                        bashQuestionBanks[module.id],
+                        module.number - 1
+                    )
+            };
+
+            module.lessons.forEach(
+                (item, lessonIndex) => {
+
+                    item.performanceObjectives = [
+                        `Explain ${item.title} accurately in the learner's own words.`,
+                        "Predict the result of the example before execution.",
+                        "Implement or adapt the concept in the controlled Linux lab.",
+                        "Verify both success and failure behavior using appropriate evidence."
+                    ];
+
+                    item.evidenceStandard = [
+                        "Record the interpreter, relevant environment and test scope.",
+                        "Preserve the exact command or script version that produced the result.",
+                        "Capture input, output, error output and exit status where relevant.",
+                        "Explain what the evidence proves and what it does not prove.",
+                        "Mask credentials, tokens, personal data and unnecessary host identifiers."
+                    ];
+
+                    item.scriptQualityStandard = [
+                        "Quote expansions unless deliberate splitting or globbing is documented.",
+                        "Validate external input before use.",
+                        "Use meaningful errors and non-zero exit statuses for failures.",
+                        "Prefer least privilege, deterministic output and idempotent behavior.",
+                        "Review with ShellCheck and test at least one failure path."
+                    ];
+
+                    item.completionCriteria = [
+                        "The learner can explain the concept without copying the lesson wording.",
+                        "The knowledge check is passed.",
+                        "The example or associated lab is verified with interpretable evidence."
+                    ];
+
+                    const supplements = [
+                        question(
+                            `A script involving ${item.title} works once but fails with spaces in an input value. What should be reviewed first?`,
+                            "Quoting, array use and assumptions about word splitting",
+                            "Whether every command can be prefixed with sudo",
+                            "Whether logging can be disabled",
+                            "Whether the filename can be shortened"
+                        ),
+                        question(
+                            `Evidence for ${item.title} differs from the prediction. What is the best response?`,
+                            "Preserve the result, recheck inputs and scope, isolate the smallest failing step and document the correction",
+                            "Change several commands at once",
+                            "Delete the unexpected output",
+                            "Report the predicted result instead"
+                        )
+                    ];
+
+                    item.quiz =
+                        balanceAnswerPositions(
+                            [
+                                ...item.quiz,
+                                ...supplements.slice(
+                                    0,
+                                    Math.max(0, 3 - item.quiz.length)
+                                )
+                            ],
+                            module.number + lessonIndex
+                        );
+
+                }
+            );
+
+        }
+    );
+
+
+    const finalScenarios = [
+        question("A script must process filenames supplied by find. Which design handles unusual names most safely?", "Use null-delimited output and a matching null-delimited reader with quoted expansions", "Split output using spaces", "Use eval on each filename", "Assume filenames contain no whitespace"),
+        question("A health-check command is unavailable on one host. What should the script do?", "Record the missing dependency, skip or degrade that check safely and return an honest status", "Install software without approval", "Report the check as passed", "Abort after deleting partial evidence"),
+        question("A log search returns many matches. What makes the result analytically useful?", "A documented time range, source, pattern, context, false-positive limitations and prioritized follow-up", "The largest possible output file", "Only a match count", "A claim that every match is malicious"),
+        question("A script needs elevated access for one read-only check. What is the best design?", "Document the need and isolate the minimum privileged operation instead of running the entire workflow with broad privilege", "Run every command as root", "Store the administrator password in the script", "Disable audit logging"),
+        question("A cleanup function can remove files. What is the minimum safe control?", "Constrain it to a validated dedicated directory, reject broad or empty paths and test with disposable data", "Use an unquoted wildcard", "Run it from the filesystem root", "Ignore the target path"),
+        question("What is the strongest capstone validation?", "Repeat the same controlled tests from the documented instructions and obtain consistent, correctly interpreted results", "Confirm that the file exists", "Show one successful terminal screenshot", "Run it against an unknown public host")
+    ];
+
+    const finalQuestions = [
+        ...Object.values(bashQuestionBanks)
+            .flatMap(
+                bank =>
+                    bank.slice(0, 3)
+            ),
+        ...finalScenarios
+    ];
+
+    course.finalAssessment = {
+        id:
+            "final-assessment",
+        title:
+            "Bash & Linux Automation Final Assessment",
+        description:
+            "A scenario-based assessment covering shell behavior, input handling, control flow, text processing, inspection, defensive automation, testing and professional delivery.",
+        type:
+            "Final Assessment",
+        duration:
+            "60–75 minutes",
+        passingScore:
+            80,
+        allowRetry:
+            true,
+        required:
+            true,
+        questionCount:
+            finalQuestions.length,
+        questions:
+            balanceAnswerPositions(finalQuestions)
+    };
+
+    course.capstone = {
+        title:
+            "Defensive Linux Health-Reporting Automation",
+        required:
+            true,
+        estimatedTime:
+            "6–8 hours",
+        scenario:
+            "Create a read-only Bash tool that collects a scoped Linux host baseline, identifies noteworthy conditions and produces an analyst-ready report without changing system configuration.",
+        deliverables: [
+            "Documented Bash source and usage help",
+            "Dependency, privilege and input validation",
+            "Read-only process, socket, storage and log observations",
+            "Deterministic text or structured report output",
+            "Successful, failure and edge-case test evidence",
+            "ShellCheck review and accepted-finding notes",
+            "README covering scope, limitations, cleanup and safe future improvements"
+        ],
+        rubric: {
+            technicalAccuracy:
+                25,
+            safetyAndScope:
+                20,
+            reliabilityAndErrorHandling:
+                20,
+            testingAndEvidence:
+                20,
+            documentationAndInterpretation:
+                15
+        }
+    };
+
+    course.qualityVersion =
+        "CWS-COURSE-STANDARD-2026.2";
+
+}
+
+
+applyBashAutomationStandard(
+    bashLinuxAutomation
+);
